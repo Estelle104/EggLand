@@ -1,7 +1,8 @@
-package com.app.eggland.entity;
+package com.app.eggland.model;
 
 
-import com.app.eggland.entity.StatutOeuf;
+import com.app.eggland.model.StatutOeuf;
+
 import jakarta.persistence.*;
 import lombok.*;
 

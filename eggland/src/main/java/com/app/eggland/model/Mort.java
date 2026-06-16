@@ -1,16 +1,16 @@
-package com.app.eggland.entity;
+package com.app.eggland.model;
 
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "reforme")
+@Table(name = "mort")
 @Data 
 @NoArgsConstructor 
 @AllArgsConstructor 
 @Builder
-public class Reforme {
+public class Mort {
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

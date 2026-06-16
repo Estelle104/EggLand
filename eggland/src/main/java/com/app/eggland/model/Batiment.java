@@ -1,5 +1,4 @@
-// com/app/eggland/model/Batiment.java
-package com.app.eggland.entity;
+package com.app.eggland.model;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,10 +1,11 @@
-package com.app.eggland.entity;
+package com.app.eggland.model;
 
-import com.app.eggland.entity.StatutLivraison;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import com.app.eggland.model.StatutLivraison;
 
 @Entity
 @Table(name = "livraison")

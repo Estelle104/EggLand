@@ -1,14 +1,14 @@
-package com.app.eggland.entity;
+package com.app.eggland.model;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "produitvente")
+@Table(name = "statutclient")
 @Data 
 @NoArgsConstructor 
 @AllArgsConstructor
-public class ProduitVente {
+public class StatutClient {
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

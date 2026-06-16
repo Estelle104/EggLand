@@ -1,10 +1,11 @@
-package com.app.eggland.entity;
+package com.app.eggland.model;
 
 
-import com.app.eggland.entity.StatutLot;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
+
+import com.app.eggland.model.StatutLot;
 
 @Entity
 @Table(name = "lot")

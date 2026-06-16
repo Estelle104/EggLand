@@ -1,15 +1,20 @@
-package com.app.eggland.entity;
+package com.app.eggland.model;
 
-import com.app.eggland.entity.StatutClient;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
 
+import com.app.eggland.model.StatutClient;
+
 @Entity
 @Table(name = "client")
-@Data @NoArgsConstructor @AllArgsConstructor @Builder
+@Data 
+@NoArgsConstructor 
+@AllArgsConstructor 
+@Builder
 public class Client {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false, length = 100)

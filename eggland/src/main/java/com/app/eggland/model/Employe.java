@@ -1,4 +1,4 @@
-package com.app.eggland.entity;
+package com.app.eggland.model;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,6 +24,6 @@ public class Employe {
     @Column(length = 20)
     private String tel;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal salaire;
 }

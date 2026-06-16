@@ -1,9 +1,10 @@
-package com.app.eggland.entity;
+package com.app.eggland.model;
 
-import com.app.eggland.entity.ProduitVente;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
+
+import com.app.eggland.model.ProduitVente;
 
 @Entity
 @Table(name = "detailvente")

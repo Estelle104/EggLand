@@ -1,6 +1,7 @@
-package com.app.eggland.entity;
+package com.app.eggland.model;
 
-import com.app.eggland.entity.RoleUser;
+import com.app.eggland.model.RoleUser;
+
 import jakarta.persistence.*;
 import lombok.*;
 
