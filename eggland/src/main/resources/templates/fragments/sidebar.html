@@ -1,6 +1,7 @@
-<div th:fragment="sidebar">
+<div class="sidebar" th:fragment="sidebar">
 
     <div class="logo">
+        <img th:src="@{/images/eggland-logo.png}" alt="Logo">
         <h2>EGGLAND</h2>
     </div>
 
@@ -43,4 +44,15 @@
 
     </nav>
 
+    <div class="info-user">
+        <div class="user-info">
+            <span>Admin</span>
+        </div>
+
+        <button>
+            <i class="fa-solid fa-right-from-bracket">Se Deconnecter</i>
+        </button>
+    </div>
+
 </div>
+
