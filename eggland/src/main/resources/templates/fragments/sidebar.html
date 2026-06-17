@@ -1,0 +1,58 @@
+<div class="sidebar" th:fragment="sidebar">
+
+    <div class="logo">
+        <img th:src="@{/images/eggland-logo.png}" alt="Logo">
+        <h2>EGGLAND</h2>
+    </div>
+
+    <nav>
+
+        <a th:href="@{/dashboard}">
+            <i class="fa-solid fa-chart-line"></i>
+            Dashboard
+        </a>
+
+        <a th:href="@{/lots}">
+            <i class="fa-solid fa-egg"></i>
+            Lots
+        </a>
+
+        <a th:href="@{/employes}">
+            <i class="fa-solid fa-users"></i>
+            Employés
+        </a>
+
+        <a th:href="@{/salaires}">
+            <i class="fa-solid fa-money-bill"></i>
+            Salaires
+        </a>
+
+        <a th:href="@{/stock}">
+            <i class="fa-solid fa-box"></i>
+            Stock
+        </a>
+
+        <a th:href="@{/ventes}">
+            <i class="fa-solid fa-cart-shopping"></i>
+            Ventes
+        </a>
+
+        <a th:href="@{/configuration}">
+            <i class="fa-solid fa-gear"></i>
+            Configuration
+        </a>
+
+    </nav>
+
+    <div class="info-user">
+        <div class="user-info">
+            <span>Admin</span>
+        </div>
+
+        <button>
+            <i class="fa-solid fa-right-from-bracket">Se Deconnecter</i>
+        </button>
+    </div>
+
+</div>
+
