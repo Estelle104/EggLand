@@ -1,0 +1,17 @@
+.header{
+
+    height:80px;
+
+    background:white;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 30px;
+
+    box-shadow:var(--shadow);
+
+}

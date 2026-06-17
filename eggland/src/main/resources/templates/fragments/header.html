@@ -1,0 +1,22 @@
+<div th:fragment="header">
+
+    <div class="page-title">
+        <h1 th:text="${pageTitle ?: 'Eggland'}"></h1>
+    </div>
+
+    <div class="header-right">
+
+        <input type="text"
+               placeholder="Rechercher...">
+
+        <button>
+            <i class="fa-solid fa-bell"></i>
+        </button>
+
+        <div class="user-info">
+            <span>Admin</span>
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <meta charset="UTF-8">
+    <title layout:title-pattern="$CONTENT_TITLE - Eggland">
+        Eggland
+    </title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar"
+           th:replace="layout/sidebar :: sidebar">
+    </aside>
+
+    <div class="main-wrapper">
+
+        <!-- Header -->
+        <header class="header"
+                th:replace="layout/header :: header">
+        </header>
+
+        <!-- Contenu spécifique -->
+        <main class="content"
+              layout:fragment="content">
+        </main>
+
+    </div>
+
+</div>
+
+</body>
+</html>

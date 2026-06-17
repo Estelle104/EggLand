@@ -1,0 +1,37 @@
+:root{
+
+    /* Fond général */
+    --bg:#F5F1E8;
+
+    /* Sidebar - marron principal */
+    --sidebar:#6E3B1F;
+
+    /* Couleur principale (boutons, liens actifs) */
+    --primary:#B87A2A;
+
+    /* Cartes */
+    --card:#FFFDF8;
+
+    /* Texte principal */
+    --text:#33241A;
+
+    /* Texte secondaire */
+    --text-light:#7C6758;
+
+    /* Hover */
+    --hover:#8A4E28;
+
+    /* Bordures */
+    --border:#E4D7C7;
+
+    /* Accent clair */
+    --accent:#D8B77C;
+
+    /* Radius */
+    --radius:16px;
+
+    /* Ombre douce */
+    --shadow:
+        0 8px 30px rgba(72,38,16,.08);
+
+}
