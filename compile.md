@@ -6,3 +6,6 @@ mvn spring-boot:run
 
 **url dans la navigateur**
 localhost:1404
+
+**CHangement version java**
+sudo update-alternatives --config java
