@@ -18,13 +18,13 @@ public class LoginController {
     @GetMapping("/redirection")
     public String redirectionParRole(HttpServletRequest request) {
         if(request.isUserInRole("admin")){
-            return "redirect:/admin/**";
+            return "redirect:/admin/dashboard";
         }
         else if (request.isUserInRole("gestionnaire")) {
             return "redirect:/gestion/stocks";
         } 
         else {
-            return "redirect:/client/boutique"; 
+            return "redirect:/client/layout"; 
         }
     }
     

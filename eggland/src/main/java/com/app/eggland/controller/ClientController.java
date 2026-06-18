@@ -26,6 +26,11 @@ public class ClientController {
     public String afficherLayoutClient() {
         return "client/layout";
     }
+    @GetMapping("/client/layout")
+    public String afficherVueClient() {
+        return "client/layout";
+    }
+    
     
 
     @GetMapping("/client/inscription")

@@ -129,7 +129,7 @@
                         <h2 class="fw-bold mt-2 h3">Remplissez votre demande</h2>
                     </div>
 
-                    <form th:action="@{/client/register}" method="POST">
+                    <form th:action="@{/client/inscription}" method="POST">
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold small">Nom</label>
@@ -155,7 +155,6 @@
                             <label class="form-label fw-semibold small">Type de clientèle</label>
                             <select class="form-select" name="ClientType" required>
                                 <option value="">Sélectionner votre type</option>
-                                <option th:each="type : ${etablishmentType}" th:value="${type.EtablishmentTypeId}" th:text="${type.libelle}"></option>
                             </select>
                         </div>
 
