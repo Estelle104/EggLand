@@ -23,7 +23,7 @@ public class SecurityConfig {
         .anyRequest().authenticated()
        )
        .formLogin(form -> form
-            .loginPage("/login")
+            .loginPage("/login")//url ireo 
             .defaultSuccessUrl("/redirection")
             .permitAll()
        )
