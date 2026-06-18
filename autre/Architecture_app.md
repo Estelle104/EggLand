@@ -16,7 +16,7 @@ src/
     │       │   ├── SecurityConfig.java         ← règles Spring Security (routes, rôles)
     │       │   └── WebMvcConfig.java           ← config Thymeleaf, encodage
     │       │
-    │       ├── entity/                          ← entités JPA (@Entity)
+    │       ├── model/                          ← entités JPA (@Entity)
     │       │   ├── Race.java
     │       │   ├── Batiment.java
     │       │   ├── Lot.java
