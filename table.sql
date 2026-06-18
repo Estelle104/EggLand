@@ -4,7 +4,6 @@ CREATE TABLE StatutLot (
     id SERIAL PRIMARY KEY,
     code VARCHAR(30) 
 );
-INSERT INTO StatutLot (code) VALUES ('actif'), ('reforme');
 
 -- ---
 
@@ -12,7 +11,6 @@ CREATE TABLE TypeTraitement (
     id SERIAL PRIMARY KEY,
     code VARCHAR(30) 
 );
-INSERT INTO TypeTraitement (code) VALUES ('vaccin'), ('maladie'), ('medicament');
 
 -- ---
 
@@ -20,7 +18,6 @@ CREATE TABLE StatutOeuf (
     id SERIAL PRIMARY KEY,
     code VARCHAR(30) 
 );
-INSERT INTO StatutOeuf (code) VALUES ('vendu'), ('casse'), ('consomme');
 
 -- ---
 
@@ -28,7 +25,6 @@ CREATE TABLE TypeMvt (
     id SERIAL PRIMARY KEY,
     code VARCHAR(30) 
 );
-INSERT INTO TypeMvt (code) VALUES ('entree'), ('sortie');
 
 -- ---
 
@@ -36,7 +32,6 @@ CREATE TABLE StatutClient (
     id SERIAL PRIMARY KEY,
     code VARCHAR(30) 
 );
-INSERT INTO StatutClient (code) VALUES ('actif'), ('inactif');
 
 -- ---
 
@@ -44,7 +39,6 @@ CREATE TABLE StatutVente (
     id SERIAL PRIMARY KEY,
     code VARCHAR(30) 
 );
-INSERT INTO StatutVente (code) VALUES ('en_attente'), ('paye'), ('livre');
 
 -- ---
 
@@ -52,7 +46,6 @@ CREATE TABLE ProduitVente (
     id SERIAL PRIMARY KEY,
     code VARCHAR(30) 
 );
-INSERT INTO ProduitVente (code) VALUES ('oeuf'), ('poule'), ('fumier');
 
 -- ---
 
@@ -60,7 +53,6 @@ CREATE TABLE StatutLivraison (
     id SERIAL PRIMARY KEY,
     code VARCHAR(30) 
 );
-INSERT INTO StatutLivraison (code) VALUES ('en_attente'), ('en_cours'), ('livre');
 
 -- ---
 
@@ -68,7 +60,6 @@ CREATE TABLE RoleUser (
     id SERIAL PRIMARY KEY,
     code VARCHAR(30) 
 );
-INSERT INTO RoleUser (code) VALUES ('admin'), ('gestionnaire');
 
 
 -- ============================================================
@@ -253,5 +244,3 @@ CREATE TABLE Configuration (
     seuil_mort       INT              NOT NULL DEFAULT 0,
     seuil_nourriture DOUBLE PRECISION NOT NULL DEFAULT 0
 );
-
-INSERT INTO Configuration (seuil_mort, seuil_nourriture) VALUES (5, 50.0);
