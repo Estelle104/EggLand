@@ -17,7 +17,7 @@ public class SecurityConfig {
         http
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/","/client/accueil","/client/inscription","/css/**","/js/**","/images/**").permitAll() //tout le monde peut voir l'accueil et l'inscription en tant que client
-            .requestMatchers("/admin/**","/**/layout/**","/**/liste/**").hasRole("admin")// l'admin a acces a ses fonctionnalités et toute url contenant layout et liste
+            .requestMatchers("/admin/**","/**").hasRole("admin")// l'admin a acces a ses fonctionnalités et toute url contenant layout et liste
             .requestMatchers("/lots/**","/gestionnaire/**").hasRole("gestionnaire")// gestionnaire a acces aux url de lots et gestionnaire
             .requestMatchers("/client/**").hasRole("client")// le client a acces aux fonctionnalité de l'url /client
         .anyRequest().authenticated()
