@@ -14,4 +14,6 @@ import java.util.List;
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Integer>{    
     Optional<Client> findByEmail(String email);
+    //pour eviter les doublons 
+    boolean existsByEmail(String email);
 }

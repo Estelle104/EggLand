@@ -12,4 +12,5 @@ import java.util.List;
 @Repository
 public interface UserAdminRepository extends JpaRepository<UserAdmin, Integer>{    
     Optional<UserAdmin> findByEmail(String email);
+    boolean existsByEmail(String email);
 }
