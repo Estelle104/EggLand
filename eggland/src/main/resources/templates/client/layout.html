@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EggLand - Accueil</title>
+    
+    <!-- Bootstrap 5 -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+    <style>
+        :root {
+            --dark: #1E0E06;           
+            --deep-brown: #683516CC;
+            --card-brown: #7B3F1ACC;
+            --accent: #DAAB3A;
+            --cream: #F2EDDB;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            color: var(--dark);
+        }
+        h1, h2, h3, .navbar-brand {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Navbar transparente */
+        .navbar {
+            background-color: transparent;
+            transition: all 0.4s ease;
+        }
+
+        .nav-link {
+            color: var(--deep-brown) !important;   /* Couleur par défaut (marron) */
+            font-weight: 500;
+            transition: color 0.4s ease;
+        }
+
+        /* Quand la navbar est en mode sombre */
+        .navbar.dark .nav-link {
+            color: white !important;
+        }
+
+        .navbar.dark {
+            background-color: rgba(70, 34, 14, 0.96) !important; /* fond marron foncé */
+        }
+
+        /* Hero - Overlay flouté avec #EEE6D8 */
+        .hero-section {
+            background: linear-gradient(rgba(238, 230, 216, 0.45), rgba(238, 230, 216, 0.65)), 
+                        url('/images/poule pondeuse.webp') center/cover no-repeat;
+            min-height: 92vh;
+            display: flex;
+            align-items: center;
+            color: white;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+        }
+
+        /* Sections */
+        .section-produits {
+            background-color: var(--dark);
+            color: white;
+        }
+        .section-partenaire {
+            background-color: var(--cream);
+        }
+        .contact-section {
+            background-color: var(--dark);
+            color: white;
+        }
+
+        /* Cartes Produits */
+        .product-card {
+            background-color: var(--card-brown);
+            border-radius: 16px;
+            padding: 40px 25px;
+            height: 100%;
+            transition: all 0.3s;
+        }
+        .product-card:hover {
+            transform: translateY(-12px);
+        }
+        .product-icon {
+            width: 90px;
+            height: 90px;
+            background: var(--cream);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.2rem;
+            margin: 0 auto 25px;
+        }
+        .product-badge {
+            background: var(--cream);
+            color: var(--deep-brown);
+            padding: 8px 22px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.78rem;
+        }
+
+        /* Partenaire */
+        .partner-box {
+            background-color: var(--deep-brown);
+            color: white;
+            border-radius: 12px;
+            padding: 35px 25px;
+        }
+        .partner-small {
+            background-color: var(--card-brown);
+            color: white;
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        /* Contact */
+        .contact-box {
+            background-color: var(--card-brown);
+            color: white;
+            border-radius: 12px;
+            padding: 30px 20px;
+            height: 100%;
+        }
+
+        .section-subtitle {
+            color: var(--accent);
+            font-size: 0.95rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* EGGLAND Accent */
+        .eggland-title {
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar Transparente -->
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top" id="mainNavbar">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3" href="#">EGGLAND</a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto gap-4">
+                    <li class="nav-item"><a class="nav-link" href="#">Accueil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#produits">Nos Produits</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#partenaire">Devenir Partenaire</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="btn btn-sm px-4 py-2 text-white fw-bold" 
+                           style="background: var(--card-brown); border-radius: 8px;" 
+                           th:href="@{/login}">Connexion</a>
+                    </li>
+                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 fw-bold" 
+                           href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span sec:authentication="name" style="color: inherit;">Email</span></a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2" 
+                            aria-labelledby="userDropdown" 
+                            style="background-color: var(--cream); border-radius: 12px;">
+                            
+                            <li><a class="dropdown-item rounded py-2 fw-semibold text-dark" th:href="@{/redirection}">Mon Espace</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="m-0 p-0">
+                                    <button type="submit" class="dropdown-item rounded py-2 fw-semibold text-danger" style="background: none; border: none; width: 100%; text-align: left;">Deconnexion</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero-section text-center">
+        <div class="container">
+
+            <img src="https://via.placeholder.com/180/DAAB3A/373433?text=EGGLAND" 
+                 class="rounded-circle mb-4" style="width: 180px; border: 8px solid rgba(255,255,255,0.3);" alt="Logo">
+
+            <div class="badge mb-4 px-5 py-3" style="background: var(--deep-brown); font-size:1.05rem; border-radius:50px;">
+                QUALITÉ • ENGAGEMENT • DURABILITÉ
+            </div>
+            <p class="lead mb-5 fs-4 fw-bold" style="color: var(--dark);">Des œufs de qualité supérieure livrés à votre porte à prix unique</p>
+            <h1 class="display-1 fw-bold mb-3 eggland-title">EGGLAND</h1>
+            <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+                <a href="#produits" class="btn btn-lg px-5 py-3" style="background:var(--card-brown); color:white;">Découvrir nos produits</a>
+                <a href="#partenaire" class="btn btn-lg px-5 py-3 btn-outline-light">Devenir partenaire</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Nos Produits -->
+    <section id="produits" class="section-produits py-5">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <p class="section-subtitle mb-2">— CE QUE NOUS OFFRONS</p>
+                <h2 class="display-5 fw-bold">Nos Produits</h2>
+                <p class="mx-auto" style="max-width: 720px; opacity: 0.9;">
+                    Des produits issus de notre élevage moderne, suivis avec rigueur pour garantir une qualité irréprochable à chaque livraison.
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="product-card text-center">
+                        <div class="product-icon">🥚</div>
+                        <h4 class="fw-bold mb-3">Œufs Frais</h4>
+                        <p>Récoltés chaque matin depuis notre grande ferme moderne. Frais, sains et de calibre constant, livrés directement chez vous avec les frais de livraison inclus.</p>
+                        <div class="product-badge mt-4">PRODUIT PHARE</div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="product-card text-center">
+                        <div class="product-icon">🍗</div>
+                        <h4 class="fw-bold mb-3">Poulet de Chair</h4>
+                        <p>Nos poules pondeuses en fin de cycle sont valorisées en poulets de chair de qualité. Une diversification qui garantit zéro gaspillage et plus de valeur pour nos partenaires.</p>
+                        <div class="product-badge mt-4">DISPONIBLE</div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="product-card text-center">
+                        <div class="product-icon">🌿</div>
+                        <h4 class="fw-bold mb-3">Fumier Naturel</h4>
+                        <p>Sous-produit de notre élevage, notre fumier est un excellent fertilisant naturel pour les cultures. Un choix durable pour les agriculteurs et maraîchers.</p>
+                        <div class="product-badge mt-4">DURABLE</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Devenir Partenaire -->
+    <section id="partenaire" class="section-partenaire py-5">
+        <div class="container py-5">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <p class="section-subtitle">— Rejoignez-nous</p>
+                    <h2 class="display-5 fw-bold mt-2">Devenir Partenaire</h2>
+                    <p class="lead">Nous travaillons avec les grands hôtels, restaurants, pâtisseries et marchés de viennoiseries. Rejoignez notre réseau et bénéficiez d'une livraison régulière et fiable.</p>
+                    
+                    <ul class="list-unstyled mt-4">
+                        <li class="mb-3">• Livraison incluse, régulière et stable</li>
+                        <li class="mb-3">• Prix unique et transparent</li>
+                        <li class="mb-3">• Qualité contrôlée avec suivi strict</li>
+                        <li class="mb-3">• Partenariat à long terme</li>
+                        <li>• Service dédié et réactif</li>
+                    </ul>
+                    
+                    <a th:href="@{/client/inscription}" class="btn btn-lg px-5 py-3 mt-3" style="background: var(--card-brown); color: white;">S'inscrire maintenant →</a>
+                </div>
+
+                <div class="col-lg-6">
+
+                    <div class="partner-box mb-4" style="background: var(--dark);">
+                        <small>LIVRAISONS ASSURÉES</small>
+                        <h3 class="mt-2">Chaque semaine</h3>
+                        <p class="opacity-75">Sans interruption depuis notre ouverture</p>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-6">
+                            <div class="partner-small" style="background: var(--dark);">
+                                <small>ZONES COUVERTES</small>
+                                <h5 class="mt-2">Antananarivo</h5>
+                                <small>&amp; alentours</small>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="partner-small" style="background: var(--dark);">
+                                <small>PRIX LIVRAISON</small>
+                                <h5 class="mt-2">Inclus</h5>
+                                <small>Sans frais cachés</small>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="contact-section py-5">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <p class="section-subtitle">— ON EST LÀ</p>
+                <h2 class="display-5 fw-bold">Contactez-nous</h2>
+            </div>
+            
+            <div class="row g-4 text-center">
+                <div class="col-md-6 col-lg-3">
+                    <div class="contact-box">📍<br><strong>Adresse</strong><br>Antananarivo, Madagascar</div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="contact-box">📞<br><strong>Téléphone</strong><br>+261 XX XX XXX XX</div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="contact-box">✉️<br><strong>Email</strong><br>contact@eggland.mg</div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="contact-box">🕒<br><strong>Horaires</strong><br>Lun - Sam : 07h00 - 18h00</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-4 text-center text-white" style="background: var(--dark);">
+        <div class="container">
+            <strong class="eggland-title">EGGLAND</strong> — QUALITÉ • ENGAGEMENT • DURABILITÉ<br>
+            © 2026 Eggland — Tous droits réservés
+        </div>
+    </footer>
+
+    <script>
+        // Effet navbar au scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        const navbar = document.getElementById('mainNavbar');
+
+        function handleScroll() {
+            const scrollPosition = window.scrollY;
+            const heroHeight = document.querySelector('.hero-section') ? 
+                            document.querySelector('.hero-section').offsetHeight : 700;
+
+            if (scrollPosition > heroHeight - 100) {
+                navbar.classList.add('dark');
+            } else {
+                navbar.classList.remove('dark');
+            }
+        }
+
+        // Exécuter au scroll et au chargement
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('load', handleScroll);
+    </script>
+</body>
+</html>
