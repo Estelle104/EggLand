@@ -21,12 +21,13 @@ public class LoginController {
             return "redirect:/admin/dashboard";
         }
         else if (request.isUserInRole("gestionnaire")) {
-            return "redirect:/gestion/stocks";
+            return "redirect:/gestion/dashboard";
         } 
         else {
             return "redirect:/client/layout"; 
         }
     }
+    
     
 
 }
