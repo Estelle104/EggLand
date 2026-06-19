@@ -24,17 +24,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private ClientRepository clientRepository;
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException{ 
         Optional<UserAdmin> userAdminOptional = userAdminRepository.findByEmail(email);
         Optional<Client> userClientOptional = clientRepository.findByEmail(email);
 
-        UserAdmin useradmin = userAdminOptional.get();
-        Client client = userClientOptional.get();
-        String Rolename = useradmin.getRole().getCode();// pour admin et gestionnaire seulement pas pour client
+        
         
         if(userAdminOptional.isPresent()){
+            UserAdmin useradmin = userAdminOptional.get();
+            String Rolename = useradmin.getRole().getCode();// pour admin et gestionnaire seulement pas pour client
             return User.builder()
-                    .username(useradmin.getNom())
+                    .username(useradmin.getEmail())
                     .password(useradmin.getMotDePasse())
                     .authorities(Rolename)
                     .disabled(!useradmin.getActif())
@@ -42,6 +43,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
 
         if(userClientOptional.isPresent()){
+            Client client = userClientOptional.get();
             return User.builder()
             .username(client.getNom())
             .password("")
