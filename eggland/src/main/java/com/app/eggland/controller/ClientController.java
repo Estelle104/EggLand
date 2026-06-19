@@ -56,15 +56,7 @@ public class ClientController {
         }
     }
 
-    @PostMapping("/client/connexion")
-    public String postMethodName(@RequestParam("email") String email, HttpServletRequest request) {
-        try {
-            clientService.connecterClient(email, request);
-            return "redirect:/client/layout";
-        } catch (RuntimeException e) {
-            return "redirect:/login?error=" +e.getMessage();
-        }
-    }
+    
     
     
     
