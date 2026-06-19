@@ -50,7 +50,7 @@
         /* Hero - Overlay flouté avec #EEE6D8 */
         .hero-section {
             background: linear-gradient(rgba(238, 230, 216, 0.45), rgba(238, 230, 216, 0.65)), 
-                        url('/images/poule pondeuse.webp') center/cover no-repeat;
+                        url('/images/poule-pondeuse.webp') center/cover no-repeat;
             min-height: 92vh;
             display: flex;
             align-items: center;
@@ -188,7 +188,7 @@
     <header class="hero-section text-center">
         <div class="container">
 
-            <img src="https://via.placeholder.com/180/DAAB3A/373433?text=EGGLAND" 
+            <img th:src="@{/images/eggland-logo.png}" 
                  class="rounded-circle mb-4" style="width: 180px; border: 8px solid rgba(255,255,255,0.3);" alt="Logo">
 
             <div class="badge mb-4 px-5 py-3" style="background: var(--deep-brown); font-size:1.05rem; border-radius:50px;">
