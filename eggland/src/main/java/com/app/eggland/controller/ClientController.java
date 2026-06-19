@@ -13,6 +13,9 @@ import com.app.eggland.service.ClientService;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -49,9 +52,20 @@ public class ClientController {
             // request.login(nouveauClient.getEmail(), mdp) request.login fait tout le travail de authentifierclientManuellement en une seule ligne
             return "redirect:/client/layout";
         } catch (RuntimeException e) {
-            return "redirect:/client/inscription";
+            return "redirect:/inscription";
         }
     }
+
+    @PostMapping("/client/connexion")
+    public String postMethodName(@RequestParam("email") String email, HttpServletRequest request) {
+        try {
+            clientService.connecterClient(email, request);
+            return "redirect:/client/layout";
+        } catch (RuntimeException e) {
+            return "redirect:/login?error=" +e.getMessage();
+        }
+    }
+    
     
     
 }

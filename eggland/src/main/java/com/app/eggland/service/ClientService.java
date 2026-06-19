@@ -1,6 +1,8 @@
 package com.app.eggland.service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,6 +39,7 @@ public class ClientService {
         StatutClient statutActif = statutClientRepository.findByCode("actif")
         .orElseThrow(() -> new RuntimeException("status actif introuvable"));
         client.setStatut(statutActif);
+        client.setDateInscription(LocalDate.now());
         Client saveClient = clientRepository.save(client);
         
         return saveClient;
@@ -57,6 +60,16 @@ public class ClientService {
         // 3. Persistance dans la session HTTP
         HttpSession session = request.getSession(true);
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
+    }
+
+    public void connecterClient(String email,HttpServletRequest request){
+        Client client = clientRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("email not found"));
+
+        if (client.getStatut() == null || !"actif".equalsIgnoreCase(client.getStatut().getCode())) {
+            throw new RuntimeException("inactive");
+        }
+        this.authentifierClientManuellement(email, request);
     }
 
 }
