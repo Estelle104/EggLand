@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Controller
-public class ClientController {
+public class ClientAuthController {
     @Autowired
     private ClientService clientService;
 
