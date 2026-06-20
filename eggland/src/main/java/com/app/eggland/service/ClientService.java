@@ -55,10 +55,9 @@ public class ClientService {
         );
         // UsernamePasswordAuthentificationToken : créer un badge d'identité au nouveau client créer et il a besoin
         
-        // 2. Application au contexte actuel
         SecurityContextHolder.getContext().setAuthentication(authentication); // ici il dit a spring maintenant c'est un client
         
-        // 3. Persistance dans la session HTTP
+        /* Persistance dans la session HTTP*/
         HttpSession session = request.getSession(true);
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
     }

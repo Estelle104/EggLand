@@ -2,6 +2,8 @@ package com.app.eggland.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 
@@ -30,7 +33,11 @@ public class ClientAuthController {
         return "client/layout";
     }
     @GetMapping("/client/layout")// vue tant que client connecter 
-    public String afficherVueClient() {
+    public String afficherVueClient(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
+            model.addAttribute("userEmail", auth.getName());
+        }
         return "client/layout";
     }
      
@@ -57,7 +64,12 @@ public class ClientAuthController {
     }
 
     
-    
-    
+    /*test */
+    @GetMapping("/test-session")
+    @ResponseBody
+    public String test(HttpServletRequest request) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        return "Authentification dans le contexte : " + (auth != null ? auth.getName() : "NULL");
+    }
     
 }
