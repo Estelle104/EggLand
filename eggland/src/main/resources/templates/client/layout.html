@@ -157,7 +157,7 @@
                     <li class="nav-item"><a class="nav-link" href="#partenaire">Devenir Partenaire</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
 
-                    <li class="nav-item" sec:authorize="isAnonymous()">
+                    <li class="nav-item" th:if="${userEmail == null}">
                         <a class="btn btn-sm px-4 py-2 text-white fw-bold" 
                         style="background: var(--card-brown); border-radius: 8px;" 
                         th:href="@{/login}">Connexion</a>
