@@ -156,14 +156,18 @@
                     <li class="nav-item"><a class="nav-link" href="#produits">Nos Produits</a></li>
                     <li class="nav-item"><a class="nav-link" href="#partenaire">Devenir Partenaire</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+
+                    <li class="nav-item" sec:authorize="isAnonymous()">
                         <a class="btn btn-sm px-4 py-2 text-white fw-bold" 
-                           style="background: var(--card-brown); border-radius: 8px;" 
-                           th:href="@{/login}">Connexion</a>
+                        style="background: var(--card-brown); border-radius: 8px;" 
+                        th:href="@{/login}">Connexion</a>
                     </li>
+
                     <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                         <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 fw-bold" 
-                           href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span sec:authentication="name" style="color: inherit;">Email</span></a>
+                        href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span sec:authentication="name">Email</span>
+                        </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2" 
                             aria-labelledby="userDropdown" 
                             style="background-color: var(--cream); border-radius: 12px;">
@@ -172,7 +176,7 @@
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form th:action="@{/logout}" method="post" class="m-0 p-0">
-                                    <button type="submit" class="dropdown-item rounded py-2 fw-semibold text-danger" style="background: none; border: none; width: 100%; text-align: left;">Deconnexion</button>
+                                    <button type="submit" class="dropdown-item rounded py-2 fw-semibold text-danger" style="background: none; border: none; width: 100%; text-align: left;">Déconnexion</button>
                                 </form>
                             </li>
                         </ul>
