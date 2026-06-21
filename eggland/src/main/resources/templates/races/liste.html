@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Liste des races</title>
+</head>
+
+<body>
+    <h1>Liste des races</h1>
+
+    <table border="1">
+
+    <tr>
+        <th>id</th>
+        <th>Nom</th>
+        <th>Prix Unitaire</th>
+        <th>Rendement Moyen par mois</th>
+        <th>Actions</th>
+        
+    </tr>
+
+    <tr th:each="race : ${races}">
+
+        <td th:text="${race.id}"></td>
+
+        <td th:text="${race.nom}"></td>
+
+        <td th:text="${race.prixUnitaire}"></td>
+
+        <td th:text="${race.rendementMoyenMois}"></td>
+        <td></td>
+
+    </tr>
+
+</table>
+    
+</body>
+</html>
