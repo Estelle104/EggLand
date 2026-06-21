@@ -105,6 +105,7 @@
                                 <th>ID</th>
                                 <th>Nom</th>
                                 <th>Capacité</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -116,6 +117,9 @@
                                           th:classappend="${b.capacite >= 1000} ? 'badge-capacite badge-elevee' : (${b.capacite >= 500} ? 'badge-capacite badge-moyenne' : 'badge-capacite badge-faible')"
                                           th:style="'background:' + (${b.capacite >= 1000} ? '#d4edda' : (${b.capacite >= 500} ? '#fff3cd' : '#f8d7da')) + '; color:' + (${b.capacite >= 1000} ? '#155724' : (${b.capacite >= 500} ? '#856404' : '#721c24')) + '; padding:4px 12px; border-radius:20px; font-weight:600;'">
                                     </span>
+                                </td>
+                                <td>
+                                    
                                 </td>
                             </tr>
                         </tbody>
