@@ -18,6 +18,7 @@ public class RaceService {
         return raceRepository.findAll();
     }
 
+    //pour eviter de retourner null, on utilise Optional
     public Optional<Race> findById(Integer id) {
         return raceRepository.findById(id);
     }
