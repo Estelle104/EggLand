@@ -1,51 +1,160 @@
 <!DOCTYPE html>
-<html lang="fr"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="fragments/layout">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title th:text="${race.id == null} ? 'Nouvelle race' : 'Modifier la race'"></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${race.id == null} ? 'Nouvelle race' : 'Modifier la race'">Race - Eggland</title>
+
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+        .page-header {
+            margin-bottom: 24px;
+        }
+        .page-header h2 {
+            color: var(--text);
+            font-size: 22px;
+        }
+
+        .card-form {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 32px;
+            max-width: 700px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            background: var(--bg);
+            outline: none;
+            transition: 0.2s;
+            box-sizing: border-box;
+        }
+        .form-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(184, 122, 42, 0.15);
+            background: white;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn-enregistrer {
+            background: var(--primary);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-enregistrer:hover {
+            background: var(--hover);
+        }
+
+        .btn-annuler {
+            background: var(--border);
+            color: var(--text);
+            padding: 12px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-annuler:hover {
+            background: #d4c4b0;
+            color: var(--text);
+        }
+    </style>
 </head>
 
 <body>
-    <main layout:fragment="content">
-        <div class="container-fluid">
-            <h2 class="mb-4" th:text="${race.id == null} ? 'Nouvelle race' : 'Modifier la race'"></h2>
+    <div class="app">
 
-            <div class="card">
-                <div class="card-body">
-                    <form th:action="@{/races/save}" th:object="${race}" method="post" class="row g-3">
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <div class="main">
+
+            <div th:replace="fragments/header :: header"></div>
+
+            <div class="content">
+
+                <div class="page-header">
+                    <h2 th:text="${race.id == null} ? 'Nouvelle race' : 'Modifier la race'"></h2>
+                </div>
+
+                <div class="card-form">
+                    <form th:action="@{/races/save}" th:object="${race}" method="post">
 
                         <input type="hidden" th:field="*{id}" />
 
-                        <div class="col-md-6">
-                            <label for="nom" class="form-label">Nom</label>
-                            <input type="text" id="nom" th:field="*{nom}" class="form-control" required />
+                        <div class="form-group">
+                            <label for="nom">Nom</label>
+                            <input type="text" id="nom" th:field="*{nom}" placeholder="Ex: Plymouth Rock" required />
                         </div>
 
-                        <div class="col-md-6">
-                            <label for="prixUnitaire" class="form-label">Prix unitaire</label>
+                        <div class="form-group">
+                            <label for="prixUnitaire">Prix unitaire (Ar)</label>
                             <input type="number" id="prixUnitaire" th:field="*{prixUnitaire}"
-                                   class="form-control" step="0.01" required />
+                                   step="0.01" placeholder="Ex: 5000" required />
                         </div>
 
-                        <div class="col-md-6">
-                            <label for="rendementMoyenMois" class="form-label">Rendement moyen / mois</label>
+                        <div class="form-group">
+                            <label for="rendementMoyenMois">Rendement moyen / mois</label>
                             <input type="number" id="rendementMoyenMois" th:field="*{rendementMoyenMois}"
-                                   class="form-control" required />
+                                   placeholder="Ex: 25" required />
                         </div>
 
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary">
+                        <div class="form-actions">
+                            <button type="submit" class="btn-enregistrer">
                                 <i class="fa-solid fa-save"></i> Enregistrer
                             </button>
-                            <a th:href="@{/races}" class="btn btn-secondary ms-2">Annuler</a>
+                            <a th:href="@{/races}" class="btn-annuler">
+                                <i class="fa-solid fa-xmark"></i> Annuler
+                            </a>
                         </div>
+
                     </form>
                 </div>
+
             </div>
+
         </div>
-    </main>
+
+    </div>
 </body>
+
 </html>
