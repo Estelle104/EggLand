@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sortie de stock - Eggland</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        .page-header { margin-bottom: 24px; }
+        .page-header h2 { color: var(--text); font-size: 22px; }
+        .card-form { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 32px; max-width: 600px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 600; color: var(--text); }
+        .form-group select, .form-group input { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; background: var(--bg); outline: none; transition: 0.2s; box-sizing: border-box; }
+        .form-group select:focus, .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(184, 122, 42, 0.15); background: white; }
+        .form-actions { display: flex; gap: 12px; margin-top: 28px; }
+        .btn-submit { background: #e47373; color: white; padding: 12px 28px; border-radius: 10px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-submit:hover { background: #cc5a5a; }
+        .btn-annuler { background: var(--border); color: var(--text); padding: 12px 28px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-annuler:hover { background: #d4c4b0; color: var(--text); }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+        <div class="main">
+            <div th:replace="fragments/header :: header"></div>
+            <div class="content">
+
+                <div class="page-header">
+                    <h2>Sortie de stock</h2>
+                </div>
+
+                <div class="card-form">
+                    <form th:action="@{/stock/sortie}" th:object="${mvtStock}" method="post">
+
+                        <div class="form-group">
+                            <label for="nourriture">Nourriture</label>
+                            <select id="nourriture" th:field="*{nourriture}" required>
+                                <option value="">-- Sélectionner --</option>
+                                <option th:each="n : ${nourritures}" th:value="${n.id}" th:text="${n.libelle}"></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="quantite">Quantité (kg)</label>
+                            <input type="number" id="quantite" th:field="*{quantite}" step="0.001" placeholder="Ex: 50" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="date">Date</label>
+                            <input type="date" id="date" th:field="*{date}" required />
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-submit"><i class="fa-solid fa-check"></i> Valider la sortie</button>
+                            <a th:href="@{/stock}" class="btn-annuler"><i class="fa-solid fa-xmark"></i> Annuler</a>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

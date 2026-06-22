@@ -258,3 +258,7 @@ INSERT INTO Configuration (seuil_mort, seuil_nourriture) VALUES (5, 50.0);
 INSERT INTO useradmin(actif,email,mot_de_passe,nom,role) VALUES 
 (true,'admin@gmail.com','admin123','moi',1),
 (true,'gest@gmail.com','gestion123','ricardo',2);
+INSERT INTO Nourriture (libelle, prix_unitaire, seuil_alerte) VALUES
+('Maïs', 2000.00, 50),
+('Soja', 2500.00, 30),
+('Farine', 1500.00, 40);

@@ -28,8 +28,15 @@ public class MvtStockService {
     @Autowired
     private ConfigurationRepository configurationRepository;
 
+    @Autowired
+    private MvtArgentService mvtArgentService;
+
     public List<MvtStock> findAll() {
-        return mvtStockRepository.findAll();
+        return mvtStockRepository.findAllByOrderByDateDesc();
+    }
+
+    public List<MvtStock> findByNourritureId(Integer nourritureId) {
+        return mvtStockRepository.findByNourritureIdOrderByDateDesc(nourritureId);
     }
 
     public Optional<MvtStock> findById(Integer id) {
@@ -38,8 +45,20 @@ public class MvtStockService {
 
     public MvtStock save(MvtStock mvtStock) {
         MvtStock saved = mvtStockRepository.save(mvtStock);
+        //si c'est une entrée de stock, créer un mouvement d'argent correspondant à l'achat
+        if (saved.getType().getCode().equals("entree")) {
+            creerMvtArgentPourAchat(saved);
+        }
+        //après chaque mouvement de stock, vérifier le seuil d'alerte
         verifierSeuilAlerte(saved.getNourriture().getId());
         return saved;
+    }
+
+    //créer un mouvement d'argent correspondant à l'achat de nourriture
+    private void creerMvtArgentPourAchat(MvtStock mvtStock) {
+        BigDecimal montant = mvtStock.getQuantite()
+                .multiply(mvtStock.getNourriture().getPrixUnitaire());
+        mvtArgentService.creerSortie(montant, mvtStock.getDate(), "achat_nourriture");
     }
 
     //verifier si le stock actuel est inférieur ou égal au seuil d'alerte
