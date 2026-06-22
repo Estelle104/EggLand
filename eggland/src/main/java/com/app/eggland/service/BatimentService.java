@@ -1,0 +1,33 @@
+package com.app.eggland.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.app.eggland.model.Batiment;
+import com.app.eggland.repository.BatimentRepository;
+
+@Service
+public class BatimentService {
+    @Autowired
+    private BatimentRepository batimentRepository;
+
+    public List<Batiment> findAll() {
+        return batimentRepository.findAll();
+    }
+
+    public Batiment save(Batiment batiment) {
+        return batimentRepository.save(batiment);
+    }
+
+    public void deleteById(Integer id) {
+        batimentRepository.deleteById(id);
+    }
+
+    public Optional<Batiment> findById(Integer id) {
+        return batimentRepository.findById(id);
+    }
+    
+}

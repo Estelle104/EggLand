@@ -26,6 +26,7 @@ public class SecurityConfig {
             .requestMatchers("/lots/**","/gestionnaire/**").hasAnyAuthority("gestionnaire","admin")// gestionnaire a acces aux url de lots et gestionnaire définissez en fonction de vos besoin
             .requestMatchers("/client/**").hasAnyAuthority("client","admin")// le client a acces aux fonctionnalité de l'url /client
             .requestMatchers("/races/**").hasAnyAuthority("gestionnaire", "admin") //acces a /races pour gestionnaire et admin
+            .requestMatchers("/batiments/**").hasAnyAuthority("gestionnaire", "admin") //acces a /batiments pour gestionnaire et admin
         .anyRequest().authenticated()
        )
        .formLogin(form -> form

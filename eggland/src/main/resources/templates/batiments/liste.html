@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des bâtiments - Eggland</title>
+
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .page-header h2 {
+            color: var(--text);
+            font-size: 22px;
+        }
+
+        .card-batiment {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+        }
+
+        .table-batiment {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-batiment th {
+            text-align: left;
+            padding: 14px 12px;
+            color: var(--text-light);
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border);
+        }
+        .table-batiment td {
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+            font-size: 14px;
+        }
+        .table-batiment tr:hover td {
+            background: rgba(184, 122, 42, 0.04);
+        }
+
+        .badge-capacite {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .badge-elevee {
+            background: #d4edda;
+            color: #155724;
+        }
+        .badge-moyenne {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .badge-faible {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .vide-message {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <div class="main">
+
+            <div th:replace="fragments/header :: header"></div>
+
+            <div class="content">
+
+                <div class="page-header">
+                    <h2 th:text="${pageTitle ?: 'Liste des bâtiments'}">Liste des bâtiments</h2>
+                    <a th:href="@{/batiments/nouveau}" class="btn-ajouter" style="background: var(--primary); color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-plus"></i> Nouveau bâtiment
+                    </a>
+                </div>
+
+                <div class="card-batiment">
+                    <table class="table-batiment">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Capacité</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="b : ${batiments}">
+                                <td th:text="${b.id}"></td>
+                                <td th:text="${b.nom}"></td>
+                                <td>
+                                    <span class="badge-capacite"
+                                          th:text="${b.capacite}"
+                                          th:class="${b.capacite >= 1000} ? 'badge-capacite badge-elevee' : (${b.capacite >= 500} ? 'badge-capacite badge-moyenne' : 'badge-capacite badge-faible')">
+                                    </span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/batiments/edit/{id}(id=${b.id})}"
+                                       style="padding:6px 14px; border-radius:8px; text-decoration:none; font-size:13px; font-weight:500; display:inline-flex; align-items:center; gap:6px; background:#D8B77C; color:#33241A; margin-right:6px;">
+                                        <i class="fa-solid fa-pen"></i> Modifier
+                                    </a>
+                                    <a th:href="@{/batiments/delete/{id}(id=${b.id})}"
+                                       style="padding:6px 14px; border-radius:8px; text-decoration:none; font-size:13px; font-weight:500; display:inline-flex; align-items:center; gap:6px; background:#e47373; color:white;"
+                                       onclick="return confirm('Supprimer ce bâtiment ?')">
+                                        <i class="fa-solid fa-trash"></i> Supprimer
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div th:if="${#lists.isEmpty(batiments)}" class="vide-message">
+                        Aucun bâtiment enregistré.
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</body>
+
+</html>
