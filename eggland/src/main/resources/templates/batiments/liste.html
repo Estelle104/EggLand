@@ -96,6 +96,9 @@
 
                 <div class="page-header">
                     <h2 th:text="${pageTitle ?: 'Liste des bâtiments'}">Liste des bâtiments</h2>
+                    <a th:href="@{/batiments/nouveau}" class="btn-ajouter" style="background: var(--primary); color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-plus"></i> Nouveau bâtiment
+                    </a>
                 </div>
 
                 <div class="card-batiment">
@@ -113,13 +116,21 @@
                                 <td th:text="${b.id}"></td>
                                 <td th:text="${b.nom}"></td>
                                 <td>
-                                    <span th:text="${b.capacite}"
-                                          th:classappend="${b.capacite >= 1000} ? 'badge-capacite badge-elevee' : (${b.capacite >= 500} ? 'badge-capacite badge-moyenne' : 'badge-capacite badge-faible')"
-                                          th:style="'background:' + (${b.capacite >= 1000} ? '#d4edda' : (${b.capacite >= 500} ? '#fff3cd' : '#f8d7da')) + '; color:' + (${b.capacite >= 1000} ? '#155724' : (${b.capacite >= 500} ? '#856404' : '#721c24')) + '; padding:4px 12px; border-radius:20px; font-weight:600;'">
+                                    <span class="badge-capacite"
+                                          th:text="${b.capacite}"
+                                          th:class="${b.capacite >= 1000} ? 'badge-capacite badge-elevee' : (${b.capacite >= 500} ? 'badge-capacite badge-moyenne' : 'badge-capacite badge-faible')">
                                     </span>
                                 </td>
                                 <td>
-                                    
+                                    <a th:href="@{/batiments/edit/{id}(id=${b.id})}"
+                                       style="padding:6px 14px; border-radius:8px; text-decoration:none; font-size:13px; font-weight:500; display:inline-flex; align-items:center; gap:6px; background:#D8B77C; color:#33241A; margin-right:6px;">
+                                        <i class="fa-solid fa-pen"></i> Modifier
+                                    </a>
+                                    <a th:href="@{/batiments/delete/{id}(id=${b.id})}"
+                                       style="padding:6px 14px; border-radius:8px; text-decoration:none; font-size:13px; font-weight:500; display:inline-flex; align-items:center; gap:6px; background:#e47373; color:white;"
+                                       onclick="return confirm('Supprimer ce bâtiment ?')">
+                                        <i class="fa-solid fa-trash"></i> Supprimer
+                                    </a>
                                 </td>
                             </tr>
                         </tbody>
