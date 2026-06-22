@@ -29,6 +29,7 @@ public class MvtStockController {
     @Autowired
     private NourritureService nourritureService;
 
+    // Afficher la liste des stocks avec le stock actuel pour chaque nourriture
     @GetMapping
     public String liste(Model model) {
         List<Nourriture> nourritures = nourritureService.findAll();
@@ -44,6 +45,7 @@ public class MvtStockController {
         return "stock/liste";
     }
 
+    // Afficher le formulaire pour une entrée de stock
     @GetMapping("/entree")
     public String entreeForm(Model model) {
         model.addAttribute("mvtStock", MvtStock.builder()
@@ -54,6 +56,7 @@ public class MvtStockController {
         return "stock/entree";
     }
 
+    // Enregistrer une entrée de stock
     @PostMapping("/entree")
     public String entreeSubmit(@RequestParam Integer nourriture,
             @RequestParam BigDecimal quantite, @RequestParam LocalDate date) {
@@ -69,6 +72,7 @@ public class MvtStockController {
         return "redirect:/stock";
     }
 
+    // Afficher le formulaire pour une sortie de stock
     @GetMapping("/sortie")
     public String sortieForm(Model model) {
         model.addAttribute("nourritures", nourritureService.findAll());
@@ -76,6 +80,7 @@ public class MvtStockController {
         return "stock/sortie";
     }
 
+    // Enregistrer une sortie de stock
     @PostMapping("/sortie")
     public String sortieSubmit(@RequestParam Integer nourriture,
             @RequestParam BigDecimal quantite, @RequestParam LocalDate date) {
@@ -91,6 +96,7 @@ public class MvtStockController {
         return "redirect:/stock";
     }
 
+    // Afficher l'historique des mouvements de stock avec filtres
     @GetMapping("/historique")
     public String historique(Model model,
             @RequestParam(required = false) Integer nourritureId,

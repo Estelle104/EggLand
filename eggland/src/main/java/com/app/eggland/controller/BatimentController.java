@@ -25,6 +25,7 @@ public class BatimentController {
         return "batiments/liste";
     }
 
+    // Afficher le formulaire pour créer un nouveau bâtiment
     @GetMapping("/nouveau")
     public String nouveau(Model model) {
         model.addAttribute("batiment", new Batiment());
@@ -32,12 +33,14 @@ public class BatimentController {
         return "batiments/form";
     }
 
+    // Enregistrer un bâtiment (nouveau ou modifié)
     @PostMapping("/save")
     public String save(@ModelAttribute Batiment batiment) {
         batimentService.save(batiment);
         return "redirect:/batiments";
     }
 
+    // Modifier un bâtiment existant
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
         Batiment batiment = batimentService.findById(id)

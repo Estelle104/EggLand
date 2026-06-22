@@ -19,6 +19,7 @@ public class MvtArgentService {
     @Autowired
     private TypeMvtRepository typeMvtRepository;
 
+    //creer un mouvement d'argent de type "sortie" pour un achat de nourriture
     public MvtArgent creerSortie(BigDecimal montant, LocalDate date, String categorie) {
 
         TypeMvt sortie = typeMvtRepository.findByCode("sortie")

@@ -18,6 +18,7 @@ public interface MvtStockRepository extends JpaRepository<MvtStock, Integer> {
 
     List<MvtStock> findByNourritureIdOrderByDateDesc(Integer nourritureId);
 
+    // Méthode pour calculer la somme des quantités pour une nourriture et un type de mouvement donné
     @Query("SELECT COALESCE(SUM(m.quantite), 0) FROM MvtStock m WHERE m.nourriture.id = :nourritureId AND m.type = :type")
     BigDecimal sumQuantiteByNourritureAndType(@Param("nourritureId") Integer nourritureId, @Param("type") TypeMvt type);
 }

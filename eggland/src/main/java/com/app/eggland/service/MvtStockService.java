@@ -86,6 +86,7 @@ public class MvtStockService {
                 .orElseThrow(() -> new RuntimeException("Type de mouvement 'sortie' introuvable"));
     }
 
+    //calculer le stock actuel d'une nourriture en soustrayant les sorties des entrées
     public BigDecimal calculerStockActuel(Integer nourritureId) {
         BigDecimal entrees = mvtStockRepository.sumQuantiteByNourritureAndType(nourritureId, getTypeEntree());
         BigDecimal sorties = mvtStockRepository.sumQuantiteByNourritureAndType(nourritureId, getTypeSortie());

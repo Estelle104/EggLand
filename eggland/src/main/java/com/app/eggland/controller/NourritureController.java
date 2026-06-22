@@ -19,6 +19,7 @@ public class NourritureController {
     @Autowired
     private NourritureService nourritureService;
 
+    // Afficher la liste des nourritures
     @GetMapping
     public String liste(Model model) {
         model.addAttribute("nourritures", nourritureService.findAll());
@@ -26,6 +27,7 @@ public class NourritureController {
         return "nourritures/liste";
     }
 
+    // Afficher le formulaire pour créer une nouvelle nourriture
     @GetMapping("/nouveau")
     public String nouveau(Model model) {
         model.addAttribute("nourriture", new Nourriture());
@@ -33,12 +35,14 @@ public class NourritureController {
         return "nourritures/form";
     }
 
+    // Enregistrer une nourriture (nouvelle ou modifiée)
     @PostMapping("/save")
     public String save(@ModelAttribute Nourriture nourriture) {
         nourritureService.save(nourriture);
         return "redirect:/nourritures";
     }
 
+    // Modifier une nourriture existante
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
         Nourriture nourriture = nourritureService.findById(id)
@@ -48,6 +52,7 @@ public class NourritureController {
         return "nourritures/form";
     }
 
+    // Supprimer une nourriture
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Integer id) {
         nourritureService.deleteById(id);
