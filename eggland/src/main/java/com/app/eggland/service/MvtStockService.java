@@ -7,10 +7,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.app.eggland.model.Configuration;
 import com.app.eggland.model.MvtStock;
+import com.app.eggland.model.Nourriture;
 import com.app.eggland.model.TypeMvt;
-import com.app.eggland.repository.ConfigurationRepository;
 import com.app.eggland.repository.MvtStockRepository;
 import com.app.eggland.repository.TypeMvtRepository;
 
@@ -26,10 +25,10 @@ public class MvtStockService {
     private NotificationService notificationService;
 
     @Autowired
-    private ConfigurationRepository configurationRepository;
+    private MvtArgentService mvtArgentService;
 
     @Autowired
-    private MvtArgentService mvtArgentService;
+    private NourritureService nourritureService;
 
     public List<MvtStock> findAll() {
         return mvtStockRepository.findAllByOrderByDateDesc();
@@ -61,14 +60,14 @@ public class MvtStockService {
         mvtArgentService.creerSortie(montant, mvtStock.getDate(), "achat_nourriture");
     }
 
-    //verifier si le stock actuel est inférieur ou égal au seuil d'alerte
+    //verifier si le stock actuel est inférieur ou égal au seuil d'alerte de la nourriture
     private void verifierSeuilAlerte(Integer nourritureId) {
-        Configuration config = configurationRepository.findById(1)
+        Nourriture nourriture = nourritureService.findById(nourritureId)
                 .orElse(null);
-        if (config == null) return;
+        if (nourriture == null || nourriture.getSeuilAlerte() == null) return;
 
         double stock = calculerStockActuel(nourritureId).doubleValue();
-        if (stock <= config.getSeuilNourriture()) {
+        if (stock <= nourriture.getSeuilAlerte()) {
             notificationService.creer("STOCK_FAIBLE");
         }
     }

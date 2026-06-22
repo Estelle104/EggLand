@@ -2,21 +2,20 @@ package com.app.eggland.controller;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.app.eggland.model.Configuration;
 import com.app.eggland.model.MvtStock;
 import com.app.eggland.model.Nourriture;
-import com.app.eggland.repository.ConfigurationRepository;
 import com.app.eggland.service.MvtStockService;
 import com.app.eggland.service.NourritureService;
 
@@ -30,16 +29,17 @@ public class MvtStockController {
     @Autowired
     private NourritureService nourritureService;
 
-    @Autowired
-    private ConfigurationRepository configurationRepository;
-
     @GetMapping
     public String liste(Model model) {
-        Configuration config = configurationRepository.findById(1).orElse(null);
         List<Nourriture> nourritures = nourritureService.findAll();
 
+        Map<Integer, BigDecimal> stocks = new HashMap<>();
+        for (Nourriture n : nourritures) {
+            stocks.put(n.getId(), mvtStockService.calculerStockActuel(n.getId()));
+        }
+
         model.addAttribute("nourritures", nourritures);
-        model.addAttribute("seuil", config != null ? config.getSeuilNourriture() : 50.0);
+        model.addAttribute("stocks", stocks);
         model.addAttribute("pageTitle", "Stock des nourritures");
         return "stock/liste";
     }
@@ -55,25 +55,38 @@ public class MvtStockController {
     }
 
     @PostMapping("/entree")
-    public String entreeSubmit(@ModelAttribute MvtStock mvtStock) {
-        mvtStock.setType(mvtStockService.getTypeEntree());
+    public String entreeSubmit(@RequestParam Integer nourriture,
+            @RequestParam BigDecimal quantite, @RequestParam LocalDate date) {
+        Nourriture n = nourritureService.findById(nourriture)
+                .orElseThrow(() -> new RuntimeException("Nourriture non trouvée"));
+        MvtStock mvtStock = MvtStock.builder()
+                .nourriture(n)
+                .type(mvtStockService.getTypeEntree())
+                .quantite(quantite)
+                .date(date)
+                .build();
         mvtStockService.save(mvtStock);
         return "redirect:/stock";
     }
 
     @GetMapping("/sortie")
     public String sortieForm(Model model) {
-        model.addAttribute("mvtStock", MvtStock.builder()
-                .date(LocalDate.now())
-                .build());
         model.addAttribute("nourritures", nourritureService.findAll());
         model.addAttribute("pageTitle", "Sortie de stock");
         return "stock/sortie";
     }
 
     @PostMapping("/sortie")
-    public String sortieSubmit(@ModelAttribute MvtStock mvtStock) {
-        mvtStock.setType(mvtStockService.getTypeSortie());
+    public String sortieSubmit(@RequestParam Integer nourriture,
+            @RequestParam BigDecimal quantite, @RequestParam LocalDate date) {
+        Nourriture n = nourritureService.findById(nourriture)
+                .orElseThrow(() -> new RuntimeException("Nourriture non trouvée"));
+        MvtStock mvtStock = MvtStock.builder()
+                .nourriture(n)
+                .type(mvtStockService.getTypeSortie())
+                .quantite(quantite)
+                .date(date)
+                .build();
         mvtStockService.save(mvtStock);
         return "redirect:/stock";
     }

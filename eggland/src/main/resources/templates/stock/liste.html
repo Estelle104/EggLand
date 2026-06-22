@@ -63,21 +63,27 @@
                             <h3 th:text="${n.libelle}">Maïs</h3>
                             <div class="libelle">Prix unitaire: <span th:text="${#numbers.formatDecimal(n.prixUnitaire, 0, 'WHITESPACE', 2, 'COMMA')} + ' Ar'"></span></div>
 
-                            <div th:with="stock=${mvtStockService.calculerStockActuel(n.id)}">
-                                <div class="stock-valeurs">
-                                    <span class="stock" th:text="${#numbers.formatDecimal(stock, 1, 'WHITESPACE', 2, 'COMMA')} + ' kg'">0 kg</span>
-                                    <span class="seuil" th:text="'Seuil: ' + ${#numbers.formatDecimal(seuil, 1, 'WHITESPACE', 0, 'COMMA')}">Seuil: 50</span>
-                                </div>
-
-                                <div th:with="pct=${stock.doubleValue() > seuil ? 100 : (stock.doubleValue() < 0 ? 0 : (stock.doubleValue() / seuil * 100))}">
-                                    <div class="barre-container">
-                                        <div class="barre-remplie"
-                                             th:class="${pct >= 100} ? 'barre-remplie barre-vert' : (${pct >= 50} ? 'barre-remplie barre-orange' : 'barre-remplie barre-rouge')"
-                                             th:style="'width:' + ${pct} + '%'">
-                                        </div>
+                            <div th:with="stock=${stocks[n.id]}, seuil=${n.seuilAlerte}">
+                                <div th:if="${seuil != null}">
+                                    <div class="stock-valeurs">
+                                        <span class="stock" th:text="${#numbers.formatDecimal(stock, 1, 'WHITESPACE', 2, 'COMMA')} + ' kg'">0 kg</span>
+                                        <span class="seuil" th:text="'Seuil: ' + ${seuil}">Seuil: 50</span>
                                     </div>
-                                    <span class="badge-statut" th:class="${pct >= 100} ? 'badge-statut badge-ok' : 'badge-statut badge-alerte'"
-                                          th:text="${pct >= 100} ? 'STOCK OK' : 'STOCK FAIBLE'"></span>
+
+                                    <div th:with="pct=${stock.doubleValue() >= seuil} ? 100 : (${stock.doubleValue() < 0} ? 0 : ${stock.doubleValue() / seuil * 100})">
+                                        <div class="barre-container">
+                                            <div class="barre-remplie"
+                                                 th:class="${pct >= 100} ? 'barre-remplie barre-vert' : (${pct >= 50} ? 'barre-remplie barre-orange' : 'barre-remplie barre-rouge')"
+                                                 th:style="'width:' + ${pct} + '%'">
+                                            </div>
+                                        </div>
+                                        <span class="badge-statut" th:class="${pct >= 100} ? 'badge-statut badge-ok' : 'badge-statut badge-alerte'"
+                                              th:text="${pct >= 100} ? 'STOCK OK' : 'STOCK FAIBLE'"></span>
+                                    </div>
+                                </div>
+                                <div th:if="${seuil == null}" class="stock-valeurs">
+                                    <span class="stock" th:text="${#numbers.formatDecimal(stock, 1, 'WHITESPACE', 2, 'COMMA')} + ' kg'">0 kg</span>
+                                    <span class="seuil">Pas de seuil</span>
                                 </div>
                             </div>
                         </div>

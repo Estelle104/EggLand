@@ -259,6 +259,6 @@ INSERT INTO useradmin(actif,email,mot_de_passe,nom,role) VALUES
 (true,'admin@gmail.com','admin123','moi',1),
 (true,'gest@gmail.com','gestion123','ricardo',2);
 INSERT INTO Nourriture (libelle, prix_unitaire, seuil_alerte) VALUES
-('Maïs', 2000.00, 50),
-('Soja', 2500.00, 30),
-('Farine', 1500.00, 40);
+('sakafo1', 2000.00, 50),
+('sakafo2', 2500.00, 30),
+('sakafo3', 1500.00, 40);
