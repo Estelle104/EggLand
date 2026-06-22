@@ -256,5 +256,5 @@ INSERT INTO StatutLivraison (code) VALUES ('en_attente'), ('en_cours'), ('livre'
 INSERT INTO RoleUser (code) VALUES ('admin'), ('gestionnaire');
 INSERT INTO Configuration (seuil_mort, seuil_nourriture) VALUES (5, 50.0);
 INSERT INTO useradmin(actif,email,mot_de_passe,nom,role) VALUES 
-(true,'admin2@gmail.com','$2a$10$dXJ3Zw7z8e9RdkD6SRE7O.Hk9I2A0XyL1B3w4f9G4X1y5Z6a7b8c.','moi',1),
-(true,'ges2t@gmail.com','$2a$10$vN0K6c5M5R8H6Z9x4Q8e.O3K3A0XyL1B3w4f9G4X1y5Z6a7b8c.','ricardo',2);
+(true,'admin@gmail.com','admin123','moi',1),
+(true,'gest@gmail.com','gestion123','ricardo',2);
