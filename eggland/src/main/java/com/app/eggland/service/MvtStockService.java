@@ -34,6 +34,7 @@ public class MvtStockService {
         return mvtStockRepository.findAllByOrderByDateDesc();
     }
 
+    //pour afficher l'historique des mouvements de stock d'une nourriture spécifique, on trie par date décroissante
     public List<MvtStock> findByNourritureId(Integer nourritureId) {
         return mvtStockRepository.findByNourritureIdOrderByDateDesc(nourritureId);
     }
