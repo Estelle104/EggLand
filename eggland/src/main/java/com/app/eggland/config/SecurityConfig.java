@@ -46,6 +46,15 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
+        return new PasswordEncoder() {
+            @Override
+            public String encode(CharSequence rawpassword){
+                return rawpassword.toString(); // retourne le mot de passe sans hashage
+            }
+            @Override
+            public boolean matches(CharSequence rawPassword, String encodedPassword){
+                return rawPassword.toString().equals(encodedPassword); // Comparaison simple
+            }
+        };
     }
 }
