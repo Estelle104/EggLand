@@ -7,8 +7,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.app.eggland.model.Configuration;
 import com.app.eggland.model.MvtStock;
 import com.app.eggland.model.TypeMvt;
+import com.app.eggland.repository.ConfigurationRepository;
 import com.app.eggland.repository.MvtStockRepository;
 import com.app.eggland.repository.TypeMvtRepository;
 
@@ -20,6 +22,12 @@ public class MvtStockService {
     @Autowired
     private TypeMvtRepository typeMvtRepository;
 
+    @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
+    private ConfigurationRepository configurationRepository;
+
     public List<MvtStock> findAll() {
         return mvtStockRepository.findAll();
     }
@@ -29,7 +37,21 @@ public class MvtStockService {
     }
 
     public MvtStock save(MvtStock mvtStock) {
-        return mvtStockRepository.save(mvtStock);
+        MvtStock saved = mvtStockRepository.save(mvtStock);
+        verifierSeuilAlerte(saved.getNourriture().getId());
+        return saved;
+    }
+
+    //verifier si le stock actuel est inférieur ou égal au seuil d'alerte
+    private void verifierSeuilAlerte(Integer nourritureId) {
+        Configuration config = configurationRepository.findById(1)
+                .orElse(null);
+        if (config == null) return;
+
+        double stock = calculerStockActuel(nourritureId).doubleValue();
+        if (stock <= config.getSeuilNourriture()) {
+            notificationService.creer("STOCK_FAIBLE");
+        }
     }
 
     public void deleteById(Integer id) {
