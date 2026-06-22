@@ -29,6 +29,7 @@ public class SecurityConfig {
             .requestMatchers("/batiments/**").hasAnyAuthority("gestionnaire", "admin")
             .requestMatchers("/stock/**").hasAnyAuthority("gestionnaire", "admin")
             .requestMatchers("/nourritures/**").hasAnyAuthority("gestionnaire", "admin")
+            .requestMatchers("/mvtargent/**").hasAnyAuthority("gestionnaire", "admin")
         .anyRequest().authenticated()
        )
        .formLogin(form -> form
