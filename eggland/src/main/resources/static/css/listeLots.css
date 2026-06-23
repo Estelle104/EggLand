@@ -1,0 +1,256 @@
+/* =========================
+   CONTENU GENERAL
+========================= */
+
+.content {
+    background: #f4f2ea;
+    min-height: 100vh;
+    padding: 25px 30px;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.liste-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.liste-header h1 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1d1d1d;
+}
+
+.liste-header small {
+    color: #999;
+    font-size: 14px;
+}
+
+.btn-ajouter {
+    background: #8a4a1d;
+    color: white;
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.btn-ajouter:hover {
+    background: #733b17;
+    color: white;
+}
+
+/* =========================
+   FILTRES
+========================= */
+
+.filtres-section {
+    margin-bottom: 35px;
+}
+
+.filtres-section h2 {
+    margin-bottom: 18px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.filtres-form {
+    display: flex;
+    gap: 20px;
+}
+
+.filtres-form select {
+    width: 120px;
+    border: none;
+    background: white;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    cursor: pointer;
+}
+
+.filtres-form select:focus {
+    outline: none;
+}
+
+/* =========================
+   ETAT VIDE
+========================= */
+
+.empty-state {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    color: #666;
+}
+
+/* =========================
+   GRILLE
+========================= */
+
+.lots-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+/* =========================
+   CARTE
+========================= */
+
+.lot-card {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    min-height: 230px;
+    box-shadow: 0 3px 10px rgba(0,0,0,.08);
+    transition: all .2s ease;
+}
+
+.lot-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 14px rgba(0,0,0,.12);
+}
+
+/* =========================
+   HEADER CARTE
+========================= */
+
+.lot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.lot-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-family: Georgia, serif;
+    font-weight: bold;
+    color: #222;
+}
+
+.menu {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: #f7f7f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    cursor: pointer;
+}
+
+/* =========================
+   BADGES
+========================= */
+
+.lot-status {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.badge-actif,
+.badge-reforme {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 11px;
+}
+
+.badge-actif {
+    background: #e9f2e6;
+    color: #547d52;
+}
+
+.badge-reforme {
+    background: #f8d7d7;
+    color: #b45a5a;
+}
+
+/* =========================
+   INFOS
+========================= */
+
+.lot-info p {
+    margin: 10px 0;
+    font-size: 12px;
+    color: #666;
+    line-height: 1.4;
+}
+
+.lot-info span {
+    color: #777;
+}
+
+.lot-info strong {
+    color: #333;
+    margin-left: 4px;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.lot-footer {
+    margin-top: 18px;
+}
+
+.btn-modifier {
+    display: inline-block;
+    background: #8a4a1d;
+    color: white;
+    text-decoration: none;
+    padding: 9px 22px;
+    border-radius: 7px;
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+.btn-modifier:hover {
+    background: #733b17;
+    color: white;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1200px) {
+    .lots-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .lots-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+
+    .liste-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .filtres-form {
+        flex-direction: column;
+    }
+
+    .lots-grid {
+        grid-template-columns: 1fr;
+    }
+}
