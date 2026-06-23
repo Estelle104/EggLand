@@ -1,6 +1,7 @@
 package com.app.eggland.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.app.eggland.model.Batiment;
 import com.app.eggland.service.BatimentService;
@@ -25,7 +27,6 @@ public class BatimentController {
         return "batiments/liste";
     }
 
-    // Afficher le formulaire pour créer un nouveau bâtiment
     @GetMapping("/nouveau")
     public String nouveau(Model model) {
         model.addAttribute("batiment", new Batiment());
@@ -33,14 +34,12 @@ public class BatimentController {
         return "batiments/form";
     }
 
-    // Enregistrer un bâtiment (nouveau ou modifié)
     @PostMapping("/save")
     public String save(@ModelAttribute Batiment batiment) {
         batimentService.save(batiment);
         return "redirect:/batiments";
     }
 
-    // Modifier un bâtiment existant
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
         Batiment batiment = batimentService.findById(id)
@@ -51,8 +50,12 @@ public class BatimentController {
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Integer id) {
-        batimentService.deleteById(id);
+    public String delete(@PathVariable Integer id, RedirectAttributes ra) {
+        try {
+            batimentService.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            ra.addFlashAttribute("error", "Impossible de supprimer : ce bâtiment est lié à des lots.");
+        }
         return "redirect:/batiments";
     }
 }
