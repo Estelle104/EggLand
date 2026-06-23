@@ -100,5 +100,19 @@ System.out.println("Age de depart : "+ageDepart + "+ semaines ecoule :"+semaines
     public int getAgeActuel(Lot lot,LocalDate actuel){
         return calculerAgeActuel(lot,actuel);
     }
+public  List<Lot> getAllLots(){
+    return lotRepository.findAll();
+ }
 
+public  void updateLot(Lot lot){
+    lotRepository.save(lot);
+ }
+
+public  void deleteLot(Lot lot){
+    lotRepository.delete(lot);
+ }
+
+public  Lot findById(Integer idLot){
+    return lotRepository.findById(idLot).orElse(null);
+ }
 }
