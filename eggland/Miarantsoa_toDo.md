@@ -25,9 +25,9 @@
 **Durée estimée : 1h**
 
 * [x] Créer les endpoints CRUD du lot
-* [ ] Ajouter le filtrage par statut
-* [ ] Ajouter le filtrage par bâtiment
-* [ ] Vérifier les redirections et messages utilisateur
+* [x] Ajouter le filtrage par statut
+* [x] Ajouter le filtrage par bâtiment
+* [x] Vérifier les redirections et messages utilisateur
 
 **Fichiers :**
 
@@ -60,9 +60,9 @@
 
 **Durée estimée : 1h**
 
-* [ ] Créer la page `lots/liste.html`
-* [ ] Afficher les lots sous forme de tableau
-* [ ] Ajouter les filtres disponibles
+* [x] Créer la page `lots/liste.html`
+* [x] Afficher les lots sous forme de tableau
+* [x] Ajouter les filtres disponibles
 * [x] Créer la page `lots/form.html`
 * [ ] Ajouter les validations du formulaire
 * [ ] Vérifier l'affichage responsive
