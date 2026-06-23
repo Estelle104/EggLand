@@ -119,6 +119,7 @@
                             <tr th:each="b : ${batiments}">
                                 <td th:text="${b.id}"></td>
                                 <td th:text="${b.nom}"></td>
+                                <!-- Badge de capacité -->
                                 <td>
                                     <span class="badge-capacite"
                                           th:text="${b.capacite}"
