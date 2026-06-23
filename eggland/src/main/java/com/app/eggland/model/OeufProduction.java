@@ -24,4 +24,16 @@ public class OeufProduction {
 
     @Column(nullable = false)
     private Integer quantite;
+
+    @OneToMany(mappedBy = "production", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<OeufStatut> oeufStatuts = new ArrayList<>();
+
+    public void ajouterStatut(OeufStatut oeufStatut) {
+        if (this.oeufStatuts == null) {
+            this.oeufStatuts = new ArrayList<>();
+        }
+        this.oeufStatuts.add(oeufStatut);
+        oeufStatut.setProduction(this);
+    }
 }
