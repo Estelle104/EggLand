@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import com.app.eggland.model.Batiment;
 import com.app.eggland.model.Lot;
+import com.app.eggland.model.StatutLot;
+
 import java.util.List;
 @Repository
 public interface LotRepository extends JpaRepository<Lot, Integer>{
@@ -18,5 +20,7 @@ public interface LotRepository extends JpaRepository<Lot, Integer>{
 """)
     int calculerPlaceUtiliseePourBatiment(@Param("batiment") Batiment batiment);
     
-        List<Lot> findByBatimentAndStatut(Batiment batiment, String statut);   
+        List<Lot> findByBatimentOrStatut(Batiment batiment, StatutLot statutLot); 
+        List<Lot> findByBatimentAndStatut(Batiment batiment, StatutLot statutLot);   
+
 }

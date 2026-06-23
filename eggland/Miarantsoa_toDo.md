@@ -24,7 +24,7 @@
 
 **Durée estimée : 1h**
 
-* [ ] Créer les endpoints CRUD du lot
+* [x] Créer les endpoints CRUD du lot
 * [ ] Ajouter le filtrage par statut
 * [ ] Ajouter le filtrage par bâtiment
 * [ ] Vérifier les redirections et messages utilisateur

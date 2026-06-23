@@ -216,7 +216,16 @@
     font-size: 13px;
     transition: 0.2s;
 }
-
+.btn-filtrer {
+    display: inline-block;
+    background: #8a4a1d;
+    color: white;
+    text-decoration: none;
+    padding: 9px 22px;
+    border-radius: 7px;
+    font-size: 13px;
+    transition: 0.2s;
+}
 .btn-modifier:hover {
     background: #733b17;
     color: white;

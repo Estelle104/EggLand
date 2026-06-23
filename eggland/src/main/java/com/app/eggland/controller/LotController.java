@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.app.eggland.model.Batiment;
@@ -92,27 +93,46 @@ public class LotController {
   
 
 @GetMapping("/list")
-public ModelAndView showAllLot(){
-    ModelAndView mav = new ModelAndView("lots/liste");  
-    
-    // Récupérer les lots
-    List<Lot> lots = lotService.getAllLots();
-    if(lots == null) {
-        lots = new ArrayList<>();  // ✅ Créer une liste vide
+public ModelAndView showAllLot(
+        @RequestParam(required = false) Integer batiment,
+        @RequestParam(required = false) Integer statut) {
+
+    ModelAndView mav = new ModelAndView("lots/liste");
+
+    List<Lot> lots;
+
+    if (batiment != null && statut != null) {
+
+        Batiment b = batimentRepository.findById(batiment).orElse(null);
+        StatutLot s = statutLotRepository.findById(statut).orElse(null);
+
+        lots = lotService.findByBatimentAndStatut(b, s);
+
+    } else if (batiment != null && statut == null) {
+
+        Batiment b = batimentRepository.findById(batiment).orElse(null);
+
+                lots = lotService.findByBatimentOrStatut(b, null);
+
+
+    } else if (statut != null && batiment == null) {
+
+        StatutLot s = statutLotRepository.findById(statut).orElse(null);
+
+                       lots = lotService.findByBatimentOrStatut(null, s);
+;
+
+    } else {
+
+        lots = lotService.getAllLots();
     }
-    
-    // Ajouter les données
-    mav.addObject("lots", lots);  
-    
-  
-    List<Batiment> batiments = batimentRepository.findAll();
-    List<StatutLot> statutLot = statutLotRepository.findAll();
-    if(batiments == null) {
-        batiments = new ArrayList<>();
-    }
-    mav.addObject("batiments", batiments);  
-    mav.addObject("statuts",statutLot);
+
+    mav.addObject("lots", lots);
+    mav.addObject("batiments", batimentRepository.findAll());
+    mav.addObject("statuts", statutLotRepository.findAll());
+
     return mav;
 }
+
 
 }

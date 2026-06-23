@@ -115,4 +115,14 @@ public  void deleteLot(Lot lot){
 public  Lot findById(Integer idLot){
     return lotRepository.findById(idLot).orElse(null);
  }
+
+ public List<Lot> findByBatimentOrStatut(Batiment batiment,StatutLot statutLot){
+
+    return lotRepository.findByBatimentOrStatut(batiment, statutLot);
+ }
+
+ public List<Lot> findByBatimentAndStatut(Batiment batiment,StatutLot statutLot){
+    
+    return lotRepository.findByBatimentAndStatut(batiment, statutLot);
+ }
 }
