@@ -1,10 +1,13 @@
 package com.app.eggland.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.app.eggland.model.MvtArgent;
 
 @Repository
-public interface MvtArgentRepository extends JpaRepository<MvtArgent, Integer>{    
+public interface MvtArgentRepository extends JpaRepository<MvtArgent, Integer> {
+    List<MvtArgent> findAllByOrderByDateDesc();
 }
