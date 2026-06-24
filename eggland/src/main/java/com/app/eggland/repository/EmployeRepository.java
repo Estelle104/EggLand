@@ -5,6 +5,10 @@ import org.springframework.stereotype.Repository;
 
 import com.app.eggland.model.Employe;
 
+import java.util.List;
+
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employe, Integer>{    
+public interface EmployeRepository extends JpaRepository<Employe, Integer>{    
+
+    List<Employe> findAllByOrderByNomAscPrenomAsc();
 }
