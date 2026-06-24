@@ -7,8 +7,15 @@ import org.springframework.data.repository.query.Param;
 
 import com.app.eggland.model.OeufStatut;
 
+import java.util.List;
+
 @Repository
 public interface OeufStatutRepository extends JpaRepository<OeufStatut, Integer>{  
     @Query("SELECT COALESCE(SUM(o.quantite), 0) FROM OeufStatut o WHERE o.statut.id = :statutId")
-    Integer sumQuantiteByStatutId(@Param("statutId") Integer statutId);
+    Long sumQuantiteByStatutId(@Param("statutId") Integer statutId);
+
+    @Query("SELECT COALESCE(SUM(o.quantite), 0) FROM OeufStatut o WHERE LOWER(o.statut.code) IN ('vendu', 'casse', 'consomme')")
+    Long sumQuantiteIndisponible();
+
+    List<OeufStatut> findAllByOrderByProductionDateDescIdDesc();
 }

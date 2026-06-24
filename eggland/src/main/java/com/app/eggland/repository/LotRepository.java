@@ -5,6 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import com.app.eggland.model.Lot;
 
+import java.util.List;
+
 @Repository
-public interface LotRepository extends JpaRepository<Lot, Integer>{    
+public interface LotRepository extends JpaRepository<Lot, Integer>{
+    List<Lot> findAllByStatutCodeIgnoreCaseOrderByIdAsc(String code);
 }

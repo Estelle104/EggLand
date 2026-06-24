@@ -1,91 +1,157 @@
 package com.app.eggland.service;
 
-import com.app.eggland.model.OeufProduction;
-import com.app.eggland.model.OeufStatut;
-import com.app.eggland.model.StatutOeuf;
-import com.app.eggland.repository.OeufProductionRepository;
-import com.app.eggland.repository.StatutOeufRepository;
-import com.app.eggland.repository.OeufStatutRepository;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
+import com.app.eggland.model.Lot;
+import com.app.eggland.model.OeufProduction;
+import com.app.eggland.model.OeufStatut;
+import com.app.eggland.model.StatutOeuf;
+import com.app.eggland.repository.LotRepository;
+import com.app.eggland.repository.OeufProductionRepository;
+import com.app.eggland.repository.StatutOeufRepository;
 
 @Service
 public class OeufProductionService {
-    
+
     @Autowired
     private OeufProductionRepository oeufProductionRepository;
 
     @Autowired
     private StatutOeufRepository statutOeufRepository;
 
+    @Autowired
+    private LotRepository lotRepository;
+
     @Transactional
-    public OeufProduction enregistrerOeufProduction(OeufProduction oeufProduction) {
-        if (oeufProduction.getDate().isAfter(LocalDate.now())) {
-            throw new RuntimeException("Date future interdite");
+    public OeufProduction addOeufProduction(OeufProduction production) {
+        verifierProduction(production);
+
+        Lot lot = lotRepository.findById(production.getLot().getId())
+                .orElseThrow(() -> new RuntimeException("Lot introuvable"));
+
+        if (lot.getStatut() == null || !"actif".equalsIgnoreCase(lot.getStatut().getCode())) {
+            throw new RuntimeException("Seul un lot actif peut produire des œufs");
         }
 
-        if (oeufProduction.getLot() != null && oeufProductionRepository.existsByLotIdAndDate(oeufProduction.getLot().getId(), oeufProduction.getDate())) {
-            throw new RuntimeException("Production déjà saisie pour ce lot à cette date");
+        if (lot.getDateArrivee() != null && production.getDate().isBefore(lot.getDateArrivee())) {
+            throw new RuntimeException("La collecte ne peut pas précéder l'arrivée du lot");
         }
 
-        int quantiteTotale = oeufProduction.getQuantite();
+        boolean existeDeja;
+        if (production.getId() == null) {
+            existeDeja = oeufProductionRepository.existsByLotIdAndDate(lot.getId(), production.getDate());
+        } else {
+            if (!oeufProductionRepository.existsById(production.getId())) {
+                throw new RuntimeException("Production introuvable");
+            }
+            existeDeja = oeufProductionRepository.existsByLotIdAndDateAndIdNot(
+                    lot.getId(), production.getDate(), production.getId());
+        }
 
-        // si aucun statut fourni 
-        if (oeufProduction.getOeufStatuts() == null || oeufProduction.getOeufStatuts().isEmpty()) {
-            oeufProduction.setOeufStatuts(new ArrayList<>());
-            
+        if (existeDeja) {
+            throw new RuntimeException("Une production existe déjà pour ce lot à cette date");
+        }
+
+        production.setLot(lot);
+        production.setOeufStatuts(preparerStatuts(production));
+        return oeufProductionRepository.save(production);
+    }
+
+    public List<OeufProduction> getAllOeufsWithDetails() {
+        return oeufProductionRepository.findAllByOrderByDateDescIdDesc();
+    }
+
+    private void verifierProduction(OeufProduction production) {
+        if (production == null) {
+            throw new RuntimeException("La production est obligatoire");
+        }
+        if (production.getLot() == null || production.getLot().getId() == null) {
+            throw new RuntimeException("Le lot est obligatoire");
+        }
+        if (production.getDate() == null) {
+            throw new RuntimeException("La date est obligatoire");
+        }
+        if (production.getDate().isAfter(LocalDate.now())) {
+            throw new RuntimeException("Une collecte ne peut pas être enregistrée dans le futur");
+        }
+        if (production.getQuantite() == null || production.getQuantite() <= 0) {
+            throw new RuntimeException("La quantité doit être strictement positive");
+        }
+    }
+
+    private List<OeufStatut> preparerStatuts(OeufProduction production) {
+        List<OeufStatut> resultat = new ArrayList<>();
+        Set<Integer> statutsUtilises = new HashSet<>();
+        int totalAnomalies = 0;
+
+        if (production.getOeufStatuts() != null) {
+            for (OeufStatut ligne : production.getOeufStatuts()) {
+                if (ligneVide(ligne)) {
+                    continue;
+                }
+
+                if (ligne.getStatut() == null || ligne.getStatut().getId() == null) {
+                    throw new RuntimeException("Chaque anomalie doit avoir un statut");
+                }
+                if (ligne.getQuantite() == null || ligne.getQuantite() <= 0) {
+                    throw new RuntimeException("La quantité d'une anomalie doit être positive");
+                }
+
+                StatutOeuf statut = statutOeufRepository.findById(ligne.getStatut().getId())
+                        .orElseThrow(() -> new RuntimeException("Statut d'œuf introuvable"));
+
+                if ("valide".equalsIgnoreCase(statut.getCode())) {
+                    throw new RuntimeException("La quantité valide est calculée automatiquement");
+                }
+                if ("vendu".equalsIgnoreCase(statut.getCode())) {
+                    throw new RuntimeException("Le statut vendu ne peut pas être saisi pendant une collecte");
+                }
+                if (!statutsUtilises.add(statut.getId())) {
+                    throw new RuntimeException("Un statut ne peut apparaître qu'une fois par collecte");
+                }
+
+                totalAnomalies += ligne.getQuantite();
+                if (totalAnomalies > production.getQuantite()) {
+                    throw new RuntimeException("Les anomalies dépassent la quantité totale produite");
+                }
+
+                OeufStatut anomalie = new OeufStatut();
+                anomalie.setProduction(production);
+                anomalie.setStatut(statut);
+                anomalie.setQuantite(ligne.getQuantite());
+                resultat.add(anomalie);
+            }
+        }
+
+        int quantiteValide = production.getQuantite() - totalAnomalies;
+        if (quantiteValide > 0) {
             StatutOeuf statutValide = statutOeufRepository.findByCode("valide")
-                .orElseThrow(() -> new RuntimeException("Statut 'valide' introuvable en BDD"));
+                    .orElseThrow(() -> new RuntimeException("Statut valide introuvable"));
 
-            OeufStatut uniqueStatut = OeufStatut.builder()
-                    .production(oeufProduction)
-                    .statut(statutValide)
-                    .quantite(quantiteTotale)
-                    .build();
-            
-            oeufProduction.getOeufStatuts().add(uniqueStatut);
-        } 
-        else {
-            int sommeQuantitesSaisies = 0;
-            OeufStatut statutValideExistant = null;
-
-            for (OeufStatut os : oeufProduction.getOeufStatuts()) {
-                os.setProduction(oeufProduction); 
-                sommeQuantitesSaisies += os.getQuantite();
-                
-                if (os.getStatut() != null && "valide".equals(os.getStatut().getCode())) {
-                    statutValideExistant = os;
-                }
-            }
-
-            if (sommeQuantitesSaisies < quantiteTotale) {
-                int resteAValider = quantiteTotale - sommeQuantitesSaisies;
-
-                if (statutValideExistant != null) {
-                    statutValideExistant.setQuantite(statutValideExistant.getQuantite() + resteAValider);
-                } else {
-                    StatutOeuf statutValide = statutOeufRepository.findByCode("valide")
-                        .orElseThrow(() -> new RuntimeException("Statut 'valide' introuvable"));
-                    
-                    OeufStatut resteStatut = OeufStatut.builder()
-                            .production(oeufProduction)
-                            .statut(statutValide)
-                            .quantite(resteAValider)
-                            .build();
-                    
-                    oeufProduction.getOeufStatuts().add(resteStatut);
-                }
-            }
-            
-            if (sommeQuantitesSaisies > quantiteTotale) {
-                throw new IllegalArgumentException("La somme des statuts ne peut pas dépasser la quantité totale produite.");
-            }
+            OeufStatut valide = new OeufStatut();
+            valide.setProduction(production);
+            valide.setStatut(statutValide);
+            valide.setQuantite(quantiteValide);
+            resultat.add(valide);
         }
 
-        return oeufProductionRepository.save(oeufProduction);
+        return resultat;
+    }
+
+    private boolean ligneVide(OeufStatut ligne) {
+        if (ligne == null) {
+            return true;
+        }
+        boolean statutVide = ligne.getStatut() == null || ligne.getStatut().getId() == null;
+        boolean quantiteVide = ligne.getQuantite() == null || ligne.getQuantite() == 0;
+        return statutVide && quantiteVide;
     }
 }

@@ -11,4 +11,6 @@ import java.util.Optional;
 @Repository
 public interface StatutOeufRepository extends JpaRepository<StatutOeuf,Integer>{
     Optional<StatutOeuf> findByCode(String code);
+
+    List<StatutOeuf> findAllByOrderByCodeAsc();
 }
