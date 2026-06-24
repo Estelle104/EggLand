@@ -9,6 +9,6 @@ import java.util.Optional;
 
 
 @Repository
-public interface StatutOeuftRepository extends JpaRepository<StatutClient,Integer>{
+public interface StatutOeufRepository extends JpaRepository<StatutOeuf,Integer>{
     Optional<StatutOeuf> findByCode(String code);
 }

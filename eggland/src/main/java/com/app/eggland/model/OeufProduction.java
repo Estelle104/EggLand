@@ -2,7 +2,11 @@ package com.app.eggland.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "oeufproduction")

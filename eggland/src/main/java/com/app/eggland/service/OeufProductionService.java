@@ -4,7 +4,8 @@ import com.app.eggland.model.OeufProduction;
 import com.app.eggland.model.OeufStatut;
 import com.app.eggland.model.StatutOeuf;
 import com.app.eggland.repository.OeufProductionRepository;
-import com.app.eggland.repository.StatutOeufRepository; // Ne pas oublier
+import com.app.eggland.repository.StatutOeufRepository;
+import com.app.eggland.repository.OeufStatutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,12 +38,12 @@ public class OeufProductionService {
         if (oeufProduction.getOeufStatuts() == null || oeufProduction.getOeufStatuts().isEmpty()) {
             oeufProduction.setOeufStatuts(new ArrayList<>());
             
-            StatutOeuf statutValider = statutOeufRepository.findByNom("valider")
-                .orElseThrow(() -> new RuntimeException("Statut 'valider' introuvable en BDD"));
+            StatutOeuf statutValide = statutOeufRepository.findByCode("valide")
+                .orElseThrow(() -> new RuntimeException("Statut 'valide' introuvable en BDD"));
 
             OeufStatut uniqueStatut = OeufStatut.builder()
                     .production(oeufProduction)
-                    .statut(statutValider)
+                    .statut(statutValide)
                     .quantite(quantiteTotale)
                     .build();
             
@@ -50,29 +51,29 @@ public class OeufProductionService {
         } 
         else {
             int sommeQuantitesSaisies = 0;
-            OeufStatut statutValiderExistant = null;
+            OeufStatut statutValideExistant = null;
 
             for (OeufStatut os : oeufProduction.getOeufStatuts()) {
                 os.setProduction(oeufProduction); 
                 sommeQuantitesSaisies += os.getQuantite();
                 
-                if (os.getStatut() != null && "valider".equals(os.getStatut().getNom())) {
-                    statutValiderExistant = os;
+                if (os.getStatut() != null && "valide".equals(os.getStatut().getCode())) {
+                    statutValideExistant = os;
                 }
             }
 
             if (sommeQuantitesSaisies < quantiteTotale) {
                 int resteAValider = quantiteTotale - sommeQuantitesSaisies;
 
-                if (statutValiderExistant != null) {
-                    statutValiderExistant.setQuantite(statutValiderExistant.getQuantite() + resteAValider);
+                if (statutValideExistant != null) {
+                    statutValideExistant.setQuantite(statutValideExistant.getQuantite() + resteAValider);
                 } else {
-                    StatutOeuf statutValider = statutOeufRepository.findByNom("valider")
-                        .orElseThrow(() -> new RuntimeException("Statut 'valider' introuvable"));
+                    StatutOeuf statutValide = statutOeufRepository.findByCode("valide")
+                        .orElseThrow(() -> new RuntimeException("Statut 'valide' introuvable"));
                     
                     OeufStatut resteStatut = OeufStatut.builder()
                             .production(oeufProduction)
-                            .statut(statutValider)
+                            .statut(statutValide)
                             .quantite(resteAValider)
                             .build();
                     
