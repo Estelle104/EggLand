@@ -1,9 +1,11 @@
 package com.app.eggland.service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -164,6 +166,32 @@ public class OeufProductionService {
             result.add(buildTauxPonteParLot(production));
         }
         return result;
+    }
+
+    public Map<String, Object> getProductionDes14DerniersJours() {
+        LocalDate dateFin = LocalDate.now();
+        LocalDate dateDebut = dateFin.minusDays(13);
+        Map<LocalDate, Integer> quantitesParDate = new HashMap<>();
+
+        for (Object[] ligne : oeufProductionRepository.sumQuantiteParDate(dateDebut, dateFin)) {
+            LocalDate date = (LocalDate) ligne[0];
+            int quantite = ((Number) ligne[1]).intValue();
+            quantitesParDate.put(date, quantite);
+        }
+
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd/MM");
+        List<String> labels = new ArrayList<>();
+        List<Integer> quantites = new ArrayList<>();
+
+        for (LocalDate date = dateDebut; !date.isAfter(dateFin); date = date.plusDays(1)) {
+            labels.add(date.format(formatDate));
+            quantites.add(quantitesParDate.getOrDefault(date, 0));
+        }
+
+        Map<String, Object> donneesGraphique = new LinkedHashMap<>();
+        donneesGraphique.put("labels", labels);
+        donneesGraphique.put("quantites", quantites);
+        return donneesGraphique;
     }
 
     private Map<String, Object> buildTauxPonteParLot(OeufProduction production) {

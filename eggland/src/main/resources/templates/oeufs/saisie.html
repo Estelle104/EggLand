@@ -41,7 +41,7 @@
                                 <label for="lot">Lot concerné</label>
                                 <select id="lot" th:field="*{lot.id}" required>
                                     <option value="">-- Choisir un lot --</option>
-                                    <option th:each="l : ${listeLots}" th:value="${l.id}" th:text="Lot ${l.id}"></option>
+                                    <option th:each="l : ${listeLots}" th:value="${l.id}" th:text="|Lot ${l.id}|"></option>
                                 </select>
                             </div>
 

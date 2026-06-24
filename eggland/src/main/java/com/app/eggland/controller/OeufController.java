@@ -38,6 +38,7 @@ public class OeufController {
     public String stats(Model model) {
         model.addAttribute("stock", oeufService.getStockDisponible());
         model.addAttribute("tauxParLot", oeufProductionService.getTauxPonteParLot());
+        model.addAttribute("production14Jours", oeufProductionService.getProductionDes14DerniersJours());
         return "oeufs/stats";
     }
 

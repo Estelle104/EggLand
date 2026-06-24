@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 @Repository
 public interface OeufProductionRepository extends JpaRepository<OeufProduction, Integer>{  
@@ -19,4 +20,15 @@ public interface OeufProductionRepository extends JpaRepository<OeufProduction, 
 
     @Query("SELECT COALESCE(SUM(o.quantite), 0) FROM OeufProduction o")
     Integer sumQuantiteTotale();
+
+    @Query("""
+            SELECT o.date, SUM(o.quantite)
+            FROM OeufProduction o
+            WHERE o.date BETWEEN :dateDebut AND :dateFin
+            GROUP BY o.date
+            ORDER BY o.date
+            """)
+    List<Object[]> sumQuantiteParDate(
+            @Param("dateDebut") LocalDate dateDebut,
+            @Param("dateFin") LocalDate dateFin);
 }

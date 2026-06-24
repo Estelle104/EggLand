@@ -1,13 +1,13 @@
 const listeStatuts = window.listeStatutsOeufs || [];
 
         function ajouterLigne() {
-            const container = document.getElementById('container-anomalies');
-            const index = container.getElementsByClassName('anomalie-row').length;
+            const container = document.getElementById('container-statuts');
+            const index = container.getElementsByClassName('statut-row').length;
 
             const div = document.createElement('div');
-            div.className = 'anomalie-row';
+            div.className = 'statut-row';
 
-            let optionsHtml = '<option value="">-- Aucune anomalie --</option>';
+            let optionsHtml = '<option value="">-- Aucune statut --</option>';
             if (listeStatuts) {
                 listeStatuts.forEach(st => {
                     if (st.code !== 'valide' && st.code !== 'vendu' ) {
@@ -18,7 +18,7 @@ const listeStatuts = window.listeStatutsOeufs || [];
 
             div.innerHTML = `
                 <div class="form-group group-statut">
-                    <label class="small">Type d'anomalie</label>
+                    <label class="small">Type de statut</label>
                     <select name="oeufStatuts[${index}].statut.id">
                         ${optionsHtml}
                     </select>
@@ -35,10 +35,10 @@ const listeStatuts = window.listeStatutsOeufs || [];
         }
 
         function supprimerLigne(button) {
-            const row = button.closest('.anomalie-row');
+            const row = button.closest('.statut-row');
             row.remove();
             
-            const rows = document.getElementById('container-anomalies').getElementsByClassName('anomalie-row');
+            const rows = document.getElementById('container-statuts').getElementsByClassName('statut-row');
             Array.from(rows).forEach((currentRow, newIndex) => {
                 const select = currentRow.querySelector('.group-statut select');
                 const input = currentRow.querySelector('.group-quantite input');
