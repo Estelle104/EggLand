@@ -5,9 +5,7 @@ import com.app.eggland.repository.OeufStatutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/**
- * Service partagé pour les règles de stock d'œufs.
- */
+
 @Service
 public class OeufService {
 
@@ -17,13 +15,10 @@ public class OeufService {
     @Autowired
     private OeufStatutRepository oeufStatutRepository;
 
-    /**
-     * Stock = totalité produite - œufs cassés, consommés ou vendus.
-     */
     public Integer getStockDisponible() {
-        long quantiteProduite = oeufProductionRepository.sumQuantiteTotale();
-        long quantiteIndisponible = oeufStatutRepository.sumQuantiteIndisponible();
-        long stock = quantiteProduite - quantiteIndisponible;
+        Integer quantiteProduite = oeufProductionRepository.sumQuantiteTotale();
+        Integer quantiteIndisponible = oeufStatutRepository.sumQuantiteIndisponible();
+        Integer stock = quantiteProduite - quantiteIndisponible;
 
         if (stock < 0) {
             throw new IllegalStateException(

@@ -27,11 +27,14 @@ public class OeufController {
 
     @Autowired
     private OeufProductionService oeufProductionService;
+
+    @Autowired
+    private OeufService oeufService;
     
     @GetMapping
-    public String production(Model model) {
-        model.addAttribute("oeufs", oeufProductionService.getAllOeufsWithDetails());
-        return "oeufs/production";
+    public String stats(Model model) {
+        model.addAttribute("stock", oeufService.getStockDisponible())
+        return "oeufs/stats";
     }
 
     @GetMapping("/saisie")
