@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historique des paiements - Eggland</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/components.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+    <div class="app">
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+        <div class="main">
+            <div th:replace="fragments/header :: header"></div>
+            <div class="content">
+
+                <div class="page-header">
+                    <h2>Historique des Paiements</h2>
+                    <a th:href="@{/employes}" class="btn btn-outline">
+                        <i class="fa-solid fa-arrow-left"></i> Retour
+                    </a>
+                </div>
+
+                <form class="filters-bar" method="get" th:action="@{/employes/historique}">
+                    <select name="mois" onchange="this.form.submit()">
+                        <option value="">Tous les mois</option>
+                        <option th:each="m : ${listeMois}" th:value="${m.value}" th:text="${m.label}"
+                                th:selected="${m.value == moisSelectionne}">Juin 2026</option>
+                    </select>
+                    <select name="statut" onchange="this.form.submit()">
+                        <option value="">Tous les statuts</option>
+                        <option value="paye" th:selected="${statutSelectionne == 'paye'}">Payé</option>
+                        <option value="attente" th:selected="${statutSelectionne == 'attente'}">En attente</option>
+                    </select>
+                </form>
+
+                <div class="card" th:each="ligne : ${lignes}" style="margin-bottom:16px;">
+                    <div class="card-header-row">
+                        <div class="cell-avatar">
+                            <span class="avatar" th:text="${#strings.substring(ligne.paiementSalaire.employe.prenom,0,1)} + ${#strings.substring(ligne.paiementSalaire.employe.nom,0,1)}">JD</span>
+                            <div>
+                                <div th:text="${ligne.paiementSalaire.employe.prenom} + ' ' + ${ligne.paiementSalaire.employe.nom}">Jean Dupont</div>
+                                <div class="text-muted" th:text="${#temporals.format(ligne.paiementSalaire.mois, 'MMMM yyyy')}">Juin 2026</div>
+                            </div>
+                        </div>
+                        <div style="text-align:right;">
+                            <span class="badge" th:class="${ligne.paiementSalaire.paye} ? 'badge badge-green' : 'badge badge-yellow'"
+                                  th:text="${ligne.paiementSalaire.paye} ? 'Payé' : 'En attente'">En attente</span>
+                            <div class="text-muted" style="margin-top:4px;"
+                                 th:text="${#numbers.formatDecimal(ligne.paiementSalaire.montant, 0, 'WHITESPACE', 0, 'COMMA')} + ' / ' + ${#numbers.formatDecimal(ligne.paiementSalaire.employe.salaire, 0, 'WHITESPACE', 0, 'COMMA')} + ' Ar'">
+                                300 000 / 850 000 Ar
+                            </div>
+                        </div>
+                    </div>
+
+                    <table style="margin-top:12px;">
+                        <thead>
+                            <tr>
+                                <th>Date du versement</th>
+                                <th>Montant versé</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="v : ${ligne.versements}">
+                                <td th:text="${#temporals.format(v.date, 'dd/MM/yyyy')}">23/06/2026</td>
+                                <td th:text="${#numbers.formatDecimal(v.montant, 0, 'WHITESPACE', 0, 'COMMA')} + ' Ar'">200 000 Ar</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div th:if="${#lists.isEmpty(ligne.versements)}" class="vide-message">
+                        Aucun versement enregistré.
+                    </div>
+                </div>
+
+                <div th:if="${#lists.isEmpty(lignes)}" class="vide-message">
+                    Aucun paiement enregistré pour cette période.
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
