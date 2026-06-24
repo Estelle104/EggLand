@@ -61,3 +61,27 @@
     font-size:14px;
     color:var(--text);
 }
+
+.search-form{
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.header-right .btn-search{
+    width:40px;
+    height:40px;
+    border:none;
+    border-radius:12px;
+    background:var(--primary);
+    color:white;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:0.2s;
+}
+
+.header-right .btn-search:hover{
+    background:var(--hover);
+}
