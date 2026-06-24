@@ -23,9 +23,9 @@ public class SearchController {
     private static final Map<String, String> URL_MAP = new LinkedHashMap<>();
 
     static {
-        URL_MAP.put("race", "/races/edit/");
-        URL_MAP.put("batiment", "/batiments/edit/");
-        URL_MAP.put("nourriture", "/nourritures/edit/");
+        URL_MAP.put("race", "/races");
+        URL_MAP.put("batiment", "/batiments");
+        URL_MAP.put("nourriture", "/nourritures");
         URL_MAP.put("employe", "/employes");
         URL_MAP.put("lot", "/lots");
         URL_MAP.put("client", "/client");
@@ -49,7 +49,7 @@ public class SearchController {
         for (SearchResult r : results) {
             String url = URL_MAP.getOrDefault(r.table(), "/" + r.table() + "s");
             grouped.computeIfAbsent(r.table(), k -> new ArrayList<>())
-                   .add(new ResultatAvecUrl(r.table(), r.column(), r.id(), r.valeur(), url + r.id()));
+                   .add(new ResultatAvecUrl(r.table(), r.column(), r.id(), r.valeur(), url));
         }
 
         int total = results.size();
