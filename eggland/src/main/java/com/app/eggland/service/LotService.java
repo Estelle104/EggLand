@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 @Service
 public class LotService {
     @Autowired
@@ -23,6 +24,12 @@ public class LotService {
 
     @Autowired
     ReformeRepository reformeRepository;
+
+    @Autowired
+    TraitementRepository traitementRepository;
+
+    @Autowired
+    OeufProductionRepository oeufProductionRepository;
 
    @Transactional
     public void createLot(Lot lot){
@@ -86,32 +93,32 @@ lotRepository.save(lot);
     }
 //rehefa reforme
 
-public void resetCapaciteBatiment(Batiment batiment, StatutLot statut) {
+// public void resetCapaciteBatiment(Batiment batiment, StatutLot statut) {
     
    
-    Lot lot = lotRepository.findFirstByStatut(statut);
+//     Lot lot = lotRepository.findFirstByStatut(statut);
     
    
-    if (lot == null) {
-        System.out.println("Aucun lot trouvé avec le statut: " + statut);
-        return;
-    }
+//     if (lot == null) {
+//         System.out.println("Aucun lot trouvé avec le statut: " + statut);
+//         return;
+//     }
     
-    int nbrInitiale = lot.getNombreInitial();
-    int placeRestante = getPlaceRestante(batiment.getId());
-    int placeBatiment = 0;
+//     int nbrInitiale = lot.getNombreInitial();
+//     int placeRestante = getPlaceRestante(batiment.getId());
+//     int placeBatiment = 0;
    
-    if ("REFORME".equals(lot.getStatut().getCode())) {
+//     if ("REFORME".equals(lot.getStatut().getCode())) {
        
-        placeBatiment = nbrInitiale + placeRestante;
-    } else {
+//         placeBatiment = nbrInitiale + placeRestante;
+//     } else {
         
-        placeBatiment = placeRestante;
-    }
+//         placeBatiment = placeRestante;
+//     }
     
-    System.out.println("Capacite batiment: " + placeBatiment);
-    batiment.setCapacite(placeBatiment);
-}
+//     System.out.println("Capacite batiment: " + placeBatiment);
+//     batiment.setCapacite(placeBatiment);
+// }
 public int calculerAgeActuel(Lot lot, LocalDate actuel) {
 
     LocalDate dateEntree = lot.getDateArrivee();
@@ -215,5 +222,9 @@ public void reformerUnLot(Integer idLot, LocalDate dateReforme) {
     System.out.println("Réforme sauvegardée avec l'ID: " + reforme.getId());
     System.out.println("Lot " + lot.getId() + " réformé avec " + nbrPoule + " poules");
    
+}
+
+public Map<String, Object> getDetailLot(Integer id) {
+    return lotRepository.findLotDetail(id);
 }
 }

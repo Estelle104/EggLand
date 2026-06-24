@@ -219,7 +219,22 @@
     background: #733b17;
     color: white;
 }
-.btn {
+
+.btn-modifier{
+     display: inline-block;
+    background: #8a4a1d;
+    color: white;
+    text-decoration: none;
+    padding: 9px 22px;
+    border-radius: 7px;
+    font-size: 13px;
+    transition: 0.2s;
+}
+.btn-modifier:hover {
+    background: #733b17;
+    color: white;
+}
+.btn-filter {
     display: inline-block;
     background: #8a4a1d;
     color: white;
@@ -230,7 +245,7 @@
     transition: 0.2s;
 }
 
-.btn:hover {
+.btn-filter:hover {
     background: #733b17;
     color: white;
 }
@@ -267,9 +282,13 @@
         grid-template-columns: 1fr;
     }
 }
+
+
+
 #reform-overlay {
     position: fixed;
     inset: 0;
+
     display: none;
     justify-content: center;
     align-items: center;
@@ -277,19 +296,34 @@
     background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(5px);
 
-    z-index: 99999; 
+    z-index: 99999;
 }
 
 #reform-overlay.active {
     display: flex;
 }
 
-
+/* IMPORTANT : centrer + layer visible */
 #reform-container {
-    position: relative;
-    z-index: 100000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 100%;
 }
 
+
+#reform-container form {
+    position: relative;
+    z-index: 100000;
+
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
 /* Fenêtre du formulaire */
 .reform-form {
     background: white;
@@ -423,4 +457,135 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+
+/* Titre */
+.modif-form h3 {
+    margin: 0;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Groupes */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* Labels */
+.form-group label {
+    font-weight: 600;
+    color: #444;
+}
+
+/* Inputs + selects */
+.form-group input,
+.form-group select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74,144,226,0.2);
+}
+
+/* ===== BOUTONS ===== */
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* IMPORTANT: évite les bugs de clic */
+.modal-buttons button {
+    flex: 1;
+    cursor: pointer;
+    position: relative;
+    z-index: 10;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+/* Valider */
+.btn-valider {
+    background: #7B3F1A;
+    color: white;
+}
+
+.btn-valider:hover {
+    background: #aa5621;
+}
+
+/* Supprimer */
+.btn-supprimer {
+    background: #8d1905;
+    color: white;
+}
+
+.btn-supprimer:hover {
+    background: #e92907;
+}
+
+/* Annuler */
+.btn-secondary {    
+    background: #bdc3c7;
+    color: #2c3e50;
+}
+
+.btn-secondary:hover {
+    background: #aeb6bf;
+}
+
+
+
+/* MENU */
+.menu-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.menu {
+    font-size: 22px;
+    user-select: none;
+}
+
+.menu-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 25px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    min-width: 140px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.menu-dropdown.active {
+    display: block;
+}
+
+.menu-dropdown a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+}
+
+.menu-dropdown a:hover {
+    background: #f2f2f2;
 }

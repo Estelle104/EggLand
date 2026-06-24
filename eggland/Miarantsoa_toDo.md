@@ -78,15 +78,15 @@
 
 **Durée estimée : 2h**
 
-* [ ] Créer la page `lots/detail.html`
-* [ ] Mettre en place des onglets Bootstrap
-* [ ] Onglet Production
-* [ ] Onglet Mortalité
-* [ ] Onglet Traitements
-* [ ] Prévoir l'extension vers d'autres historiques
-* [ ] Ajouter le bouton "Réformer"
-* [ ] Ajouter une confirmation avant réforme
-* [ ] Tester la navigation entre les onglets
+* [x] Créer la page `lots/detail.html`
+* [x] Mettre en place des onglets Bootstrap
+* [x] Onglet Production
+* [x] Onglet Mortalité
+* [x] Onglet Traitements
+  * [x] Prévoir l'extension vers d'autres historiques
+ * [x] Ajouter le bouton "Réformer"
+* [x] Ajouter une confirmation avant réforme
+* [x] Tester la navigation entre les onglets
 
 **Fichier :**
 

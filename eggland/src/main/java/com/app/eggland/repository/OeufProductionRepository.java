@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.app.eggland.model.OeufProduction;
 
 @Repository
-public interface OeufProductionRepository extends JpaRepository<OeufProduction, Integer>{    
+public interface OeufProductionRepository extends JpaRepository<OeufProduction, Integer>{  
+   
 }
