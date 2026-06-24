@@ -18,5 +18,5 @@ public interface OeufProductionRepository extends JpaRepository<OeufProduction, 
     List<OeufProduction> findAllByOrderByDateDescIdDesc();
 
     @Query("SELECT COALESCE(SUM(o.quantite), 0) FROM OeufProduction o")
-    Long sumQuantiteTotale();
+    Integer sumQuantiteTotale();
 }
