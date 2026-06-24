@@ -31,6 +31,9 @@ public class LotService {
     @Autowired
     OeufProductionRepository oeufProductionRepository;
 
+    @Autowired
+    MortRepository mortRepository;
+
    @Transactional
     public void createLot(Lot lot){
          Batiment batiment = batimentRepository.findById(lot.getBatiment().getId())
@@ -149,9 +152,16 @@ public  void updateLot(Lot lot){
     lotRepository.save(lot);
  }
 
-public  void deleteLot(Lot lot){
-    lotRepository.delete(lot);
- }
+@Transactional
+public void deleteLot(Integer id) {
+
+    traitementRepository.deleteByLotId(id);
+    oeufProductionRepository.deleteByLotId(id);
+    mortRepository.deleteByLotId(id);
+    reformeRepository.deleteByLotId(id);
+
+    lotRepository.deleteById(id);
+}
 
 public  Lot findById(Integer idLot){
     return lotRepository.findById(idLot).orElse(null);

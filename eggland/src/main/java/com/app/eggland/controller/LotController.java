@@ -250,8 +250,20 @@ public ModelAndView modifierLots(@PathVariable("id") Integer id,
 
    lotService.updateLot(lot);
 
-    return new ModelAndView("redirect:/lots/liste");
+    return new ModelAndView("redirect:/lots/list");
 }
 
+@GetMapping("/supprimer/{id}")
+public ModelAndView deleteLot(@PathVariable Integer id) {
 
+    Lot lot = lotService.findById(id);
+
+    if (lot == null) {
+        throw new IllegalArgumentException("Lot introuvable");
+    }
+
+    lotService.deleteLot(lot.getId());
+
+    return new ModelAndView("redirect:/lots/list");
+}
 }

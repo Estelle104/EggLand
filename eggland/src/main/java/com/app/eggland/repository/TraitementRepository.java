@@ -9,5 +9,5 @@ import com.app.eggland.model.Traitement;
 
 @Repository
 public interface TraitementRepository extends JpaRepository<Traitement, Integer>{    
-  
+    void deleteByLotId(Integer lotId);
 }

@@ -15,7 +15,7 @@ console.log("statut", statuts);
         batiments.map(b => `<option value="${b.id}">${b.nom}</option>`).join("");
 
     form.querySelector("#statut").innerHTML =
-        statuts.map(s => `<option value="${s.code}">${s.code}</option>`).join("");
+        statuts.map(s => `<option value="${s.id}">${s.code}</option>`).join("");
 }
 document.querySelectorAll(".btn-modifier").forEach(button => {
 
@@ -126,7 +126,7 @@ document.querySelectorAll(".btn-modifier").forEach(button => {
     console.log("click delete OK");
 
     if (confirm(`Supprimer le lot ${lot.id} ?`)) {
-        window.location.href = `/lots/${lot.id}/supprimer`;
+      window.location.href = `/lots/supprimer/${lot.id}`;
     }
 });
 

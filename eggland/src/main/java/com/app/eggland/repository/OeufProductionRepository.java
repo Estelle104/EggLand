@@ -7,5 +7,5 @@ import com.app.eggland.model.OeufProduction;
 
 @Repository
 public interface OeufProductionRepository extends JpaRepository<OeufProduction, Integer>{  
-   
+     void deleteByLotId(Integer lotId);
 }
