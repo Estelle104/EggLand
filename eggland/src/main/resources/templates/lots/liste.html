@@ -10,6 +10,7 @@
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/listeLots.css}">
 </head>
+
 <body>
 
 <div class="app">
@@ -63,11 +64,21 @@
                         </option>
 
                     </select>
-
+                        <button type="submit" class="btn">Filtrer</button>
                 </form>
 
             </div>
 
+            
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <span th:text="${success}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
             <!-- AUCUN LOT -->
             <div th:if="${#lists.isEmpty(lots)}" class="empty-state">
                 Aucun lot trouvé
@@ -147,21 +158,31 @@
                     <div class="lot-footer">
 
                         <a th:href="@{/lots/{id}/modifier(id=${lot.id})}"
-                           class="btn-modifier">
+                           class="btn">
                             Modifier
                         </a>
-
-                    </div>
-
+                        <button type="button"
+                            class="btn-reformer"
+                            th:data-id="${lot.id}">
+                        Réformer
+                    </button>
+                    
                 </div>
-
             </div>
+            <div id="reform-container"></div>
 
+        
         </div>
+
+
 
     </div>
 
 </div>
+<div id="reform-overlay">
+    <div id="reform-container"></div>
+</div>
+<script th:src="@{/js/reformer.js}"></script>
 
 </body>
 </html>

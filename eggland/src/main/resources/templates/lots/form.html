@@ -34,7 +34,7 @@
     </div>
 
     <div class="form-container" style="background: white; padding: 30px; border-radius: 12px; max-width: 500px;">
-        <form th:action="@{/lots/create}" method="POST" th:object="${lot}">
+        <form id="lotForm" th:action="@{/lots/create}" method="POST" th:object="${lot}">
             
             <div class="mb-4">
                 <label class="form-label">Race des Volailles</label>
@@ -80,6 +80,6 @@
 
     </div>
    
-
+<script th:src="@{/js/validationLot.js}"></script>
 </body>
 </html>
