@@ -107,3 +107,13 @@ main {
     border-radius: 8px;
     margin-bottom: 15px;
 }
+.invalid {
+    border: 2px solid #dc3545 !important;
+    background-color: #fff5f5;
+}
+
+.valid {
+    border: 2px solid #198754 !important;
+    background-color: #f0fff4;
+}
+

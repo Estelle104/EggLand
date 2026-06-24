@@ -1,5 +1,6 @@
 package com.app.eggland.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,10 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.app.eggland.model.Batiment;
 import com.app.eggland.model.Lot;
@@ -123,7 +126,7 @@ public ModelAndView showAllLot(
 ;
 
     } else {
-
+     
         lots = lotService.getAllLots();
     }
 
@@ -134,5 +137,56 @@ public ModelAndView showAllLot(
     return mav;
 }
 
+@PostMapping("/reforme/{idLot}")  
+public ModelAndView reformerLot(
+    @PathVariable Integer idLot,
+    @RequestParam(required = false) LocalDate dateReform,
+RedirectAttributes redirectAttributes) {
+    
+    ModelAndView mav = new ModelAndView();
+    
+    try {
+        System.out.println("=== DÉBUT RÉFORME ===");
+        System.out.println("idLot: " + idLot);
+        System.out.println("dateReform: " + dateReform);
+        
+     
+        if (dateReform == null) {
+            throw new IllegalArgumentException("Date de réforme requise");
+        }
+        
+        if (dateReform.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("La date de réforme ne peut pas être dans le futur");
+        }
+        
+        System.out.println("Validation OK - appel lotService.reformerUnLot()");
+        
+     
+        lotService.reformerUnLot(idLot, dateReform); 
+        
+       
+        
+    
 
+redirectAttributes.addFlashAttribute("success", "Reforme effectuée avec succès");
+mav.setViewName("redirect:/lots/list");
+        return mav;
+        
+
+    } catch (Exception e) {
+       
+        System.out.println(" Exception inattendue: " + e.getClass().getName());
+        e.printStackTrace();
+        
+        mav.setViewName("lots/liste");
+        mav.addObject("error", "Erreur inattendue: " + e.getMessage());
+        mav.addObject("idLot", idLot);
+        mav.addObject("dateReform", dateReform);
+    
+        List<Lot> lots = lotService.getAllLots();
+        mav.addObject("lots", lots != null ? lots : new ArrayList<>());
+        
+        return mav;
+    }
+}
 }

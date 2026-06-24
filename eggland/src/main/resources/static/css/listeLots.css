@@ -205,28 +205,32 @@
 .lot-footer {
     margin-top: 18px;
 }
+.btn-reformer{
+     display: inline-block;
+    background: #8a4a1d;
+    color: white;
+    text-decoration: none;
+    padding: 9px 22px;
+    border-radius: 7px;
+    font-size: 13px;
+    transition: 0.2s;
+}
+.btn-reformer:hover {
+    background: #733b17;
+    color: white;
+}
+.btn {
+    display: inline-block;
+    background: #8a4a1d;
+    color: white;
+    text-decoration: none;
+    padding: 9px 22px;
+    border-radius: 7px;
+    font-size: 13px;
+    transition: 0.2s;
+}
 
-.btn-modifier {
-    display: inline-block;
-    background: #8a4a1d;
-    color: white;
-    text-decoration: none;
-    padding: 9px 22px;
-    border-radius: 7px;
-    font-size: 13px;
-    transition: 0.2s;
-}
-.btn-filtrer {
-    display: inline-block;
-    background: #8a4a1d;
-    color: white;
-    text-decoration: none;
-    padding: 9px 22px;
-    border-radius: 7px;
-    font-size: 13px;
-    transition: 0.2s;
-}
-.btn-modifier:hover {
+.btn:hover {
     background: #733b17;
     color: white;
 }
@@ -261,5 +265,162 @@
 
     .lots-grid {
         grid-template-columns: 1fr;
+    }
+}
+#reform-overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+
+    z-index: 99999; 
+}
+
+#reform-overlay.active {
+    display: flex;
+}
+
+
+#reform-container {
+    position: relative;
+    z-index: 100000;
+}
+
+/* Fenêtre du formulaire */
+.reform-form {
+    background: white;
+    width: 450px;
+    max-width: 90%;
+
+    padding: 25px;
+    border-radius: 12px;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,.25);
+
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    animation: modalAppear .25s ease;
+}
+
+.reform-form h3 {
+    margin: 0 0 10px;
+    color: #333;
+    text-align: center;
+}
+
+.reform-form label {
+    font-weight: 600;
+    color: #555;
+}
+
+.reform-form input[type="date"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.reform-form input[type="date"]:focus {
+    outline: none;
+    border-color: #733b17;
+    box-shadow: 0 0 0 3px rgba(139,74,31,.15);
+}
+
+.reform-form button {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: 600;
+ 
+
+}
+
+.btn-danger {
+    background: #733b17;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #8d3702;
+}
+
+.btn-secondary {
+    background: #e5e5e5;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background: #d5d5d5;
+}
+
+/* Animation */
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Base des alertes */
+.alert {
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin: 15px 0;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    animation: slideDown .25s ease;
+}
+
+/* SUCCESS */
+.alert-success {
+    background-color: #e6f7ee;
+    color: #1e7e34;
+    border-left: 5px solid #28a745;
+}
+
+/* ERROR */
+.alert-danger {
+    background-color: #fdecea;
+    color: #b02a37;
+    border-left: 5px solid #dc3545;
+}
+
+/* Bouton fermer (Bootstrap override propre) */
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.btn-close:hover {
+    opacity: 1;
+}
+
+/* Animation apparition */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

@@ -24,7 +24,7 @@
 
 **Durée estimée : 1h**
 
-* [x] Créer les endpoints CRUD du lot
+* [] Créer les endpoints CRUD du lot
 * [x] Ajouter le filtrage par statut
 * [x] Ajouter le filtrage par bâtiment
 * [x] Vérifier les redirections et messages utilisateur
@@ -40,11 +40,11 @@
 
 **Durée estimée : 45 min**
 
-* [ ] Ajouter l'action "Réformer un lot"
-* [ ] Mettre à jour le statut vers `REFORME`
-* [ ] Enregistrer `date_reforme`
-* [ ] Rediriger vers le module de vente après réforme
-* [ ] Vérifier la cohérence des données
+* [x] Ajouter l'action "Réformer un lot"
+* [x] Mettre à jour le statut vers `REFORME`
+* [x] Enregistrer `date_reforme`
+* [x] Rediriger vers le module de vente après réforme
+* [x] Vérifier la cohérence des données
 
 **Fichiers :**
 
@@ -64,8 +64,8 @@
 * [x] Afficher les lots sous forme de tableau
 * [x] Ajouter les filtres disponibles
 * [x] Créer la page `lots/form.html`
-* [ ] Ajouter les validations du formulaire
-* [ ] Vérifier l'affichage responsive
+* [x] Ajouter les validations du formulaire
+* [x] Vérifier l'affichage responsive
 
 **Fichiers :**
 

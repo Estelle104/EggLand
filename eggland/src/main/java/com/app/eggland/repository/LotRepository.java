@@ -21,6 +21,9 @@ public interface LotRepository extends JpaRepository<Lot, Integer>{
     int calculerPlaceUtiliseePourBatiment(@Param("batiment") Batiment batiment);
     
         List<Lot> findByBatimentOrStatut(Batiment batiment, StatutLot statutLot); 
-        List<Lot> findByBatimentAndStatut(Batiment batiment, StatutLot statutLot);   
+        List<Lot> findByBatimentAndStatut(Batiment batiment, StatutLot statutLot);
+        
+         @Query("SELECT l FROM Lot l WHERE l.statut = :statut ORDER BY l.id ASC LIMIT 1")
+    Lot findFirstByStatut(@Param("statut") StatutLot statutLot);
 
 }

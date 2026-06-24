@@ -19,6 +19,11 @@ public class LotService {
 
     @Autowired
     StatutLotRepository statutLotRepository;
+
+
+    @Autowired
+    ReformeRepository reformeRepository;
+
    @Transactional
     public void createLot(Lot lot){
          Batiment batiment = batimentRepository.findById(lot.getBatiment().getId())
@@ -62,11 +67,13 @@ lotRepository.save(lot);
 
         }
     }
-   private int calculerPlaceUtilisee(Batiment batiment) {
+
+    //rehefa mapiditra lot vaovao
+   public int calculerPlaceUtilisee(Batiment batiment) {
         return lotRepository.calculerPlaceUtiliseePourBatiment(batiment);
     }
 
-    private int getPlaceRestante(Integer idBatiment){
+    public int getPlaceRestante(Integer idBatiment){
         int placeRestante;
             Batiment batiment = batimentRepository.findById(idBatiment)
             .orElseThrow(() -> new IllegalArgumentException("Bâtiment non trouvé"));
@@ -77,8 +84,35 @@ lotRepository.save(lot);
             placeRestante = capacite - placeUtilise;
         return placeRestante;
     }
+//rehefa reforme
 
-private int calculerAgeActuel(Lot lot, LocalDate actuel) {
+public void resetCapaciteBatiment(Batiment batiment, StatutLot statut) {
+    
+   
+    Lot lot = lotRepository.findFirstByStatut(statut);
+    
+   
+    if (lot == null) {
+        System.out.println("Aucun lot trouvé avec le statut: " + statut);
+        return;
+    }
+    
+    int nbrInitiale = lot.getNombreInitial();
+    int placeRestante = getPlaceRestante(batiment.getId());
+    int placeBatiment = 0;
+   
+    if ("REFORME".equals(lot.getStatut().getCode())) {
+       
+        placeBatiment = nbrInitiale + placeRestante;
+    } else {
+        
+        placeBatiment = placeRestante;
+    }
+    
+    System.out.println("Capacite batiment: " + placeBatiment);
+    batiment.setCapacite(placeBatiment);
+}
+public int calculerAgeActuel(Lot lot, LocalDate actuel) {
 
     LocalDate dateEntree = lot.getDateArrivee();
 if(dateEntree == null){
@@ -125,4 +159,61 @@ public  Lot findById(Integer idLot){
     
     return lotRepository.findByBatimentAndStatut(batiment, statutLot);
  }
+
+
+@Transactional
+public void reformerUnLot(Integer idLot, LocalDate dateReforme) {
+    
+  
+    
+  
+    if (idLot == null) {
+        throw new IllegalArgumentException("Id lot introuvable");
+    }
+    
+
+    Lot lot = findById(idLot);
+    System.out.println("Lot trouvé: " + (lot != null ? lot.getId() : "NULL"));
+    
+    if (lot == null || lot.getId() == null) {
+        throw new IllegalArgumentException("Lot invalide avec l'ID: " + idLot);
+    }
+  
+    StatutLot statut = statutLotRepository.findById(2)
+        .orElseThrow(() -> new IllegalArgumentException("Statut REFORME introuvable"));
+    System.out.println("Statut REFORME trouvé: " + statut.getCode());
+
+    if (dateReforme == null || dateReforme.isAfter(LocalDate.now())) {
+        throw new IllegalArgumentException("Date de réforme invalide: " + dateReforme);
+    }
+ 
+    lot.setStatut(statut);
+    System.out.println("Statut lot changé à: " + lot.getStatut().getCode());
+    
+ if(dateReforme.isBefore(lot.getDateArrivee())){
+            throw new IllegalArgumentException("La date:"+dateReforme+"ne peut pas être avant la date d'arrivé"+lot.getDateArrivee());
+
+ }
+    updateLot(lot); 
+    System.out.println("Lot sauvegardé dans la base");
+    
+ 
+    int nbrPoule = lot.getNombreInitial();
+    System.out.println("Nombre de poules à réformer: " + nbrPoule);
+    
+
+
+    Reforme reforme = new Reforme();
+    reforme.setLot(lot);
+    reforme.setNombre(nbrPoule);
+    reforme.setDate(dateReforme);
+    
+    System.out.println("Réforme créée - avant save");
+    
+    reformeRepository.save(reforme);
+    
+    System.out.println("Réforme sauvegardée avec l'ID: " + reforme.getId());
+    System.out.println("Lot " + lot.getId() + " réformé avec " + nbrPoule + " poules");
+   
+}
 }
