@@ -2,8 +2,10 @@ package com.app.eggland.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,5 +155,36 @@ public class OeufProductionService {
         boolean statutVide = ligne.getStatut() == null || ligne.getStatut().getId() == null;
         boolean quantiteVide = ligne.getQuantite() == null || ligne.getQuantite() == 0;
         return statutVide && quantiteVide;
+    }
+
+    public List<Map<String, Object>> getTauxPonteParLot() {
+        List<OeufProduction> productions = getAllOeufsWithDetails();
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (OeufProduction production : productions) {
+            result.add(buildTauxPonteParLot(production));
+        }
+        return result;
+    }
+
+    private Map<String, Object> buildTauxPonteParLot(OeufProduction production) {
+        int quantiteValide = production.getOeufStatuts().stream()
+                .filter(s -> s.getStatut() != null && "valide".equalsIgnoreCase(s.getStatut().getCode()))
+                .mapToInt(OeufStatut::getQuantite)
+                .sum();
+
+        Lot lot = production.getLot();
+        double rendementMensuel = lot.getRace().getRendementMoyenMois();
+        double attenduParJourParPoule = rendementMensuel / 30.0;
+        double attenduLotJour = lot.getNombreInitial() * attenduParJourParPoule;
+        double taux = attenduLotJour == 0 ? 0 : (quantiteValide / attenduLotJour) * 100;
+
+        Map<String, Object> stat = new HashMap<>();
+        stat.put("lotNumero", lot.getId());
+        stat.put("raceNom", lot.getRace().getNom());
+        stat.put("date", production.getDate());
+        stat.put("quantiteValide", quantiteValide);
+        stat.put("attendu", attenduLotJour);
+        stat.put("taux", taux);
+        return stat;
     }
 }

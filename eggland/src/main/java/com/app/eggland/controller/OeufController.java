@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.app.eggland.model.OeufProduction;
 import com.app.eggland.service.LotService;
 import com.app.eggland.service.OeufProductionService;
+import com.app.eggland.service.OeufService;
 import com.app.eggland.service.OeufStatutService;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/oeufs")
@@ -33,7 +36,8 @@ public class OeufController {
     
     @GetMapping
     public String stats(Model model) {
-        model.addAttribute("stock", oeufService.getStockDisponible())
+        model.addAttribute("stock", oeufService.getStockDisponible());
+        model.addAttribute("tauxParLot", oeufProductionService.getTauxPonteParLot());
         return "oeufs/stats";
     }
 
