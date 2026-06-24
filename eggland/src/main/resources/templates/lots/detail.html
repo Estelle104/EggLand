@@ -11,6 +11,8 @@
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
 
     <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/detail_lot.css}">
+
 
 </head>
 
@@ -24,13 +26,99 @@
 
             <div th:replace="fragments/header :: header"></div>
 
-            <div class="content">
+          <div class="content">
+ </div>
 
+            <div class="lot-detail">
+
+    <div class="lot-title">
+        <h2>Lot #<span th:text="${lot['lot_id']}"></span></h2>
+        <span class="badge" th:text="${lot['statut_code']}"></span>
+    </div>
+
+    <div class="grid">
+
+        <!-- IDENTITE -->
+        <div class="card">
+            <h3>Identité</h3>
+
+            <div class="info">
+                <span>Race</span>
+                <b th:text="${lot['race_nom']}"></b>
             </div>
 
+            <div class="info">
+                <span>Bâtiment</span>
+                <b th:text="${lot['batiment_nom']}"></b>
+            </div>
+
+            <div class="info">
+                <span>Date arrivée</span>
+                <b th:text="${lot['date_arrivee']}"></b>
+            </div>
+        </div>
+
+        <!-- PRODUCTION -->
+        <div class="card">
+            <h3>Production</h3>
+
+            <div class="stat primary">
+                <span>Total œufs</span>
+                <strong th:text="${lot['total_oeufs_produits']}"></strong>
+            </div>
+        </div>
+
+        <!-- MORTALITE -->
+        <div class="card">
+            <h3>Mortalité</h3>
+
+            <div class="stat danger">
+                <span>Total morts</span>
+                <strong th:text="${lot['total_morts']}"></strong>
+            </div>
+        </div>
+
+        <!-- EFFECTIF -->
+        <div class="card">
+            <h3>Effectif</h3>
+
+            <div class="stat success">
+                <span>Restant</span>
+                <strong th:text="${lot['effectif_restant']}"></strong>
+            </div>
         </div>
 
     </div>
+
+    <!-- TRAITEMENT -->
+    <div class="card full">
+
+        <h3>Dernier traitement</h3>
+
+        <div class="info">
+            <span>Date</span>
+            <b th:text="${lot['date_traitement']} ?: 'Aucun'"></b>
+        </div>
+
+        <div class="info">
+            <span>Type</span>
+            <b th:text="${lot['type_dernier_traitement']} ?: '-'"></b>
+        </div>
+
+    </div>
+<button type="button"   class="btn-reformer"th:data-id="${lot['lot_id']}">
+                        Réformer
+                    </button>
+</div>
+</div>
+
+        </div>
+    
+
+   <div id="reform-overlay">
+    <div id="reform-container"></div>
+</div>
+<script th:src="@{/js/reformer.js}"></script>
 
 </body>
 

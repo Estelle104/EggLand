@@ -3,6 +3,8 @@ package com.app.eggland.controller;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,11 +14,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.app.eggland.model.Batiment;
 import com.app.eggland.model.Lot;
+import com.app.eggland.model.Race;
 import com.app.eggland.model.StatutLot;
 import com.app.eggland.repository.BatimentRepository;
 import com.app.eggland.repository.RaceRepository;
@@ -27,7 +32,7 @@ import com.app.eggland.service.LotService;
 import jakarta.transaction.Transactional;
 
 @RequestMapping("/lots")
-@Controller
+@RestController
 public class LotController {
     @Autowired
     LotService lotService;
@@ -40,6 +45,21 @@ public class LotController {
     @Autowired
     private StatutLotRepository statutLotRepository;
 
+
+
+     @GetMapping("/data/races")
+public List<Race> getRaces() {
+    return raceRepository.findAll();
+}
+    @GetMapping("/data/batiments")
+    public List<Batiment> getBatiments() {
+        return batimentRepository.findAll();
+    }
+
+    @GetMapping("/data/statuts")
+    public List<StatutLot> getStatuts() {
+        return statutLotRepository.findAll();
+    }
      @GetMapping("/create")
     public ModelAndView showLotForm(){
         ModelAndView mav = new ModelAndView("lots/form");
@@ -136,7 +156,14 @@ public ModelAndView showAllLot(
 
     return mav;
 }
+    @GetMapping("/detail/{id}")
+    public ModelAndView detail(@PathVariable Integer id) {
 
+        ModelAndView mav = new ModelAndView("lots/detail");
+        mav.addObject("lot", lotService.getDetailLot(id));
+
+        return mav;
+    }
 @PostMapping("/reforme/{idLot}")  
 public ModelAndView reformerLot(
     @PathVariable Integer idLot,
@@ -146,7 +173,7 @@ RedirectAttributes redirectAttributes) {
     ModelAndView mav = new ModelAndView();
     
     try {
-        System.out.println("=== DÉBUT RÉFORME ===");
+      
         System.out.println("idLot: " + idLot);
         System.out.println("dateReform: " + dateReform);
         
@@ -157,6 +184,12 @@ RedirectAttributes redirectAttributes) {
         
         if (dateReform.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("La date de réforme ne peut pas être dans le futur");
+        }
+
+        Lot lot = lotService.findById(idLot);
+        
+        if (lot.getStatut().getCode().equals("reforme")) {
+            throw new IllegalArgumentException("Lot déja reformé");
         }
         
         System.out.println("Validation OK - appel lotService.reformerUnLot()");
@@ -189,4 +222,36 @@ mav.setViewName("redirect:/lots/list");
         return mav;
     }
 }
+
+@PostMapping("/modifier/{id}")
+public ModelAndView modifierLots(@PathVariable("id") Integer id,
+                                  @ModelAttribute Lot formLot) {
+
+    Lot lot = lotService.findById(id);
+
+
+
+   
+    if (formLot.getRace() != lot.getRace()) {
+        lot.setRace(formLot.getRace());
+    }
+
+    if (formLot.getStatut() != lot.getStatut()) {
+        lot.setStatut(formLot.getStatut());
+    }
+
+    if (formLot.getBatiment() != lot.getBatiment()) {
+        lot.setBatiment(formLot.getBatiment());
+    }
+
+    if (formLot.getNombreInitial() != lot.getNombreInitial()) {
+        lot.setNombreInitial(formLot.getNombreInitial());
+    }
+
+   lotService.updateLot(lot);
+
+    return new ModelAndView("redirect:/lots/liste");
+}
+
+
 }
