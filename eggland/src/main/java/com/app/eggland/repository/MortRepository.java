@@ -14,7 +14,7 @@ import com.app.eggland.model.Mort;
 @Repository
 public interface MortRepository extends JpaRepository<Mort, Integer> {
     List<Mort> findByLot(Lot lot);
-
+    
     List<Mort> findByLotAndDateBetween(Lot lot, LocalDate startDate, LocalDate endDate);
 
     List<Mort> findAllByOrderByDateDesc();
@@ -23,4 +23,5 @@ public interface MortRepository extends JpaRepository<Mort, Integer> {
 
     @Query("SELECT COALESCE(SUM(m.nombre), 0) FROM Mort m WHERE m.lot = :lot")
     Integer sumMortalityByLot(@Param("lot") Lot lot);
+    void deleteByLotId(Integer lotId);
 }

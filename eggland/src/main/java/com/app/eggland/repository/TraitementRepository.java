@@ -10,8 +10,10 @@ import com.app.eggland.model.Lot;
 import com.app.eggland.model.Traitement;
 
 @Repository
-public interface TraitementRepository extends JpaRepository<Traitement, Integer> {
+public interface TraitementRepository extends JpaRepository<Traitement, Integer>{
     List<Traitement> findByLot(Lot lot);
     
     List<Traitement> findByLotAndDateBetween(Lot lot, LocalDate startDate, LocalDate endDate);
+    
+    void deleteByLotId(Integer lotId);
 }

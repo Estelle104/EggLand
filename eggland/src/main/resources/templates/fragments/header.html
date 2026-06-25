@@ -6,11 +6,15 @@
 
     <div class="header-right">
 
-        <input type="text"
-               placeholder="Rechercher...">
+        <form class="search-form" th:action="@{/search}" method="get">
+            <input type="text" name="q" placeholder="Rechercher..." required />
+            <button type="submit" class="btn-search">
+                <i class="fa-solid fa-search"></i>
+            </button>
+        </form>
 
         <button>
-            <i class="fa-solid fa-bell"><img th:src="@{images/search-icon.png}" alt="-" style="width: 30px;"></i>
+            <i class="fa-solid fa-bell"></i>
         </button>
 
         <div class="user-info">

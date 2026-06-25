@@ -4,12 +4,15 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "race")
 @Data 
 @NoArgsConstructor 
 @AllArgsConstructor 
 @Builder
+
 public class Race {
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

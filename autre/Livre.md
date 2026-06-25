@@ -32,7 +32,7 @@
 - Critere de validation : verification si les regles de gestion sont bien respectees
 
 
-***Dans les hackaton: le ***
+***Dans les hackaton: le pitch...***
 ## Choix technologique
 - Argument 
     - A EVITER: citer des arguments qui nous beneficient (populaire, facile, beaucoup de communaute)
