@@ -1,6 +1,7 @@
 package com.app.eggland.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.app.eggland.model.Race;
 import com.app.eggland.service.RaceService;
@@ -18,7 +20,6 @@ public class RaceController {
     @Autowired
     private RaceService raceService;
 
-    //liste des races
     @GetMapping
     public String liste(Model model) {
         model.addAttribute("races", raceService.findAll());
@@ -26,7 +27,6 @@ public class RaceController {
         return "races/liste";
     }
 
-    //acceder au formulaire de création d'une nouvelle
     @GetMapping("/nouveau")
     public String nouveau(Model model) {
         model.addAttribute("race", new Race());
@@ -34,14 +34,12 @@ public class RaceController {
         return "races/form";
     }
 
-    //enregistrer une race 
     @PostMapping("/save")
     public String save(@ModelAttribute Race race) {
         raceService.save(race);
         return "redirect:/races";
     }
 
-    //modifier uen race
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
         Race race = raceService.findById(id)
@@ -51,10 +49,13 @@ public class RaceController {
         return "races/form";
     }
 
-    //supprimer une race
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Integer id) {
-        raceService.deleteById(id);
+    public String delete(@PathVariable Integer id, RedirectAttributes ra) {
+        try {
+            raceService.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            ra.addFlashAttribute("error", "Impossible de supprimer : cette race est liée à des lots.");
+        }
         return "redirect:/races";
     }
 }

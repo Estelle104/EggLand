@@ -3,11 +3,8 @@ package com.app.eggland.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -25,6 +22,11 @@ public class SecurityConfig {
             .requestMatchers("/admin/**").hasAuthority("admin")// l'admin a acces a ses fonctionnalités et toute url contenant layout et liste
             .requestMatchers("/lots/**","/gestionnaire/**").hasAnyAuthority("gestionnaire","admin")// gestionnaire a acces aux url de lots et gestionnaire définissez en fonction de vos besoin
             .requestMatchers("/client/**").hasAnyAuthority("client","admin")// le client a acces aux fonctionnalité de l'url /client
+            .requestMatchers("/races/**").hasAnyAuthority("gestionnaire", "admin")
+            .requestMatchers("/batiments/**").hasAnyAuthority("gestionnaire", "admin")
+            .requestMatchers("/stock/**").hasAnyAuthority("gestionnaire", "admin")
+            .requestMatchers("/nourritures/**").hasAnyAuthority("gestionnaire", "admin")
+            .requestMatchers("/mvtargent/**").hasAnyAuthority("gestionnaire", "admin")
         .anyRequest().authenticated()
        )
        .formLogin(form -> form
