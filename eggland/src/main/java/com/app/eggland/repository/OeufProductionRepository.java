@@ -12,6 +12,10 @@ import org.springframework.data.repository.query.Param;
 
 @Repository
 public interface OeufProductionRepository extends JpaRepository<OeufProduction, Integer>{  
+
+     void deleteByLotId(Integer lotId);
+
+
     boolean existsByLotIdAndDate(Integer lotId, LocalDate date);
 
     boolean existsByLotIdAndDateAndIdNot(Integer lotId, LocalDate date, Integer productionId);
@@ -32,3 +36,4 @@ public interface OeufProductionRepository extends JpaRepository<OeufProduction, 
             @Param("dateDebut") LocalDate dateDebut,
             @Param("dateFin") LocalDate dateFin);
 }
+
