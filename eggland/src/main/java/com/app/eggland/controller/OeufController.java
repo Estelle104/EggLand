@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/oeufs")
+@RequestMapping("/admin/oeufs")
 public class OeufController {
 
     @Autowired
