@@ -238,5 +238,9 @@ public void reformerUnLot(Integer idLot, LocalDate dateReforme) {
 public Map<String, Object> getDetailLot(Integer id) {
     return lotRepository.findLotDetail(id);
 }
+
+public List<Lot> getAllLotsActifs() {
+        return lotRepository.findAllByStatutCodeIgnoreCaseOrderByIdAsc("actif");
+    }
 }
 
