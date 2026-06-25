@@ -17,6 +17,8 @@ import com.app.eggland.service.OeufStatutService;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Controller
 @RequestMapping("/admin/oeufs")
@@ -56,7 +58,7 @@ public class OeufController {
     public String save(@ModelAttribute OeufProduction oeufProduction, Model model) {
         try {
             oeufProductionService.addOeufProduction(oeufProduction);
-            return "redirect:/oeufs";
+            return "redirect:/admin/oeufs";
         } catch (RuntimeException exception) {
             model.addAttribute("erreur", exception.getMessage());
             model.addAttribute("oeufProduction", oeufProduction);
@@ -67,4 +69,11 @@ public class OeufController {
             return "oeufs/saisie";
         }
     }
+
+    @GetMapping("/historique")
+    public String historique(Model model) {
+        model.addAttribute("historiqueProduction", oeufProductionService.getHistoriqueProduction());
+        return "oeufs/historique";
+    }
+    
 }

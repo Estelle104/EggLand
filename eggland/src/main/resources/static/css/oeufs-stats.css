@@ -88,6 +88,29 @@
     font-weight: 500;
 }
 
+.stock-summary {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.history-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--primary);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.history-link:hover {
+    color: var(--hover);
+    transform: translateX(2px);
+}
+
 .chart-card {
     margin-top: 24px;
     padding: 24px;
@@ -246,13 +269,91 @@
     font-size: 32px;
 }
 
+.page-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.stats-page .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-shrink: 0;
+    padding: 12px 18px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.stats-page .btn-secondary:hover {
+    border-color: #d4c4b0;
+    background: #f7efe3;
+    transform: translateY(-1px);
+}
+
+.history-table-card .stats-table td {
+    vertical-align: middle;
+}
+
+.quantity-pill {
+    display: inline-flex;
+    min-width: 54px;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #f3e2c4;
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.status-pill {
+    display: inline-flex;
+    min-width: 86px;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #e4f4e8;
+    color: #27733b;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.status-anomaly {
+    display: inline-flex;
+    min-width: 86px;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #fbe4e1;
+    color: #a33d35;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
 @media (max-width: 700px) {
     .stats-page .page-header {
         align-items: stretch;
         flex-direction: column;
     }
 
-    .stats-page .btn-primary {
+    .page-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .stats-page .btn-primary,
+    .stats-page .btn-secondary {
         width: 100%;
     }
 
