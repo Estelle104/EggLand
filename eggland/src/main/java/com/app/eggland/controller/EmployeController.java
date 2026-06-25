@@ -1,21 +1,28 @@
 package com.app.eggland.controller;
 
-import com.app.eggland.model.Employe;
-import com.app.eggland.model.PaiementSalaire;
-import com.app.eggland.model.VersementSalaire;
-import com.app.eggland.service.EmployeService;
-import com.app.eggland.service.PaiementSalaireService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.app.eggland.model.Employe;
+import com.app.eggland.model.PaiementSalaire;
+import com.app.eggland.model.VersementSalaire;
+import com.app.eggland.service.EmployeService;
+import com.app.eggland.service.PaiementSalaireService;
+
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/employes")
@@ -148,16 +155,18 @@ public class EmployeController {
     /** Génère les 12 derniers mois (valeur "yyyy-MM" + libellé "Juin 2026") pour les filtres. */
     private List<MoisOption> genererListeMois() {
         YearMonth courant = YearMonth.now();
-        return java.util.stream.IntStream.range(0, 12)
-                .mapToObj(courant::minusMonths)
-                .map(ym -> {
-                    String nom = ym.getMonth().getDisplayName(TextStyle.FULL, Locale.FRENCH);
-                    String label = nom.substring(0, 1).toUpperCase() + nom.substring(1) + " " + ym.getYear();
-                    return new MoisOption(ym.toString(), label);
-                })
-                .toList();
-    }
+        List<MoisOption> mois = new java.util.ArrayList<>();
 
+        for (int i = 2; i >= -12; i--) {
+            YearMonth ym = courant.plusMonths(i);
+            String nom = ym.getMonth().getDisplayName(TextStyle.FULL, Locale.FRENCH);
+            String label = nom.substring(0, 1).toUpperCase() + nom.substring(1) + " " + ym.getYear();
+            mois.add(new MoisOption(ym.toString(), label));
+        }
+
+        return mois;
+    }
+    
     public record MoisOption(String value, String label) {
     }
 
