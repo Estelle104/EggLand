@@ -1,3 +1,4 @@
+
 package com.app.eggland.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -238,3 +239,4 @@ public Map<String, Object> getDetailLot(Integer id) {
     return lotRepository.findLotDetail(id);
 }
 }
+

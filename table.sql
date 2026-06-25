@@ -258,6 +258,8 @@ INSERT INTO Configuration (seuil_mort, seuil_nourriture) VALUES (5, 50.0);
 INSERT INTO useradmin(actif,email,mot_de_passe,nom,role) VALUES 
 (true,'admin@gmail.com','admin123','moi',1),
 (true,'gest@gmail.com','gestion123','ricardo',2);
+
+INSERT INTO StatutOeuf(code) VALUES ('valide');
 INSERT INTO Nourriture (libelle, prix_unitaire, seuil_alerte) VALUES
 ('sakafo1', 2000.00, 50),
 ('sakafo2', 2500.00, 30),

@@ -10,6 +10,7 @@ import com.app.eggland.model.Lot;
 import com.app.eggland.model.StatutLot;
 
 import java.util.List;
+
 import java.util.Map;
 @Repository
 public interface LotRepository extends JpaRepository<Lot, Integer>{
@@ -30,4 +31,9 @@ public interface LotRepository extends JpaRepository<Lot, Integer>{
       @Query(value = "SELECT * FROM v_lot_detail WHERE lot_id = :id", nativeQuery = true)
 Map<String, Object> findLotDetail(@Param("id") Integer id);
 
+
+
+List<Lot> findAllByStatutCodeIgnoreCaseOrderByIdAsc(String code);
+
 }
+
