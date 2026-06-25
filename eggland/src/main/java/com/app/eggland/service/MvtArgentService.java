@@ -19,8 +19,13 @@ public class MvtArgentService {
     @Autowired
     private TypeMvtRepository typeMvtRepository;
 
-    //creer un mouvement d'argent de type "sortie" pour un achat de nourriture
     public MvtArgent creerSortie(BigDecimal montant, LocalDate date, String categorie) {
+        if (date == null) {
+            date = LocalDate.now();
+        }
+        if (montant == null) {
+            montant = BigDecimal.ZERO;
+        }
 
         TypeMvt sortie = typeMvtRepository.findByCode("sortie")
                 .orElseThrow(() -> new RuntimeException("Type 'sortie' introuvable"));
@@ -32,6 +37,5 @@ public class MvtArgentService {
                 .categorie(categorie)
                 .build();
         return mvtArgentRepository.save(mvt);
-        
     }
 }
