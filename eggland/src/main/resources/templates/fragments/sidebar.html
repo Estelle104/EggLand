@@ -84,14 +84,15 @@
 
     </nav>
 
-    <div class="info-user">
+    <div class="info-user"> 
         <div class="user-info">
-            <span>Admin</span>
+            <span th:text="${#authentication.name}">Admin</span>
         </div>
-
-        <button>
-            <i class="fa-solid fa-right-from-bracket"></i> Se Déconnecter
-        </button>
+        <form th:action="@{/logout}" method="post" class="m-0 p-0">
+            <button>
+                <i class="fa-solid fa-right-from-bracket"></i> Se Déconnecter
+            </button>
+        </form>
     </div>
 
 </div>

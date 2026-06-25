@@ -9,54 +9,17 @@
             --dark: #46220E;
             --deep-brown: #93441A;
             --card-brown: #B67332;
-            --accent: #DAAB3A;
             --cream: #EEE6D8;
         }
 
-        /* Application du fond clair global */
         body {
             background-color: var(--cream) !important;
             color: var(--dark);
         }
 
-        /* Style de la carte de connexion */
         .custom-card {
             background-color: #ffffff;
-            border: 1px solid rgba(70, 34, 14, 0.125);
-            border-top: 5px solid var(--deep-brown);
-        }
-
-        .custom-title {
-            color: var(--dark);
-            font-weight: 700;
-        }
-
-        /* Style des onglets (Tabs) */
-        .nav-pills .nav-link {
-            color: var(--deep-brown);
-            border: 1px solid var(--deep-brown);
-            margin: 0 2px;
-            background-color: transparent;
-            font-weight: 500;
-        }
-
-        .nav-pills .nav-link.active {
-            background-color: var(--deep-brown) !important;
-            color: #ffffff !important;
-            border-color: var(--deep-brown);
-        }
-
-        /* Style des boutons de soumission */
-        .btn-staff {
-            background-color: var(--dark);
-            border-color: var(--dark);
-            color: #ffffff;
-        }
-
-        .btn-staff:hover {
-            background-color: #30170a;
-            border-color: #30170a;
-            color: #ffffff;
+            border-top: 5px solid var(--card-brown);
         }
 
         .btn-client {
@@ -71,90 +34,44 @@
             color: #ffffff;
         }
 
-        /* Liens du bas */
-        .footer-links a {
-            color: var(--deep-brown);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .footer-links a:hover {
-            color: var(--dark);
-            text-decoration: underline;
-        }
-
-        /* Inputs au focus */
-        .form-control:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 0.25rem rgba(218, 171, 58, 0.25);
-        }
+        .footer-links a { color: var(--deep-brown); text-decoration: none; }
     </style>
 </head>
 <body>
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-5">
             <div class="card shadow p-4 custom-card">
-                <h2 class="text-center mb-4 custom-title">Connexion EggLand</h2>
+                <h2 class="text-center mb-4" style="color: var(--dark); font-weight: 700;">Espace Client</h2>
 
-                <div th:if="${param.error}" class="alert alert-danger" style="background-color: #f8d7da; color: #721c24; border-color: #f5c6cb;">
-                    Identifiants incorrects ou compte inactif.
+                <div th:if="${param.error}" class="alert alert-danger">
+                    <span th:text="${param.error}">Identifiants incorrects ou compte inactif.</span>
                 </div>
 
-                <ul class="nav nav-pills nav-justified mb-4" id="loginTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="staff-tab" data-bs-toggle="pill" data-bs-target="#staffFormBlock" type="button" role="tab">
-                            Admin / Gestionnaire
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="client-tab" data-bs-toggle="pill" data-bs-target="#clientFormBlock" type="button" role="tab">
-                            Espace Client
-                        </button>
-                    </li>
-                </ul>
-
-                <div class="tab-content" id="loginTabsContent">
-                    
-                    <div class="tab-pane fade show active" id="staffFormBlock" role="tabpanel">
-                        <form th:action="@{/login}" method="post">
-                            <div class="mb-3">
-                                <label for="staffUsername" class="form-label" style="color: var(--dark);">Adresse Email Staff</label>
-                                <input type="email" id="staffUsername" name="username" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="staffPassword" class="form-label" style="color: var(--dark);">Mot de passe</label>
-                                <input type="password" id="staffPassword" name="password" class="form-control" required>
-                            </div>
-                            <button type="submit" class="btn btn-staff w-100 mt-2 shadow-sm">Se connecter (Staff)</button>
-                        </form>
+                <form th:action="@{/client/connexion}" method="post">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Adresse Email</label>
+                        <input type="email" id="email" name="email" class="form-control" required placeholder="nom@exemple.com">
                     </div>
-
-                    <div class="tab-pane fade" id="clientFormBlock" role="tabpanel">
-                        <form th:action="@{/client/connexion}" method="post">
-                            <div class="mb-3">
-                                <label for="clientEmail" class="form-label" style="color: var(--dark);">Adresse Email Client</label>
-                                <input type="email" id="clientEmail" name="email" class="form-control" required>
-                            </div>
-                            <button type="submit" class="btn btn-client w-100 mt-2 shadow-sm">Accéder à mon Espace Client</button>
-                        </form>
-                    </div>
-
-                </div>
+                    <button type="submit" class="btn btn-client w-100 mt-3 shadow-sm">Se connecter</button>
+                </form>
                 
-                <div class="text-center mt-4 footer-links d-flex justify-content-between px-3">
-                    <a th:href="@{/inscription}">Pas encore de compte ? S'inscrire</a>
-                    <a th:href="@{/}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left mb-1" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
-                        </svg> Retour
+                <hr class="my-4">
+
+                <div class="text-center footer-links">
+                    <a th:href="@{/inscription}" class="d-block mb-2">Pas encore de compte ? S'inscrire</a>
+                    <a th:href="@{/}" class="text-muted small">Retour à l'accueil</a>
+                </div>
+
+                <div class="text-center mt-5">
+                    <a th:href="@{/staff/login}" class="text-secondary" style="font-size: 0.75rem; text-decoration: none;">
+                        Accès administrateur et gestionnaire
                     </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>
