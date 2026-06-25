@@ -32,7 +32,7 @@
                 <div class="alert alert-danger" th:if="${erreur}" th:text="${erreur}"></div>
 
                 <div class="card-form">
-                    <form th:action="@{/oeufs/save}" th:object="${oeufProduction}" method="post">
+                    <form th:action="@{/admin/oeufs/save}" th:object="${oeufProduction}" method="post">
 
                         <input type="hidden" th:field="*{id}" />
 
@@ -91,7 +91,7 @@
                             <button type="submit" class="btn-enregistrer">
                                 <i class="fa-solid fa-save"></i> Enregistrer la collecte
                             </button>
-                            <a th:href="@{/oeufs}" class="btn-annuler">
+                            <a th:href="@{/admin/oeufs}" class="btn-annuler">
                                 <i class="fa-solid fa-xmark"></i> Annuler
                             </a>
                         </div>

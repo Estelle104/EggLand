@@ -31,7 +31,7 @@
                         <h2>Statistiques des Œufs</h2>
                         <p>Suivez le stock disponible et le rendement quotidien de chaque lot.</p>
                     </div>
-                    <a th:href="@{/oeufs/saisie}" class="btn btn-primary">
+                    <a th:href="@{/admin/oeufs/saisie}" class="btn btn-primary">
                         <i class="fa-solid fa-plus"></i> Nouvelle Collecte
                     </a>
                 </div>
@@ -40,9 +40,13 @@
                     <div class="stats-icon" aria-hidden="true">
                         <i class="fa-solid fa-egg"></i>
                     </div>
-                    <div>
+                    <div class="stock-summary">
                         <span class="stats-label">Stock disponible</span>
                         <h3><span th:text="${stock}">0</span> <small>œufs</small></h3>
+                        <a th:href="@{/admin/oeufs/historique}" class="history-link">
+                            <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+                            Voir historique
+                        </a>
                     </div>
                 </div>
 
