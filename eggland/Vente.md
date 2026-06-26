@@ -23,11 +23,11 @@
         - avec les bouttons suivants
             - [] supprimer        
             - [] modifier        
-            - [] voir details
+            - [] voir details (detailVente.html)
         - on envoie toujours l'id de vente et du client
 
     - detailVente.html
-        - [] on affiche les details d'une vente
+        - [] on afficher les detailVente.html dans un pop up avec tous les infos necessaire
         
     - formulaireModificaiton.html
         - [] une formulaire de modification
@@ -56,23 +56,17 @@
 
         - PostMapping("/ventes/creation")
             - [] Prendre les details de vente inserer dans le formulaire 
-            - [] critere de validation voir le stock d'oeuf est encore complet()
-            - [] Prendre l'id du client 
-            - [] sauver les details de vente 
-            - [] si produit = "poulet"
-                - [] on reforme le lot 
-            - [] ajouter la vente 
-            - [] Ajouter le mouvement Argent (si payer) 
+            - [] appeler fonction enregistrerVente() dans "service/VenteService.java"
             - [ok] on renvoie a "/ventes"
         
         - PostMapping("/ventes/modifier")
-            - [] on prend tous les infos du vente
-            - [] on envoie dans "ventes/formulaireModif"
+            - [ok] on prend tous les infos du vente
+            - [ok] on envoie dans "ventes/formulaireModif"
 
         - PostMapping("/ventes/supprimer")
-            - [] prendre l'id du vente
-            - [] supprimer ce vente 
-            - [] renvoier dans "/ventes"
+            - [ok] prendre l'id du vente
+            - [ok] supprimer ce vente 
+            - [ok] renvoier dans "/ventes"
 
         - PostMapping("/ventes/detail")
             - [] En prend l'id de vente et du client 
@@ -91,11 +85,18 @@
     - [ok] updateDetailVente(id_vente)
     - [ok] supprimerDetailVente(id vente,id detail)
     - [ok] prendre liste de produit
-
+    - [] enregistrerVente() :
+            - [] critere de validation : voir le stock d'oeuf est encore suffisant sinon envoie message d'erreur(A regarder dans )
+            - [] Prendre l'id du client 
+            - [] sauver les details de vente (detailVenteService) 
+            - [] si le produit = "poulet"
+                - [] on reforme le lot (service/LotService) vue que le nombre de poule dans ce lot va diminuer
+            - [] ajouter la vente 
+            - [] Ajouter le vente dans  mouvement Argent (avec type=entrer ,et categorie = "vente" dans service/MvtArgentService.java) 
 
 ## Autre 
     - Pour le formulaire de vente 
-        - [] on aura besoin d'un boutton + pour ajouter une nouvelle ligne cela se fera dans vente.js
-        - [] on ajoutera aussi si besoin la liste de lot si le produit choisis est le poulet
-        - [] Ajuste le css en consequence
-        - [] Ajouter les fragments de page  
+        - [ok] on aura besoin d'un boutton + pour ajouter une nouvelle ligne cela se fera dans vente.js
+        - [ok] on ajoutera aussi si besoin la liste de lot si le produit choisis est le poulet
+        - [ok] Ajuste le css en consequence
+        - [ok] Ajouter les fragments de page  

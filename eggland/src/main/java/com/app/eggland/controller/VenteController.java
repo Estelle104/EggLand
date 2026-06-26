@@ -7,8 +7,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.app.eggland.model.Client;
+import com.app.eggland.model.Vente;
 import com.app.eggland.model.Lot;
 import com.app.eggland.model.ProduitVente;
 import com.app.eggland.service.ClientService;
@@ -64,5 +66,20 @@ public class VenteController {
         String clientId = request.getParameter("clientId");
 
         return "redirect:/ventes";
+    }
+
+    @PostMapping("/ventes/supprimer")
+    public String supprimerVente(@RequestParam("id") int id) {
+        venteService.supprimerVente(id);
+        return "redirect:/ventes/listevente";
+    }
+
+    @PostMapping("/ventes/modifier")
+    public String modifierVente(@RequestParam("id") int id){
+        Vente vente = venteService.trouverVenteParId(id);
+        if (vente == null) {
+            return "redirect:/ventes/listevente";
+        }
+        return "redirect:/ventes/creation?id=" + id;
     }
 }
