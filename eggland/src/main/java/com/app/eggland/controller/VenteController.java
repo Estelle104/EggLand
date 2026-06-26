@@ -27,4 +27,11 @@ public class VenteController {
         return "vente/listeVente";
     }
 
+    @GetMapping("/ventes/creation")
+    public String creationVente(Model model) {
+        model.addAttribute("vente", new com.app.eggland.model.Vente());
+        model.addAttribute("lots", new com.app.eggland.model.Lot());
+        return "vente/formulairecreation";
+    }
+
 }

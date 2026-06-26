@@ -45,14 +45,14 @@
 
 
         - GetMapping("/ventes/creation")
-            - [] on creer une liste de lot (LotService)
+            - [ok] on creer une liste de lot (LotService)
             - [] prendre l'id du client et on le mets dans une vente
             - [] prendre les liste de produit (oeuf , poulet , fumier) 
-            - [] Creer une vente (l'id du client sera deja la)
+            - [ok] Creer une vente (l'id du client sera deja la)
             - [] envoyer ce vente au formulaire
             - [] envoyer cette id au formulaire
             - [] envoyer cette liste au formulaire
-            - [] le formulaire est "vente/formulaireCreation"
+            - [ok] le formulaire est "vente/formulaireCreation"
 
 
         - PostMapping("/ventes/creation")
@@ -90,6 +90,7 @@
     - [ok] findVenteById(id)
     - [ok] updateDetailVente(id_vente)
     - [ok] supprimerDetailVente(id vente,id detail)
+    - [] prendre liste de produit
 
 
 ## Autre 
