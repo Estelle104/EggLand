@@ -18,4 +18,6 @@ public interface OeufStatutRepository extends JpaRepository<OeufStatut, Integer>
     Integer sumQuantiteIndisponible();
 
     List<OeufStatut> findAllByOrderByProductionDateDescIdDesc();
+
+    
 }

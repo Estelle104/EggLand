@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.app.eggland.model.OeufProduction;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -32,8 +33,9 @@ public interface OeufProductionRepository extends JpaRepository<OeufProduction, 
             GROUP BY o.date
             ORDER BY o.date
             """)
-    List<Object[]> sumQuantiteParDate(
-            @Param("dateDebut") LocalDate dateDebut,
-            @Param("dateFin") LocalDate dateFin);
+    List<Object[]> sumQuantiteParDate(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
+
+    @Query(value = "SELECT * FROM v_historique_production", nativeQuery = true)
+    List<Map<String, Object>> findHistoriqueProduction();
 }
 

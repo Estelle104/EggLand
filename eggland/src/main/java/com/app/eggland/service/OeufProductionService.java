@@ -215,4 +215,8 @@ public class OeufProductionService {
         stat.put("taux", taux);
         return stat;
     }
+
+    public List<Map<String, Object>> getHistoriqueProduction() {
+        return oeufProductionRepository.findHistoriqueProduction();
+    }
 }
