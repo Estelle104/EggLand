@@ -12,12 +12,11 @@
         vente
         - [] prendre l'id de vente (type hidden) 
             - Le formulaire contiendra 
-                - [] Produit (id )
-                - [] quantite
-                - [] prix unitaire 
-                - [] id_client (A ajouter)
-                - [] id_vente
-                - [] Total
+                - [ok] Produit (id )
+                - [ok] quantite
+                - [ok] id_client (A ajouter)
+                - [ok] id_vente
+                - [ok] Total
 
     - listeVente.html
         - [] on affiche les ventes existant
@@ -47,11 +46,11 @@
         - GetMapping("/ventes/creation")
             - [ok] on creer une liste de lot (LotService)
             - [] prendre l'id du client et on le mets dans une vente
-            - [] prendre les liste de produit (oeuf , poulet , fumier) 
+            - [ok] prendre les liste de produit (oeuf , poulet , fumier) 
             - [ok] Creer une vente (l'id du client sera deja la)
-            - [] envoyer ce vente au formulaire
-            - [] envoyer cette id au formulaire
-            - [] envoyer cette liste au formulaire
+            - [ok] envoyer ce vente au formulaire
+            - [ok] envoyer cette id au formulaire
+            - [ok] envoyer cette liste au formulaire
             - [ok] le formulaire est "vente/formulaireCreation"
 
 
@@ -90,7 +89,7 @@
     - [ok] findVenteById(id)
     - [ok] updateDetailVente(id_vente)
     - [ok] supprimerDetailVente(id vente,id detail)
-    - [] prendre liste de produit
+    - [ok] prendre liste de produit
 
 
 ## Autre 

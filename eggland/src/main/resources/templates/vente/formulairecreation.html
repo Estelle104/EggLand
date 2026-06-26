@@ -6,8 +6,37 @@
     <title>Formulaire de création de vente</title>
 </head>
 <body>
-    <form action="" method="post">
+    <form th:action="@{/ventes/creation}"  method="post">
+        <label >Produit : </label>
+        <select name="produit">
+            <option value="">Sélectionner un produit</option>
+            <th:block th:each="produit : ${produits}">
+                <option th:value="${produit.id}" th:text="${produit.code}"></option>
+            </th:block>
+        </select>
+
+        <select name="lot" id="">
+            <option value="">Selectionner un lot</option>
+            <th:block th:each="lot : ${lots}">
+                <option th:value="${lot.id}" th:text="'Lot ' + ${lot.id}"></option>
+            </th:block>
+        </select>
+
+        <label >Client : </label>
+        <select name="client">
+            <option value="">Sélectionner un client</option>
+            <th:block th:each="client : ${clients}">
+                <option th:value="${client.id}" th:text="${client.nom}"></option>
+            </th:block>
+        </select>
+
+        <label >Quantité : </label>
+        <input type="number" name="quantite" min="1" required>        
+        
+        <h2>Total : </h2>
         <button type="submit">Créer la vente</button>
+
     </form>
+
 </body>
 </html>

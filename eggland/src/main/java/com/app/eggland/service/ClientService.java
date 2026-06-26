@@ -72,4 +72,8 @@ public class ClientService {
         this.authentifierClientManuellement(email, request);
     }
 
+    public List<Client> listeClient() {
+        return clientRepository.findAll();
+    }
+
 }
