@@ -27,6 +27,10 @@
                     </a>
                 </div>
 
+                <div class="alert-error" th:if="${erreur}" th:text="${erreur}">
+                    Message d'erreur
+                </div>
+
                 <form class="filters-bar" method="get" th:action="@{/employes/recap}">
                     <select name="mois" onchange="this.form.submit()">
                         <option th:each="m : ${listeMois}" th:value="${m.value}" th:text="${m.label}"

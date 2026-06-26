@@ -20,12 +20,16 @@
             <div th:replace="fragments/header :: header"></div>
             <div class="content">
 
-                    <a th:href="@{/employes/recap}" class="btn btn-sm">Voir les recap</a>
+                <a th:href="@{/employes/recap}" class="btn btn-sm">Voir les recap</a>
                 <div class="page-header">
                     <h2>Gestion des Employés</h2>
                     <a th:href="@{/employes/nouveau}" class="btn btn-primary">
                         <i class="fa-solid fa-plus"></i> Nouvel employé
                     </a>
+                </div>
+
+                <div class="alert-error" th:if="${erreur}" th:text="${erreur}">
+                    Message d'erreur
                 </div>
 
                 <div class="stat-box">
@@ -97,6 +101,10 @@
                 <span>Salaire</span>
                 <span th:text="${#numbers.formatDecimal(e.salaire, 0, 'WHITESPACE', 0, 'COMMA')} + ' Ar'">850 000 Ar</span>
             </div>
+            <div class="info-row">
+                <span>Date d'embauche</span>
+                <span th:text="${#temporals.format(e.dateEmbauche, 'dd/MM/yyyy')}">01/03/2026</span>
+            </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline" onclick="closeModals()">Fermer</button>
@@ -131,6 +139,10 @@
                 <div class="form-group">
                     <label>Salaire (Ar)</label>
                     <input type="number" step="0.01" th:value="${e.salaire}" name="salaire" required>
+                </div>
+                <div class="form-group">
+                    <label>Date d'embauche</label>
+                    <input type="date" th:value="${e.dateEmbauche}" name="dateEmbauche" required>
                 </div>
 
                 <div class="modal-footer-split">
