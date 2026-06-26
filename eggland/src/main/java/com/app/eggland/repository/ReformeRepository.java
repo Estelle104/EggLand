@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.app.eggland.model.Reforme;
 
 @Repository
-public interface ReformeRepository extends JpaRepository<Reforme, Integer>{    
+public interface ReformeRepository extends JpaRepository<Reforme, Integer>{   
+      void deleteByLotId(Integer lotId); 
 }

@@ -3,11 +3,8 @@ package com.app.eggland.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -21,7 +18,7 @@ public class SecurityConfig {
         http
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/","/client/accueil","/inscription","/client/inscription","/css/**","/js/**","/images/**","/test-session").permitAll() //tout le monde peut voir l'accueil et l'inscription en tant que client
-            .requestMatchers("/client/connexion","/login","/redirection").permitAll()
+            .requestMatchers("/client/connexion","/login","/redirection","/staff/login").permitAll()
             .requestMatchers("/admin/**").hasAuthority("admin")// l'admin a acces a ses fonctionnalités et toute url contenant layout et liste
             .requestMatchers("/lots/**","/gestionnaire/**").hasAnyAuthority("gestionnaire","admin")// gestionnaire a acces aux url de lots et gestionnaire définissez en fonction de vos besoin
             .requestMatchers("/client/**").hasAnyAuthority("client","admin")// le client a acces aux fonctionnalité de l'url /client

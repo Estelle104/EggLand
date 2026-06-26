@@ -204,6 +204,22 @@
 
 ---
 
+## Commande
+| Champ | Type |
+|---------|---------|
+| id | PK |
+| client_id | FK → Client.id |
+| date_livraison | DATE |
+| adresse_livraison | TEXT |
+
+## Detail_Commande
+| Champ | Type |
+|---------|---------|
+| id | PK |
+| produit_id | FK → Produit.id |
+| quantite | DECIMAL |
+| id_commande | Commande.id |
+
 ## UserAdmin
 
 | Champ | Type |

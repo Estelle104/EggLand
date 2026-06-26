@@ -57,7 +57,7 @@ public class ClientService {
         
         SecurityContextHolder.getContext().setAuthentication(authentication); // ici il dit a spring maintenant c'est un client
         
-        /* Persistance dans la session HTTP*/
+        /* Persistance dans la session HTTP donc la session client*/
         HttpSession session = request.getSession(true);
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
     }
