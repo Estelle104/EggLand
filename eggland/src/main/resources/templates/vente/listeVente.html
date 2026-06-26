@@ -1,12 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste des ventes</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/vente.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 <body>
-    <h1>Ici sera la liste des ventes</h1>
-    <a th:href="@{/ventes/creation}">Ajouter une vente</a>
+<div class="app">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div class="main">
+        <div th:replace="fragments/header :: header"></div>
+        <div class="content">
+
+            <div class="page-header">
+                <h2>Liste des ventes</h2>
+                <a th:href="@{/ventes/creation}" class="btn-ajouter">
+                    <i class="fa-solid fa-plus"></i> Ajouter une vente
+                </a>
+            </div>
+
+            <div class="card">
+                <div th:if="${#lists.isEmpty(ventes)}" class="vide-message">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Aucune vente pour l'instant
+                </div>
+
+                <table th:if="${not #lists.isEmpty(ventes)}">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Client</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="vente : ${ventes}">
+                            <td th:text="${vente.id}"></td>
+                            <td th:text="${vente.client != null ? vente.client.nom : '-'}"></td>
+                            <td th:text="${vente.date != null ? #temporals.format(vente.date, 'dd/MM/yyyy') : '-'}"></td>
+                            <td th:text="${vente.total != null ? vente.total + ' Ar' : '-'}"></td>
+                            <td>
+                                <span class="badge badge-green"
+                                      th:if="${vente.statut != null}"
+                                      th:text="${vente.statut.code}"></span>
+                                <span class="badge badge-gray"
+                                      th:if="${vente.statut == null}">N/A</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
 </body>
 </html>
