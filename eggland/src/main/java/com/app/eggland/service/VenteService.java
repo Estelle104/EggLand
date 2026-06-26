@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.app.eggland.model.ProduitVente;
 import com.app.eggland.model.Vente;
+import com.app.eggland.repository.ProduitVenteRepository;
 import com.app.eggland.repository.VenteRepository;
 
 @Service
@@ -17,8 +18,8 @@ public class VenteService {
     @Autowired
     private MvtArgentService mvtArgentService;
 
-    // @Autowired
-    // private ProduitVenteRepository produitVenteService;
+    @Autowired
+    private ProduitVenteRepository produitVenteRepository;
 
     public void saveVente(Vente vente) {
         venteRepository.save(vente);
@@ -36,6 +37,9 @@ public class VenteService {
         return venteRepository.findById(id).orElse(null);
     }
 
+    public List<ProduitVente> listeProduitVente() {
+        return produitVenteRepository.findAll();
+    }
 
 
     
