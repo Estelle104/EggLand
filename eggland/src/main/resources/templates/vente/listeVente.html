@@ -25,6 +25,16 @@
                 </a>
             </div>
 
+            <!-- Messages flash -->
+            <div th:if="${success}" class="alert alert-success">
+                <i class="fa-solid fa-circle-check"></i>
+                <span th:text="${success}"></span>
+            </div>
+            <div th:if="${error}" class="alert alert-danger">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span th:text="${error}"></span>
+            </div>
+
             <div class="card">
                 <div th:if="${#lists.isEmpty(ventes)}" class="vide-message">
                     <i class="fa-solid fa-cart-shopping"></i>
@@ -39,6 +49,7 @@
                             <th>Date</th>
                             <th>Total</th>
                             <th>Statut</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,13 +57,35 @@
                             <td th:text="${vente.id}"></td>
                             <td th:text="${vente.client != null ? vente.client.nom : '-'}"></td>
                             <td th:text="${vente.date != null ? #temporals.format(vente.date, 'dd/MM/yyyy') : '-'}"></td>
-                            <td th:text="${vente.total != null ? vente.total + ' Ar' : '-'}"></td>
+                            <td th:text="${vente.total != null ? #numbers.formatDecimal(vente.total,0,'WHITESPACE',2,'COMMA') + ' Ar' : '-'}"></td>
                             <td>
                                 <span class="badge badge-green"
                                       th:if="${vente.statut != null}"
                                       th:text="${vente.statut.code}"></span>
                                 <span class="badge badge-gray"
                                       th:if="${vente.statut == null}">N/A</span>
+                            </td>
+                            <td class="actions-cell">
+                                <!-- Voir détail -->
+                                <form th:action="@{/ventes/detail}" method="post" style="display:inline">
+                                    <input type="hidden" name="id" th:value="${vente.id}">
+                                    <input type="hidden" name="clientId" th:value="${vente.client != null ? vente.client.id : ''}">
+                                    <button type="submit" class="btn-action btn-detail" title="Voir détail">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </form>
+                                <!-- Modifier -->
+                                <a th:href="@{/ventes/modifier(id=${vente.id})}" class="btn-action btn-modifier" title="Modifier">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+                                <!-- Supprimer -->
+                                <form th:action="@{/ventes/supprimer}" method="post" style="display:inline"
+                                      onsubmit="return confirm('Supprimer cette vente ?')">
+                                    <input type="hidden" name="id" th:value="${vente.id}">
+                                    <button type="submit" class="btn-action btn-supprimer" title="Supprimer">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     </tbody>
