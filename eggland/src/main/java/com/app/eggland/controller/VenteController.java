@@ -8,8 +8,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.app.eggland.model.Client;
+import com.app.eggland.model.DetailVente;
 import com.app.eggland.model.Vente;
 import com.app.eggland.model.Lot;
 import com.app.eggland.model.ProduitVente;
@@ -58,28 +60,126 @@ public class VenteController {
         return "vente/formulairecreation";
     }
 
-    @PostMapping("/ventes/creation")
-    public String creerVente(HttpServletRequest request) {
-        String[] produitIds = request.getParameterValues("produitId");
-        String[] quantites = request.getParameterValues("quantite");
-        String[] prixUnitaires = request.getParameterValues("prixUnitaire");
-        String clientId = request.getParameter("clientId");
+ @PostMapping("/ventes/creation")
+    public String creerVente(HttpServletRequest request,
+                             RedirectAttributes redirectAttrs) {
+        try {
+            String clientIdStr   = request.getParameter("clientId");
+            String[] produitIds  = request.getParameterValues("produitId");
+            String[] quantites   = request.getParameterValues("quantite");
+            String[] prixUnits   = request.getParameterValues("prixUnitaire");
+            String[] lotIds      = request.getParameterValues("lotId");
 
-        return "redirect:/ventes";
-    }
+            if (clientIdStr == null || clientIdStr.isBlank()) {
+                redirectAttrs.addFlashAttribute("error", "Veuillez sélectionner un client.");
+                return "redirect:/ventes/creation";
+            }
 
-    @PostMapping("/ventes/supprimer")
-    public String supprimerVente(@RequestParam("id") int id) {
-        venteService.supprimerVente(id);
+            Client client = clientService.trouverClientParId(Integer.parseInt(clientIdStr));
+            if (client == null) {
+                redirectAttrs.addFlashAttribute("error", "Client introuvable.");
+                return "redirect:/ventes/creation";
+            }
+
+            venteService.enregistrerVente(client, produitIds, quantites, prixUnits, lotIds);
+            redirectAttrs.addFlashAttribute("success", "Vente créée avec succès.");
+
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            redirectAttrs.addFlashAttribute("error", e.getMessage());
+            return "redirect:/ventes/creation";
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("error", "Erreur inattendue : " + e.getMessage());
+            return "redirect:/ventes/creation";
+        }
+
         return "redirect:/ventes/listevente";
     }
 
-    @PostMapping("/ventes/modifier")
-    public String modifierVente(@RequestParam("id") int id){
+
+    @PostMapping("/ventes/supprimer")
+    public String supprimerVente(@RequestParam("id") int id,
+                                 RedirectAttributes redirectAttrs) {
+        try {
+            venteService.supprimerVente(id);
+            redirectAttrs.addFlashAttribute("success", "Vente supprimée.");
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("error", "Impossible de supprimer : " + e.getMessage());
+        }
+        return "redirect:/ventes/listevente";
+    }
+
+    @GetMapping("/ventes/modifier")
+    public String formulaireModification(@RequestParam("id") int id, Model model) {
         Vente vente = venteService.trouverVenteParId(id);
         if (vente == null) {
             return "redirect:/ventes/listevente";
         }
-        return "redirect:/ventes/creation?id=" + id;
+        List<DetailVente> details = venteService.listeDetailVente(id);
+        List<Client> clients = clientService.listeClient();
+        List<ProduitVente> produits = venteService.listeProduitVente();
+        List<Lot> lots = lotService.getAllLotsActifs();
+
+        model.addAttribute("vente", vente);
+        model.addAttribute("details", details);
+        model.addAttribute("clients", clients);
+        model.addAttribute("produits", produits);
+        model.addAttribute("lots", lots);
+        return "vente/formulaireModification";
+    }
+
+    @PostMapping("/ventes/modifier")
+    public String modifierVente(HttpServletRequest request,
+                                RedirectAttributes redirectAttrs) {
+        try {
+            String venteIdStr  = request.getParameter("venteId");
+            String clientIdStr = request.getParameter("clientId");
+
+            if (venteIdStr == null || clientIdStr == null) {
+                redirectAttrs.addFlashAttribute("error", "Données manquantes.");
+                return "redirect:/ventes/listevente";
+            }
+
+            int venteId  = Integer.parseInt(venteIdStr);
+            Client client = clientService.trouverClientParId(Integer.parseInt(clientIdStr));
+
+            Vente vente = venteService.trouverVenteParId(venteId);
+            if (vente == null) {
+                redirectAttrs.addFlashAttribute("error", "Vente introuvable.");
+                return "redirect:/ventes/listevente";
+            }
+
+            // Supprimer les anciens détails et recréer
+            List<DetailVente> anciensDetails = venteService.listeDetailVente(venteId);
+            for (DetailVente d : anciensDetails) {
+                detailVenteService.supprimerDetailVente(d.getId());
+            }
+
+            String[] produitIds = request.getParameterValues("produitId");
+            String[] quantites  = request.getParameterValues("quantite");
+            String[] prixUnits  = request.getParameterValues("prixUnitaire");
+            String[] lotIds     = request.getParameterValues("lotId");
+
+            venteService.enregistrerVente(client, produitIds, quantites, prixUnits, lotIds);
+            redirectAttrs.addFlashAttribute("success", "Vente modifiée avec succès.");
+
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/ventes/listevente";
+    }
+
+
+    @PostMapping("/ventes/detail")
+    public String detailVente(@RequestParam("id") int id,
+                              @RequestParam(value = "clientId", required = false) Integer clientId,
+                              Model model) {
+        Vente vente = venteService.trouverVenteParId(id);
+        if (vente == null) {
+            return "redirect:/ventes/listevente";
+        }
+        List<DetailVente> details = venteService.listeDetailVente(id);
+        model.addAttribute("vente", vente);
+        model.addAttribute("details", details);
+        return "vente/detailVente";
     }
 }
