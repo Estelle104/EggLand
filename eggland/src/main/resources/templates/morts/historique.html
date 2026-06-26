@@ -106,8 +106,9 @@
                             <th>Taux (%)</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr th:each="mort : ${morts}">
+                    <tbody id="mortsTableBody">
+                        <tr th:each="mort : ${morts}"
+                            th:attr="data-lot-id=${mort.lot != null ? mort.lot.id : ''}, data-date=${#temporals.format(mort.date, 'dd/MM/yyyy')}, data-nombre=${mort.nombre != null ? mort.nombre : 0}">
                             <td th:text="${#temporals.format(mort.date, 'dd/MM/yyyy')}"></td>
                             <td th:text="${mort.lot != null ? 'Lot #' + mort.lot.id : '-'}"></td>
                             <td th:text="${mort.nombre}"></td>
@@ -115,6 +116,7 @@
                         </tr>
                     </tbody>
                 </table>
+                <div id="emptyFilteredState" class="empty-state" style="display:none;">Aucune donnée disponible pour ce lot.</div>
                 <div class="empty-state" th:if="${morts == null or #lists.isEmpty(morts)}">Aucune donnée disponible</div>
             </div>
         </div>
@@ -125,10 +127,45 @@
 <script th:inline="javascript">
     const chartLabels = /*[[${chartLabels}]]*/ [];
     const chartData = /*[[${chartData}]]*/ [];
+    let mortalityChart;
+
+    function applyFilters() {
+        const selectedLot = document.getElementById('lotFilter').value;
+        const rows = document.querySelectorAll('#mortsTableBody tr');
+        const groupedData = new Map();
+        let visibleRows = 0;
+
+        rows.forEach(row => {
+            const rowLot = row.getAttribute('data-lot-id') || '';
+            const shouldShow = !selectedLot || rowLot === selectedLot;
+            row.style.display = shouldShow ? '' : 'none';
+            if (!shouldShow) return;
+
+            visibleRows++;
+            const label = row.getAttribute('data-date') || '';
+            const value = Number(row.getAttribute('data-nombre') || 0);
+            if (label) {
+                groupedData.set(label, (groupedData.get(label) || 0) + value);
+            }
+        });
+
+        const emptyFilteredState = document.getElementById('emptyFilteredState');
+        if (emptyFilteredState) {
+            emptyFilteredState.style.display = visibleRows === 0 ? 'block' : 'none';
+        }
+
+        if (mortalityChart) {
+            const labels = Array.from(groupedData.keys());
+            const values = Array.from(groupedData.values());
+            mortalityChart.data.labels = labels;
+            mortalityChart.data.datasets[0].data = values;
+            mortalityChart.update();
+        }
+    }
 
     document.addEventListener('DOMContentLoaded', function () {
         const ctx = document.getElementById('mortalityChart').getContext('2d');
-        new Chart(ctx, {
+        mortalityChart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: chartLabels,
@@ -148,6 +185,9 @@
                 scales: { y: { beginAtZero: true } }
             }
         });
+
+        document.getElementById('lotFilter').addEventListener('change', applyFilters);
+        applyFilters();
     });
 </script>
 </body>

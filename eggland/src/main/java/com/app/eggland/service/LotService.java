@@ -241,13 +241,17 @@ public Map<String, Object> getDetailLot(Integer id) {
 public List<Lot> getAllLotsActifs() {
         return lotRepository.findAllByStatutCodeIgnoreCaseOrderByIdAsc("actif");
     }
-}
 
+public List<Lot> findAll() {
+        return lotRepository.findAll();
+    }
+}
+/*
 
 package com.app.eggland.service;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.List;package com.app.eggland.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -277,3 +281,4 @@ public class LotService {
         lotRepository.deleteById(id);
     }
 }
+*/

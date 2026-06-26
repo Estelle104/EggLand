@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,12 +65,23 @@ public class MortController {
             currentCounts.put(mort.getId(), mortService.getNombreActuel(mort.getLot()));
         }
 
+        Map<String, Integer> mortalityByDay = new LinkedHashMap<>();
+        for (Mort mort : morts) {
+            String label = mort.getDate() != null ? mort.getDate().toString() : "";
+            if (label.isEmpty()) {
+                continue;
+            }
+            mortalityByDay.merge(label, mort.getNombre() == null ? 0 : mort.getNombre(), Integer::sum);
+        }
+
         model.addAttribute("morts", morts);
         model.addAttribute("currentCounts", currentCounts);
         model.addAttribute("lots", mortService.findAllLotTemporary());
         model.addAttribute("pageTitle", "Historique des mortalités");
         model.addAttribute("totalMorts", totalMorts);
-        return "morts/liste";
+        model.addAttribute("chartLabels", new ArrayList<>(mortalityByDay.keySet()));
+        model.addAttribute("chartData", new ArrayList<>(mortalityByDay.values()));
+        return "morts/historique";
     }
 
     @GetMapping("/edit/{id}")

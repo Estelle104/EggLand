@@ -20,6 +20,7 @@ public class MortService {
     @Autowired
     private LotRepository lotRepository;
 
+    /// CRUD
     public Mort save(Mort mort) {
         if (mort.getDate() == null) {
             mort.setDate(LocalDate.now());
@@ -38,7 +39,7 @@ public class MortService {
     public void deleteById(Integer id) {
         mortRepository.deleteById(id);
     }
-
+    //fonction lot temporaire  (git conflict)
     public List<Lot> findAllLotTemporary() {
         return lotRepository.findAll();
     }
@@ -47,6 +48,7 @@ public class MortService {
         return mortRepository.findByLot(lot);
     }
 
+    // nombre de poule vivant
     public Integer getNombreActuel(Lot lot) {
         Integer totalMorts = mortRepository.sumMortalityByLot(lot);
         return lot.getNombreInitial() - totalMorts;
