@@ -76,4 +76,7 @@ public class ClientService {
         return clientRepository.findAll();
     }
 
+    public Client trouverClientParId(int id) {
+        return clientRepository.findById(id).orElse(null);
+    }
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.app.eggland.model.Client;
 import com.app.eggland.model.Lot;
@@ -14,6 +15,9 @@ import com.app.eggland.service.ClientService;
 import com.app.eggland.service.DetailVenteService;
 import com.app.eggland.service.LotService;
 import com.app.eggland.service.VenteService;
+
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class VenteController {
@@ -52,4 +56,13 @@ public class VenteController {
         return "vente/formulairecreation";
     }
 
+    @PostMapping("/ventes/creation")
+    public String creerVente(HttpServletRequest request) {
+        String[] produitIds = request.getParameterValues("produitId");
+        String[] quantites = request.getParameterValues("quantite");
+        String[] prixUnitaires = request.getParameterValues("prixUnitaire");
+        String clientId = request.getParameter("clientId");
+
+        return "redirect:/ventes";
+    }
 }

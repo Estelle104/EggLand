@@ -41,6 +41,8 @@ public class VenteService {
         return produitVenteRepository.findAll();
     }
 
-
+    public ProduitVente trouverProduitVenteParId(int id) {
+        return produitVenteRepository.findById(id).orElse(null);
+    }
     
 }

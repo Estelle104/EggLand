@@ -45,7 +45,7 @@
 
         - GetMapping("/ventes/creation")
             - [ok] on creer une liste de lot (LotService)
-            - [] prendre l'id du client et on le mets dans une vente
+            - [ok] prendre l'id du client et on le mets dans une vente
             - [ok] prendre les liste de produit (oeuf , poulet , fumier) 
             - [ok] Creer une vente (l'id du client sera deja la)
             - [ok] envoyer ce vente au formulaire
@@ -56,13 +56,14 @@
 
         - PostMapping("/ventes/creation")
             - [] Prendre les details de vente inserer dans le formulaire 
+            - [] critere de validation voir le stock d'oeuf est encore complet()
             - [] Prendre l'id du client 
             - [] sauver les details de vente 
             - [] si produit = "poulet"
                 - [] on reforme le lot 
             - [] ajouter la vente 
             - [] Ajouter le mouvement Argent (si payer) 
-            - [] on renvoie a "/ventes"
+            - [ok] on renvoie a "/ventes"
         
         - PostMapping("/ventes/modifier")
             - [] on prend tous les infos du vente
