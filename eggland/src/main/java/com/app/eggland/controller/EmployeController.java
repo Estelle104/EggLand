@@ -1,28 +1,22 @@
 package com.app.eggland.controller;
 
+import com.app.eggland.model.Employe;
+import com.app.eggland.model.PaiementSalaire;
+import com.app.eggland.model.VersementSalaire;
+import com.app.eggland.service.EmployeService;
+import com.app.eggland.service.PaiementSalaireService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import com.app.eggland.model.Employe;
-import com.app.eggland.model.PaiementSalaire;
-import com.app.eggland.model.VersementSalaire;
-import com.app.eggland.service.EmployeService;
-import com.app.eggland.service.PaiementSalaireService;
-
-import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/employes")
@@ -49,8 +43,13 @@ public class EmployeController {
     }
 
     @PostMapping("/nouveau")
-    public String creer(@ModelAttribute Employe employe) {
-        employeService.creer(employe);
+    public String creer(@ModelAttribute Employe employe, RedirectAttributes redirectAttributes) {
+        try {
+            employeService.creer(employe);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("erreur", e.getMessage());
+            return "redirect:/employes/nouveau";
+        }
         return "redirect:/employes";
     }
 
@@ -67,8 +66,14 @@ public class EmployeController {
                             @RequestParam String nom,
                             @RequestParam String prenom,
                             @RequestParam(required = false) String tel,
-                            @RequestParam BigDecimal salaire) {
-        employeService.modifier(id, nom, prenom, tel, salaire);
+                            @RequestParam BigDecimal salaire,
+                            @RequestParam String dateEmbauche,
+                            RedirectAttributes redirectAttributes) {
+        try {
+            employeService.modifier(id, nom, prenom, tel, salaire, LocalDate.parse(dateEmbauche));
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("erreur", e.getMessage());
+        }
         return "redirect:/employes";
     }
 
@@ -143,16 +148,23 @@ public class EmployeController {
     public String verser(@PathVariable Integer id,
                           @RequestParam String mois,
                           @RequestParam BigDecimal montant,
-                          @RequestParam String date) {
+                          @RequestParam String date,
+                          RedirectAttributes redirectAttributes) {
         LocalDate moisDate = LocalDate.parse(mois + "-01");
         LocalDate dateVersement = LocalDate.parse(date);
-        paiementSalaireService.verser(id, moisDate, montant, dateVersement);
+
+        try {
+            paiementSalaireService.verser(id, moisDate, montant, dateVersement);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("erreur", e.getMessage());
+        }
+
         return "redirect:/employes/recap?mois=" + mois;
     }
 
     // ---------- Utilitaire ----------
 
-    /** Génère les 12 derniers mois (valeur "yyyy-MM" + libellé "Juin 2026") pour les filtres. */
+    /** Génère les mois pour les filtres : 2 mois à venir + le mois actuel + 12 mois passés. */
     private List<MoisOption> genererListeMois() {
         YearMonth courant = YearMonth.now();
         List<MoisOption> mois = new java.util.ArrayList<>();
@@ -166,7 +178,7 @@ public class EmployeController {
 
         return mois;
     }
-    
+
     public record MoisOption(String value, String label) {
     }
 

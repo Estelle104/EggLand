@@ -3,6 +3,7 @@ package com.app.eggland.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "employe")
@@ -26,4 +27,7 @@ public class Employe {
 
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal salaire;
+
+    @Column(name = "date_embauche", nullable = false)
+    private LocalDate dateEmbauche;
 }

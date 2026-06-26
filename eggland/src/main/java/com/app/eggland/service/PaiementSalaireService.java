@@ -52,6 +52,8 @@ public class PaiementSalaireService {
         Employe employe = employeService.trouverParId(employeId);
         LocalDate premierJourMois = mois.withDayOfMonth(1);
 
+        verifierPosterieurEmbauche(employe, premierJourMois, dateVersement);
+
         PaiementSalaire paiement = paiementSalaireRepository
                 .findByEmployeAndMois(employe, premierJourMois)
                 .orElse(PaiementSalaire.builder()
@@ -60,6 +62,8 @@ public class PaiementSalaireService {
                         .montant(BigDecimal.ZERO)
                         .paye(false)
                         .build());
+
+        verifierNeDepassePasSalaireDu(employe, paiement.getMontant(), montantVerse);
 
         BigDecimal nouveauCumul = paiement.getMontant().add(montantVerse);
         paiement.setMontant(nouveauCumul);
@@ -112,6 +116,47 @@ public class PaiementSalaireService {
         YearMonth ym = YearMonth.from(mois);
         String moisNom = ym.getMonth().getDisplayName(TextStyle.FULL, Locale.FRENCH);
         return moisNom.substring(0, 1).toUpperCase() + moisNom.substring(1) + " " + ym.getYear();
+    }
+
+    private void verifierPosterieurEmbauche(Employe employe, LocalDate premierJourMois, LocalDate dateVersement) {
+        LocalDate embauche = employe.getDateEmbauche();
+        if (embauche == null) {
+            return; // sécurité : ne devrait pas arriver, le champ est obligatoire à la création
+        }
+
+        LocalDate premierJourMoisEmbauche = embauche.withDayOfMonth(1);
+
+        if (premierJourMois.isBefore(premierJourMoisEmbauche)) {
+            throw new IllegalArgumentException(
+                    "Impossible de verser un salaire pour " + formatMoisLabel(premierJourMois)
+                            + " : " + employe.getPrenom() + " " + employe.getNom()
+                            + " a été embauché(e) le " + embauche + ".");
+        }
+
+        if (dateVersement.isBefore(embauche)) {
+            throw new IllegalArgumentException(
+                    "La date du versement (" + dateVersement + ") ne peut pas être antérieure "
+                            + "à la date d'embauche (" + embauche + ").");
+        }
+    }
+
+    private void verifierNeDepassePasSalaireDu(Employe employe, BigDecimal montantDejaVerse, BigDecimal montantVerse) {
+        BigDecimal salaireDu = employe.getSalaire();
+
+        if (montantDejaVerse.compareTo(salaireDu) >= 0) {
+            throw new IllegalArgumentException(
+                    "Le salaire de " + employe.getPrenom() + " " + employe.getNom()
+                            + " est déjà entièrement payé pour ce mois (" + montantDejaVerse + " Ar versés sur "
+                            + salaireDu + " Ar dus).");
+        }
+
+        BigDecimal nouveauCumul = montantDejaVerse.add(montantVerse);
+        if (nouveauCumul.compareTo(salaireDu) > 0) {
+            BigDecimal restant = salaireDu.subtract(montantDejaVerse);
+            throw new IllegalArgumentException(
+                    "Le montant saisi dépasse le salaire dû. Il reste " + restant
+                            + " Ar à verser pour " + employe.getPrenom() + " " + employe.getNom() + ".");
+        }
     }
 
     /** Une ligne du récap mensuel : employé, statut, montant versé, % payé, dernière date. */
