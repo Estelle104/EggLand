@@ -4,6 +4,37 @@
     var ID_POULE = 2;
     var ligneIndex = 0;
 
+    // ----------------------------------------------------------------
+    // Fonction de calcul du Total Global
+    // ----------------------------------------------------------------
+    function calculerTotalVente() {
+        var tbody = document.getElementById('lignes-tbody');
+        var totalGlobal = 0;
+
+        if (!tbody) return;
+
+        // On parcourt chaque ligne du tableau
+        tbody.querySelectorAll('tr').forEach(function (tr) {
+            var inputQte = tr.querySelector('input[name*="quantite"]');
+            var inputPrix = tr.querySelector('input[name*="prixUnitaire"]');
+
+            if (inputQte && inputPrix) {
+                var qte = parseFloat(inputQte.value) || 0;
+                var prix = parseFloat(inputPrix.value) || 0;
+                totalGlobal += qte * prix;
+            }
+        });
+
+        // Mise à jour de l'affichage du total (formaté à 2 décimales)
+        var totalDisplay = document.getElementById('total-vente');
+        if (totalDisplay) {
+            totalDisplay.textContent = totalGlobal.toFixed(2) + ' Ar';
+        }
+    }
+
+    // ----------------------------------------------------------------
+    // Crée le dropdown des Produits
+    // ----------------------------------------------------------------
     function creerDropdownProduits(inputProduitId, triggerProduit, inputLotId, triggerLot, divLotDropdown) {
         var container = document.createElement('div');
         container.className = 'custom-dropdown';
@@ -20,14 +51,12 @@
             li.textContent = p.code;
             li.dataset.id = p.id;
 
-            // Effet au survol d'une option produit
             li.addEventListener('mouseenter', function () {
                 if (parseInt(p.id) === ID_POULE) {
                     divLotDropdown.classList.remove('lot-disabled');
                 }
             });
 
-            // Clic sur un produit
             li.addEventListener('click', function () {
                 ul.querySelectorAll('li').forEach(function (el) { el.classList.remove('selected'); });
                 li.classList.add('selected');
@@ -35,11 +64,9 @@
                 inputProduitId.value = p.id;
                 triggerProduit.querySelector('span').textContent = p.code;
 
-                // Logique spécifique à l'ID_POULE
                 if (parseInt(p.id) === ID_POULE) {
                     divLotDropdown.classList.remove('lot-disabled');
                 } else {
-                    // Reset du lot si ce n'est pas une poule
                     inputLotId.value = '';
                     triggerLot.querySelector('span').textContent = 'N/A (Pas de lot)';
                     divLotDropdown.classList.add('lot-disabled');
@@ -50,7 +77,6 @@
             ul.appendChild(li);
         });
 
-        // Si on quitte le bloc produit sans avoir cliqué, on réévalue l'état selon la valeur réelle
         container.addEventListener('mouseleave', function () {
             if (parseInt(inputProduitId.value) !== ID_POULE) {
                 divLotDropdown.classList.add('lot-disabled');
@@ -61,9 +87,12 @@
         return container;
     }
 
+    // ----------------------------------------------------------------
+    // Crée le dropdown des Lots
+    // ----------------------------------------------------------------
     function creerDropdownLots(inputLotId, triggerLot) {
         var container = document.createElement('div');
-        container.className = 'custom-dropdown lot-disabled'; // Bloqué par défaut tant qu'on a pas choisi Poule
+        container.className = 'custom-dropdown lot-disabled';
 
         triggerLot.className = 'dropdown-trigger';
         triggerLot.innerHTML = '<span>Sélectionner lot</span> <i class="fa-solid fa-chevron-down"></i>';
@@ -92,11 +121,13 @@
         return container;
     }
 
+    // ----------------------------------------------------------------
+    // Crée une ligne complète du tableau
+    // ----------------------------------------------------------------
     function creerLigne() {
         var idx = ligneIndex++;
         var tr = document.createElement('tr');
 
-        // Id générés uniques pour les inputs (important pour la soumission de formulaires en tableaux)
         var inputProduitId = document.createElement('input');
         inputProduitId.type = 'hidden';
         inputProduitId.name = 'ventesLignes[' + idx + '].produitId';
@@ -128,6 +159,8 @@
         inputQte.min = '1';
         inputQte.placeholder = 'Qté';
         inputQte.required = true;
+        // Déclenche le calcul à chaque saisie de quantité
+        inputQte.addEventListener('input', calculerTotalVente);
         tdQte.appendChild(inputQte);
 
         // --- Cellule Prix unitaire ---
@@ -139,6 +172,8 @@
         inputPrix.step = '0.01';
         inputPrix.placeholder = 'Prix';
         inputPrix.required = true;
+        // Déclenche le calcul à chaque saisie de prix
+        inputPrix.addEventListener('input', calculerTotalVente);
         tdPrix.appendChild(inputPrix);
 
         // --- Cellule Supprimer ---
@@ -150,7 +185,10 @@
         btnSuppr.innerHTML = '<i class="fa-solid fa-trash"></i>';
         btnSuppr.addEventListener('click', function () {
             var tbody = document.getElementById('lignes-tbody');
-            if (tbody && tbody.rows.length > 1) tbody.removeChild(tr);
+            if (tbody && tbody.rows.length > 1) {
+                tbody.removeChild(tr);
+                calculerTotalVente(); // Recalculer après suppression
+            }
         });
         tdSuppr.appendChild(btnSuppr);
 
@@ -163,16 +201,19 @@
         return tr;
     }
 
+    // ----------------------------------------------------------------
+    // Init
+    // ----------------------------------------------------------------
     document.addEventListener('DOMContentLoaded', function () {
         var tbody = document.getElementById('lignes-tbody');
         var btn   = document.getElementById('btn-ajouter-ligne');
         if (!tbody || !btn) return;
 
-        // Première ligne par défaut
         tbody.appendChild(creerLigne());
 
         btn.addEventListener('click', function () {
             tbody.appendChild(creerLigne());
+            calculerTotalVente();
         });
     });
 
