@@ -5,9 +5,7 @@
     var ID_POULE = 2;
     var ligneIndex = 0;
 
-    // ----------------------------------------------------------------
-    // Calcul du total global affiché dans le tfoot
-    // ----------------------------------------------------------------
+   
     function calculerTotalVente() {
         var tbody = document.getElementById('lignes-tbody');
         var totalGlobal = 0;
@@ -29,9 +27,6 @@
         }
     }
 
-    // ----------------------------------------------------------------
-    // Dropdown Produits
-    // ----------------------------------------------------------------
     function creerDropdownProduits(inputProduitId, triggerProduit, inputLotId, triggerLot, divLotDropdown) {
         var container = document.createElement('div');
         container.className = 'custom-dropdown';
@@ -117,9 +112,6 @@
         return container;
     }
 
-    // ----------------------------------------------------------------
-    // Créer une ligne
-    // ----------------------------------------------------------------
     function creerLigne() {
         ligneIndex++;
         var tr = document.createElement('tr');
