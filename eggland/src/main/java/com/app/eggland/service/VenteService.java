@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.app.eggland.model.Client;
 import com.app.eggland.model.DetailVente;
-import com.app.eggland.model.Lot;
 import com.app.eggland.model.ProduitVente;
 import com.app.eggland.model.StatutVente;
 import com.app.eggland.model.Vente;
@@ -68,6 +67,14 @@ public class VenteService {
 
     public ProduitVente trouverProduitVenteParId(int id) {
         return produitVenteRepository.findById(id).orElse(null);
+    }
+
+    public ProduitVente trouverProduitVenteParCode(String code) {
+        return produitVenteRepository.findByCode(code).orElse(null);
+    }
+
+    public StatutVente trouverStatutVenteParCode(String code) {
+        return statutVenteRepository.findByCode(code).orElse(null);
     }
 
     public List<DetailVente> listeDetailVente(int idVente) {
