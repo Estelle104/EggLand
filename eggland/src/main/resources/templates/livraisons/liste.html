@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Livraisons - Eggland</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        .page-header { margin-bottom: 24px; }
+        .page-header h2 { color: var(--text); font-size: 22px; }
+        .card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 14px 12px; color: var(--text-light); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--border); }
+        td { padding: 14px 12px; border-bottom: 1px solid var(--border); color: var(--text); font-size: 14px; }
+        tr:hover td { background: rgba(184, 122, 42, 0.04); }
+        .btn-primary { background: var(--primary); color: #fff; padding: .75rem 1.25rem; border-radius: 8px; text-decoration: none; display: inline-block; margin-bottom: 16px; }
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; text-transform: uppercase; letter-spacing: .25px; }
+        .badge-en_attente { background: #ffe8a1; color: #7a5d00; }
+        .badge-en_cours { background: #cce5ff; color: #084298; }
+        .badge-livre { background: #d4edda; color: #0f5132; }
+        .small-form { margin: 0; }
+        .small-form select { border-radius: 8px; padding: 8px; border: 1px solid var(--border); }
+        .small-form button { margin-left: 8px; }
+        .btn-pdf { background: #c41e3a; color: #fff; padding: 8px 12px; border-radius: 6px; border: none; font-size: 12px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-pdf:hover { background: #a01830; }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+        <div class="main">
+            <div th:replace="fragments/header :: header"></div>
+            <div class="content">
+
+                <div class="page-header">
+                    <h2 th:text="${pageTitle}">Livraisons</h2>
+                </div>
+
+                <div style="display:flex; gap: 12px; align-items:center; margin-bottom:16px;">
+                    <a class="btn-primary" th:href="@{/admin/livraisons/creation}">
+                        <i class="fa-solid fa-truck-fast"></i> Nouvelle livraison
+                    </a>
+                </div>
+
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Client</th>
+                                <th>Vente</th>
+                                <th>Adresse</th>
+                                <th>Date</th>
+                                <th>Frais</th>
+                                <th>Statut</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="livraison : ${livraisons}">
+                                <td th:text="${livraison.id}"></td>
+                                <td th:text="${livraison.client.nom}"></td>
+                                <td th:text="${livraison.vente.id}"></td>
+                                <td th:text="${livraison.adresseLivraison}"></td>
+                                <td th:text="${#temporals.format(livraison.dateLivraison, 'dd/MM/yyyy')}"></td>
+                                <td th:text="${#numbers.formatDecimal(livraison.fraisLivraison, 0, 'WHITESPACE', 2, 'COMMA')} + ' Ar'"></td>
+                                <td>
+                                    <span class="badge" th:classappend="${'badge-' + livraison.statut.code}" th:text="${livraison.statut.code}"></span>
+                                </td>
+                                <td>
+                                    <div style="display: flex; gap: 8px; align-items: center;">
+                                        <form th:action="@{/admin/livraisons/changerStatut}" method="post" class="small-form" style="margin: 0;">
+                                            <input type="hidden" name="id" th:value="${livraison.id}" />
+                                            <select name="statutCode">
+                                                <option value="en_attente" th:selected="${livraison.statut.code == 'en_attente'}">en_attente</option>
+                                                <option value="en_cours" th:selected="${livraison.statut.code == 'en_cours'}">en_cours</option>
+                                                <option value="livre" th:selected="${livraison.statut.code == 'livre'}">livre</option>
+                                            </select>
+                                            <button type="submit">OK</button>
+                                        </form>
+                                        <a class="btn-pdf" th:href="@{/admin/livraisons/exportPdf(id=${livraison.id})}">
+                                            <i class="fa-solid fa-file-pdf"></i> PDF
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div th:if="${#lists.isEmpty(livraisons)}" class="vide-message">
+                        Aucune livraison enregistrée.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

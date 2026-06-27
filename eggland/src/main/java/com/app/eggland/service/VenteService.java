@@ -76,6 +76,14 @@ public class VenteService {
         return produitVenteRepository.findById(id).orElse(null);
     }
 
+    public ProduitVente trouverProduitVenteParCode(String code) {
+        return produitVenteRepository.findByCode(code).orElse(null);
+    }
+
+    public StatutVente trouverStatutVenteParCode(String code) {
+        return statutVenteRepository.findByCode(code).orElse(null);
+    }
+
     public List<DetailVente> listeDetailVente(int idVente) {
         return detailVenteRepository.findByVenteId(idVente);
     }
