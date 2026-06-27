@@ -35,6 +35,9 @@ public class LotService {
     @Autowired
     MortRepository mortRepository;
 
+    @Autowired
+    LotRaceRepository lotRaceRepository;
+
    @Transactional
     public void createLot(Lot lot){
          Batiment batiment = batimentRepository.findById(lot.getBatiment().getId())
@@ -50,6 +53,7 @@ verifierCapacite(lot,batiment);
 lot.setBatiment(batiment);
 
 lotRepository.save(lot);
+lotRaceRepository.saveAll(lot.getLotRaces());
 
     }
 

@@ -1,69 +1,89 @@
 async function loadSelects(form) {
-
     const races = await fetch("/lots/data/races").then(r => r.json());
     const batiments = await fetch("/lots/data/batiments").then(r => r.json());
-    const statuts = await fetch("/lots/data/statuts").then(r => r.json());
 
-   console.log("batiment", batiments);
-console.log("race", races);
-console.log("statut", statuts);
+    console.log("batiment", batiments);
+    console.log("race", races);
 
-    form.querySelector("#race").innerHTML =
-        races.map(r => `<option value="${r.id}">${r.nom}</option>`).join("");
-
-    form.querySelector("#batiment").innerHTML =
-        batiments.map(b => `<option value="${b.id}">${b.nom}</option>`).join("");
-
-
+    window.racesData = races; // Stockez les races globalement
+    window.batimentsData = batiments;
 }
+
+function createRaceRow(race = null, nombre = null) {
+    const racesHTML = window.racesData.map(r => 
+        `<option value="${r.id}" ${race && race.id == r.id ? 'selected' : ''}>${r.nom}</option>`
+    ).join("");
+    
+    return `
+        <div class="race-row" style="margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+            <div class="form-group">
+                <label>Race :</label>
+                <select name="listeRace" required style="width: 100%; padding: 8px;">
+                    <option value="">-- Sélectionnez une race --</option>
+                    ${racesHTML}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Nombre :</label>
+                <input type="number" name="nbrPoule" value="${nombre || ''}" min="1" required style="width: 100%; padding: 8px;">
+            </div>
+
+            <button type="button" class="btn-remove-race" style="margin-top: 10px;">
+                <i class="fa-solid fa-minus"></i> Supprimer cette race
+            </button>
+        </div>
+    `;
+}
+
 document.querySelectorAll(".btn-modifier").forEach(button => {
 
     button.addEventListener("click", async function () {
 
         const btn = this;
+        const lotId = btn.dataset.id;
 
-        const lot = {
-            id: btn.dataset.id,
-            race: btn.dataset.race,
-            batiment: btn.dataset.batiment,
-            nombreInitial: btn.dataset.nombre
-        };
+        // Récupérer les données du lot avec ses races
+        const lot = await fetch(`/lots/api/${lotId}`).then(r => r.json());
 
-        console.log("Modifier lot:", lot);
+        console.log("Lot avec races:", lot);
 
-           const overlay = document.getElementById("reform-overlay");
+        const overlay = document.getElementById("reform-overlay");
         const container = document.getElementById("reform-container");
 
         overlay.classList.add("active");
 
         const form = document.createElement("form");
-  
         form.classList.add("reform-form");
         form.method = "post";
         form.action = `/lots/modifier/${lot.id}`;
 
+        const batimentsHTML = window.batimentsData.map(b => 
+            `<option value="${b.id}" ${lot.batiment.id == b.id ? 'selected' : ''}>${b.nom}</option>`
+        ).join("");
+
         form.innerHTML = `
             <h3>Modifier le lot ${lot.id}</h3>
 
-            <div class="form-group">
-                <label>Race :</label>
-                <select name="race" id="race" required></select>
+            <div id="races-container">
+                ${lot.lotRaces.map(lr => createRaceRow(lr.race, lr.nombre)).join('')}
             </div>
+
+            <button type="button" id="btn-add-race" class="btn btn-success" style="margin: 10px 0;">
+                <i class="fa-solid fa-plus"></i> Ajouter une race
+            </button>
 
             <div class="form-group">
                 <label>Bâtiment :</label>
-                <select name="batiment" id="batiment" required></select>
-            </div>
-
-            <div class="form-group">
-                <label>Nombre initial :</label>
-                <input type="number" name="nombreInitial" id="nombreInitial" min="1" required>
+                <select name="batiment" id="batiment" required style="width: 100%; padding: 8px;">
+                    <option value="">-- Sélectionnez un bâtiment --</option>
+                    ${batimentsHTML}
+                </select>
             </div>
 
             <div class="modal-buttons">
                 <button type="submit" class="btn btn-primary btn-valider">Valider</button>
-              <button type="button" class="btn btn-danger btn-supprimer">Supprimer</button>
-
+                <button type="button" class="btn btn-danger btn-supprimer">Supprimer</button>
                 <button type="button" class="btn btn-secondary close-modal">Annuler</button>
             </div>
         `;
@@ -71,16 +91,33 @@ document.querySelectorAll(".btn-modifier").forEach(button => {
         container.innerHTML = "";
         container.appendChild(form);
 
-    
         await loadSelects(form);
 
-       setTimeout(() => {
-    form.querySelector("#race").value = String(lot.race);
-    form.querySelector("#batiment").value = String(lot.batiment);
-    form.querySelector("#nombreInitial").value = lot.nombreInitial;
-}, 0);
+        // Ajouter une race dynamiquement
+        form.querySelector("#btn-add-race").addEventListener("click", function() {
+            const container = form.querySelector("#races-container");
+            const newRow = document.createElement("div");
+            newRow.innerHTML = createRaceRow();
+            container.appendChild(newRow);
+            attachRemoveRaceListener(newRow);
+        });
 
-        // fermer
+        // Attacher les listeners pour supprimer une race
+        form.querySelectorAll(".race-row").forEach(row => {
+            attachRemoveRaceListener(row);
+        });
+
+        function attachRemoveRaceListener(row) {
+            row.querySelector(".btn-remove-race").addEventListener("click", function() {
+                if (form.querySelectorAll(".race-row").length > 1) {
+                    row.remove();
+                } else {
+                    alert("Au moins une race est obligatoire");
+                }
+            });
+        }
+
+        // Fermer
         const closeModal = () => {
             overlay.classList.remove("active");
             container.innerHTML = "";
@@ -92,35 +129,30 @@ document.querySelectorAll(".btn-modifier").forEach(button => {
             if (e.target === overlay) closeModal();
         });
 
-        // submit
-   form.addEventListener("submit", function (e) {
-    e.preventDefault();
+        // Submit
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
 
-    const btnSubmit = form.querySelector(".btn-valider");
-    btnSubmit.disabled = true;
+            const btnSubmit = form.querySelector(".btn-valider");
+            btnSubmit.disabled = true;
 
-    const confirmation = confirm(
-        `Confirmer la modification du lot ${lot.id} ?`
-    );
+            const confirmation = confirm(`Confirmer la modification du lot ${lot.id} ?`);
 
-    if (!confirmation) {
-        btnSubmit.disabled = false;
-        return;
-    }
+            if (!confirmation) {
+                btnSubmit.disabled = false;
+                return;
+            }
 
-    btnSubmit.textContent = "Modification en cours...";
+            btnSubmit.textContent = "Modification en cours...";
+            form.submit();
+        });
 
-    form.submit();
-});
-       
-      form.querySelector(".btn-supprimer").addEventListener("click", function () {
-
-    console.log("click delete OK");
-
-    if (confirm(`Supprimer le lot ${lot.id} ?`)) {
-      window.location.href = `/lots/supprimer/${lot.id}`;
-    }
-});
+        // Supprimer
+        form.querySelector(".btn-supprimer").addEventListener("click", function () {
+            if (confirm(`Supprimer le lot ${lot.id} ?`)) {
+                window.location.href = `/lots/supprimer/${lot.id}`;
+            }
+        });
 
     });
 

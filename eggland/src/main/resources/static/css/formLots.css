@@ -1,14 +1,17 @@
-      body {
+body {
     margin: 0;
     background: #f4f2eb;
     font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Header */
+/* Header - Assure que le titre prend toute la largeur en haut */
 .page-header {
+    display: block; /* Force le bloc à prendre toute la ligne */
     background: #e8e3d6;
-    padding: 15px 25px;
+    padding: 20px 25px;
     border-bottom: 1px solid #ddd;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .page-header h2 {
@@ -19,12 +22,15 @@
 
 /* Zone principale */
 main {
-    padding: 25px;
+    padding: 40px 25px;
+    display: flex;
+    justify-content: center; 
 }
 
 /* Carte du formulaire */
 .form-container {
-    width: 420px;
+    width: 100%;
+    max-width: 500px; /* Un poil plus large pour un meilleur confort visuel */
     background: #ffffff;
     border-radius: 15px;
     box-shadow: 0 4px 18px rgba(0,0,0,0.08);
@@ -33,7 +39,12 @@ main {
 
 /* Partie haute du formulaire */
 .form-body {
-    padding: 25px;
+    padding: 30px;
+}
+
+/* Groupe de champ */
+.form-group {
+    margin-bottom: 20px;
 }
 
 /* Labels */
@@ -49,13 +60,14 @@ main {
 .form-control,
 .form-select {
     width: 100%;
-    height: 48px;
+    height: 46px; /* Légèrement affiné pour matcher avec le reste */
     border: 1px solid #e5e7eb;
-    border-radius: 12px;
+    border-radius: 10px;
     background: #f7f8fa;
     padding: 0 15px;
     font-size: 14px;
     box-sizing: border-box;
+    transition: all 0.2s ease-in-out;
 }
 
 .form-control:focus,
@@ -63,50 +75,127 @@ main {
     outline: none;
     border-color: #8b4a1f;
     background: white;
+    box-shadow: 0 0 0 3px rgba(139, 74, 31, 0.15);
 }
 
-/* Ligne date + quantité */
+/* Ligne de champs (ex: date + quantité) */
 .row {
     display: flex;
     gap: 15px;
+    margin-bottom: 20px;
 }
 
 .col {
     flex: 1;
+    min-width: 0;
+}
+
+/* Section Dynamique des Lots */
+#lotsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.lot-item {
+    display: flex;
+    align-items: flex-end; /* Aligne le bouton "-" sur le bas de l'input */
+    gap: 10px;
+    background: #fafafa;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.lot-item .col {
+    margin-bottom: 0;
+}
+
+/* Zone du bouton ajouter (+) */
+.actions-lots {
+    display: flex;
+    justify-content: flex-end; /* Aligne le bouton "+" à droite */
+    margin-bottom: 25px;
+}
+
+/* Boutons d'action miniaturisés */
+.btn-plus, .btn-remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    flex-shrink: 0; /* Évite toute déformation */
+}
+
+/* Bouton Plus (+) plus compact */
+.btn-plus {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #8b4a1f;
+    color: #fff;
+    font-size: 16px;
+}
+
+.btn-plus:hover {
+    background: #6d3816;
+    transform: scale(1.08);
+}
+
+/* Bouton Moins (-) adapté à la taille du Plus */
+.btn-remove {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%; /* Rendu rond pour matcher le bouton plus */
+    background: #dc3545;
+    color: #fff;
+    font-size: 14px;
+    margin-bottom: 7px; /* Petit ajustement pour s'aligner parfaitement à l'axe de l'input sans le label */
+}
+
+.btn-remove:hover {
+    background: #bb2d3b;
+    transform: scale(1.08);
 }
 
 /* Footer de la carte */
 .form-footer {
     background: #f8f9fb;
-    padding: 18px 25px;
+    padding: 20px 30px;
     border-top: 1px solid #ececec;
 }
 
-/* Bouton */
+/* Bouton Principal */
 .btn-brown {
     width: 100%;
-    height: 46px;
+    height: 48px;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     background: #8b4a1f;
     color: white;
     font-weight: 600;
+    font-size: 15px;
     cursor: pointer;
-    transition: 0.2s;
+    transition: background 0.2s;
 }
 
 .btn-brown:hover {
     background: #733b17;
 }
 
-/* Messages */
+/* Messages d'état */
 .alert-danger {
     background: #fde2e2;
     color: #b91c1c;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 15px;
+    padding: 12px 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
 }
+
 .invalid {
     border: 2px solid #dc3545 !important;
     background-color: #fff5f5;
@@ -116,4 +205,3 @@ main {
     border: 2px solid #198754 !important;
     background-color: #f0fff4;
 }
-

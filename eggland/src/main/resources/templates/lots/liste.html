@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Gestion des Lots</title>
 
-   <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/header.css}">
@@ -49,8 +49,7 @@
                     <select name="batiment">
                         <option value="">Batiment</option>
 
-                        <option
-                                th:each="b : ${batiments}"
+                        <option th:each="b : ${batiments}"
                                 th:value="${b.id}"
                                 th:text="${b.nom}">
                         </option>
@@ -60,28 +59,28 @@
                     <select name="statut">
                         <option value="">Statut</option>
 
-                        <option
-                                th:each="s : ${statuts}"
+                        <option th:each="s : ${statuts}"
                                 th:value="${s.id}"
                                 th:text="${s.code}">
                         </option>
 
                     </select>
-                        <button type="submit" class="btn-filter">Filtrer</button>
+                    <button type="submit" class="btn-filter">Filtrer</button>
                 </form>
 
             </div>
 
             
-                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
-                    <span th:text="${success}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
 
-                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <span th:text="${error}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
             <!-- AUCUN LOT -->
             <div th:if="${#lists.isEmpty(lots)}" class="empty-state">
                 Aucun lot trouvé
@@ -90,8 +89,7 @@
             <!-- CARDS -->
             <div class="lots-grid">
 
-                <div class="lot-card"
-                     th:each="lot : ${lots}">
+                <div class="lot-card" th:each="lot : ${lots}">
 
                     <!-- Header -->
                     <div class="lot-header">
@@ -101,13 +99,13 @@
                             <span th:text="${lot.id}"></span>
                         </h3>
 
-                      <div class="menu-container" th:data-id="${lot.id}">
+                        <div class="menu-container" th:data-id="${lot.id}">
                             <div class="menu">⋮</div>
 
                             <div class="menu-dropdown">
                                <a th:href="@{/lots/detail/{id}(id=${lot.id})}">
-            Voir détail
-        </a>
+                                    Voir détail
+                               </a>
                             </div>
                         </div>
 
@@ -131,33 +129,35 @@
                     <!-- Infos -->
                     <div class="lot-info">
 
-                        <p>
-                            <span>Race :</span>
-                            <strong th:text="${lot.race.nom}">
-                                Sussex
-                            </strong>
-                        </p>
+            <div th:each="lotRace : ${lot.lotRaces}" style="margin: 8px 0;">
+    
+    <p>
+        <strong>Races :</strong>
+        <span th:text="${lotRace.race.nom}"></span>
+    </p>
+
+    <p>
+        <strong>Nombre de poulet :</strong>
+        <span th:text="${lotRace.nombre}"></span>
+    </p>
+
+</div>
 
                         <p>
                             <span>Batiment</span>
-                            <strong th:text="${lot.batiment.nom}">
-                                Batiment A
-                            </strong>
+                            <strong th:text="${lot.batiment.nom}"></strong>
                         </p>
 
                         <p>
                             <span>Date arrivée :</span>
-                            <strong th:text="${#temporals.format(lot.dateArrivee,'yyyy-MM-dd')}">
-                            </strong>
+                            <strong th:text="${#temporals.format(lot.dateArrivee,'yyyy-MM-dd')}"></strong>
                         </p>
 
                         <p>
                             <span>Age :</span>
                             <strong>
                                 Semaine
-                                <span th:text="${lot.ageSemaine}">
-                                    9
-                                </span>
+                                <span th:text="${agesActuels[lot.id]}"></span>
                             </strong>
                         </p>
 
@@ -166,30 +166,24 @@
                     <!-- Bouton -->
                     <div class="lot-footer">
 
-                        <button type="button"
-                            class="btn-modifier"
-                            th:data-id="${lot.id}"
-                             th:data-race="${lot.race.id}"
-  
-        th:data-batiment="${lot.batiment.id}"
-        th:data-nombre="${lot.nombreInitial}">
-                        Modfier
-                    </button>
+                      <button type="button"
+    class="btn-modifier"
+    th:data-id="${lot.id}"
+    th:data-batiment="${lot.batiment.id}">
+    Modifier
+</button>
                         <button type="button"
                             class="btn-reformer"
                             th:data-id="${lot.id}">
-                        Réformer
-                    </button>
-                    
+                            Réformer
+                        </button>
+                    </div>
                 </div>
             </div>
-          
 
-
+        </div>
 
     </div>
-
-</div>
 
 </div>
 
