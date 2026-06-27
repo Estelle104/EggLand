@@ -29,7 +29,6 @@ public class VenteService {
     @Autowired private OeufService            oeufService;
     @Autowired private LotService             lotService;
 
-    
     public void saveVente(Vente vente) { venteRepository.save(vente); }
 
     public List<Vente> listeVente() { return venteRepository.findAll(); }
@@ -81,6 +80,7 @@ public class VenteService {
         return detailVenteRepository.findByVenteId(idVente);
     }
 
+  
     @Transactional
     public void enregistrerVente(int clientId,
                                   List<Integer> produitIds,
@@ -133,7 +133,6 @@ public class VenteService {
 
         mvtArgentService.creerEntree(total, LocalDate.now(), "vente");
     }
-
 
     @Transactional
     public void enregistrerModificationVente(int venteId,
