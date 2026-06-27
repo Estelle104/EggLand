@@ -22,6 +22,8 @@ public interface LotRepository extends JpaRepository<Lot, Integer>{
 """)
     int calculerPlaceUtiliseePourBatiment(@Param("batiment") Batiment batiment);
     
+    @Query("SELECT COALESCE(SUM(l.nombreInitial), 0) FROM Lot l WHERE l.batiment = :batiment AND l.id != :lotId")
+int calculerPlaceUtiliseePourBatimentExcluantLot(@Param("batiment") Batiment batiment, @Param("lotId") Integer lotId);
         List<Lot> findByBatimentOrStatut(Batiment batiment, StatutLot statutLot); 
         List<Lot> findByBatimentAndStatut(Batiment batiment, StatutLot statutLot);
         

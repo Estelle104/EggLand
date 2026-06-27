@@ -5,7 +5,9 @@
 .content {
     background: #f4f2ea;
     min-height: 100vh;
-    padding: 25px 30px;
+    padding: 30px 40px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    box-sizing: border-box;
 }
 
 /* =========================
@@ -16,35 +18,41 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
+    margin-bottom: 35px;
 }
 
 .liste-header h1 {
     margin: 0;
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 700;
     color: #1d1d1d;
+    letter-spacing: -0.5px;
 }
 
 .liste-header small {
-    color: #999;
+    display: block;
+    color: #777;
     font-size: 14px;
+    margin-top: 4px;
 }
 
 .btn-ajouter {
     background: #8a4a1d;
     color: white;
     text-decoration: none;
-    padding: 10px 18px;
+    padding: 12px 22px;
     border-radius: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    transition: 0.2s;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 2px 5px rgba(138, 74, 29, 0.2);
+    transition: all 0.2s ease-in-out;
 }
 
 .btn-ajouter:hover {
     background: #733b17;
     color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(138, 74, 29, 0.3);
 }
 
 /* =========================
@@ -59,26 +67,51 @@
     margin-bottom: 18px;
     font-size: 18px;
     font-weight: 700;
+    color: #222;
 }
 
 .filtres-form {
     display: flex;
-    gap: 20px;
+    align-items: center;
+    gap: 15px;
 }
 
 .filtres-form select {
-    width: 120px;
-    border: none;
+    width: 140px;
+    border: 1px solid #e2dfd5;
     background: white;
     border-radius: 8px;
     padding: 10px 14px;
-    font-size: 13px;
-    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    font-size: 14px;
+    color: #444;
+    box-shadow: 0 2px 4px rgba(0,0,0,.04);
     cursor: pointer;
+    transition: all 0.2s;
 }
 
 .filtres-form select:focus {
     outline: none;
+    border-color: #8a4a1d;
+    box-shadow: 0 0 0 3px rgba(138, 74, 29, 0.15);
+}
+
+.btn-filter {
+    display: inline-block;
+    background: #8a4a1d; 
+    color: white; 
+    text-decoration: none; 
+    padding: 10px 18px; 
+    border-radius: 8px; 
+    font-size: 13px; 
+    font-weight: 500; 
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-filter:hover {
+    background: #733b17;
+    color: white;
 }
 
 /* =========================
@@ -87,10 +120,12 @@
 
 .empty-state {
     background: white;
-    padding: 20px;
-    border-radius: 10px;
+    padding: 40px 20px;
+    border-radius: 12px;
     text-align: center;
-    color: #666;
+    color: #777;
+    border: 2px dashed #e2dfd5;
+    font-size: 15px;
 }
 
 /* =========================
@@ -104,21 +139,27 @@
 }
 
 /* =========================
-   CARTE
+   CARTE (Agencement optimisé)
 ========================= */
 
 .lot-card {
     background: white;
-    border-radius: 12px;
-    padding: 15px;
-    min-height: 230px;
-    box-shadow: 0 3px 10px rgba(0,0,0,.08);
-    transition: all .2s ease;
+    border-radius: 14px;
+    padding: 22px;
+    min-height: 290px; 
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,.04);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+    
+    /* Structure Flexbox verticale */
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
 }
 
 .lot-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 14px rgba(0,0,0,.12);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(138, 74, 29, 0.12);
 }
 
 /* =========================
@@ -128,7 +169,8 @@
 .lot-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
+    margin-bottom: 4px;
 }
 
 .lot-header h3 {
@@ -136,19 +178,25 @@
     font-size: 18px;
     font-family: Georgia, serif;
     font-weight: bold;
-    color: #222;
+    color: #1d1d1d;
 }
 
 .menu {
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
     background: #f7f7f7;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #666;
+    color: #555;
     cursor: pointer;
+    transition: background 0.2s;
+}
+
+.menu:hover {
+    background: #eeeeee;
+    color: #000;
 }
 
 /* =========================
@@ -156,208 +204,192 @@
 ========================= */
 
 .lot-status {
-    margin-top: 10px;
-    margin-bottom: 20px;
+    margin-top: 4px;
+    margin-bottom: 16px;
 }
 
 .badge-actif,
 .badge-reforme {
     display: inline-block;
-    padding: 4px 12px;
-    border-radius: 15px;
+    padding: 6px 14px;
+    border-radius: 20px;
     font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .badge-actif {
     background: #e9f2e6;
-    color: #547d52;
+    color: #436b41;
 }
 
 .badge-reforme {
-    background: #f8d7d7;
-    color: #b45a5a;
+    background: #fdeaea;
+    color: #b02a37;
 }
 
 /* =========================
-   INFOS
+   INFOS (Alignement intelligent gauche / droite)
 ========================= */
 
+.lot-info {
+    flex-grow: 1; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-top: 1px solid #f4f2ea;
+    padding-top: 12px;
+    margin-bottom: 16px;
+}
+
 .lot-info p {
-    margin: 10px 0;
-    font-size: 12px;
-    color: #666;
+    margin: 8px 0;
+    font-size: 13px;
+    color: #555;
     line-height: 1.4;
+    display: flex;
+    justify-content: space-between; 
+    align-items: flex-start; /* Aligne en haut si le bloc de droite a plusieurs lignes (Races) */
 }
 
-.lot-info span {
+.lot-info p span:first-child {
     color: #777;
+    font-weight: 400;
+    padding-top: 2px; /* Equilibre visuel avec l'alignement de droite */
 }
 
-.lot-info strong {
-    color: #333;
-    margin-left: 4px;
+/* Bloc contenant la ou les races à droite */
+.lot-info p strong {
+    color: #1d1d1d;
+    font-weight: 600;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Force l'alignement à droite de chaque ligne de race */
+    gap: 4px;
+}
+
+/* Style uniforme appliqué sur les valeurs de droite (Batiment, Date, Races...) */
+.lot-info p strong,
+.lot-info p strong span {
+    background: #fdfbfa;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
 }
 
 /* =========================
-   FOOTER
+   FOOTER ET BOUTONS DES CARTES
 ========================= */
 
 .lot-footer {
-    margin-top: 18px;
-}
-.btn-reformer{
-     display: inline-block;
-    background: #8a4a1d;
-    color: white;
-    text-decoration: none;
-    padding: 9px 22px;
-    border-radius: 7px;
-    font-size: 13px;
-    transition: 0.2s;
-}
-.btn-reformer:hover {
-    background: #733b17;
-    color: white;
+    margin-top: auto;
+    display: flex;
+    gap: 10px;
+    width: 100%;
 }
 
-.btn-modifier{
-     display: inline-block;
+.btn-reformer,
+.btn-modifier {
+    display: inline-block;
+    flex: 1;
+    text-align: center;
     background: #8a4a1d;
     color: white;
     text-decoration: none;
-    padding: 9px 22px;
-    border-radius: 7px;
+    padding: 11px 14px;
+    border-radius: 8px;
     font-size: 13px;
-    transition: 0.2s;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
 }
+
+.btn-reformer:hover,
 .btn-modifier:hover {
     background: #733b17;
     color: white;
 }
-.btn-filter {
-    display: inline-block;
-    background: #8a4a1d;
-    color: white;
-    text-decoration: none;
-    padding: 9px 22px;
-    border-radius: 7px;
-    font-size: 13px;
-    transition: 0.2s;
-}
 
-.btn-filter:hover {
-    background: #733b17;
-    color: white;
+.btn-reformer:active,
+.btn-modifier:active {
+    transform: scale(0.97);
 }
 
 /* =========================
-   RESPONSIVE
+   OVERLAYS & MODALES
 ========================= */
-
-@media (max-width: 1200px) {
-    .lots-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 900px) {
-    .lots-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 600px) {
-
-    .liste-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-
-    .filtres-form {
-        flex-direction: column;
-    }
-
-    .lots-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-
 
 #reform-overlay {
     position: fixed;
     inset: 0;
-
     display: none;
     justify-content: center;
     align-items: center;
-
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(5px);
-
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
     z-index: 99999;
+    transition: all 0.3s ease;
 }
 
 #reform-overlay.active {
     display: flex;
 }
 
-/* IMPORTANT : centrer + layer visible */
 #reform-container {
     display: flex;
     justify-content: center;
     align-items: center;
-
     width: 100%;
     height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
 }
-
 
 #reform-container form {
     position: relative;
     z-index: 100000;
-
     background: white;
-    padding: 25px;
-    border-radius: 12px;
-
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
 }
-/* Fenêtre du formulaire */
+
 .reform-form {
     background: white;
     width: 450px;
-    max-width: 90%;
-
-    padding: 25px;
-    border-radius: 12px;
-
-    box-shadow: 0 10px 30px rgba(0,0,0,.25);
-
+    max-width: 100%;
+    padding: 5px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
-
-    animation: modalAppear .25s ease;
+    gap: 18px;
+    animation: modalAppear .28s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .reform-form h3 {
-    margin: 0 0 10px;
-    color: #333;
+    margin: 0 0 5px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #222;
     text-align: center;
 }
 
 .reform-form label {
     font-weight: 600;
-    color: #555;
+    font-size: 14px;
+    color: #444;
+    margin-bottom: -8px;
 }
 
 .reform-form input[type="date"] {
-    padding: 10px;
+    padding: 11px 14px;
     border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 14px;
+    color: #333;
+    transition: all 0.2s;
 }
 
 .reform-form input[type="date"]:focus {
@@ -369,11 +401,11 @@
 .reform-form button {
     border: none;
     border-radius: 8px;
-    padding: 10px 15px;
+    padding: 11px 20px;
     cursor: pointer;
     font-weight: 600;
- 
-
+    font-size: 14px;
+    transition: background 0.2s;
 }
 
 .btn-danger {
@@ -386,140 +418,78 @@
 }
 
 .btn-secondary {
-    background: #e5e5e5;
-    color: #333;
-}
-
-.btn-secondary:hover {
-    background: #d5d5d5;
-}
-
-/* Animation */
-@keyframes modalAppear {
-    from {
-        opacity: 0;
-        transform: translateY(-15px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Base des alertes */
-.alert {
-    padding: 12px 16px;
-    border-radius: 10px;
-    margin: 15px 0;
-    font-size: 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    animation: slideDown .25s ease;
-}
-
-/* SUCCESS */
-.alert-success {
-    background-color: #e6f7ee;
-    color: #1e7e34;
-    border-left: 5px solid #28a745;
-}
-
-/* ERROR */
-.alert-danger {
-    background-color: #fdecea;
-    color: #b02a37;
-    border-left: 5px solid #dc3545;
-}
-
-/* Bouton fermer (Bootstrap override propre) */
-.btn-close {
-    background: none;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    opacity: 0.6;
-}
-
-.btn-close:hover {
-    opacity: 1;
-}
-
-/* Animation apparition */
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-
-/* Titre */
-.modif-form h3 {
-    margin: 0;
-    text-align: center;
-    font-size: 20px;
-    font-weight: 600;
-    color: #333;
-}
-
-/* Groupes */
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-/* Labels */
-.form-group label {
-    font-weight: 600;
+    background: #f0f0f0;
     color: #444;
 }
 
-/* Inputs + selects */
+.btn-secondary:hover {
+    background: #e2e2e2;
+}
+
+/* =========================
+   FORMULAIRE MODIFIER / GROUPES
+========================= */
+
+.modif-form h3 {
+    margin: 0;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: #222;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 600;
+    font-size: 14px;
+    color: #444;
+}
+
 .form-group input,
 .form-group select {
-    padding: 10px;
+    padding: 11px 14px;
     border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 14px;
-    transition: 0.2s;
+    color: #333;
+    transition: all 0.2s;
 }
 
 .form-group input:focus,
 .form-group select:focus {
     outline: none;
-    border-color: #4a90e2;
-    box-shadow: 0 0 0 3px rgba(74,144,226,0.2);
+    border-color: #8a4a1d;
+    box-shadow: 0 0 0 3px rgba(138, 74, 29, 0.15);
 }
-
-/* ===== BOUTONS ===== */
 
 .modal-buttons {
     display: flex;
-    gap: 10px;
-    margin-top: 10px;
+    gap: 12px;
+    margin-top: 15px;
 }
 
-/* IMPORTANT: évite les bugs de clic */
 .modal-buttons button {
     flex: 1;
     cursor: pointer;
     position: relative;
     z-index: 10;
     border: none;
-    padding: 10px;
+    padding: 12px;
     border-radius: 8px;
     font-weight: 600;
+    font-size: 14px;
+    transition: background 0.2s, transform 0.1s;
 }
 
-/* Valider */
+.modal-buttons button:active {
+    transform: scale(0.98);
+}
+
 .btn-valider {
     background: #7B3F1A;
     color: white;
@@ -529,7 +499,6 @@
     background: #aa5621;
 }
 
-/* Supprimer */
 .btn-supprimer {
     background: #8d1905;
     color: white;
@@ -539,19 +508,63 @@
     background: #e92907;
 }
 
-/* Annuler */
 .btn-secondary {    
-    background: #bdc3c7;
-    color: #2c3e50;
+    background: #e5e5e5;
+    color: #333;
 }
 
 .btn-secondary:hover {
-    background: #aeb6bf;
+    background: #d5d5d5;
 }
 
+/* =========================
+   ALERTES
+========================= */
 
+.alert {
+    padding: 14px 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    animation: slideDown .25s ease-out;
+}
 
-/* MENU */
+.alert-success {
+    background-color: #e6f7ee;
+    color: #1e7e34;
+    border-left: 5px solid #28a745;
+}
+
+.alert-danger {
+    background-color: #fdecea;
+    color: #b02a37;
+    border-left: 5px solid #dc3545;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    opacity: 0.5;
+    color: currentColor;
+    padding: 0 0 0 10px;
+    transition: opacity 0.2s;
+}
+
+.btn-close:hover {
+    opacity: 1;
+}
+
+/* =========================
+   MENU DROPDOWN
+========================= */
+
 .menu-container {
     position: relative;
     display: inline-block;
@@ -567,12 +580,15 @@
     display: none;
     position: absolute;
     right: 0;
-    top: 25px;
+    top: 38px;
     background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    min-width: 140px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    border: 1px solid #e2dfd5;
+    border-radius: 10px;
+    min-width: 160px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    z-index: 100;
+    overflow: hidden;
+    animation: slideDown 0.15s ease-out;
 }
 
 .menu-dropdown.active {
@@ -581,11 +597,88 @@
 
 .menu-dropdown a {
     display: block;
-    padding: 10px;
+    padding: 12px 16px;
     text-decoration: none;
-    color: black;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.15s;
 }
 
 .menu-dropdown a:hover {
-    background: #f2f2f2;
+    background: #f8f6f0;
+    color: #8a4a1d;
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1400px) {
+    .lots-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .lots-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    .content {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 650px) {
+    .liste-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .btn-ajouter {
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .filtres-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filtres-form select {
+        width: 100%;
+    }
+
+    .lots-grid {
+        grid-template-columns: 1fr;
+    }
 }

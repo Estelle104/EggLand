@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
-       <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/header.css}">
@@ -12,71 +12,87 @@
 
 </head>
 <body>
-       <div class="app">
-
+    <div class="app">
         <div th:replace="fragments/sidebar :: sidebar"></div>
 
         <div class="main">
-
             <div th:replace="fragments/header :: header"></div>
 
             <div class="content">
- <main layout:fragment="content">
-    <h3 class="mb-4">Gestion des Lots</h3>
+                <h3 class="mb-4">Gestion des Lots</h3>
 
-   
-    <div th:if="${error}" class="alert alert-danger">
-        <strong>Erreur!</strong>
-        <span th:text="${error}"></span>
-    </div>
+                <div th:if="${error}" class="alert alert-danger">
+                    <strong>Erreur!</strong>
+                    <span th:text="${error}"></span>
+                </div>
 
-    <div class="form-container" style="background: white; padding: 30px; border-radius: 12px; max-width: 500px;">
-        <form id="lotForm" th:action="@{/lots/create}" method="POST" th:object="${lot}">
-            
-            <div class="mb-4">
-                <label class="form-label">Race des Volailles</label>
-                <select class="form-select" th:field="*{race}" required>
-                    <option value="">-- Sélectionnez une race --</option>
-                    <option th:each="race : ${races}"
-                            th:value="${race.id}"
-                            th:text="${race.nom}">
-                    </option>
-                </select>
-            </div>
+                <div class="form-container" style="background: white; padding: 30px; border-radius: 12px; max-width: 500px;">
+                    <form id="lotForm" th:action="@{/admin/lots/create}" method="POST" th:object="${lot}">
+                        
+                        <div id="lotsContainer">
+                            <div class="lot-item">
+                                <div class="mb-4">
+                                    <label class="form-label">Race des Volailles</label>
+                                    <select class="form-select race-select" name="listeRace" required>
+                                        <option value="">-- Sélectionnez une race --</option>
+                                        <option th:each="race : ${races}"
+                                                th:value="${race.id}"
+                                                th:text="${race.nom}">
+                                        </option>
+                                    </select>
+                                </div>
 
-            <div class="mb-4">
-                <label class="form-label">Date d'arrivée</label>
-                <input type="date" class="form-control" th:field="*{dateArrivee}" required>
-                
-            </div>
-            <div class="mb-4">
-                <label class="form-label">Nombre initial</label>
-                <input type="number" class="form-control" th:field="*{nombreInitial}" min="1" required>
-            </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Nombre initial</label>
+                                    <input type="number"
+                                           class="form-control nombre-input"
+                                           name="nbrPoule"
+                                           min="1"
+                                           required>
+                                </div>
 
-            <div class="mb-4">
-                <label class="form-label">Bâtiment</label>
-                <select class="form-select" th:field="*{batiment}" required>
-                    <option value="">-- Sélectionnez un bâtiment --</option>
-                    <option th:each="batiment : ${batiments}"
-                            th:value="${batiment.id}"
-                            th:text="${batiment.nom}">
-                    </option>
-                </select>
-            </div>
+                                <button type="button" class="btn-remove">
+                                    <i class="fa-solid fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
 
-            <button type="submit" class="btn btn-brown w-100">
-                ➤ Ajouter
-            </button>
-        </form>
-    </div>
-</main>
+                        <div class="actions-lots">
+                            <button type="button" id="btnAdd" class="btn-plus">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Date d'arrivée</label>
+                            <input type="date" class="form-control" th:field="*{dateArrivee}" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Bâtiment</label>
+                            <select class="form-select" th:field="*{batiment}" required>
+                                <option value="">-- Sélectionnez un bâtiment --</option>
+                                <option th:each="batiment : ${batiments}"
+                                        th:value="${batiment.id}"
+                                        th:text="${batiment.nom}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-brown w-100">
+                            ➤ Ajouter
+                        </button>
+                    </form>
+                </div>
+
             </div>
 
         </div>
 
     </div>
    
-<script th:src="@{/js/validationLot.js}"></script>
+    <script th:src="@{/js/validationLot.js}"></script>
+    <script th:src="@{/js/formLots.js}"></script>
+
 </body>
 </html>

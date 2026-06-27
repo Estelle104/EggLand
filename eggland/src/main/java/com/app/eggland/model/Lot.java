@@ -4,8 +4,12 @@ package com.app.eggland.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.app.eggland.model.StatutLot;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "lot")
@@ -38,4 +42,13 @@ public class Lot {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "batiment_id", nullable = false)
     private Batiment batiment;
+
+
+  @OneToMany(mappedBy = "lot", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+   
+    private List<LotRace> lotRaces = new ArrayList<>();
+    
+    // Getters/Setters
+    public List<LotRace> getLotRaces() { return lotRaces; }
+    public void setLotRaces(List<LotRace> lotRaces) { this.lotRaces = lotRaces; }
 }
