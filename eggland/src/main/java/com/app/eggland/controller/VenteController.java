@@ -92,7 +92,7 @@ public class VenteController {
             return "redirect:/ventes/creation";
         }
 
-        return "redirect:/ventes/listevente";
+        return "redirect:/ventes";
     }
 
 

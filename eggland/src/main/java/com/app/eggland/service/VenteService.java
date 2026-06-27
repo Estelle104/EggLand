@@ -43,9 +43,6 @@ public class VenteService {
     @Autowired
     private LotService lotService;
 
-    // -------------------------------------------------------
-    // CRUD de base
-    // -------------------------------------------------------
 
     public void saveVente(Vente vente) {
         venteRepository.save(vente);
@@ -56,7 +53,6 @@ public class VenteService {
     }
 
     public void supprimerVente(int id) {
-        // Supprimer d'abord les détails liés
         List<DetailVente> details = detailVenteRepository.findByVenteId(id);
         detailVenteRepository.deleteAll(details);
         venteRepository.deleteById(id);
