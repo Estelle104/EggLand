@@ -144,4 +144,91 @@ public class VenteService {
         // --- Mouvement d'argent : entrée catégorie "vente" ---
         mvtArgentService.creerEntree(total, LocalDate.now(), "vente");
     }
+@Transactional
+    public void enregistrerModificationVente(int venteId,
+                                             List<Integer> produitIds,
+                                             List<Integer> lotIds,
+                                             List<BigDecimal> quantites,
+                                             List<BigDecimal> prixUnitaires,
+                                             Client client) {
+
+        Vente vente = venteRepository.findById(venteId)
+            .orElseThrow(() -> new RuntimeException("Vente introuvable"));
+
+        // Récupérer les lignes de détails actuelles avant modification
+        List<DetailVente> anciensDetails = detailVenteRepository.findByVenteId(venteId);
+
+        // On va d'abord identifier l'ancienne quantité d'œufs pour calculer la différence
+        int ancienneQuantiteOeuf = 0;
+        for (DetailVente detail : anciensDetails) {
+            if ("oeuf".equalsIgnoreCase(detail.getProduit().getCode())) {
+                ancienneQuantiteOeuf += detail.getQuantite().intValue();
+            }
+        }
+
+        // On calcule la nouvelle quantité d'œufs demandée dans le formulaire
+        int nouvelleQuantiteOeuf = 0;
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (int i = 0; i < produitIds.size(); i++) {
+            ProduitVente produit = trouverProduitVenteParId(produitIds.get(i));
+            if (produit == null) continue;
+
+            BigDecimal qte = quantites.get(i);
+            BigDecimal prix = prixUnitaires.get(i);
+            total = total.add(qte.multiply(prix));
+
+            if ("oeuf".equalsIgnoreCase(produit.getCode())) {
+                nouvelleQuantiteOeuf += qte.intValue();
+            }
+        }
+
+        int differenceOeuf = nouvelleQuantiteOeuf - ancienneQuantiteOeuf;
+
+        if (differenceOeuf > 0) {
+            // L'utilisateur a augmenté la quantité d'œufs : on valide le stock et on retire le surplus
+            int stockDispo = oeufService.getStockDisponible();
+            if (differenceOeuf > stockDispo) {
+                throw new RuntimeException("Stock d'œufs insuffisant pour ajouter " + differenceOeuf + " œufs supplémentaires. Disponible : " + stockDispo);
+            }
+            oeufService.retirerDuStock(differenceOeuf);
+        } else if (differenceOeuf < 0) {
+            // L'utilisateur a diminué la quantité d'œufs : on restitue la différence au stock
+            oeufService.ajouterAuStock(Math.abs(differenceOeuf));
+        }
+
+        // --- MISE À JOUR DES DÉTAILS DE LA VENTE ---
+        // Pour éviter les conflits d'indexation complexes, on remplace proprement les lignes de détails
+        detailVenteRepository.deleteAll(anciensDetails);
+
+        for (int i = 0; i < produitIds.size(); i++) {
+            ProduitVente produit = trouverProduitVenteParId(produitIds.get(i));
+            if (produit == null) continue;
+
+            DetailVente detail = DetailVente.builder()
+                .vente(vente)
+                .client(client)
+                .produit(produit)
+                .quantite(quantites.get(i))
+                .prixUnitaire(prixUnitaires.get(i))
+                .build();
+            detailVenteRepository.save(detail);
+
+            // Si c'est une poule et qu'un lot est sélectionné (nouveau ou modifié)
+            if ("poule".equalsIgnoreCase(produit.getCode())) {
+                Integer lotId = (lotIds != null && i < lotIds.size()) ? lotIds.get(i) : null;
+                if (lotId != null) {
+                    lotService.reformerUnLot(lotId, LocalDate.now());
+                }
+            }
+        }
+
+        // Mettre à jour l'entité Vente parente
+        vente.setClient(client);
+        vente.setTotal(total);
+        venteRepository.save(vente);
+
+        // Mouvement d'argent : Mise à jour (on enregistre la régularisation ou le nouveau montant total)
+        mvtArgentService.creerEntree(total, LocalDate.now(), "Modification Vente #" + vente.getId());
+    }
 }

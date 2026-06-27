@@ -59,9 +59,7 @@ public class VenteController {
         return "vente/formulairecreation";
     }
 
-    // -------------------------------------------------------
-    // POST /ventes/creation
-    // -------------------------------------------------------
+    
     @PostMapping("/ventes/creation")
     public String creerVente(HttpServletRequest request, RedirectAttributes ra) {
         try {
@@ -130,9 +128,7 @@ public class VenteController {
         return "redirect:/ventes";
     }
 
-    // -------------------------------------------------------
-    // POST /ventes/supprimer
-    // -------------------------------------------------------
+   
     @PostMapping("/ventes/supprimer")
     public String supprimerVente(@RequestParam("id") int id, RedirectAttributes ra) {
         try {
@@ -144,9 +140,7 @@ public class VenteController {
         return "redirect:/ventes/listevente";
     }
 
-    // -------------------------------------------------------
-    // POST /ventes/modifier → formulaire de modification
-    // -------------------------------------------------------
+ 
     @PostMapping("/ventes/modifier")
     public String modifierVente(@RequestParam("id") int id, Model model, RedirectAttributes ra) {
         Vente vente = venteService.trouverVenteParId(id);
@@ -162,9 +156,7 @@ public class VenteController {
         return "vente/formulaireModification";
     }
 
-    // -------------------------------------------------------
-    // POST /ventes/detail → page détail vente
-    // -------------------------------------------------------
+  
     @PostMapping("/ventes/detail")
     public String detailVente(@RequestParam("id") int id,
                                @RequestParam("clientId") int clientId,
@@ -177,5 +169,77 @@ public class VenteController {
         model.addAttribute("vente", vente);
         model.addAttribute("details", venteService.listeDetailVente(id));
         return "vente/detailVente";
+    }
+
+    @PostMapping("/ventes/enregistrerModification")
+    public String enregistrerModificationVente(HttpServletRequest request, RedirectAttributes ra) {
+        try {
+            // --- ID de la Vente ---
+            String venteIdStr = request.getParameter("id");
+            if (venteIdStr == null || venteIdStr.isBlank()) {
+                ra.addFlashAttribute("error", "Identifiant de vente manquant.");
+                return "redirect:/ventes/listevente";
+            }
+            int venteId = Integer.parseInt(venteIdStr);
+
+            // --- Client ---
+            String clientIdStr = request.getParameter("clientId");
+            if (clientIdStr == null || clientIdStr.isBlank()) {
+                ra.addFlashAttribute("error", "Veuillez sélectionner un client.");
+                return "redirect:/ventes/modifier?id=" + venteId;
+            }
+            Client client = clientService.trouverClientParId(Integer.parseInt(clientIdStr));
+            if (client == null) {
+                ra.addFlashAttribute("error", "Client introuvable.");
+                return "redirect:/ventes/modifier?id=" + venteId;
+            }
+
+            // --- Lignes dynamiques envoyées par le tableau ---
+            String[] produitIdsStr = request.getParameterValues("produitId");
+            String[] quantitesStr  = request.getParameterValues("quantite");
+            String[] prixStr       = request.getParameterValues("prixUnitaire");
+            String[] lotIdsStr     = request.getParameterValues("lotId");
+
+            if (produitIdsStr == null || produitIdsStr.length == 0) {
+                ra.addFlashAttribute("error", "La vente doit contenir au moins une ligne.");
+                return "redirect:/ventes/modifier?id=" + venteId;
+            }
+
+            List<Integer>    produitIds = new ArrayList<>();
+            List<BigDecimal> quantites  = new ArrayList<>();
+            List<BigDecimal> prix       = new ArrayList<>();
+            List<Integer>    lotIds     = new ArrayList<>();
+
+            for (int i = 0; i < produitIdsStr.length; i++) {
+                if (produitIdsStr[i] == null || produitIdsStr[i].isBlank()) continue;
+                if (quantitesStr == null || i >= quantitesStr.length || quantitesStr[i] == null || quantitesStr[i].isBlank()) continue;
+                if (prixStr == null || i >= prixStr.length || prixStr[i] == null || prixStr[i].isBlank()) continue;
+
+                produitIds.add(Integer.parseInt(produitIdsStr[i]));
+                quantites.add(new BigDecimal(quantitesStr[i]));
+                prix.add(new BigDecimal(prixStr[i]));
+
+                Integer lotId = null;
+                if (lotIdsStr != null && i < lotIdsStr.length && lotIdsStr[i] != null && !lotIdsStr[i].isBlank()) {
+                    lotId = Integer.parseInt(lotIdsStr[i]);
+                }
+                lotIds.add(lotId);
+            }
+
+            if (produitIds.isEmpty()) {
+                ra.addFlashAttribute("error", "Veuillez remplir correctement au moins une ligne complète.");
+                return "redirect:/ventes/modifier?id=" + venteId;
+            }
+
+            // Exécution de la modification avec calcul différentiel
+            venteService.enregistrerModificationVente(venteId, produitIds, lotIds, quantites, prix, client);
+            ra.addFlashAttribute("success", "Vente modifiée avec succès !");
+
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Erreur lors de la modification : " + e.getMessage());
+            return "redirect:/ventes/listevente";
+        }
+
+        return "redirect:/ventes/listevente";
     }
 }

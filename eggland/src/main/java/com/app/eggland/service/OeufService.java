@@ -64,4 +64,18 @@ public class OeufService {
             throw new RuntimeException("Stock insuffisant.");
         }
     } 
+
+    @Transactional
+    public void ajouterAuStock(int quantite) {
+        if (quantite <= 0) return;
+        List<OeufStatut> stocks = oeufStatutRepository
+                .findByStatutCodeOrderByProductionDateAsc("valide");
+
+        if (stocks.isEmpty()) {
+            throw new RuntimeException("Aucun enregistrement de stock valide trouvé pour restituer les œufs.");
+        }
+        OeufStatut premierStock = stocks.get(0);
+        premierStock.setQuantite(premierStock.getQuantite() + quantite);
+        oeufStatutRepository.save(premierStock);
+    }
 }
