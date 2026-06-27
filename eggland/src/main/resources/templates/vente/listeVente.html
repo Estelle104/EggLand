@@ -25,12 +25,15 @@
                 </a>
             </div>
 
+            <!-- Alertes flash -->
             <div th:if="${success}" class="alert alert-success">
                 <i class="fa-solid fa-circle-check"></i> <span th:text="${success}"></span>
             </div>
             <div th:if="${error}" class="alert alert-danger">
                 <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${error}"></span>
             </div>
+
+            <!-- ===== FILTRES ===== -->
             <div class="filtre-card">
                 <form th:action="@{/ventes/listevente}" method="get" class="filtre-form">
                     <div class="filtre-group">
@@ -79,6 +82,8 @@
                     </div>
                 </form>
             </div>
+
+            <!-- ===== TABLEAU ===== -->
             <div class="card">
                 <div th:if="${#lists.isEmpty(ventes)}" class="vide-message">
                     <i class="fa-solid fa-cart-shopping"></i>
@@ -100,11 +105,11 @@
                         <tr th:each="vente : ${ventes}">
                             <td th:text="${vente.id}"></td>
                             <td th:text="${vente.client != null ? vente.client.nom : '-'}"></td>
-                            <td th:text="${vente.date != null ? #temporals.format(vente.date, 'dd/MM/yyyy') : '-'}"></td>
-                            <td th:text="${vente.total != null ? vente.total + ' Ar' : '-'}"></td>
+                            <td th:text="${vente.date != null ? #temporals.format(vente.date,'dd/MM/yyyy') : '-'}"></td>
+                            <td th:text="${vente.total != null ? #numbers.formatDecimal(vente.total,1,'COMMA',2,'POINT') + ' Ar' : '-'}"></td>
                             <td>
-                                <span class="badge badge-green"  th:if="${vente.statut != null}" th:text="${vente.statut.code}"></span>
-                                <span class="badge badge-gray"   th:if="${vente.statut == null}">N/A</span>
+                                <span class="badge badge-green" th:if="${vente.statut != null}" th:text="${vente.statut.code}"></span>
+                                <span class="badge badge-gray"  th:if="${vente.statut == null}">N/A</span>
                             </td>
                             <td class="actions-cell">
                                 <form th:action="@{/ventes/detail}" method="post" style="display:inline;">
