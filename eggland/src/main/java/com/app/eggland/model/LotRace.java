@@ -1,5 +1,7 @@
 package com.app.eggland.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,8 +20,9 @@ public class LotRace {
     private Integer id;
     
     @ManyToOne
-    @JoinColumn(name = "lot_id")
-    private Lot lot;
+@JoinColumn(name = "lot_id")
+@JsonIgnore  
+private Lot lot;
     
     @ManyToOne
     @JoinColumn(name = "race_id")

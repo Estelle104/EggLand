@@ -7,6 +7,7 @@
     min-height: 100vh;
     padding: 30px 40px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    box-sizing: border-box;
 }
 
 /* =========================
@@ -94,6 +95,25 @@
     box-shadow: 0 0 0 3px rgba(138, 74, 29, 0.15);
 }
 
+.btn-filter {
+    display: inline-block;
+    background: #8a4a1d; 
+    color: white; 
+    text-decoration: none; 
+    padding: 10px 18px; 
+    border-radius: 8px; 
+    font-size: 13px; 
+    font-weight: 500; 
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-filter:hover {
+    background: #733b17;
+    color: white;
+}
+
 /* =========================
    ETAT VIDE
 ========================= */
@@ -119,25 +139,27 @@
 }
 
 /* =========================
-   CARTE
+   CARTE (Agencement optimisé)
 ========================= */
 
 .lot-card {
     background: white;
     border-radius: 14px;
-    padding: 20px;
-    min-height: 250px;
-    border: 1px solid rgba(0, 0, 0, 0.03);
-    box-shadow: 0 4px 12px rgba(0,0,0,.05);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    padding: 22px;
+    min-height: 290px; 
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,.04);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+    
+    /* Structure Flexbox verticale */
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Aligne le footer pile en bas */
+    box-sizing: border-box;
 }
 
 .lot-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 24px rgba(0,0,0,.1);
+    box-shadow: 0 12px 24px rgba(138, 74, 29, 0.12);
 }
 
 /* =========================
@@ -148,11 +170,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 4px;
 }
 
 .lot-header h3 {
     margin: 0;
-    font-size: 19px;
+    font-size: 18px;
     font-family: Georgia, serif;
     font-weight: bold;
     color: #1d1d1d;
@@ -181,8 +204,8 @@
 ========================= */
 
 .lot-status {
-    margin-top: 8px;
-    margin-bottom: 15px;
+    margin-top: 4px;
+    margin-bottom: 16px;
 }
 
 .badge-actif,
@@ -207,29 +230,53 @@
 }
 
 /* =========================
-   INFOS
+   INFOS (Alignement intelligent gauche / droite)
 ========================= */
 
 .lot-info {
-    flex-grow: 1; /* Permet d'occuper l'espace central disponible */
+    flex-grow: 1; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-top: 1px solid #f4f2ea;
+    padding-top: 12px;
+    margin-bottom: 16px;
 }
 
 .lot-info p {
     margin: 8px 0;
     font-size: 13px;
     color: #555;
-    line-height: 1.5;
+    line-height: 1.4;
     display: flex;
-    justify-content: space-between; /* Aligne proprement les libellés et les valeurs */
+    justify-content: space-between; 
+    align-items: flex-start; /* Aligne en haut si le bloc de droite a plusieurs lignes (Races) */
 }
 
-.lot-info span {
+.lot-info p span:first-child {
     color: #777;
+    font-weight: 400;
+    padding-top: 2px; /* Equilibre visuel avec l'alignement de droite */
 }
 
-.lot-info strong {
-    color: #222;
+/* Bloc contenant la ou les races à droite */
+.lot-info p strong {
+    color: #1d1d1d;
     font-weight: 600;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Force l'alignement à droite de chaque ligne de race */
+    gap: 4px;
+}
+
+/* Style uniforme appliqué sur les valeurs de droite (Batiment, Date, Races...) */
+.lot-info p strong,
+.lot-info p strong span {
+    background: #fdfbfa;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
 }
 
 /* =========================
@@ -237,44 +284,38 @@
 ========================= */
 
 .lot-footer {
-    margin-top: 20px;
+    margin-top: auto;
     display: flex;
     gap: 10px;
+    width: 100%;
 }
 
 .btn-reformer,
-.btn-modifier{
+.btn-modifier {
     display: inline-block;
     flex: 1;
     text-align: center;
     background: #8a4a1d;
     color: white;
     text-decoration: none;
-    padding: 10px 16px;
+    padding: 11px 14px;
     border-radius: 8px;
     font-size: 13px;
     font-weight: 600;
     border: none;
     cursor: pointer;
-  
     transition: background 0.2s ease, transform 0.1s ease;
 }
 
 .btn-reformer:hover,
-.btn-modifier:hover{
+.btn-modifier:hover {
     background: #733b17;
     color: white;
 }
-.btn-filter{
-background: #8a4a1d; color: white; text-decoration: none; padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: 0.2s;
-}
-.btn-filter:hover{
-     background: #733b17;
-    color: white;
-}
+
 .btn-reformer:active,
 .btn-modifier:active {
-    transform: scale(0.98);
+    transform: scale(0.97);
 }
 
 /* =========================
@@ -304,6 +345,7 @@ background: #8a4a1d; color: white; text-decoration: none; padding: 10px 18px; bo
     width: 100%;
     height: 100%;
     padding: 20px;
+    box-sizing: border-box;
 }
 
 #reform-container form {

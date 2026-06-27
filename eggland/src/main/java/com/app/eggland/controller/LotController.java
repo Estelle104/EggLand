@@ -34,7 +34,7 @@ import com.app.eggland.service.LotService;
 
 import jakarta.transaction.Transactional;
 
-@RequestMapping("/lots")
+@RequestMapping("/admin/lots")
 @RestController
 public class LotController {
     @Autowired
@@ -60,10 +60,8 @@ public List<Race> getRaces() {
         return batimentRepository.findAll();
     }
 
-    @GetMapping("/data/statuts")
-    public List<StatutLot> getStatuts() {
-        return statutLotRepository.findAll();
-    }
+   
+
      @GetMapping("/create")
     public ModelAndView showLotForm(){
         ModelAndView mav = new ModelAndView("lots/form");
@@ -95,7 +93,7 @@ public ModelAndView createLot(@ModelAttribute Lot lot,
             throw new IllegalArgumentException("Le bâtiment est inexistant");
         }
         
-        // ✅ CALCULER nombreInitial à partir de nbrPoule
+       
         int totalNombre = 0;
         if (nbrPoule != null) {
             for (Integer nombre : nbrPoule) {
@@ -111,7 +109,7 @@ public ModelAndView createLot(@ModelAttribute Lot lot,
         
         lot.setNombreInitial(totalNombre);
         
-        // ✅ AJOUTER LES LOTRACE
+        
         if (listeRace != null && !listeRace.isEmpty()) {
             for (int i = 0; i < listeRace.size(); i++) {
                 Integer raceId = listeRace.get(i);
@@ -131,7 +129,7 @@ public ModelAndView createLot(@ModelAttribute Lot lot,
         }
         
         lotService.createLot(lot);
-        mav.setViewName("redirect:/lots/list");
+        mav.setViewName("redirect:/admin/lots");
         
     } catch (IllegalArgumentException e) {
         System.out.println("Erreur: " + e.getMessage());
@@ -146,7 +144,7 @@ public ModelAndView createLot(@ModelAttribute Lot lot,
     return mav;
 } 
 
-@GetMapping("/list")
+@GetMapping
 public ModelAndView showAllLot(
         @RequestParam(required = false) Integer batiment,
         @RequestParam(required = false) Integer statut) {
@@ -233,7 +231,7 @@ RedirectAttributes redirectAttributes) {
     
 
 redirectAttributes.addFlashAttribute("success", "Reforme effectuée avec succès");
-mav.setViewName("redirect:/lots/list");
+mav.setViewName("redirect:/admin/lots");
         return mav;
         
 
@@ -257,9 +255,9 @@ mav.setViewName("redirect:/lots/list");
 @GetMapping("/api/{id}")
 @ResponseBody
 public Lot getLotWithRaces(@PathVariable("id") Integer id) {
-    return lotService.findById(id);
+    Lot lot = lotService.findById(id);
+    return lot;
 }
-
 @PostMapping("/modifier/{id}")
 public ModelAndView modifierLots(@PathVariable("id") Integer id,
                                   @RequestParam(required = false) List<Integer> listeRace,
@@ -273,10 +271,25 @@ public ModelAndView modifierLots(@PathVariable("id") Integer id,
             throw new IllegalArgumentException("Lot inexistant");
         }
         
-       
         lot.getLotRaces().clear();
         
-       
+ 
+        int totalNombre = 0;
+        if (nbrPoule != null) {
+            for (Integer nombre : nbrPoule) {
+                if (nombre != null && nombre > 0) {
+                    totalNombre += nombre;
+                }
+            }
+        }
+        
+        if (totalNombre <= 0) {
+            throw new IllegalArgumentException("Le nombre total doit être positif");
+        }
+        
+        lot.setNombreInitial(totalNombre);
+        
+   
         if (listeRace != null && !listeRace.isEmpty()) {
             for (int i = 0; i < listeRace.size(); i++) {
                 Integer raceId = listeRace.get(i);
@@ -295,16 +308,17 @@ public ModelAndView modifierLots(@PathVariable("id") Integer id,
             }
         }
         
+       
         lotService.updateLot(lot);
         
         redirectAttributes.addFlashAttribute("successMessage", "Lot modifié avec succès");
-        return new ModelAndView("redirect:/lots/list");
+        return new ModelAndView("redirect:/admin/lots");
         
     } catch (IllegalArgumentException e) {
         System.out.println("Erreur: " + e.getMessage());
-        
         redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-        return new ModelAndView("redirect:/lots/list");
+               return new ModelAndView("redirect:/admin/lots");
+
     }
 }
 @GetMapping("/supprimer/{id}")
@@ -318,6 +332,7 @@ public ModelAndView deleteLot(@PathVariable Integer id) {
 
     lotService.deleteLot(lot.getId());
 
-    return new ModelAndView("redirect:/lots/list");
+           return new ModelAndView("redirect:/admin/lots");
+
 }
 }

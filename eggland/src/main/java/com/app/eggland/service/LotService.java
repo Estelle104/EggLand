@@ -88,6 +88,13 @@ lotRaceRepository.saveAll(lot.getLotRaces());
         return lotRepository.calculerPlaceUtiliseePourBatiment(batiment);
     }
 
+    public int calculerPlaceUtilisee(Batiment batiment, Integer lotIdAExclure) {
+    if (lotIdAExclure == null) {
+        return calculerPlaceUtilisee(batiment);
+    }
+    return lotRepository.calculerPlaceUtiliseePourBatimentExcluantLot(batiment, lotIdAExclure);
+}
+
     public int getPlaceRestante(Integer idBatiment){
         int placeRestante;
             Batiment batiment = batimentRepository.findById(idBatiment)
@@ -99,34 +106,7 @@ lotRaceRepository.saveAll(lot.getLotRaces());
             placeRestante = capacite - placeUtilise;
         return placeRestante;
     }
-//rehefa reforme
 
-// public void resetCapaciteBatiment(Batiment batiment, StatutLot statut) {
-    
-   
-//     Lot lot = lotRepository.findFirstByStatut(statut);
-    
-   
-//     if (lot == null) {
-//         System.out.println("Aucun lot trouvé avec le statut: " + statut);
-//         return;
-//     }
-    
-//     int nbrInitiale = lot.getNombreInitial();
-//     int placeRestante = getPlaceRestante(batiment.getId());
-//     int placeBatiment = 0;
-   
-//     if ("REFORME".equals(lot.getStatut().getCode())) {
-       
-//         placeBatiment = nbrInitiale + placeRestante;
-//     } else {
-        
-//         placeBatiment = placeRestante;
-//     }
-    
-//     System.out.println("Capacite batiment: " + placeBatiment);
-//     batiment.setCapacite(placeBatiment);
-// }
 public int calculerAgeActuel(Lot lot, LocalDate actuel) {
 
     LocalDate dateEntree = lot.getDateArrivee();
@@ -153,14 +133,36 @@ public  List<Lot> getAllLots(){
     return lotRepository.findAll();
  }
 
-public  void updateLot(Lot lot){
-      Batiment batiment = batimentRepository.findById(lot.getBatiment().getId())
-            .orElseThrow(() -> new IllegalArgumentException("Bâtiment non trouvé"));
+public void updateLot(Lot lot) {
+    Batiment batiment = batimentRepository.findById(lot.getBatiment().getId())
+        .orElseThrow(() -> new IllegalArgumentException("Bâtiment non trouvé"));
 
-verifierCapacite(lot,batiment);
+    int capacite = batiment.getCapacite();
+    int nbrInitiale = lot.getNombreInitial();
+
+    if(capacite < nbrInitiale) {
+        throw new IllegalArgumentException(
+            " Le nombre initial (" + nbrInitiale + 
+            ") dépasse la capacité du bâtiment (" + capacite + ")"
+        );
+    }
+
+    // ✅ UTILISER LA SURCHARGE AVEC EXCLUSION
+    int placeUtilise = calculerPlaceUtilisee(batiment, lot.getId());
+    int placeRestante = capacite - placeUtilise;
+
+    if(nbrInitiale > placeRestante) {
+        throw new IllegalArgumentException(
+            " Place insuffisante! " +
+            "Capacité: " + capacite + 
+            " | Utilisée: " + placeUtilise + 
+            " | Restante: " + placeRestante +
+            " | Demandé: " + nbrInitiale
+        );
+    }
 
     lotRepository.save(lot);
- }
+}
 
 @Transactional
 public void deleteLot(Integer id) {

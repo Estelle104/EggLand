@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.app.eggland.model.StatutLot;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "lot")
@@ -43,7 +45,8 @@ public class Lot {
 
 
   @OneToMany(mappedBy = "lot", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-private List<LotRace> lotRaces = new ArrayList<>();
+   
+    private List<LotRace> lotRaces = new ArrayList<>();
     
     // Getters/Setters
     public List<LotRace> getLotRaces() { return lotRaces; }
