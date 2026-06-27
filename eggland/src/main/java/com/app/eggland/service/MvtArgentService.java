@@ -31,7 +31,20 @@ public class MvtArgentService {
                 .date(date)
                 .categorie(categorie)
                 .build();
-        return mvtArgentRepository.save(mvt);
-        
+        return mvtArgentRepository.save(mvt);   
+    }
+
+    public MvtArgent creerEntree(BigDecimal montant, LocalDate date, String categorie) {
+
+        TypeMvt entree = typeMvtRepository.findByCode("entree")
+                .orElseThrow(() -> new RuntimeException("Type 'entree' introuvable"));
+
+        MvtArgent mvt = MvtArgent.builder()
+                .type(entree)
+                .montant(montant)
+                .date(date)
+                .categorie(categorie)
+                .build();
+        return mvtArgentRepository.save(mvt);   
     }
 }

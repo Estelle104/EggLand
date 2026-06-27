@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des ventes</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/vente.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+<body>
+<div class="app">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div class="main">
+        <div th:replace="fragments/header :: header"></div>
+        <div class="content">
+
+            <div class="page-header">
+                <h2>Liste des ventes</h2>
+                <a th:href="@{/ventes/creation}" class="btn-ajouter">
+                    <i class="fa-solid fa-plus"></i> Ajouter une vente
+                </a>
+            </div>
+
+            <div th:if="${success}" class="alert alert-success">
+                <i class="fa-solid fa-circle-check"></i> <span th:text="${success}"></span>
+            </div>
+            <div th:if="${error}" class="alert alert-danger">
+                <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${error}"></span>
+            </div>
+
+            <div class="card">
+                <div th:if="${#lists.isEmpty(ventes)}" class="vide-message">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Aucune vente pour l'instant
+                </div>
+
+                <table th:if="${not #lists.isEmpty(ventes)}">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Client</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="vente : ${ventes}">
+                            <td th:text="${vente.id}"></td>
+                            <td th:text="${vente.client != null ? vente.client.nom : '-'}"></td>
+                            <td th:text="${vente.date != null ? #temporals.format(vente.date, 'dd/MM/yyyy') : '-'}"></td>
+                            <td th:text="${vente.total != null ? vente.total + ' Ar' : '-'}"></td>
+                            <td>
+                                <span class="badge badge-green"  th:if="${vente.statut != null}" th:text="${vente.statut.code}"></span>
+                                <span class="badge badge-gray"   th:if="${vente.statut == null}">N/A</span>
+                            </td>
+                            <td class="actions-cell">
+                                <!-- Voir détail -->
+                                <form th:action="@{/ventes/detail}" method="post" style="display:inline;">
+                                    <input type="hidden" name="id"       th:value="${vente.id}">
+                                    <input type="hidden" name="clientId" th:value="${vente.client != null ? vente.client.id : 0}">
+                                    <button type="submit" class="btn-action btn-detail" title="Voir détail">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </form>
+                                <!-- Modifier -->
+                                <form th:action="@{/ventes/modifier}" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" th:value="${vente.id}">
+                                    <button type="submit" class="btn-action btn-modifier" title="Modifier">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </button>
+                                </form>
+                                <!-- Supprimer -->
+                                <form th:action="@{/ventes/supprimer}" method="post" style="display:inline;"
+                                      onsubmit="return confirm('Supprimer cette vente ?')">
+                                    <input type="hidden" name="id" th:value="${vente.id}">
+                                    <button type="submit" class="btn-action btn-supprimer" title="Supprimer">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

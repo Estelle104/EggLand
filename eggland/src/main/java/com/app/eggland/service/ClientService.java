@@ -72,4 +72,11 @@ public class ClientService {
         this.authentifierClientManuellement(email, request);
     }
 
+    public List<Client> listeClient() {
+        return clientRepository.findAll();
+    }
+
+    public Client trouverClientParId(int id) {
+        return clientRepository.findById(id).orElse(null);
+    }
 }
