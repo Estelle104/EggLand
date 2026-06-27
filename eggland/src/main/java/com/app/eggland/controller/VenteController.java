@@ -90,7 +90,6 @@ public class VenteController {
     @PostMapping("/ventes/creation")
     public String creerVente(HttpServletRequest request, RedirectAttributes ra) {
         try {
-            // --- Client ---
             String clientIdStr = request.getParameter("clientId");
             if (clientIdStr == null || clientIdStr.isBlank()) {
                 ra.addFlashAttribute("error", "Veuillez sélectionner un client.");
@@ -102,7 +101,6 @@ public class VenteController {
                 return "redirect:/ventes/creation";
             }
 
-            // --- Lignes : les tableaux sont alignés dans l'ordre d'envoi ---
             String[] produitIdsStr = request.getParameterValues("produitId");
             String[] quantitesStr  = request.getParameterValues("quantite");
             String[] prixStr       = request.getParameterValues("prixUnitaire");
@@ -119,9 +117,7 @@ public class VenteController {
             List<Integer>    lotIds     = new ArrayList<>();
 
             for (int i = 0; i < produitIdsStr.length; i++) {
-                // Ignorer les lignes sans produit sélectionné
                 if (produitIdsStr[i] == null || produitIdsStr[i].isBlank()) continue;
-                // Ignorer les lignes sans quantité ou prix
                 if (quantitesStr == null || i >= quantitesStr.length
                         || quantitesStr[i] == null || quantitesStr[i].isBlank()) continue;
                 if (prixStr == null || i >= prixStr.length
