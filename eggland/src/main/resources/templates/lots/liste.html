@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <title>Gestion des Lots</title>
 
-    <link rel="stylesheet" th:href="@{/css/variables.css}">
+   <link rel="stylesheet" th:href="@{/css/variables.css}">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/listeLots.css}">
     <link rel="stylesheet" th:href="@{/css/reforme.css}">
 
@@ -37,7 +38,7 @@
                     Ajouter un lot
                 </a>
             </div>
-
+ 
             <!-- FILTRES -->
             <div class="filtres-section">
 
@@ -169,7 +170,7 @@
                             class="btn-modifier"
                             th:data-id="${lot.id}"
                              th:data-race="${lot.race.id}"
-        th:data-statut="${lot.statut.code}"
+  
         th:data-batiment="${lot.batiment.id}"
         th:data-nombre="${lot.nombreInitial}">
                         Modfier

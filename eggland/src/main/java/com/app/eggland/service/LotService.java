@@ -150,6 +150,11 @@ public  List<Lot> getAllLots(){
  }
 
 public  void updateLot(Lot lot){
+      Batiment batiment = batimentRepository.findById(lot.getBatiment().getId())
+            .orElseThrow(() -> new IllegalArgumentException("Bâtiment non trouvé"));
+
+verifierCapacite(lot,batiment);
+
     lotRepository.save(lot);
  }
 

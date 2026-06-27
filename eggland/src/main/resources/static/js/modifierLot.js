@@ -14,8 +14,7 @@ console.log("statut", statuts);
     form.querySelector("#batiment").innerHTML =
         batiments.map(b => `<option value="${b.id}">${b.nom}</option>`).join("");
 
-    form.querySelector("#statut").innerHTML =
-        statuts.map(s => `<option value="${s.id}">${s.code}</option>`).join("");
+
 }
 document.querySelectorAll(".btn-modifier").forEach(button => {
 
@@ -26,7 +25,6 @@ document.querySelectorAll(".btn-modifier").forEach(button => {
         const lot = {
             id: btn.dataset.id,
             race: btn.dataset.race,
-            statut: btn.dataset.statut,
             batiment: btn.dataset.batiment,
             nombreInitial: btn.dataset.nombre
         };
@@ -50,11 +48,6 @@ document.querySelectorAll(".btn-modifier").forEach(button => {
             <div class="form-group">
                 <label>Race :</label>
                 <select name="race" id="race" required></select>
-            </div>
-
-            <div class="form-group">
-                <label>Statut :</label>
-                <select name="statut" id="statut" required></select>
             </div>
 
             <div class="form-group">
@@ -83,7 +76,6 @@ document.querySelectorAll(".btn-modifier").forEach(button => {
 
        setTimeout(() => {
     form.querySelector("#race").value = String(lot.race);
-    form.querySelector("#statut").value = String(lot.statut);
     form.querySelector("#batiment").value = String(lot.batiment);
     form.querySelector("#nombreInitial").value = lot.nombreInitial;
 }, 0);
