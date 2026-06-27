@@ -15,7 +15,7 @@
 <div class="app">
     <div th:replace="fragments/sidebar :: sidebar"></div>
     <div class="main">
-        <div th:replace="fragments/header :: header"></div>
+        <div th:replace="fragments/header :: header" th:with="hideSearch=true"></div>
         <div class="content">
 
             <div class="page-header">
@@ -133,7 +133,6 @@
 </script>
 <script th:src="@{/js/vente.js}"></script>
 <script>
-// Gestion suppression des lignes existantes
 document.querySelectorAll('.btn-supprimer-ligne').forEach(function(btn) {
     btn.addEventListener('click', function() {
         var tbody = document.getElementById('lignes-tbody');
