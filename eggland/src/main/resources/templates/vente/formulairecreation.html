@@ -35,7 +35,6 @@
                         </select>
                     </div>
 
-                    <!-- Lignes de vente -->
                     <div class="lignes-header">
                         <h3>Lignes de vente</h3>
                         <button type="button" class="btn-ajouter-ligne" id="btn-ajouter-ligne">
@@ -81,10 +80,9 @@
     </div>
 </div>
 
-<!-- Données produits et lots injectées par Thymeleaf pour vente.js -->
 <script th:inline="javascript">
-    var produitsData = /*[[${produits}]]*/ [];
-    var lotsData     = /*[[${lots}]]*/ [];
+    var produitsData =  [];
+    var lotsData     =  [];
 </script>
 <script th:src="@{/js/vente.js}"></script>
 </body>

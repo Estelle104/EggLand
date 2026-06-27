@@ -79,9 +79,6 @@
         return container;
     }
 
-    // ----------------------------------------------------------------
-    // Dropdown Lots
-    // ----------------------------------------------------------------
     function creerDropdownLots(inputLotId, triggerLot) {
         var container = document.createElement('div');
         container.className = 'custom-dropdown lot-disabled';
@@ -116,46 +113,41 @@
         ligneIndex++;
         var tr = document.createElement('tr');
 
-        // Champs cachés — noms SIMPLES lus par getParameterValues()
         var inputProduitId = document.createElement('input');
         inputProduitId.type = 'hidden';
-        inputProduitId.name = 'produitId';   // ← nom simple
+        inputProduitId.name = 'produitId';   
 
         var inputLotId = document.createElement('input');
         inputLotId.type = 'hidden';
-        inputLotId.name = 'lotId';           // ← nom simple
+        inputLotId.name = 'lotId';           
 
         var triggerProduit = document.createElement('div');
         var triggerLot     = document.createElement('div');
 
-        // Cellule Lot (construite avant Produit car Produit en a besoin)
         var tdLot = document.createElement('td');
         var dropdownLots = creerDropdownLots(inputLotId, triggerLot);
         tdLot.appendChild(dropdownLots);
         tdLot.appendChild(inputLotId);
 
-        // Cellule Produit
         var tdProduit = document.createElement('td');
         var dropdownProduits = creerDropdownProduits(inputProduitId, triggerProduit, inputLotId, triggerLot, dropdownLots);
         tdProduit.appendChild(dropdownProduits);
         tdProduit.appendChild(inputProduitId);
 
-        // Cellule Quantité
         var tdQte = document.createElement('td');
         var inputQte = document.createElement('input');
         inputQte.type = 'number';
-        inputQte.name = 'quantite';          // ← nom simple
+        inputQte.name = 'quantite';          
         inputQte.min = '1';
         inputQte.placeholder = 'Qté';
         inputQte.required = true;
         inputQte.addEventListener('input', calculerTotalVente);
         tdQte.appendChild(inputQte);
 
-        // Cellule Prix unitaire
         var tdPrix = document.createElement('td');
         var inputPrix = document.createElement('input');
         inputPrix.type = 'number';
-        inputPrix.name = 'prixUnitaire';     // ← nom simple
+        inputPrix.name = 'prixUnitaire';    
         inputPrix.min = '0';
         inputPrix.step = '0.01';
         inputPrix.placeholder = 'Prix';
@@ -163,7 +155,6 @@
         inputPrix.addEventListener('input', calculerTotalVente);
         tdPrix.appendChild(inputPrix);
 
-        // Cellule Supprimer
         var tdSuppr = document.createElement('td');
         var btnSuppr = document.createElement('button');
         btnSuppr.type = 'button';
