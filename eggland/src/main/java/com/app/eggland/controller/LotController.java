@@ -226,12 +226,14 @@ mav.setViewName("redirect:/lots/list");
 @PostMapping("/modifier/{id}")
 public ModelAndView modifierLots(@PathVariable("id") Integer id,
                                   @ModelAttribute Lot formLot) {
-
+    ModelAndView mav = new ModelAndView("lots/liste");
     Lot lot = lotService.findById(id);
+try{
 
+    
+    
 
-
-   
+    
     if (formLot.getRace() != lot.getRace()) {
         lot.setRace(formLot.getRace());
     }
@@ -239,18 +241,28 @@ public ModelAndView modifierLots(@PathVariable("id") Integer id,
     if (formLot.getStatut() != lot.getStatut()) {
         lot.setStatut(formLot.getStatut());
     }
-
+    
     if (formLot.getBatiment() != lot.getBatiment()) {
         lot.setBatiment(formLot.getBatiment());
     }
-
+    
     if (formLot.getNombreInitial() != lot.getNombreInitial()) {
         lot.setNombreInitial(formLot.getNombreInitial());
     }
+    
+    lotService.updateLot(lot);
+} catch (IllegalArgumentException e) {
+           
+            System.out.println("Erreur d'insertion: " + e.getMessage());
+            
+            mav.setViewName("lots/liste");
+            mav.addObject("lot", lot);
+            mav.addObject("error", e.getMessage());
+            mav.addObject("races", raceRepository.findAll());
+            mav.addObject("batiments", batimentRepository.findAll());
+        }
 
-   lotService.updateLot(lot);
-
-    return new ModelAndView("redirect:/lots/list");
+   return mav;
 }
 
 @GetMapping("/supprimer/{id}")
