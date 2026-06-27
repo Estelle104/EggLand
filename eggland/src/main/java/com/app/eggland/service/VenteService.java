@@ -144,7 +144,8 @@ public class VenteService {
         // --- Mouvement d'argent : entrée catégorie "vente" ---
         mvtArgentService.creerEntree(total, LocalDate.now(), "vente");
     }
-@Transactional
+
+    @Transactional
     public void enregistrerModificationVente(int venteId,
                                              List<Integer> produitIds,
                                              List<Integer> lotIds,
