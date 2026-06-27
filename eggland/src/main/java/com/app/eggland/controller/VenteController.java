@@ -22,7 +22,8 @@ import com.app.eggland.service.DetailVenteService;
 import com.app.eggland.service.LotService;
 import com.app.eggland.service.VenteService;
 
-import jakarta.servlet.http.HttpServlet;
+import java.time.LocalDate;
+import com.app.eggland.model.StatutVente;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
@@ -45,8 +46,33 @@ public class VenteController {
     }
 
     @GetMapping("/ventes/listevente")
-    public String listeVente(Model model) {
-        model.addAttribute("ventes", venteService.listeVente());
+    public String listeVente(
+            @RequestParam(value = "clientId",  required = false) Integer clientId,
+            @RequestParam(value = "statutId",  required = false) Integer statutId,
+            @RequestParam(value = "dateDebut", required = false) String  dateDebutStr,
+            @RequestParam(value = "dateFin",   required = false) String  dateFinStr,
+            Model model) {
+
+        LocalDate dateDebut = (dateDebutStr != null && !dateDebutStr.isBlank())
+                              ? LocalDate.parse(dateDebutStr) : null;
+        LocalDate dateFin   = (dateFinStr   != null && !dateFinStr.isBlank())
+                              ? LocalDate.parse(dateFinStr)   : null;
+
+        boolean filtreActif = clientId != null || statutId != null
+                              || dateDebut != null || dateFin != null;
+
+        List<Vente> ventes = filtreActif
+            ? venteService.filtrerVentes(clientId, statutId, dateDebut, dateFin)
+            : venteService.listeVente();
+
+        model.addAttribute("ventes",    ventes);
+        model.addAttribute("clients",   clientService.listeClient());
+        model.addAttribute("statuts",   venteService.listeStatutVente());
+        model.addAttribute("clientIdSelectionne",  clientId);
+        model.addAttribute("statutIdSelectionne",  statutId);
+        model.addAttribute("dateDebutSelectionnee", dateDebutStr);
+        model.addAttribute("dateFinSelectionnee",   dateFinStr);
+        model.addAttribute("hideSearch", true);
         return "vente/listeVente";
     }
 
@@ -54,8 +80,9 @@ public class VenteController {
     public String creationVente(Model model) {
         model.addAttribute("produits", venteService.listeProduitVente());
         model.addAttribute("vente", new Vente());
-        model.addAttribute("lots", lotService.getAllLotsActifs());
+        model.addAttribute("lots", lotService.getAllLots());
         model.addAttribute("clients", clientService.listeClient());
+        model.addAttribute("hideSearch", true);
         return "vente/formulairecreation";
     }
 
@@ -152,7 +179,7 @@ public class VenteController {
         model.addAttribute("details", venteService.listeDetailVente(id));
         model.addAttribute("clients", clientService.listeClient());
         model.addAttribute("produits", venteService.listeProduitVente());
-        model.addAttribute("lots", lotService.getAllLotsActifs());
+        model.addAttribute("lots", lotService.getAllLots());
         return "vente/formulaireModification";
     }
 
@@ -174,7 +201,6 @@ public class VenteController {
     @PostMapping("/ventes/enregistrerModification")
     public String enregistrerModificationVente(HttpServletRequest request, RedirectAttributes ra) {
         try {
-            // --- ID de la Vente ---
             String venteIdStr = request.getParameter("id");
             if (venteIdStr == null || venteIdStr.isBlank()) {
                 ra.addFlashAttribute("error", "Identifiant de vente manquant.");
@@ -182,7 +208,6 @@ public class VenteController {
             }
             int venteId = Integer.parseInt(venteIdStr);
 
-            // --- Client ---
             String clientIdStr = request.getParameter("clientId");
             if (clientIdStr == null || clientIdStr.isBlank()) {
                 ra.addFlashAttribute("error", "Veuillez sélectionner un client.");
@@ -194,7 +219,6 @@ public class VenteController {
                 return "redirect:/ventes/modifier?id=" + venteId;
             }
 
-            // --- Lignes dynamiques envoyées par le tableau ---
             String[] produitIdsStr = request.getParameterValues("produitId");
             String[] quantitesStr  = request.getParameterValues("quantite");
             String[] prixStr       = request.getParameterValues("prixUnitaire");
@@ -231,7 +255,6 @@ public class VenteController {
                 return "redirect:/ventes/modifier?id=" + venteId;
             }
 
-            // Exécution de la modification avec calcul différentiel
             venteService.enregistrerModificationVente(venteId, produitIds, lotIds, quantites, prix, client);
             ra.addFlashAttribute("success", "Vente modifiée avec succès !");
 
