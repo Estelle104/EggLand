@@ -24,7 +24,7 @@ public class LoginController {
         return "login";
     }
 
-    @GetMapping("/staff/login")
+    @GetMapping("/admin/login")
     public String Staffloginview(){
         return "stafflogin";
     }
