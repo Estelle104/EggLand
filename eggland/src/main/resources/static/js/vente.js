@@ -1,40 +1,43 @@
+
 (function () {
     'use strict';
 
     var ID_POULE = 2;
     var ligneIndex = 0;
 
+    // ----------------------------------------------------------------
+    // Calcul du total global affiché dans le tfoot
+    // ----------------------------------------------------------------
     function calculerTotalVente() {
         var tbody = document.getElementById('lignes-tbody');
         var totalGlobal = 0;
-
         if (!tbody) return;
 
-        // On parcourt chaque ligne du tableau
         tbody.querySelectorAll('tr').forEach(function (tr) {
-            var inputQte = tr.querySelector('input[name*="quantite"]');
-            var inputPrix = tr.querySelector('input[name*="prixUnitaire"]');
-
+            var inputQte  = tr.querySelector('input[name="quantite"]');
+            var inputPrix = tr.querySelector('input[name="prixUnitaire"]');
             if (inputQte && inputPrix) {
-                var qte = parseFloat(inputQte.value) || 0;
+                var qte  = parseFloat(inputQte.value)  || 0;
                 var prix = parseFloat(inputPrix.value) || 0;
                 totalGlobal += qte * prix;
             }
         });
 
-        // Mise à jour de l'affichage du total (formaté à 2 décimales)
         var totalDisplay = document.getElementById('total-vente');
         if (totalDisplay) {
             totalDisplay.textContent = totalGlobal.toFixed(2) + ' Ar';
         }
     }
 
+    // ----------------------------------------------------------------
+    // Dropdown Produits
+    // ----------------------------------------------------------------
     function creerDropdownProduits(inputProduitId, triggerProduit, inputLotId, triggerLot, divLotDropdown) {
         var container = document.createElement('div');
         container.className = 'custom-dropdown';
 
         triggerProduit.className = 'dropdown-trigger';
-        triggerProduit.innerHTML = '<span>Choisir un produit</span> <i class="fa-solid fa-chevron-down"></i>';
+        triggerProduit.innerHTML = '<span>Choisir un produit</span><i class="fa-solid fa-chevron-down"></i>';
         container.appendChild(triggerProduit);
 
         var ul = document.createElement('ul');
@@ -54,7 +57,7 @@
             li.addEventListener('click', function () {
                 ul.querySelectorAll('li').forEach(function (el) { el.classList.remove('selected'); });
                 li.classList.add('selected');
-                
+
                 inputProduitId.value = p.id;
                 triggerProduit.querySelector('span').textContent = p.code;
 
@@ -81,12 +84,15 @@
         return container;
     }
 
+    // ----------------------------------------------------------------
+    // Dropdown Lots
+    // ----------------------------------------------------------------
     function creerDropdownLots(inputLotId, triggerLot) {
         var container = document.createElement('div');
         container.className = 'custom-dropdown lot-disabled';
 
         triggerLot.className = 'dropdown-trigger';
-        triggerLot.innerHTML = '<span>Sélectionner lot</span> <i class="fa-solid fa-chevron-down"></i>';
+        triggerLot.innerHTML = '<span>Sélectionner lot</span><i class="fa-solid fa-chevron-down"></i>';
         container.appendChild(triggerLot);
 
         var ul = document.createElement('ul');
@@ -100,7 +106,6 @@
             li.addEventListener('click', function () {
                 ul.querySelectorAll('li').forEach(function (el) { el.classList.remove('selected'); });
                 li.classList.add('selected');
-                
                 inputLotId.value = l.id;
                 triggerLot.querySelector('span').textContent = 'Lot ' + l.id;
             });
@@ -112,59 +117,61 @@
         return container;
     }
 
+    // ----------------------------------------------------------------
+    // Créer une ligne
+    // ----------------------------------------------------------------
     function creerLigne() {
-        var idx = ligneIndex++;
+        ligneIndex++;
         var tr = document.createElement('tr');
 
+        // Champs cachés — noms SIMPLES lus par getParameterValues()
         var inputProduitId = document.createElement('input');
         inputProduitId.type = 'hidden';
-        inputProduitId.name = 'ventesLignes[' + idx + '].produitId';
+        inputProduitId.name = 'produitId';   // ← nom simple
 
         var inputLotId = document.createElement('input');
         inputLotId.type = 'hidden';
-        inputLotId.name = 'ventesLignes[' + idx + '].lotId';
+        inputLotId.name = 'lotId';           // ← nom simple
 
         var triggerProduit = document.createElement('div');
-        var triggerLot = document.createElement('div');
+        var triggerLot     = document.createElement('div');
 
-        // --- Cellule Lot ---
+        // Cellule Lot (construite avant Produit car Produit en a besoin)
         var tdLot = document.createElement('td');
         var dropdownLots = creerDropdownLots(inputLotId, triggerLot);
         tdLot.appendChild(dropdownLots);
         tdLot.appendChild(inputLotId);
 
-        // --- Cellule Produit ---
+        // Cellule Produit
         var tdProduit = document.createElement('td');
         var dropdownProduits = creerDropdownProduits(inputProduitId, triggerProduit, inputLotId, triggerLot, dropdownLots);
         tdProduit.appendChild(dropdownProduits);
         tdProduit.appendChild(inputProduitId);
 
-        // --- Cellule Quantité ---
+        // Cellule Quantité
         var tdQte = document.createElement('td');
         var inputQte = document.createElement('input');
         inputQte.type = 'number';
-        inputQte.name = 'ventesLignes[' + idx + '].quantite';
+        inputQte.name = 'quantite';          // ← nom simple
         inputQte.min = '1';
         inputQte.placeholder = 'Qté';
         inputQte.required = true;
-        // Déclenche le calcul à chaque saisie de quantité
         inputQte.addEventListener('input', calculerTotalVente);
         tdQte.appendChild(inputQte);
 
-        // --- Cellule Prix unitaire ---
+        // Cellule Prix unitaire
         var tdPrix = document.createElement('td');
         var inputPrix = document.createElement('input');
         inputPrix.type = 'number';
-        inputPrix.name = 'ventesLignes[' + idx + '].prixUnitaire';
+        inputPrix.name = 'prixUnitaire';     // ← nom simple
         inputPrix.min = '0';
         inputPrix.step = '0.01';
         inputPrix.placeholder = 'Prix';
         inputPrix.required = true;
-        // Déclenche le calcul à chaque saisie de prix
         inputPrix.addEventListener('input', calculerTotalVente);
         tdPrix.appendChild(inputPrix);
 
-        // --- Cellule Supprimer ---
+        // Cellule Supprimer
         var tdSuppr = document.createElement('td');
         var btnSuppr = document.createElement('button');
         btnSuppr.type = 'button';
@@ -175,7 +182,7 @@
             var tbody = document.getElementById('lignes-tbody');
             if (tbody && tbody.rows.length > 1) {
                 tbody.removeChild(tr);
-                calculerTotalVente(); // Recalculer après suppression
+                calculerTotalVente();
             }
         });
         tdSuppr.appendChild(btnSuppr);
@@ -189,7 +196,7 @@
         return tr;
     }
 
-  
+
     document.addEventListener('DOMContentLoaded', function () {
         var tbody = document.getElementById('lignes-tbody');
         var btn   = document.getElementById('btn-ajouter-ligne');
@@ -204,3 +211,4 @@
     });
 
 })();
+

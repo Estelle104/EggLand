@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import com.app.eggland.model.OeufStatut;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OeufStatutRepository extends JpaRepository<OeufStatut, Integer>{  
@@ -18,6 +19,13 @@ public interface OeufStatutRepository extends JpaRepository<OeufStatut, Integer>
     Integer sumQuantiteIndisponible();
 
     List<OeufStatut> findAllByOrderByProductionDateDescIdDesc();
+
+    Optional<OeufStatut> findByProductionIdAndStatutCode(Long productionId, String code);
+
+    Optional<OeufStatut> findFirstByStatutCodeAndQuantiteGreaterThan(String code, Integer quantite);
+
+    List<OeufStatut> findByStatutCodeOrderByProductionDateAsc(String string);
+
 
     
 }

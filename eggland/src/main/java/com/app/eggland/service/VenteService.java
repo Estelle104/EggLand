@@ -76,80 +76,72 @@ public class VenteService {
 
 
     @Transactional
-    public Vente enregistrerVente(Client client,
-                                  String[] produitIds,
-                                  String[] quantites,
-                                  String[] prixUnitaires,
-                                  String[] lotIds) {
-
-        if (produitIds == null || produitIds.length == 0) {
-            throw new IllegalArgumentException("Aucune ligne de vente fournie.");
-        }
+    public void enregistrerVente(int clientId,
+                                  List<Integer> produitIds,
+                                  List<Integer> lotIds,
+                                  List<BigDecimal> quantites,
+                                  List<BigDecimal> prixUnitaires,
+                                  Client client) {
 
         BigDecimal total = BigDecimal.ZERO;
 
-        // --- Récupérer le statut "en_cours" (ou premier statut disponible) ---
-        StatutVente statut = statutVenteRepository.findAll()
-                .stream().findFirst()
-                .orElseThrow(() -> new RuntimeException("Aucun statut de vente trouvé en base."));
+        // --- Calcul du total et validation stock oeufs ---
+        for (int i = 0; i < produitIds.size(); i++) {
+            ProduitVente produit = trouverProduitVenteParId(produitIds.get(i));
+            if (produit == null) continue;
 
-        // --- Créer la vente ---
-        Vente vente = Vente.builder()
-                .client(client)
-                .date(LocalDate.now())
-                .total(BigDecimal.ZERO)   // sera mis à jour après
-                .statut(statut)
-                .build();
-        venteRepository.save(vente);
+            BigDecimal qte = quantites.get(i);
+            BigDecimal prix = prixUnitaires.get(i);
+            total = total.add(qte.multiply(prix));
 
-        // --- Traiter chaque ligne ---
-        for (int i = 0; i < produitIds.length; i++) {
-            if (produitIds[i] == null || produitIds[i].isBlank()) continue;
-
-            int produitId   = Integer.parseInt(produitIds[i]);
-            BigDecimal qte  = new BigDecimal(quantites != null && i < quantites.length ? quantites[i] : "1");
-            BigDecimal prix = new BigDecimal(prixUnitaires != null && i < prixUnitaires.length ? prixUnitaires[i] : "0");
-
-            ProduitVente produit = produitVenteRepository.findById(produitId)
-                    .orElseThrow(() -> new RuntimeException("Produit introuvable : " + produitId));
-
-            // --- Validation stock œufs ---
+            // Vérifier stock si produit = oeuf
             if ("oeuf".equalsIgnoreCase(produit.getCode())) {
                 int stockDispo = oeufService.getStockDisponible();
+                oeufService.retirerDuStock(qte.intValue());
                 if (qte.intValue() > stockDispo) {
-                    throw new IllegalStateException(
-                        "Stock d'œufs insuffisant. Disponible : " + stockDispo + ", demandé : " + qte.intValue());
+                    throw new RuntimeException(
+                        "Stock d'œufs insuffisant. Disponible : " + stockDispo
+                        + " | Demandé : " + qte.intValue()
+                    );
                 }
             }
+        }
 
-            // --- Si produit = poulet → réformer le lot ---
-            if ("poulet".equalsIgnoreCase(produit.getCode())) {
-                if (lotIds != null && i < lotIds.length && lotIds[i] != null && !lotIds[i].isBlank()) {
-                    int lotId = Integer.parseInt(lotIds[i]);
+        // --- Créer et sauvegarder la Vente ---
+        StatutVente statut = statutVenteRepository.findByCode("paye")
+            .orElseThrow(() -> new RuntimeException("Statut 'validee' introuvable en base"));
+
+        Vente vente = Vente.builder()
+            .client(client)
+            .date(LocalDate.now())
+            .total(total)
+            .statut(statut)
+            .build();
+        venteRepository.save(vente);
+
+        // --- Sauvegarder chaque ligne de détail ---
+        for (int i = 0; i < produitIds.size(); i++) {
+            ProduitVente produit = trouverProduitVenteParId(produitIds.get(i));
+            if (produit == null) continue;
+
+            DetailVente detail = DetailVente.builder()
+                .vente(vente)
+                .client(client)
+                .produit(produit)
+                .quantite(quantites.get(i))
+                .prixUnitaire(prixUnitaires.get(i))
+                .build();
+            detailVenteRepository.save(detail);
+            // Si produit = poulet → réformer le lot
+            if ("poule".equalsIgnoreCase(produit.getCode())) {
+                Integer lotId = (lotIds != null && i < lotIds.size()) ? lotIds.get(i) : null;
+                if (lotId != null) {
                     lotService.reformerUnLot(lotId, LocalDate.now());
                 }
             }
-
-            // --- Créer le détail ---
-            DetailVente detail = DetailVente.builder()
-                    .vente(vente)
-                    .client(client)
-                    .produit(produit)
-                    .quantite(qte)
-                    .prixUnitaire(prix)
-                    .build();
-            detailVenteRepository.save(detail);
-
-            total = total.add(qte.multiply(prix));
         }
 
-        // --- Mettre à jour le total de la vente ---
-        vente.setTotal(total);
-        venteRepository.save(vente);
-
-        // --- Enregistrer un mouvement d'argent (entrée / vente) ---
+        // --- Mouvement d'argent : entrée catégorie "vente" ---
         mvtArgentService.creerEntree(total, LocalDate.now(), "vente");
-
-        return vente;
     }
 }
