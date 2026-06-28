@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
+<head>
+    <title>Export / Import - Eggland</title>
+    <style>
+        .card { border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform .2s; }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+        .card-header { border-radius: 12px 12px 0 0 !important; }
+        .btn-export { min-width: 200px; }
+        .section-title { font-size: .9rem; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: #6c757d; margin-bottom: 1rem; }
+        .form-control-sm { font-size: .85rem; }
+        .alert-import { margin-top: 1rem; }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container-fluid py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">Export &amp; Import</h1>
+        </div>
+
+        <div class="row g-4">
+            <!-- Export PDF -->
+            <div class="col-lg-4">
+                <div class="card h-100 border-0">
+                    <div class="card-header bg-white border-0 pt-3">
+                        <h5 class="mb-0"><i class="fas fa-file-pdf text-danger me-2"></i>Export PDF</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="section-title">Bon de Livraison</div>
+                        <form th:action="@{/finance/export/pdf/bon-livraison}" method="get" target="_blank" class="mb-3">
+                            <div class="input-group input-group-sm mb-2">
+                                <input type="date" name="date" th:value="${today}" class="form-control">
+                                <button type="submit" class="btn btn-outline-danger"><i class="fas fa-download me-1"></i>PDF</button>
+                            </div>
+                        </form>
+
+                        <div class="section-title mt-3">Paiement de Salaire</div>
+                        <form th:action="@{/finance/export/pdf/paiement-salaire}" method="get" target="_blank">
+                            <div class="input-group input-group-sm mb-2">
+                                <input type="month" name="mois" th:value="${currentMonth}" class="form-control">
+                                <button type="submit" class="btn btn-outline-danger"><i class="fas fa-download me-1"></i>PDF</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Excel -->
+            <div class="col-lg-4">
+                <div class="card h-100 border-0">
+                    <div class="card-header bg-white border-0 pt-3">
+                        <h5 class="mb-0"><i class="fas fa-file-excel text-success me-2"></i>Export Excel</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="section-title">Production Œufs</div>
+                        <form th:action="@{/finance/export/excel/production-oeufs}" method="get" target="_blank" class="mb-3">
+                            <div class="input-group input-group-sm mb-2">
+                                <input type="date" name="debut" th:value="${todayMinus30}" class="form-control" placeholder="Début">
+                                <input type="date" name="fin" th:value="${today}" class="form-control" placeholder="Fin">
+                                <button type="submit" class="btn btn-outline-success"><i class="fas fa-download me-1"></i>XLSX</button>
+                            </div>
+                        </form>
+
+                        <div class="section-title">Mouvement de Stock</div>
+                        <form th:action="@{/finance/export/excel/mouvement-stock}" method="get" target="_blank" class="mb-3">
+                            <div class="input-group input-group-sm mb-2">
+                                <input type="date" name="debut" th:value="${todayMinus30}" class="form-control" placeholder="Début">
+                                <input type="date" name="fin" th:value="${today}" class="form-control" placeholder="Fin">
+                                <button type="submit" class="btn btn-outline-success"><i class="fas fa-download me-1"></i>XLSX</button>
+                            </div>
+                        </form>
+
+                        <div class="section-title">Paiements Salaires</div>
+                        <form th:action="@{/finance/export/excel/paiements-salaires}" method="get" target="_blank">
+                            <div class="input-group input-group-sm mb-2">
+                                <input type="month" name="mois" th:value="${currentMonth}" class="form-control">
+                                <button type="submit" class="btn btn-outline-success"><i class="fas fa-download me-1"></i>XLSX</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Import Excel -->
+            <div class="col-lg-4">
+                <div class="card h-100 border-0">
+                    <div class="card-header bg-white border-0 pt-3">
+                        <h5 class="mb-0"><i class="fas fa-upload text-primary me-2"></i>Import Excel</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="section-title">Liste des Ventes</div>
+                        <p class="text-muted small mb-2">Fichier .xlsx avec colonnes : Client, Date, Produit, Quantité, Prix unitaire</p>
+                        <form th:action="@{/finance/import/liste-ventes}" method="post" enctype="multipart/form-data">
+                            <div class="input-group input-group-sm mb-2">
+                                <input type="file" name="file" accept=".xlsx,.xls" class="form-control" required>
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-upload me-1"></i>Importer</button>
+                            </div>
+                        </form>
+
+                        <div th:if="${importErrors != null and not importErrors.isEmpty()}" class="alert alert-danger alert-import mt-3">
+                            <h6 class="alert-heading">Erreurs (${importErrorCount}) :</h6>
+                            <ul class="mb-0 small"><li th:each="err : ${importErrors}" th:text="${err}"></li></ul>
+                        </div>
+                        <div th:if="${importSuccesses != null and not importSuccesses.isEmpty()}" class="alert alert-success alert-import mt-3">
+                            <h6 class="alert-heading">Importés (${importSuccessCount}) :</h6>
+                            <ul class="mb-0 small"><li th:each="s : ${importSuccesses}" th:text="${s}"></li></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liens rapides vers les pages concernées -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card border-0">
+                    <div class="card-body">
+                        <h6 class="text-muted mb-3"><i class="fas fa-external-link-alt me-2"></i>Pages liées</h6>
+                        <div class="d-flex gap-3 flex-wrap">
+                            <a th:href="@{/admin/livraisons}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-truck me-1"></i>Livraisons</a>
+                            <a th:href="@{/admin/oeufs}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-egg me-1"></i>Œufs</a>
+                            <a th:href="@{/stock}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-box me-1"></i>Stock</a>
+                            <a th:href="@{/salaires}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-money-bill me-1"></i>Salaires</a>
+                            <a th:href="@{/finance}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-chart-pie me-1"></i>Finance</a>
+                            <a th:href="@{/ventes}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-cart-shopping me-1"></i>Ventes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</body>
+</html>

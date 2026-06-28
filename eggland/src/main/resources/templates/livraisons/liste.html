@@ -142,9 +142,15 @@
 
                 <div class="page-header">
                     <h2 th:text="${pageTitle}">Livraisons</h2>
-                    <a class="btn-primary" th:href="@{/admin/livraisons/creation}" style="margin-bottom:0;">
-                        <i class="fa-solid fa-truck-fast"></i> Nouvelle livraison
-                    </a>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <form th:action="@{/finance/export/pdf/bon-livraison}" method="get" target="_blank" style="margin:0; display:flex; gap:6px; align-items:center;">
+                            <input type="date" name="date" th:value="${today}" class="form-control form-control-sm" style="width:150px;">
+                            <button type="submit" class="btn-primary" style="padding:8px 14px; font-size:13px; margin:0;"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                        </form>
+                        <a class="btn-primary" th:href="@{/admin/livraisons/creation}" style="margin:0;">
+                            <i class="fa-solid fa-truck-fast"></i> Nouvelle livraison
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Filtre par date -->
@@ -203,13 +209,10 @@
                                                 <option value="en_cours" th:selected="${livraison.statut.code == 'en_cours'}">en_cours</option>
                                                 <option value="livre" th:selected="${livraison.statut.code == 'livre'}">livre</option>
                                             </select>
-                                            <button type="submit">OK</button>
+                                            <button type="submit" class="btn btn-sm btn-outline-primary">Changer</button>
                                         </form>
-                                        <a class="btn-pdf" th:href="@{/admin/livraisons/exportPdf(id=${livraison.id})}">
-                                            <i class="fa-solid fa-file-pdf"></i>
-                                        </a>
                                         <!-- Bouton Supprimer -->
-                                        <form th:action="@{/admin/livraisons/supprimer}" method="post" style="margin:0;" th:onsubmit="'return confirm(\'Supprimer la livraison #' + ${livraison.id} + ' ? Cette action est irréversible.\')'">
+                                        <form th:action="@{/admin/livraisons/supprimer}" method="post" style="margin:0;" onsubmit="return confirm('Supprimer cette livraison ? Cette action est irréversible.')">
                                             <input type="hidden" name="id" th:value="${livraison.id}" />
                                             <button type="submit" class="btn-supp-liv" title="Supprimer">
                                                 <i class="fa-solid fa-trash-can"></i>
