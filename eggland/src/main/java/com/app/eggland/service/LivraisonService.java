@@ -93,4 +93,31 @@ public class LivraisonService {
         livraison.setStatut(statut);
         return livraisonRepository.save(livraison);
     }
+
+    public List<Livraison> filtrerLivraisons(LocalDate dateDebut, LocalDate dateFin) {
+        boolean hasDebut = dateDebut != null;
+        boolean hasFin   = dateFin   != null;
+
+        if (hasDebut && hasFin) {
+            return livraisonRepository.findByDateLivraisonBetweenOrderByDateLivraisonDesc(dateDebut, dateFin);
+        }
+        if (hasDebut) {
+            return livraisonRepository.findByDateLivraisonAfterOrderByDateLivraisonDesc(dateDebut);
+        }
+        if (hasFin) {
+            return livraisonRepository.findByDateLivraisonBeforeOrderByDateLivraisonDesc(dateFin);
+        }
+        return livraisonRepository.findAllByOrderByDateLivraisonDesc();
+    }
+
+    @Transactional
+    public void supprimerLivraison(int id) {
+        Livraison livraison = livraisonRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Livraison introuvable avec l'ID : " + id));
+
+        if ("livre".equals(livraison.getStatut().getCode())) {
+            // même si livré, on peut supprimer
+        }
+        livraisonRepository.delete(livraison);
+    }
 }
