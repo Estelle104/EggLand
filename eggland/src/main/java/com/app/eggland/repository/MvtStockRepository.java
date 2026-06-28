@@ -1,6 +1,7 @@
 package com.app.eggland.repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,4 +22,6 @@ public interface MvtStockRepository extends JpaRepository<MvtStock, Integer> {
     // Méthode pour calculer la somme des quantités pour une nourriture et un type de mouvement donné
     @Query("SELECT COALESCE(SUM(m.quantite), 0) FROM MvtStock m WHERE m.nourriture.id = :nourritureId AND m.type = :type")
     BigDecimal sumQuantiteByNourritureAndType(@Param("nourritureId") Integer nourritureId, @Param("type") TypeMvt type);
+
+    List<MvtStock> findByDateBetweenOrderByDateDesc(LocalDate debut, LocalDate fin);
 }

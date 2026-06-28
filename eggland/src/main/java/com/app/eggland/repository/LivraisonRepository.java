@@ -18,4 +18,6 @@ public interface LivraisonRepository extends JpaRepository<Livraison, Integer>{
     List<Livraison> findByDateLivraisonAfterOrderByDateLivraisonDesc(LocalDate date);
 
     List<Livraison> findByDateLivraisonBeforeOrderByDateLivraisonDesc(LocalDate date);
+
+    List<Livraison> findByDateLivraison(LocalDate date);
 }

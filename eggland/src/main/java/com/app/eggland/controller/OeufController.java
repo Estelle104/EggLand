@@ -72,7 +72,10 @@ public class OeufController {
 
     @GetMapping("/historique")
     public String historique(Model model) {
+        LocalDate today = LocalDate.now();
         model.addAttribute("historiqueProduction", oeufProductionService.getHistoriqueProduction());
+        model.addAttribute("today", today.toString());
+        model.addAttribute("todayMinus30", today.minusDays(30).toString());
         return "oeufs/historique";
     }
     
