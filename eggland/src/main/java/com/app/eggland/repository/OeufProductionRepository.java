@@ -37,5 +37,7 @@ public interface OeufProductionRepository extends JpaRepository<OeufProduction, 
 
     @Query(value = "SELECT * FROM v_historique_production", nativeQuery = true)
     List<Map<String, Object>> findHistoriqueProduction();
+
+    List<OeufProduction> findByDateBetweenOrderByDateDesc(LocalDate debut, LocalDate fin);
 }
 

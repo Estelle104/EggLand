@@ -56,10 +56,13 @@ public class LivraisonController {
             ? livraisonService.filtrerLivraisons(dateDebut, dateFin)
             : livraisonService.listeLivraison();
 
+        LocalDate today = LocalDate.now();
         model.addAttribute("livraisons", livraisons);
         model.addAttribute("dateDebutSelectionnee", dateDebutStr);
         model.addAttribute("dateFinSelectionnee", dateFinStr);
         model.addAttribute("pageTitle", "Livraisons");
+        model.addAttribute("today", today.toString());
+        model.addAttribute("todayMinus30", today.minusDays(30).toString());
         return "livraisons/liste";
     }
 
@@ -152,6 +155,12 @@ public class LivraisonController {
         } catch (RuntimeException e) {
             ra.addFlashAttribute("error", e.getMessage());
         }
+        return "redirect:/admin/livraisons";
+    }
+
+    @GetMapping("/exportPdf")
+    public String exportPdf(@RequestParam("id") int id, RedirectAttributes ra) {
+        ra.addFlashAttribute("error", "Export PDF individuel non disponible pour le moment.");
         return "redirect:/admin/livraisons";
     }
 
