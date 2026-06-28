@@ -74,6 +74,7 @@ public class LivraisonController {
 
     @PostMapping("/save")
     public String save(@RequestParam("produitCode") String produitCode,
+                       @RequestParam("nomClient") String nomClient,
                        @RequestParam(value = "dateLivraison", required = false) String dateLivraisonStr,
                        @RequestParam("adresseLivraison") String adresseLivraison,
                        @RequestParam(value = "fraisLivraison", required = false) String fraisLivraisonStr,
@@ -103,17 +104,9 @@ public class LivraisonController {
                 throw new RuntimeException("Produit introuvable : " + produitCode);
             }
 
-            var clients = clientService.listeClient();
-            Client client;
-            if (clients != null && !clients.isEmpty()) {
-                client = clients.get(0);
-            } else {
-                Client anon = new Client();
-                anon.setNom("Client anonyme");
-                anon.setEmail("anonyme@eggland.local");
-                anon.setAdresse("Créé automatiquement");
-                anon.setDateInscription(LocalDate.now());
-                client = clientService.registerClient(anon);
+            Client client = clientService.trouverOuCreerClientParNom(nomClient);
+            if (client == null) {
+                throw new RuntimeException("Client introuvable.");
             }
 
             var statutVente = venteService.trouverStatutVenteParCode("paye");

@@ -69,6 +69,12 @@
             Finance
         </a>
 
+        <a th:href="@{/admin/clients}">
+            <i class="fa-solid fa-users-gear"></i>
+            Clients
+            <span th:if="${nbClientsEnAttente > 0}" style="background:#e47373; color:#fff; font-size:10px; font-weight:700; padding:1px 8px; border-radius:999px; margin-left:auto;" th:text="${nbClientsEnAttente}">0</span>
+        </a>
+
         <a th:href="@{/admin/livraisons}">
             <i class="fa-solid fa-truck"></i>
             Livraisons
@@ -98,4 +104,3 @@
     </div>
 
 </div>
-

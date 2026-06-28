@@ -37,6 +37,11 @@
                 <form th:action="@{/admin/livraisons/save}" method="post">
 
                     <div class="form-group">
+                        <label>Client</label>
+                        <input type="text" name="nomClient" placeholder="Entrez le nom du client" required />
+                    </div>
+
+                    <div class="form-group">
                         <label>Type de produit</label>
                         <select name="produitCode" required>
                             <option value="">Sélectionner un type</option>
