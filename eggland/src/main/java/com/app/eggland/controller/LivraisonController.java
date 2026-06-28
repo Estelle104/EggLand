@@ -3,6 +3,7 @@ package com.app.eggland.controller;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,8 +40,25 @@ public class LivraisonController {
     private StatutLivraisonRepository statutLivraisonRepository;
 
     @GetMapping
-    public String liste(Model model) {
-        model.addAttribute("livraisons", livraisonService.listeLivraison());
+    public String liste(
+            @RequestParam(value = "dateDebut", required = false) String dateDebutStr,
+            @RequestParam(value = "dateFin", required = false) String dateFinStr,
+            Model model) {
+
+        LocalDate dateDebut = (dateDebutStr != null && !dateDebutStr.isBlank())
+                              ? LocalDate.parse(dateDebutStr) : null;
+        LocalDate dateFin   = (dateFinStr   != null && !dateFinStr.isBlank())
+                              ? LocalDate.parse(dateFinStr)   : null;
+
+        boolean filtreActif = dateDebut != null || dateFin != null;
+
+        List<Livraison> livraisons = filtreActif
+            ? livraisonService.filtrerLivraisons(dateDebut, dateFin)
+            : livraisonService.listeLivraison();
+
+        model.addAttribute("livraisons", livraisons);
+        model.addAttribute("dateDebutSelectionnee", dateDebutStr);
+        model.addAttribute("dateFinSelectionnee", dateFinStr);
         model.addAttribute("pageTitle", "Livraisons");
         return "livraisons/liste";
     }
@@ -131,6 +149,17 @@ public class LivraisonController {
         try {
             livraisonService.changerStatutLivraison(id, statutCode);
             ra.addFlashAttribute("success", "Statut de livraison mis à jour.");
+        } catch (RuntimeException e) {
+            ra.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/admin/livraisons";
+    }
+
+    @PostMapping("/supprimer")
+    public String supprimer(@RequestParam("id") int id, RedirectAttributes ra) {
+        try {
+            livraisonService.supprimerLivraison(id);
+            ra.addFlashAttribute("success", "Livraison supprimée avec succès.");
         } catch (RuntimeException e) {
             ra.addFlashAttribute("error", e.getMessage());
         }
