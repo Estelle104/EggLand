@@ -41,11 +41,10 @@ public interface OeufProductionRepository extends JpaRepository<OeufProduction, 
     @Query(value = "SELECT * FROM v_historique_production", nativeQuery = true)
     List<Map<String, Object>> findHistoriqueProduction();
 
-    @Query(value = "SELECT * FROM v_historique_production",
+    @Query(value = "SELECT * FROM v_historique_production ORDER BY date DESC, lot_id DESC",
         countQuery = "SELECT COUNT(*) FROM v_historique_production",
         nativeQuery = true)
         Page<Map<String, Object>> findHistoriqueProduction(Pageable pageable);
 
     List<OeufProduction> findByDateBetweenOrderByDateDesc(LocalDate debut, LocalDate fin);
 }
-

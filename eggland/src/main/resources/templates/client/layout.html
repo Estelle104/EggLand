@@ -136,6 +136,135 @@
         .eggland-title {
             color: var(--accent);
         }
+
+        .delivery-section {
+            background-color: var(--cream);
+        }
+
+        .delivery-panel {
+            overflow: hidden;
+            border: 1px solid rgba(104, 53, 22, 0.18);
+            border-radius: 14px;
+            background: rgba(255, 253, 248, 0.96);
+            box-shadow: 0 18px 45px rgba(30, 14, 6, 0.12);
+        }
+
+        .delivery-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 24px 28px;
+            border-bottom: 1px solid rgba(104, 53, 22, 0.14);
+            background: linear-gradient(135deg, rgba(104, 53, 22, 0.08), rgba(218, 171, 58, 0.15));
+        }
+
+        .delivery-kicker {
+            margin-bottom: 4px;
+            color: var(--accent);
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 0;
+            text-transform: uppercase;
+        }
+
+        .delivery-title {
+            margin: 0;
+            color: var(--dark);
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .delivery-count {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 6px;
+            flex-shrink: 0;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: var(--deep-brown);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .delivery-count strong {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        .delivery-list {
+            display: grid;
+            gap: 0;
+        }
+
+        .delivery-item {
+            display: grid;
+            grid-template-columns: minmax(120px, 0.8fr) minmax(180px, 1.4fr) minmax(110px, 0.7fr);
+            gap: 18px;
+            padding: 22px 28px;
+        }
+
+        .delivery-item + .delivery-item {
+            border-top: 1px solid rgba(104, 53, 22, 0.12);
+        }
+
+        .delivery-label {
+            display: block;
+            margin-bottom: 5px;
+            color: rgba(30, 14, 6, 0.58);
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .delivery-value {
+            color: var(--dark);
+            font-weight: 700;
+        }
+
+        .delivery-address {
+            color: rgba(30, 14, 6, 0.78);
+            line-height: 1.45;
+        }
+
+        .delivery-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 92px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(218, 171, 58, 0.22);
+            color: var(--deep-brown);
+            font-size: 0.82rem;
+            font-weight: 800;
+            text-transform: capitalize;
+        }
+
+        .delivery-empty {
+            margin: 0;
+            padding: 22px 26px;
+            border: 1px dashed rgba(104, 53, 22, 0.28);
+            border-radius: 12px;
+            background: rgba(255, 253, 248, 0.82);
+            color: rgba(30, 14, 6, 0.72);
+            font-weight: 600;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .delivery-header {
+                align-items: flex-start;
+                flex-direction: column;
+                padding: 22px;
+            }
+
+            .delivery-item {
+                grid-template-columns: 1fr;
+                gap: 14px;
+                padding: 20px 22px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -215,43 +344,41 @@
         </div>
     </header>
 
-    <section th:if="${userEmail != null}" class="py-5" style="background-color: var(--cream);">
+    <section th:if="${userEmail != null}" class="delivery-section py-5">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div th:if="${nbLivraisons > 0}" class="card shadow border-0">
-                        <div class="card-body p-4">
-                            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
-                                <div>
-                                    <p class="section-subtitle mb-1">Suivi client</p>
-                                    <h2 class="h4 fw-bold mb-0">Livraison en cours</h2>
-                                </div>
-                                <span class="badge bg-warning text-dark fs-6">
-                                    <strong th:text="${nbLivraisons}">0</strong>
-                                    livraison(s)
-                                </span>
+                <div class="col-lg-9">
+                    <div th:if="${nbLivraisons > 0}" class="delivery-panel">
+                        <div class="delivery-header">
+                            <div>
+                                <p class="delivery-kicker">Suivi client</p>
+                                <h2 class="delivery-title">Livraison en cours</h2>
                             </div>
+                            <span class="delivery-count">
+                                <strong th:text="${nbLivraisons}">0</strong>
+                                livraison(s)
+                            </span>
+                        </div>
 
-                            <div th:each="livraison : ${livraisons}" class="border-top pt-3 mt-3">
-                                <div class="row g-3">
-                                    <div class="col-md-4">
-                                        <small class="text-muted d-block">Date prévue</small>
-                                        <strong th:text="${livraison.dateLivraison}">2026-07-02</strong>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <small class="text-muted d-block">Adresse</small>
-                                        <span th:text="${livraison.adresseLivraison}">Adresse</span>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <small class="text-muted d-block">Statut</small>
-                                        <span class="badge bg-warning text-dark" th:text="${livraison.statut.code}">en_cours</span>
-                                    </div>
+                        <div class="delivery-list">
+                            <div th:each="livraison : ${livraisons}" class="delivery-item">
+                                <div>
+                                    <span class="delivery-label">Date prévue</span>
+                                    <span class="delivery-value" th:text="${livraison.dateLivraison}">2026-07-02</span>
+                                </div>
+                                <div>
+                                    <span class="delivery-label">Adresse</span>
+                                    <span class="delivery-address" th:text="${livraison.adresseLivraison}">Adresse</span>
+                                </div>
+                                <div>
+                                    <span class="delivery-label">Statut</span>
+                                    <span class="delivery-status" th:text="${livraison.statut.code}">en_cours</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div th:if="${nbLivraisons == 0}" class="alert alert-info mb-0">
+                    <div th:if="${nbLivraisons == 0}" class="delivery-empty">
                         Aucune livraison en cours.
                     </div>
                 </div>

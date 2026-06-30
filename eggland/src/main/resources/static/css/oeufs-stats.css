@@ -303,6 +303,57 @@
     vertical-align: middle;
 }
 
+.history-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+}
+
+.pagination-pages {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+}
+
+.pagination-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    min-height: 38px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.pagination-link:hover {
+    border-color: var(--accent);
+    background: #fff7e6;
+    color: var(--primary);
+}
+
+.pagination-link.active {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #2d1909;
+}
+
+.pagination-link.disabled {
+    pointer-events: none;
+    opacity: 0.45;
+}
+
 .quantity-pill {
     display: inline-flex;
     min-width: 54px;
@@ -373,5 +424,10 @@
     .stats-table td {
         padding-right: 16px;
         padding-left: 16px;
+    }
+
+    .history-pagination {
+        align-items: stretch;
+        flex-direction: column;
     }
 }

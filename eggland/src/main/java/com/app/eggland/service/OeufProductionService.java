@@ -22,6 +22,9 @@ import com.app.eggland.repository.LotRepository;
 import com.app.eggland.repository.OeufProductionRepository;
 import com.app.eggland.repository.StatutOeufRepository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 @Service
 public class OeufProductionService {
 
