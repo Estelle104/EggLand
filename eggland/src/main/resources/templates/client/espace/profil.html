@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{client/espace/layout}">
+<head>
+    <title>Mon profil</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="card-client">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0"><i class="fa-solid fa-user me-2"></i>Mon profil</h5>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <small class="text-muted">Nom</small>
+                    <p class="fw-semibold mb-0" th:text="${client.nom}">Doe</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <small class="text-muted">Prénom</small>
+                    <p class="fw-semibold mb-0" th:text="${client.prenom ?: '-'}">John</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <small class="text-muted">Email</small>
+                    <p class="fw-semibold mb-0" th:text="${client.email}">john@example.com</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <small class="text-muted">Téléphone</small>
+                    <p class="fw-semibold mb-0" th:text="${client.tel ?: '-'}">+261 XX XX XXX XX</p>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="mb-3">
+                    <small class="text-muted">Adresse</small>
+                    <p class="fw-semibold mb-0" th:text="${client.adresse ?: '-'}">Antananarivo</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <small class="text-muted">Inscrit depuis</small>
+                    <p class="fw-semibold mb-0" th:text="${client.dateInscription}">01/01/2026</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

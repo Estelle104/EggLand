@@ -72,7 +72,7 @@ public class ClientAuthController {
             //dans le cas ou le client a un mot de passe à passer dans le formulaire
             // Client mdp = nouveauClient.getMotdePasse()
             // request.login(nouveauClient.getEmail(), mdp) request.login fait tout le travail de authentifierclientManuellement en une seule ligne
-            return "redirect:/client/layout";
+            return "redirect:/client/espace/commandes";
         } catch (RuntimeException e) {
             return "redirect:/inscription";
         }
