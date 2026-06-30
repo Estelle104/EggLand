@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <title>Gestion des Lots</title>
 
-    <link rel="stylesheet" th:href="@{/css/variables.css}">
+   <link rel="stylesheet" th:href="@{/css/variables.css}">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/listeLots.css}">
     <link rel="stylesheet" th:href="@{/css/reforme.css}">
 
@@ -33,17 +34,17 @@
                     <small>--</small>
                 </div>
 
-                <a th:href="@{/lots/create}" class="btn-ajouter">
+                <a th:href="@{/admin/lots/create}" class="btn-ajouter">
                     Ajouter un lot
                 </a>
             </div>
-
+ 
             <!-- FILTRES -->
             <div class="filtres-section">
 
                 <h2>Filtrer par :</h2>
 
-                <form th:action="@{/lots/list}" method="get" class="filtres-form">
+                <form th:action="@{/lots}" method="get" class="filtres-form">
 
                     <select name="batiment">
                         <option value="">Batiment</option>
@@ -105,8 +106,8 @@
 
                             <div class="menu-dropdown">
                                <a th:href="@{/lots/detail/{id}(id=${lot.id})}">
-            Voir détail
-        </a>
+                                    Voir détail
+                               </a>
                             </div>
                         </div>
 
@@ -131,9 +132,12 @@
                     <div class="lot-info">
 
                         <p>
-                            <span>Race :</span>
-                            <strong th:text="${lot.race.nom}">
-                                Sussex
+                            <span>Races :</span>
+                            <strong>
+                                <div th:each="lotRace : ${lot.lotRaces}">
+                                    <span th:text="${lotRace.race.nom}"></span> 
+                                    (<span th:text="${lotRace.nombre}"></span>)
+                                </div>
                             </strong>
                         </p>
 
@@ -154,7 +158,7 @@
                             <span>Age :</span>
                             <strong>
                                 Semaine
-                                <span th:text="${lot.ageSemaine}">
+                                <span th:text="${agesActuels[lot.id]}">
                                     9
                                 </span>
                             </strong>
@@ -168,23 +172,18 @@
                         <button type="button"
                             class="btn-modifier"
                             th:data-id="${lot.id}"
-                             th:data-race="${lot.race.id}"
-        th:data-statut="${lot.statut.code}"
-        th:data-batiment="${lot.batiment.id}"
-        th:data-nombre="${lot.nombreInitial}">
-                        Modfier
-                    </button>
+                            th:data-batiment="${lot.batiment.id}"
+                            th:data-nombre="${lot.nombreInitial}">
+                            Modifier
+                        </button>
                         <button type="button"
                             class="btn-reformer"
                             th:data-id="${lot.id}">
-                        Réformer
-                    </button>
-                    
+                            Réformer
+                        </button>
+                    </div>
                 </div>
             </div>
-          
-
-
 
     </div>
 

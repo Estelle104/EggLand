@@ -74,3 +74,6 @@ FROM OeufStatut os
 JOIN StatutOeuf so ON so.id = os.id_statut
 JOIN OeufProduction op ON os.production_id = op.id
 ORDER BY op.date DESC, op.lot_id, so.code DESC;
+
+
+
