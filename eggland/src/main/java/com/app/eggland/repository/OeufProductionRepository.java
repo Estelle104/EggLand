@@ -11,6 +11,9 @@ import java.util.Map;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 @Repository
 public interface OeufProductionRepository extends JpaRepository<OeufProduction, Integer>{  
 
@@ -26,6 +29,9 @@ public interface OeufProductionRepository extends JpaRepository<OeufProduction, 
     @Query("SELECT COALESCE(SUM(o.quantite), 0) FROM OeufProduction o")
     Integer sumQuantiteTotale();
 
+    @Query("SELECT COALESCE(SUM(o.quantite), 0) FROM OeufProduction o WHERE o.date = :date")
+    Integer sumQuantiteByDate(@Param("date") LocalDate date);
+
     @Query("""
             SELECT o.date, SUM(o.quantite)
             FROM OeufProduction o
@@ -37,5 +43,11 @@ public interface OeufProductionRepository extends JpaRepository<OeufProduction, 
 
     @Query(value = "SELECT * FROM v_historique_production", nativeQuery = true)
     List<Map<String, Object>> findHistoriqueProduction();
-}
 
+    @Query(value = "SELECT * FROM v_historique_production ORDER BY date DESC, lot_id DESC",
+        countQuery = "SELECT COUNT(*) FROM v_historique_production",
+        nativeQuery = true)
+        Page<Map<String, Object>> findHistoriqueProduction(Pageable pageable);
+
+    List<OeufProduction> findByDateBetweenOrderByDateDesc(LocalDate debut, LocalDate fin);
+}

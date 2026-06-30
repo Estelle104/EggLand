@@ -264,3 +264,7 @@ INSERT INTO Nourriture (libelle, prix_unitaire, seuil_alerte) VALUES
 ('sakafo1', 2000.00, 50),
 ('sakafo2', 2500.00, 30),
 ('sakafo3', 1500.00, 40);
+
+INSERT INTO Client (nom, prenom, tel, email, adresse, date_inscription, id_statut) VALUES
+('Rakoto', 'Jean', '0341234567', 'jean.rakoto@gmail.com',
+ 'Lot II M 15 Antananarivo', '2026-01-10', 1);

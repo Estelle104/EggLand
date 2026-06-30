@@ -24,7 +24,7 @@ public class LoginController {
         return "login";
     }
 
-    @GetMapping("/staff/login")
+    @GetMapping("/admin/login")
     public String Staffloginview(){
         return "stafflogin";
     }
@@ -47,7 +47,7 @@ public class LoginController {
                 return "redirect:/races";//ici n'oubliez pas non plus le /gestion/dashboard si ce n'est pas fait comme pour l'admin
             } 
             else if (autorites.contains("client")) {
-                return "redirect:/client/layout";
+                return "redirect:/client/espace/commandes";
             }
         }
         

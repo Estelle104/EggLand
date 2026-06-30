@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.app.eggland.repository.MvtArgentRepository;
 
 @Controller
-@RequestMapping("/mvtargent")
+@RequestMapping("/admin/mvtargent")
 public class MvtArgentController {
 
     @Autowired

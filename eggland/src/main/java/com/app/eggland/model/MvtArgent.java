@@ -33,4 +33,8 @@ public class MvtArgent {
 
     @Column(unique = true, length = 150)
     private String reference;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lot_id")
+    private Lot lot;
 }

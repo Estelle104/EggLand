@@ -12,6 +12,7 @@ import com.app.eggland.model.Client;
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Integer>{    
     Optional<Client> findByEmail(String email);
-    //pour eviter les doublons 
     boolean existsByEmail(String email);
+    Optional<Client> findByNom(String nom);
+    Optional<Client> findByNomContainingIgnoreCase(String nom);
 }

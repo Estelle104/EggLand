@@ -22,6 +22,9 @@ import com.app.eggland.repository.LotRepository;
 import com.app.eggland.repository.OeufProductionRepository;
 import com.app.eggland.repository.StatutOeufRepository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 @Service
 public class OeufProductionService {
 
@@ -216,7 +219,11 @@ public class OeufProductionService {
         return stat;
     }
 
-    public List<Map<String, Object>> getHistoriqueProduction() {
-        return oeufProductionRepository.findHistoriqueProduction();
+    // public List<Map<String, Object>> getHistoriqueProduction() {
+    //     return oeufProductionRepository.findHistoriqueProduction();
+    // }
+
+    public Page<Map<String, Object>> getHistoriqueProduction(Pageable pageable) {
+        return oeufProductionRepository.findHistoriqueProduction(pageable); 
     }
 }

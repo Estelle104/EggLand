@@ -39,9 +39,12 @@ public class MvtStockController {
             stocks.put(n.getId(), mvtStockService.calculerStockActuel(n.getId()));
         }
 
+        LocalDate today = LocalDate.now();
         model.addAttribute("nourritures", nourritures);
         model.addAttribute("stocks", stocks);
         model.addAttribute("pageTitle", "Stock des nourritures");
+        model.addAttribute("today", today.toString());
+        model.addAttribute("todayMinus30", today.minusDays(30).toString());
         return "stock/liste";
     }
 

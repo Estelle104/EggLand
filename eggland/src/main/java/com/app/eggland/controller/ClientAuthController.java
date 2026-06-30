@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.app.eggland.model.Client;
+import com.app.eggland.model.Livraison;
 import com.app.eggland.service.ClientService;
+import com.app.eggland.service.LivraisonService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
+import java.util.List;
 
 
 
@@ -28,17 +28,32 @@ public class ClientAuthController {
     @Autowired
     private ClientService clientService;
 
+    @Autowired
+    private LivraisonService livraisonService;
+
     @GetMapping("/")//vue en premier interraction
-    public String afficherLayoutClient() {
+    public String afficherLayoutClient(Model model) {
+        ajouterInfosLivraisonsClient(model);
         return "client/layout";
     }
+
     @GetMapping("/client/layout")// vue tant que client connecter 
     public String afficherVueClient(Model model) {
+        ajouterInfosLivraisonsClient(model);
+        return "client/layout";
+    }
+
+    private void ajouterInfosLivraisonsClient(Model model) {
+        model.addAttribute("livraisons", List.of());
+        model.addAttribute("nbLivraisons", 0);
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
+            List<Livraison> livraisons = livraisonService.listerLivraisonEnCoursPourClient(auth.getName());
             model.addAttribute("userEmail", auth.getName());
+            model.addAttribute("livraisons", livraisons);
+            model.addAttribute("nbLivraisons", livraisonService.compterLivraisonEnCoursPourClient(livraisons));
         }
-        return "client/layout";
     }
      
     
@@ -57,7 +72,7 @@ public class ClientAuthController {
             //dans le cas ou le client a un mot de passe à passer dans le formulaire
             // Client mdp = nouveauClient.getMotdePasse()
             // request.login(nouveauClient.getEmail(), mdp) request.login fait tout le travail de authentifierclientManuellement en une seule ligne
-            return "redirect:/client/layout";
+            return "redirect:/client/espace/commandes";
         } catch (RuntimeException e) {
             return "redirect:/inscription";
         }

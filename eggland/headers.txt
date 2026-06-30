@@ -1,0 +1,12 @@
+HTTP/1.1 302 
+Set-Cookie: JSESSIONID=C8EBAA2128162BC0BAFCBDF80ECB9B53; Path=/; HttpOnly
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Location: http://localhost:1404/redirection
+Content-Length: 0
+Date: Sat, 27 Jun 2026 15:59:44 GMT
+

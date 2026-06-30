@@ -1,0 +1,19 @@
+<div class="dropdown" th:fragment="notificationDropdown">
+    <button class="btn position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fa-solid fa-bell"></i>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+              th:if="${@notificationService.compterNonLues() > 0}"
+              th:text="${@notificationService.compterNonLues()}">0</span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end shadow" style="width: 340px;">
+        <li th:each="notif : ${@notificationService.listerNonLues()}">
+            <a class="dropdown-item d-flex flex-column py-2">
+                <small class="text-muted" th:text="${#temporals.format(notif.dateCreation, 'dd/MM/yyyy HH:mm')}">date</small>
+                <span th:text="${notif.message}">message</span>
+            </a>
+        </li>
+        <li th:if="${@notificationService.compterNonLues() == 0}">
+            <span class="dropdown-item text-muted text-center py-3">Aucune notification</span>
+        </li>
+    </ul>
+</div>
