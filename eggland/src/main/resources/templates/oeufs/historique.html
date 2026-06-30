@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historique des Œufs - Eggland</title>
+
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/oeufs.css}">
+    <link rel="stylesheet" th:href="@{/css/oeufs-stats.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+    <div class="app">
+
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <div class="main">
+
+            <div th:replace="fragments/header :: header"></div>
+
+            <div class="content stats-page history-page">
+                <div class="page-header">
+                    <div>
+                        <h2>Historique des Œufs</h2>
+                        <p>Consultez les collectes enregistrées par lot, date et statut.</p>
+                    </div>
+                    <div class="page-actions">
+                        <a th:href="@{/admin/oeufs}" class="btn btn-secondary">
+                            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                            Statistiques
+                        </a>
+                        <a th:href="@{/admin/oeufs/saisie}" class="btn btn-primary">
+                            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                            Nouvelle Collecte
+                        </a>
+                    </div>
+                </div>
+
+                <div th:if="${#lists.isEmpty(historiqueProduction)}" class="stats-empty">
+                    <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+                    <p>Aucun historique enregistré.</p>
+                </div>
+
+                <div th:if="${!#lists.isEmpty(historiqueProduction)}" class="table-responsive stats-table-card history-table-card">
+                    <div class="table-heading">
+                        <h3>Collectes enregistrées</h3>
+                        <span th:text="|${#lists.size(historiqueProduction)} ligne(s)|">0 ligne</span>
+                    </div>
+                    <table class="stats-table">
+                        <thead>
+                            <tr>
+                                <th>Lot</th>
+                                <th>Date</th>
+                                <th>Quantité</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="item : ${historiqueProduction}">
+                                <td th:text="${item.lot_id}">1</td>
+                                <td th:text="${item.date}">2026-01-01</td>
+                                <td>
+                                    <span class="quantity-pill" th:text="${item.quantite}">0</span>
+                                </td>
+                                <td>
+                                    <span th:classappend="${'valide'.equalsIgnoreCase(item.statut)} ? 'status-pill' : 'status-anomaly'"
+                                        th:text="${item.statut}">
+                                    </span>                                
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+
+</html>

@@ -12,10 +12,47 @@
             Dashboard
         </a>
 
-        <a th:href="@{/lots}">
+
+        <a th:href="@{/batiments}">
+            <i class="fa-solid fa-building"></i>
+            Bâtiments
+        </a>
+       
+        <a th:href="@{/races}">
+            <i class="fa-solid fa-dna"></i>
+            Races
+        </a>
+
+        <a th:href="@{/lots/list}">
             <i class="fa-solid fa-egg"></i>
             Lots
         </a>
+
+        <a th:href="@{/admin/oeufs}">
+            <i class="fa-solid fa-egg"></i>
+            Oeufs
+        </a>
+
+        <a th:href="@{/batiments}">
+            <i class="fa-solid fa-building"></i>
+            Bâtiments
+        </a>
+
+          <a th:href="@{/nourritures}">
+            <i class="fa-solid fa-wheat-awn"></i>
+            Nourritures
+        </a>
+
+        <a th:href="@{/races}">
+            <i class="fa-solid fa-dna"></i>
+            Races
+        </a>
+
+        <a th:href="@{/morts}">
+            <i class="fa-solid fa-skull"></i>
+            Morts
+        </a>
+
 
         <a th:href="@{/employes}">
             <i class="fa-solid fa-users"></i>
@@ -32,14 +69,14 @@
             Stock
         </a>
 
+        <a th:href="@{/mvtargent}">
+            <i class="fa-solid fa-money-bill-wave"></i>
+            Finance
+        </a>
+
         <a th:href="@{/ventes}">
             <i class="fa-solid fa-cart-shopping"></i>
             Ventes
-        </a>
-
-        <a th:href="@{/races}">
-            <i class="fa-solid fa-dna"></i>
-            Races
         </a>
 
         <a th:href="@{/configuration}">
@@ -49,14 +86,15 @@
 
     </nav>
 
-    <div class="info-user">
+    <div class="info-user"> 
         <div class="user-info">
-            <span>Admin</span>
+            <span th:text="${#authentication.name}">Admin</span>
         </div>
-
-        <button>
-            <i class="fa-solid fa-right-from-bracket">Se Deconnecter</i>
-        </button>
+        <form th:action="@{/logout}" method="post" class="m-0 p-0">
+            <button>
+                <i class="fa-solid fa-right-from-bracket"></i> Se Déconnecter
+            </button>
+        </form>
     </div>
 
 </div>

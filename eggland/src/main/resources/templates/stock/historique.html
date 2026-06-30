@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historique - Eggland</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        .page-header { margin-bottom: 24px; }
+        .page-header h2 { color: var(--text); font-size: 22px; }
+        .btn-retour { background: var(--primary); color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-retour:hover { background: var(--hover); color: white; }
+
+        .card-filtres { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; margin-bottom: 20px; }
+        .filtres-form { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; }
+        .filtre-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+        .filtre-group select, .filtre-group input { padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; background: var(--bg); outline: none; }
+        .filtre-group select:focus, .filtre-group input:focus { border-color: var(--primary); }
+        .btn-filtrer { background: var(--primary); color: white; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; }
+        .btn-filtrer:hover { background: var(--hover); }
+
+        .card-table { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; }
+        .table-historique { width: 100%; border-collapse: collapse; }
+        .table-historique th { text-align: left; padding: 12px; color: var(--text-light); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--border); }
+        .table-historique td { padding: 12px; border-bottom: 1px solid var(--border); color: var(--text); font-size: 14px; }
+        .table-historique tr:hover td { background: rgba(184, 122, 42, 0.04); }
+
+        .badge-type { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .badge-entree { background: #d4edda; color: #155724; }
+        .badge-sortie { background: #f8d7da; color: #721c24; }
+
+        .vide-message { text-align: center; padding: 40px; color: var(--text-light); }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+        <div class="main">
+            <div th:replace="fragments/header :: header"></div>
+            <div class="content">
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                    <h2 style="color:var(--text); font-size:22px; margin:0;">Historique des mouvements</h2>
+                    <a th:href="@{/stock}" class="btn-retour"><i class="fa-solid fa-arrow-left"></i> Retour au stock</a>
+                </div>
+
+                <div class="card-filtres">
+                    <form class="filtres-form" th:action="@{/stock/historique}" method="get">
+                        <div class="filtre-group">
+                            <label>Nourriture</label>
+                            <select name="nourritureId">
+                                <option value="">Toutes</option>
+                                <option th:each="n : ${nourritures}" th:value="${n.id}" th:text="${n.libelle}" th:selected="${param.nourritureId != null && param.nourritureId[0] == n.id}"></option>
+                            </select>
+                        </div>
+                        <div class="filtre-group">
+                            <label>Type</label>
+                            <select name="typeCode">
+                                <option value="">Tous</option>
+                                <option value="entree" th:selected="${param.typeCode != null && param.typeCode[0] == 'entree'}">Entrée</option>
+                                <option value="sortie" th:selected="${param.typeCode != null && param.typeCode[0] == 'sortie'}">Sortie</option>
+                            </select>
+                        </div>
+                        <div class="filtre-group">
+                            <label>Date début</label>
+                            <input type="date" name="dateDebut" th:value="${param.dateDebut}" />
+                        </div>
+                        <div class="filtre-group">
+                            <label>Date fin</label>
+                            <input type="date" name="dateFin" th:value="${param.dateFin}" />
+                        </div>
+                        <button type="submit" class="btn-filtrer"><i class="fa-solid fa-filter"></i> Filtrer</button>
+                    </form>
+                </div>
+
+                <div class="card-table">
+                    <table class="table-historique">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Nourriture</th>
+                                <th>Type</th>
+                                <th>Quantité</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="m : ${mouvements}">
+                                <td th:text="${#temporals.format(m.date, 'dd/MM/yyyy')}"></td>
+                                <td th:text="${m.nourriture.libelle}"></td>
+                                <td>
+                                    <span class="badge-type" th:class="${m.type.code == 'entree'} ? 'badge-type badge-entree' : 'badge-type badge-sortie'"
+                                          th:text="${m.type.code == 'entree'} ? 'Entrée' : 'Sortie'"></span>
+                                </td>
+                                <td th:text="${#numbers.formatDecimal(m.quantite, 1, 'WHITESPACE', 3, 'COMMA')} + ' kg'"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div th:if="${#lists.isEmpty(mouvements)}" class="vide-message">
+                        Aucun mouvement trouvé.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -24,6 +24,11 @@ public class LoginController {
         return "login";
     }
 
+    @GetMapping("/staff/login")
+    public String Staffloginview(){
+        return "stafflogin";
+    }
+
     @GetMapping("/redirection")
     public String redirectionParRole() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -35,10 +40,11 @@ public class LoginController {
                                  .toList();
 
             if (autorites.contains("admin")) {
-                return "redirect:/admin/dashboard";
+                //return "redirect:/admin/dashboard"; ici décommenté si vous avez finis de mettre admin 
+                return "redirect:/races"; // ici test pour voir s'il fonctionne
             } 
             else if (autorites.contains("gestionnaire")) {
-                return "redirect:/gestion/dashboard";
+                return "redirect:/races";//ici n'oubliez pas non plus le /gestion/dashboard si ce n'est pas fait comme pour l'admin
             } 
             else if (autorites.contains("client")) {
                 return "redirect:/client/layout";

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traitements - EggLand</title>
+
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .page-header h2 {
+            color: var(--text);
+            font-size: 22px;
+        }
+
+        .btn-nouveau {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .btn-nouveau:hover {
+            background: var(--hover);
+        }
+
+        .table-container {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--bg);
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        tbody tr:hover {
+            background: rgba(184, 122, 42, 0.05);
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-edit, .btn-delete {
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-edit {
+            background: #e8f3f5;
+            color: #00838f;
+        }
+
+        .btn-edit:hover {
+            background: #b2dfdb;
+        }
+
+        .btn-delete {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .btn-delete:hover {
+            background: #ef5350;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: #999;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="app">
+
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+
+    <div class="main">
+
+        <div th:replace="fragments/header :: header"></div>
+
+        <div class="content">
+
+            <div class="page-header">
+                <h2 th:text="${pageTitle}">Traitements</h2>
+                <a href="/traitements/nouveau" class="btn-nouveau">
+                    <i class="fas fa-plus"></i> Nouveau traitement
+                </a>
+            </div>
+
+            <div class="table-container" th:if="${!traitements.isEmpty()}">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Lot</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                            <th>Coût (Ar)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="traitement : ${traitements}">
+                            <td th:text="${traitement.id}"></td>
+                            <td th:text="'Lot #' + ${traitement.lot.id}"></td>
+                            <td th:text="${traitement.type.code}"></td>
+                            <td th:text="${#dates.format(traitement.date, 'dd/MM/yyyy')}"></td>
+                            <td th:text="${#numbers.formatDecimal(traitement.cout, 1, 2)}"></td>
+                            <td class="actions">
+                                <a th:href="@{/traitements/edit/{id}(id=${traitement.id})}" class="btn-edit">
+                                    <i class="fas fa-edit"></i> Modifier
+                                </a>
+                                <a th:href="@{/traitements/delete/{id}(id=${traitement.id})}"
+                                   class="btn-delete"
+                                   onclick="return confirm('Êtes-vous sûr ?');">
+                                    <i class="fas fa-trash"></i> Supprimer
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="empty-state" th:if="${traitements.isEmpty()}">
+                <p>Aucun traitement enregistré</p>
+                <a href="/traitements/nouveau" class="btn-nouveau">
+                    <i class="fas fa-plus"></i> Ajouter le premier
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+</body>
+
+</html>

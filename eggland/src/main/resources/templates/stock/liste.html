@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock - Eggland</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .page-header h2 { color: var(--text); font-size: 22px; }
+        .btn-action-header { background: var(--primary); color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn-action-header:hover { background: var(--hover); color: white; }
+
+        .card-stock { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; }
+
+        .stock-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+
+        .stock-item { border: 1px solid var(--border); border-radius: 12px; padding: 20px; transition: 0.2s; }
+        .stock-item:hover { box-shadow: var(--shadow); }
+        .stock-item h3 { margin: 0 0 4px 0; color: var(--text); font-size: 16px; }
+        .stock-item .libelle { color: var(--text-light); font-size: 13px; margin-bottom: 12px; }
+
+        .barre-container { height: 12px; background: var(--border); border-radius: 6px; overflow: hidden; margin: 8px 0; }
+        .barre-remplie { height: 100%; border-radius: 6px; transition: width 0.3s; }
+        .barre-vert { background: #4CAF50; }
+        .barre-orange { background: #FF9800; }
+        .barre-rouge { background: #f44336; }
+
+        .stock-valeurs { display: flex; justify-content: space-between; font-size: 13px; }
+        .stock-valeurs .stock { font-weight: 600; color: var(--text); }
+        .stock-valeurs .seuil { color: var(--text-light); }
+
+        .badge-statut { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-top: 8px; }
+        .badge-ok { background: #d4edda; color: #155724; }
+        .badge-alerte { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+        <div class="main">
+            <div th:replace="fragments/header :: header"></div>
+            <div class="content">
+
+                <div class="page-header">
+                    <h2 th:text="${pageTitle}">Stock des nourritures</h2>
+                    <div style="display:flex; gap:8px;">
+                        <a th:href="@{/stock/entree}" class="btn-action-header"><i class="fa-solid fa-plus"></i> Entrée</a>
+                        <a th:href="@{/stock/sortie}" class="btn-action-header" style="background:#e47373;"><i class="fa-solid fa-minus"></i> Sortie</a>
+                        <a th:href="@{/stock/historique}" class="btn-action-header" style="background:var(--text-light);"><i class="fa-solid fa-clock-rotate-left"></i> Historique</a>
+                    </div>
+                </div>
+
+                <div class="card-stock">
+                    <div class="stock-grid">
+                        <div class="stock-item" th:each="n : ${nourritures}">
+                            <h3 th:text="${n.libelle}">Maïs</h3>
+                            <div class="libelle">Prix unitaire: <span th:text="${#numbers.formatDecimal(n.prixUnitaire, 0, 'WHITESPACE', 2, 'COMMA')} + ' Ar'"></span></div>
+
+                            <div th:with="stock=${stocks[n.id]}, seuil=${n.seuilAlerte}">
+                                <div th:if="${seuil != null}">
+                                    <div class="stock-valeurs">
+                                        <span class="stock" th:text="${#numbers.formatDecimal(stock, 1, 'WHITESPACE', 2, 'COMMA')} + ' kg'">0 kg</span>
+                                        <span class="seuil" th:text="'Seuil: ' + ${seuil}">Seuil: 50</span>
+                                    </div>
+
+                                    <div th:with="pct=${stock.doubleValue() >= seuil} ? 100 : (${stock.doubleValue() < 0} ? 0 : ${stock.doubleValue() / seuil * 100})">
+                                        <div class="barre-container">
+                                            <div class="barre-remplie"
+                                                 th:class="${pct >= 100} ? 'barre-remplie barre-vert' : (${pct >= 50} ? 'barre-remplie barre-orange' : 'barre-remplie barre-rouge')"
+                                                 th:style="'width:' + ${pct} + '%'">
+                                            </div>
+                                        </div>
+                                        <span class="badge-statut" th:class="${pct >= 100} ? 'badge-statut badge-ok' : 'badge-statut badge-alerte'"
+                                              th:text="${pct >= 100} ? 'STOCK OK' : 'STOCK FAIBLE'"></span>
+                                    </div>
+                                </div>
+                                <div th:if="${seuil == null}" class="stock-valeurs">
+                                    <span class="stock" th:text="${#numbers.formatDecimal(stock, 1, 'WHITESPACE', 2, 'COMMA')} + ' kg'">0 kg</span>
+                                    <span class="seuil">Pas de seuil</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${#lists.isEmpty(nourritures)}" style="text-align:center; padding:40px; color:var(--text-light);">
+                        Aucune nourriture enregistrée.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

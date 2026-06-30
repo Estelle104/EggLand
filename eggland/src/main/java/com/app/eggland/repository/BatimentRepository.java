@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.app.eggland.model.Batiment;
 
 @Repository
-public interface BatimentRepository extends JpaRepository<Batiment, Integer>{    
+public interface BatimentRepository extends JpaRepository<Batiment, Integer>{ 
+    
 }
