@@ -188,42 +188,6 @@
         </div>
     </nav>
 
-    <div th:if="${nbLivraisons > 0}" class="card shadow border-0">
-        <div class="card-body">
-            <h5>Livraison en cours</h5>
-
-            <p>
-                Vous avez 
-                <strong th:text="${nbLivraisons}">0</strong>
-                livraison(s) en cours.
-            </p>
-
-            <div th:each="livraison : ${livraisons}" class="border-top pt-3 mt-3">
-                <p>
-                    Date prévue :
-                    <strong th:text="${livraison.dateLivraison}">2026-07-02</strong>
-                </p>
-
-                <p>
-                    Adresse :
-                    <span th:text="${livraison.adresseLivraison}">Adresse</span>
-                </p>
-
-                <p>
-                    Statut :
-                    <span class="badge bg-warning text-dark"
-                        th:text="${livraison.statut.code}">
-                        en_cours
-                    </span>
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <div th:if="${nbLivraisons == 0}" class="alert alert-info">
-        Aucune livraison en cours.
-    </div>
-
     <!-- Hero -->
     <header class="hero-section text-center">
         <div class="container">
@@ -250,6 +214,50 @@
             </div>
         </div>
     </header>
+
+    <section th:if="${userEmail != null}" class="py-5" style="background-color: var(--cream);">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div th:if="${nbLivraisons > 0}" class="card shadow border-0">
+                        <div class="card-body p-4">
+                            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+                                <div>
+                                    <p class="section-subtitle mb-1">Suivi client</p>
+                                    <h2 class="h4 fw-bold mb-0">Livraison en cours</h2>
+                                </div>
+                                <span class="badge bg-warning text-dark fs-6">
+                                    <strong th:text="${nbLivraisons}">0</strong>
+                                    livraison(s)
+                                </span>
+                            </div>
+
+                            <div th:each="livraison : ${livraisons}" class="border-top pt-3 mt-3">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <small class="text-muted d-block">Date prévue</small>
+                                        <strong th:text="${livraison.dateLivraison}">2026-07-02</strong>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <small class="text-muted d-block">Adresse</small>
+                                        <span th:text="${livraison.adresseLivraison}">Adresse</span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <small class="text-muted d-block">Statut</small>
+                                        <span class="badge bg-warning text-dark" th:text="${livraison.statut.code}">en_cours</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${nbLivraisons == 0}" class="alert alert-info mb-0">
+                        Aucune livraison en cours.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Nos Produits -->
     <section id="produits" class="section-produits py-5">
