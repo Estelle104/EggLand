@@ -27,7 +27,7 @@ LEFT JOIN mort m
     ON m.lot_id = l.id
 GROUP BY l.id;
 
-CREATE VIEW v_lot_detail AS
+CREATE OR REPLACE VIEW v_lot_detail AS
 SELECT
     l.id AS lot_id,
     l.nombre_initial,
@@ -36,6 +36,9 @@ SELECT
 
     r.id AS race_id,
     r.nom AS race_nom,
+
+    lr.id AS lot_race_id,
+    lr.nombre,
 
     b.id AS batiment_id,
     b.nom AS batiment_nom,
@@ -55,12 +58,27 @@ SELECT
     t.type_nom AS type_dernier_traitement
 
 FROM lot l
-LEFT JOIN race r ON r.id = l.race_id
-LEFT JOIN batiment b ON b.id = l.batiment_id
-LEFT JOIN statutlot s ON s.id = l.statut
-LEFT JOIN v_total_oeuf_lot o ON o.lot_id = l.id
-LEFT JOIN v_total_mort_lot m ON m.lot_id = l.id
-LEFT JOIN v_get_dernier_traitement_lot t ON t.lot_id = l.id;
+
+LEFT JOIN lot_races lr
+       ON lr.lot_id = l.id
+
+LEFT JOIN race r
+       ON r.id = lr.race_id
+
+LEFT JOIN batiment b
+       ON b.id = l.batiment_id
+
+LEFT JOIN statutlot s
+       ON s.id = l.statut
+
+LEFT JOIN v_total_oeuf_lot o
+       ON o.lot_id = l.id
+
+LEFT JOIN v_total_mort_lot m
+       ON m.lot_id = l.id
+
+LEFT JOIN v_get_dernier_traitement_lot t
+       ON t.lot_id = l.id;
 
 
 CREATE OR REPLACE VIEW v_historique_production AS
