@@ -120,4 +120,12 @@ public class LivraisonService {
         }
         livraisonRepository.delete(livraison);
     }
+
+    public List<Livraison> listerLivraisonEnCoursPourClient(String emailClient) {
+        return livraisonRepository.findByClientEmailAndStatutCode(emailClient, "en_cours");
+    }
+
+    public Integer compterLivraisonEnCoursPourClient(List<Livraison> livraisons) {
+        return livraisons.size();
+    }
 }
