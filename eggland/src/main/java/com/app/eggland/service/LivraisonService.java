@@ -122,7 +122,7 @@ public class LivraisonService {
     }
 
     public List<Livraison> listerLivraisonEnCoursPourClient(String emailClient) {
-        return livraisonRepository.findByVenteClientEmailAndStatutCode(emailClient, "en_cours");
+        return livraisonRepository.findByClientEmailAndStatutCode(emailClient, "en_cours");
     }
 
     public Integer compterLivraisonEnCoursPourClient(List<Livraison> livraisons) {

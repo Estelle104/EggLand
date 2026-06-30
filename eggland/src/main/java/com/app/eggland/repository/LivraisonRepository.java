@@ -24,4 +24,6 @@ public interface LivraisonRepository extends JpaRepository<Livraison, Integer>{
     List<Livraison> findByVenteClientEmailAndStatutCode(String email, String code);
 
     List<Livraison> findByVenteClientIdAndStatutCode(Integer clientId, String code);
+
+    List<Livraison> findByClientEmailAndStatutCode(String email, String code);
 }

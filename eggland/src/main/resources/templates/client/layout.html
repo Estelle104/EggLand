@@ -188,6 +188,42 @@
         </div>
     </nav>
 
+    <div th:if="${nbLivraisons > 0}" class="card shadow border-0">
+        <div class="card-body">
+            <h5>Livraison en cours</h5>
+
+            <p>
+                Vous avez 
+                <strong th:text="${nbLivraisons}">0</strong>
+                livraison(s) en cours.
+            </p>
+
+            <div th:each="livraison : ${livraisons}" class="border-top pt-3 mt-3">
+                <p>
+                    Date prévue :
+                    <strong th:text="${livraison.dateLivraison}">2026-07-02</strong>
+                </p>
+
+                <p>
+                    Adresse :
+                    <span th:text="${livraison.adresseLivraison}">Adresse</span>
+                </p>
+
+                <p>
+                    Statut :
+                    <span class="badge bg-warning text-dark"
+                        th:text="${livraison.statut.code}">
+                        en_cours
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${nbLivraisons == 0}" class="alert alert-info">
+        Aucune livraison en cours.
+    </div>
+
     <!-- Hero -->
     <header class="hero-section text-center">
         <div class="container">
