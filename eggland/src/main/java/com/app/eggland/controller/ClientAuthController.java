@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.app.eggland.model.Client;
+import com.app.eggland.model.Livraison;
 import com.app.eggland.service.ClientService;
+import com.app.eggland.service.LivraisonService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -19,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
+import java.util.List;
 
 
 
@@ -27,6 +29,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ClientAuthController {
     @Autowired
     private ClientService clientService;
+
+    @Autowired
+    private LivraisonService livraisonService;
 
     @GetMapping("/")//vue en premier interraction
     public String afficherLayoutClient() {
@@ -36,7 +41,10 @@ public class ClientAuthController {
     public String afficherVueClient(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
+            List<Livraison> livraisons = livraisonService.listerLivraisonEnCoursPourClient(auth.getName());
             model.addAttribute("userEmail", auth.getName());
+            model.addAttribute("livraisons", livraisons);
+            model.addAttribute("nbLivraisons", livraisonService.compterLivraisonEnCoursPourClient(livraisons));
         }
         return "client/layout";
     }
