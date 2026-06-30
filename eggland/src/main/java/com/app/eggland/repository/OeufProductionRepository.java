@@ -26,6 +26,9 @@ public interface OeufProductionRepository extends JpaRepository<OeufProduction, 
     @Query("SELECT COALESCE(SUM(o.quantite), 0) FROM OeufProduction o")
     Integer sumQuantiteTotale();
 
+    @Query("SELECT COALESCE(SUM(o.quantite), 0) FROM OeufProduction o WHERE o.date = :date")
+    Integer sumQuantiteByDate(@Param("date") LocalDate date);
+
     @Query("""
             SELECT o.date, SUM(o.quantite)
             FROM OeufProduction o

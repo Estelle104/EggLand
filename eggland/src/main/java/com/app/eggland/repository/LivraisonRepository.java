@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.app.eggland.model.Livraison;
@@ -20,4 +22,9 @@ public interface LivraisonRepository extends JpaRepository<Livraison, Integer>{
     List<Livraison> findByDateLivraisonBeforeOrderByDateLivraisonDesc(LocalDate date);
 
     List<Livraison> findByDateLivraison(LocalDate date);
+
+    @Query("SELECT COUNT(l) FROM Livraison l WHERE l.statut.code = :code")
+    long countByStatutCode(@Param("code") String code);
+
+    List<Livraison> findByClientIdOrderByDateLivraisonDesc(Integer clientId);
 }
