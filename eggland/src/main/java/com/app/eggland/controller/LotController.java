@@ -262,6 +262,7 @@ public Lot getLotWithRaces(@PathVariable("id") Integer id) {
 public ModelAndView modifierLots(@PathVariable("id") Integer id,
                                   @RequestParam(required = false) List<Integer> listeRace,
                                   @RequestParam(required = false) List<Integer> nbrPoule,
+                                  @RequestParam Integer batimentId,
                                   RedirectAttributes redirectAttributes) {
     
     try {
@@ -270,7 +271,12 @@ public ModelAndView modifierLots(@PathVariable("id") Integer id,
         if (lot == null) {
             throw new IllegalArgumentException("Lot inexistant");
         }
-        
+           
+        if (batimentId != null) {
+            Batiment newBatiment = batimentRepository.findById(batimentId)
+                .orElseThrow(() -> new IllegalArgumentException("Bâtiment non trouvé"));
+            lot.setBatiment(newBatiment);
+        }
         lot.getLotRaces().clear();
         
  
@@ -308,7 +314,7 @@ public ModelAndView modifierLots(@PathVariable("id") Integer id,
             }
         }
         
-       
+       System.out.println("Batiment "+ lot.getBatiment());
         lotService.updateLot(lot);
         
         redirectAttributes.addFlashAttribute("successMessage", "Lot modifié avec succès");
@@ -316,7 +322,7 @@ public ModelAndView modifierLots(@PathVariable("id") Integer id,
         
     } catch (IllegalArgumentException e) {
         System.out.println("Erreur: " + e.getMessage());
-        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        redirectAttributes.addFlashAttribute("error", e.getMessage());
                return new ModelAndView("redirect:/admin/lots");
 
     }

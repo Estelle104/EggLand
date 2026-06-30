@@ -232,7 +232,29 @@
 /* =========================
    INFOS (Alignement intelligent gauche / droite)
 ========================= */
+.info-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
 
+
+
+
+.value {
+    text-align: right;
+   
+}
+#age_poule{
+    color:#8a4a1d;
+    font-weight: bold;
+
+}
+#span_race{
+ color: #000;
+    font-weight: bold;
+}
 .lot-info {
     flex-grow: 1; 
     display: flex;

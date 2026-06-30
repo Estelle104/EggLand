@@ -1,203 +1,217 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Gestion des Lots</title>
 
-   <link rel="stylesheet" th:href="@{/css/variables.css}">
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
-    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/css/listeLots.css}">
-    <link rel="stylesheet" th:href="@{/css/reforme.css}">
+    <link rel="stylesheet" th:href="@{/css/variables.css}" />
+    <link rel="stylesheet" th:href="@{/css/layout.css}" />
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}" />
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+    <link rel="stylesheet" th:href="@{/css/listeLots.css}" />
+    <link rel="stylesheet" th:href="@{/css/reforme.css}" />
+  </head>
 
-</head>
+  <body>
+    <div class="app">
+      <!-- Sidebar -->
+      <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-<body>
-
-<div class="app">
-
-    <!-- Sidebar -->
-    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
-
-    <div class="main">
-
+      <div class="main">
         <!-- Header -->
         <div th:replace="~{fragments/header :: header}"></div>
 
         <div class="content">
-
-            <div class="liste-header">
-                <div>
-                    <h1>Gestion des Lots</h1>
-                    <small>--</small>
-                </div>
-
-                <a th:href="@{/admin/lots/create}" class="btn-ajouter">
-                    Ajouter un lot
-                </a>
-            </div>
- 
-            <!-- FILTRES -->
-            <div class="filtres-section">
-
-                <h2>Filtrer par :</h2>
-
-                <form th:action="@{/lots}" method="get" class="filtres-form">
-
-                    <select name="batiment">
-                        <option value="">Batiment</option>
-
-                        <option
-                                th:each="b : ${batiments}"
-                                th:value="${b.id}"
-                                th:text="${b.nom}">
-                        </option>
-
-                    </select>
-
-                    <select name="statut">
-                        <option value="">Statut</option>
-
-                        <option
-                                th:each="s : ${statuts}"
-                                th:value="${s.id}"
-                                th:text="${s.code}">
-                        </option>
-
-                    </select>
-                        <button type="submit" class="btn-filter">Filtrer</button>
-                </form>
-
+          <div class="liste-header">
+            <div>
+              <h1>Gestion des Lots</h1>
+              <small>--</small>
             </div>
 
-            
-                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
-                    <span th:text="${success}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+            <a th:href="@{/admin/lots/create}" class="btn-ajouter">
+              Ajouter un lot
+            </a>
+          </div>
 
-                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <span th:text="${error}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          <!-- FILTRES -->
+          <div class="filtres-section">
+            <h2>Filtrer par :</h2>
+
+            <form th:action="@{/lots}" method="get" class="filtres-form">
+              <select name="batiment">
+                <option value="">Batiment</option>
+
+                <option
+                  th:each="b : ${batiments}"
+                  th:value="${b.id}"
+                  th:text="${b.nom}"
+                ></option>
+              </select>
+
+              <select name="statut">
+                <option value="">Statut</option>
+
+                <option
+                  th:each="s : ${statuts}"
+                  th:value="${s.id}"
+                  th:text="${s.code}"
+                ></option>
+              </select>
+              <button type="submit" class="btn-filter">Filtrer</button>
+            </form>
+          </div>
+
+          <div
+            th:if="${success}"
+            class="alert alert-success alert-dismissible fade show"
+            role="alert"
+          >
+            <span th:text="${success}"></span>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+            ></button>
+          </div>
+
+          <div
+            th:if="${error}"
+            class="alert alert-danger alert-dismissible fade show"
+            role="alert"
+          >
+            <span th:text="${error}"></span>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+            ></button>
+          </div>
+          <!-- AUCUN LOT -->
+          <div th:if="${#lists.isEmpty(lots)}" class="empty-state">
+            Aucun lot trouvé
+          </div>
+
+          <!-- CARDS -->
+          <div class="lots-grid">
+            <div class="lot-card" th:each="lot : ${lots}">
+              <!-- Header -->
+              <div class="lot-header">
+                <h3>
+                  Lot
+                  <span th:text="${lot.id}"></span>
+                </h3>
+
+                <div class="menu-container" th:data-id="${lot.id}">
+                  <div class="menu">⋮</div>
+
+                  <div class="menu-dropdown">
+                    <a th:href="@{/admin/lots/detail/{id}(id=${lot.id})}">
+                      Voir détail
+                    </a>
+                  </div>
                 </div>
-            <!-- AUCUN LOT -->
-            <div th:if="${#lists.isEmpty(lots)}" class="empty-state">
-                Aucun lot trouvé
+              </div>
+
+              <div class="lot-status">
+                <span
+                  class="badge-actif"
+                  th:if="${lot.statut != null and lot.statut.code == 'actif'}"
+                >
+                  Actif
+                </span>
+
+                <span
+                  class="badge-reforme"
+                  th:if="${lot.statut != null and lot.statut.code == 'reforme'}"
+                >
+                  Reformer
+                </span>
+              </div>
+
+              <!-- Infos -->
+              <div class="lot-info" id="race">
+                <p class="info-line">
+                  <span>Races :</span>
+
+                  <span class="value">
+                    <span th:each="lotRace : ${lot.lotRaces}">
+                      <span id="span_race" th:text="${lotRace.race.nom}"></span>
+                    </span>
+                  </span>
+                </p>
+
+                <p>
+                  <span>Batiment</span>
+                  <strong th:text="${lot.batiment.nom}"> Batiment A </strong>
+                </p>
+
+                <p>
+                  <span>Date arrivée :</span>
+                  <strong
+                    th:text="${#temporals.format(lot.dateArrivee,'yyyy-MM-dd')}"
+                  >
+                  </strong>
+                </p>
+
+                <p>
+                  <span>Age :</span>
+                  <strong>
+                    Semaine
+                    <span id="age_poule" th:text="${agesActuels[lot.id]}"> 9 </span>
+                  </strong>
+                </p>
+
+                <p>
+                  <span>Nombre de Poule :</span>
+                  <strong
+                   th:text="${lot.nombreInitial}"> 9 
+                  </strong>
+                </p>
+              </div>
+
+              <!-- Bouton -->
+              <div class="lot-footer">
+                <button
+                  type="button"
+                  class="btn-modifier"
+                  th:data-id="${lot.id}"
+                  th:data-batiment="${lot.batiment.id}"
+                  th:data-nombre="${lot.nombreInitial}"
+                >
+                  Modifier
+                </button>
+                <button
+                  type="button"
+                  class="btn-reformer"
+                  th:data-id="${lot.id}"
+                  th:if="${lot.statut != null and lot.statut.code != 'reforme'}"
+                >
+                  Réformer
+                </button>
+
+                <span
+                  th:if="${lot.statut != null and lot.statut.code == 'reforme'}"
+                  style="color: #999"
+                >
+                  ✓ Reformé
+                </span>
+              </div>
             </div>
-
-            <!-- CARDS -->
-            <div class="lots-grid">
-
-                <div class="lot-card"
-                     th:each="lot : ${lots}">
-
-                    <!-- Header -->
-                    <div class="lot-header">
-
-                        <h3>
-                            Lot
-                            <span th:text="${lot.id}"></span>
-                        </h3>
-
-                      <div class="menu-container" th:data-id="${lot.id}">
-                            <div class="menu">⋮</div>
-
-                            <div class="menu-dropdown">
-                               <a th:href="@{/lots/detail/{id}(id=${lot.id})}">
-                                    Voir détail
-                               </a>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    
-                    <div class="lot-status">
-
-                        <span class="badge-actif"
-                              th:if="${lot.statut != null and lot.statut.code == 'actif'}">
-                            Actif
-                        </span>
-
-                        <span class="badge-reforme"
-                              th:if="${lot.statut != null and lot.statut.code == 'reforme'}">
-                            Reformer
-                        </span>
-
-                    </div>
-
-                    <!-- Infos -->
-                    <div class="lot-info">
-
-                        <p>
-                            <span>Races :</span>
-                            <strong>
-                                <div th:each="lotRace : ${lot.lotRaces}">
-                                    <span th:text="${lotRace.race.nom}"></span> 
-                                    (<span th:text="${lotRace.nombre}"></span>)
-                                </div>
-                            </strong>
-                        </p>
-
-                        <p>
-                            <span>Batiment</span>
-                            <strong th:text="${lot.batiment.nom}">
-                                Batiment A
-                            </strong>
-                        </p>
-
-                        <p>
-                            <span>Date arrivée :</span>
-                            <strong th:text="${#temporals.format(lot.dateArrivee,'yyyy-MM-dd')}">
-                            </strong>
-                        </p>
-
-                        <p>
-                            <span>Age :</span>
-                            <strong>
-                                Semaine
-                                <span th:text="${agesActuels[lot.id]}">
-                                    9
-                                </span>
-                            </strong>
-                        </p>
-
-                    </div>
-
-                    <!-- Bouton -->
-                    <div class="lot-footer">
-
-                        <button type="button"
-                            class="btn-modifier"
-                            th:data-id="${lot.id}"
-                            th:data-batiment="${lot.batiment.id}"
-                            th:data-nombre="${lot.nombreInitial}">
-                            Modifier
-                        </button>
-                        <button type="button"
-                            class="btn-reformer"
-                            th:data-id="${lot.id}">
-                            Réformer
-                        </button>
-                    </div>
-                </div>
-            </div>
-
+          </div>
+        </div>
+      </div>
     </div>
 
-</div>
+    <div id="reform-overlay">
+      <div id="reform-container"></div>
+    </div>
 
-</div>
-
-<div id="reform-overlay">
-    <div id="reform-container"></div>
-</div>
-
-<script th:src="@{/js/reformer.js}"></script>
-<script th:src="@{/js/modifierLot.js}"></script>
-<script th:src="@{/js/menuLot.js}"></script>
-
-</body>
+    <script th:src="@{/js/reformer.js}"></script>
+    <script th:src="@{/js/modifierLot.js}"></script>
+    <script th:src="@{/js/menuLot.js}"></script>
+  </body>
 </html>

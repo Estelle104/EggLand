@@ -31,7 +31,7 @@ int calculerPlaceUtiliseePourBatimentExcluantLot(@Param("batiment") Batiment bat
     Lot findFirstByStatut(@Param("statut") StatutLot statutLot);
 
       @Query(value = "SELECT * FROM v_lot_detail WHERE lot_id = :id", nativeQuery = true)
-Map<String, Object> findLotDetail(@Param("id") Integer id);
+List<Map<String, Object>> findLotDetail(@Param("id") Integer id);
 
 
 

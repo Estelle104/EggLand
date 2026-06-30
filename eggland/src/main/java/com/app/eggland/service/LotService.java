@@ -134,6 +134,7 @@ public  List<Lot> getAllLots(){
  }
 
 public void updateLot(Lot lot) {
+    System.out.println("BATIMENT ID REÇU = " + lot.getBatiment().getId());
     Batiment batiment = batimentRepository.findById(lot.getBatiment().getId())
         .orElseThrow(() -> new IllegalArgumentException("Bâtiment non trouvé"));
 
@@ -146,8 +147,9 @@ public void updateLot(Lot lot) {
             ") dépasse la capacité du bâtiment (" + capacite + ")"
         );
     }
+   
 
-    // ✅ UTILISER LA SURCHARGE AVEC EXCLUSION
+
     int placeUtilise = calculerPlaceUtilisee(batiment, lot.getId());
     int placeRestante = capacite - placeUtilise;
 
@@ -160,6 +162,9 @@ public void updateLot(Lot lot) {
             " | Demandé: " + nbrInitiale
         );
     }
+    System.out.println("BATIMENT AVANT SAVE = " + lot.getBatiment());
+System.out.println("LOT ID = " + lot.getId());
+    System.out.println("BATIMENT APRES SAVE = " + lot.getBatiment());
 
     lotRepository.save(lot);
 }
@@ -246,7 +251,7 @@ public void reformerUnLot(Integer idLot, LocalDate dateReforme) {
    
 }
 
-public Map<String, Object> getDetailLot(Integer id) {
+public List<Map<String, Object>> getDetailLot(Integer id) {
     return lotRepository.findLotDetail(id);
 }
 
