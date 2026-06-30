@@ -216,7 +216,11 @@ public class OeufProductionService {
         return stat;
     }
 
-    public List<Map<String, Object>> getHistoriqueProduction() {
-        return oeufProductionRepository.findHistoriqueProduction();
+    // public List<Map<String, Object>> getHistoriqueProduction() {
+    //     return oeufProductionRepository.findHistoriqueProduction();
+    // }
+
+    public Page<Map<String, Object>> getHistoriqueProduction(Pageable pageable) {
+        return oeufProductionRepository.findHistoriqueProduction(pageable); 
     }
 }
