@@ -111,7 +111,7 @@ document.querySelectorAll(".btn-modifier").forEach(button => {
 
                 <div class="form-group">
                     <label>Bâtiment :</label>
-                    <select name="batiment" id="batiment" required style="width: 100%; padding: 8px;">
+                    <select name="batimentId" id="batiment" required style="width: 100%; padding: 8px;">
                         <option value="">-- Sélectionnez un bâtiment --</option>
                         ${batimentsHTML}
                     </select>
