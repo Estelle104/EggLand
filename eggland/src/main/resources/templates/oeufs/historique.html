@@ -55,7 +55,7 @@
                 <div th:if="${!#lists.isEmpty(historiqueProduction)}" class="table-responsive stats-table-card history-table-card">
                     <div class="table-heading">
                         <h3>Collectes enregistrées</h3>
-                        <span th:text="|${#lists.size(historiqueProduction)} ligne(s)|">0 ligne</span>
+                        <span th:text="|Page ${currentPage + 1}/${totalPages} - ${#lists.size(historiqueProduction)} ligne(s) affichée(s)|">0 ligne</span>
                     </div>
                     <table class="stats-table">
                         <thead>
@@ -81,6 +81,30 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <div th:if="${totalPages > 1}" class="history-pagination">
+                        <a class="pagination-link"
+                            th:classappend="${currentPage == 0} ? ' disabled'"
+                            th:href="${currentPage == 0} ? '#' : @{/admin/oeufs/historique(page=${currentPage - 1}, size=${pageSize})}">
+                            Précédent
+                        </a>
+
+                        <div class="pagination-pages">
+                            <a th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}"
+                                class="pagination-link pagination-number"
+                                th:classappend="${pageNumber == currentPage} ? ' active'"
+                                th:href="@{/admin/oeufs/historique(page=${pageNumber}, size=${pageSize})}"
+                                th:text="${pageNumber + 1}">
+                                1
+                            </a>
+                        </div>
+
+                        <a class="pagination-link"
+                            th:classappend="${currentPage + 1 >= totalPages} ? ' disabled'"
+                            th:href="${currentPage + 1 >= totalPages} ? '#' : @{/admin/oeufs/historique(page=${currentPage + 1}, size=${pageSize})}">
+                            Suivant
+                        </a>
+                    </div>
                 </div>
             </div>
 
