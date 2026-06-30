@@ -87,6 +87,58 @@
                 </div>
             </div>
         </div>
+
+        <div class="card border-0 mb-4">
+            <div class="card-header bg-white border-0">
+                <h5 class="mb-0"><i class="fa-solid fa-skull me-2"></i>Mortalité</h5>
+            </div>
+            <div class="card-body">
+                <form class="row g-3 align-items-end mb-4" th:action="@{/dashboard}" method="get">
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted">Lot</label>
+                        <select name="lotId" class="form-select form-select-sm">
+                            <option value="">Tous les lots</option>
+                            <option th:each="lot : ${lots}" th:value="${lot.id}" th:text="${'Lot ' + lot.id + ' - ' + (lot.race?.nom ?: '')}" th:selected="${lotIdSelectionne == lot.id}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted">Date début</label>
+                        <input type="date" name="dateDebut" class="form-control form-control-sm" th:value="${dateDebutSelectionnee}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted">Date fin</label>
+                        <input type="date" name="dateFin" class="form-control form-control-sm" th:value="${dateFinSelectionnee}">
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-dark btn-sm w-100">Appliquer</button>
+                    </div>
+                </form>
+
+                <div class="row g-4">
+                    <div class="col-md-5">
+                        <div class="chart-container" style="height: 280px;">
+                            <canvas id="chartMortalite"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-7 d-flex flex-column justify-content-center">
+                        <div class="d-flex gap-4 mb-3">
+                            <div class="text-center p-3 rounded" style="background: #fce4e4; flex: 1;">
+                                <div class="small text-muted">Morts</div>
+                                <div class="fw-bold fs-4 text-danger" th:text="${#numbers.formatInteger(totalMorts, 1, 'COMMA')}">0</div>
+                            </div>
+                            <div class="text-center p-3 rounded" style="background: #e4fce4; flex: 1;">
+                                <div class="small text-muted">Vivants</div>
+                                <div class="fw-bold fs-4 text-success" th:text="${#numbers.formatInteger(totalVivants, 1, 'COMMA')}">0</div>
+                            </div>
+                            <div class="text-center p-3 rounded" style="background: #f0f0f0; flex: 1;">
+                                <div class="small text-muted">Total initial</div>
+                                <div class="fw-bold fs-4" th:text="${#numbers.formatInteger(totalMorts + totalVivants, 1, 'COMMA')}">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script th:inline="javascript">
@@ -125,6 +177,42 @@
                     y: {
                         beginAtZero: true,
                         ticks: { callback: value => Number.isInteger(value) ? value : '' }
+                    }
+                }
+            }
+        });
+
+        const totalMorts = /*[[${totalMorts}]]*/ 0;
+        const totalVivants = /*[[${totalVivants}]]*/ 0;
+
+        const ctx2 = document.getElementById('chartMortalite').getContext('2d');
+        new Chart(ctx2, {
+            type: 'pie',
+            data: {
+                labels: ['Morts', 'Vivants'],
+                datasets: [{
+                    data: [totalMorts, totalVivants],
+                    backgroundColor: ['#dc3545', '#28a745'],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { font: { size: 13 }, padding: 16 }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => {
+                                const total = totalMorts + totalVivants;
+                                const pct = total > 0 ? ((ctx.parsed / total) * 100).toFixed(1) : 0;
+                                return ctx.label + ': ' + ctx.parsed + ' (' + pct + '%)';
+                            }
+                        }
                     }
                 }
             }
