@@ -21,7 +21,7 @@
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
                             <div class="card-title">Œufs du jour</div>
-                            <div class="card-value text-warning" th:text="${#numbers.formatDecimal(oeufsJour, 0, 'COMMA', 0, 'POINT')}">0</div>
+                            <div class="card-value text-warning" th:text="${#numbers.formatInteger(oeufsJour, 1, 'COMMA')}">0</div>
                         </div>
                         <i class="fa-solid fa-egg card-icon text-warning"></i>
                     </div>
@@ -32,7 +32,7 @@
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
                             <div class="card-title">Stock disponible</div>
-                            <div class="card-value text-primary" th:text="${#numbers.formatDecimal(stockDisponible, 0, 'COMMA', 0, 'POINT')}">0</div>
+                            <div class="card-value text-primary" th:text="${#numbers.formatInteger(stockDisponible, 1, 'COMMA')}">0</div>
                         </div>
                         <i class="fa-solid fa-box card-icon text-primary"></i>
                     </div>
@@ -43,7 +43,7 @@
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
                             <div class="card-title">Ventes du jour</div>
-                            <div class="card-value text-success" th:text="${#numbers.formatDecimal(ventesJour, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</div>
+                            <div class="card-value text-success" th:text="${#numbers.formatDecimal(ventesJour, 1, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</div>
                         </div>
                         <i class="fa-solid fa-cart-shopping card-icon text-success"></i>
                     </div>
@@ -54,7 +54,7 @@
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
                             <div class="card-title">Bénéfice du mois</div>
-                            <div class="card-value" th:text="${#numbers.formatDecimal(beneficeMois, 0, 'COMMA', 2, 'POINT')} + ' Ar'" th:classappend="${beneficeMois < 0} ? 'text-danger' : 'text-success'">0 Ar</div>
+                            <div class="card-value" th:text="${#numbers.formatDecimal(beneficeMois, 1, 'COMMA', 2, 'POINT')} + ' Ar'" th:classappend="${beneficeMois < 0} ? 'text-danger' : 'text-success'">0 Ar</div>
                         </div>
                         <i class="fa-solid fa-chart-line card-icon" th:classappend="${beneficeMois < 0} ? 'text-danger' : 'text-success'"></i>
                     </div>

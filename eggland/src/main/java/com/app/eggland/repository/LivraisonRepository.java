@@ -27,4 +27,6 @@ public interface LivraisonRepository extends JpaRepository<Livraison, Integer>{
     long countByStatutCode(@Param("code") String code);
 
     List<Livraison> findByClientIdOrderByDateLivraisonDesc(Integer clientId);
+    List<Livraison> findByClientEmailAndStatutCode(String email,String code);
+
 }
