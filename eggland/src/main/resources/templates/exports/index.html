@@ -3,13 +3,19 @@
 <head>
     <title>Export / Import - Eggland</title>
     <style>
-        .card { border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform .2s; }
+        .card { border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform .2s; border: 1px solid var(--border); }
         .card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
-        .card-header { border-radius: 12px 12px 0 0 !important; }
-        .btn-export { min-width: 200px; }
-        .section-title { font-size: .9rem; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: #6c757d; margin-bottom: 1rem; }
-        .form-control-sm { font-size: .85rem; }
+        .card-header { border-radius: 12px 12px 0 0 !important; background-color: var(--card) !important; }
+        .card-header h5 { font-weight: 700; color: var(--text); }
+        .card-body { background-color: var(--card); }
+        .btn-export { min-width: 200px; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem; }
+        .section-title { font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--primary); margin-bottom: 0.75rem; }
+        .form-control-sm { font-size: .85rem; border-radius: 8px; border-color: var(--border); }
+        .form-control-sm:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(184,122,42,0.15); }
         .alert-import { margin-top: 1rem; }
+        .import-instruction { font-size: 0.8rem; color: var(--text-light); margin-bottom: 0.5rem; line-height: 1.4; }
+        .input-group-sm .btn { border-radius: 8px; font-weight: 500; }
+        .page-header h1 { font-size: 1.5rem; font-weight: 700; color: var(--text); }
     </style>
 </head>
 <body>
@@ -28,6 +34,7 @@
                     </div>
                     <div class="card-body">
                         <div class="section-title">Bon de Livraison</div>
+
                         <form th:action="@{/finance/export/pdf/bon-livraison}" method="get" target="_blank" class="mb-3">
                             <div class="input-group input-group-sm mb-2">
                                 <input type="date" name="date" th:value="${today}" class="form-control">
@@ -36,6 +43,7 @@
                         </form>
 
                         <div class="section-title mt-3">Paiement de Salaire</div>
+
                         <form th:action="@{/finance/export/pdf/paiement-salaire}" method="get" target="_blank">
                             <div class="input-group input-group-sm mb-2">
                                 <input type="month" name="mois" th:value="${currentMonth}" class="form-control">
@@ -54,6 +62,7 @@
                     </div>
                     <div class="card-body">
                         <div class="section-title">Production Œufs</div>
+
                         <form th:action="@{/finance/export/excel/production-oeufs}" method="get" target="_blank" class="mb-3">
                             <div class="input-group input-group-sm mb-2">
                                 <input type="date" name="debut" th:value="${todayMinus30}" class="form-control" placeholder="Début">
@@ -63,6 +72,7 @@
                         </form>
 
                         <div class="section-title">Mouvement de Stock</div>
+
                         <form th:action="@{/finance/export/excel/mouvement-stock}" method="get" target="_blank" class="mb-3">
                             <div class="input-group input-group-sm mb-2">
                                 <input type="date" name="debut" th:value="${todayMinus30}" class="form-control" placeholder="Début">
@@ -72,6 +82,7 @@
                         </form>
 
                         <div class="section-title">Paiements Salaires</div>
+
                         <form th:action="@{/finance/export/excel/paiements-salaires}" method="get" target="_blank">
                             <div class="input-group input-group-sm mb-2">
                                 <input type="month" name="mois" th:value="${currentMonth}" class="form-control">
@@ -90,7 +101,7 @@
                     </div>
                     <div class="card-body">
                         <div class="section-title">Liste des Ventes</div>
-                        <p class="text-muted small mb-2">Fichier .xlsx avec colonnes : Client, Date, Produit, Quantité, Prix unitaire</p>
+                        
                         <form th:action="@{/finance/import/liste-ventes}" method="post" enctype="multipart/form-data">
                             <div class="input-group input-group-sm mb-2">
                                 <input type="file" name="file" accept=".xlsx,.xls" class="form-control" required>
@@ -106,31 +117,9 @@
                             <h6 class="alert-heading">Importés (${importSuccessCount}) :</h6>
                             <ul class="mb-0 small"><li th:each="s : ${importSuccesses}" th:text="${s}"></li></ul>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Liens rapides vers les pages concernées -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card border-0">
-                    <div class="card-body">
-                        <h6 class="text-muted mb-3"><i class="fas fa-external-link-alt me-2"></i>Pages liées</h6>
-                        <div class="d-flex gap-3 flex-wrap">
-                            <a th:href="@{/admin/livraisons}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-truck me-1"></i>Livraisons</a>
-                            <a th:href="@{/admin/oeufs}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-egg me-1"></i>Œufs</a>
-                            <a th:href="@{/stock}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-box me-1"></i>Stock</a>
-                            <a th:href="@{/salaires}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-money-bill me-1"></i>Salaires</a>
-                            <a th:href="@{/finance}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-chart-pie me-1"></i>Finance</a>
-                            <a th:href="@{/ventes}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-cart-shopping me-1"></i>Ventes</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+</div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</div>
 </body>
 </html>
