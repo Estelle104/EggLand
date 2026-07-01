@@ -84,6 +84,7 @@ LEFT JOIN v_get_dernier_traitement_lot t
 CREATE OR REPLACE VIEW v_historique_production AS
 SELECT 
     ROW_NUMBER() OVER (ORDER BY op.date DESC, op.lot_id, so.code DESC) AS id,
+    op.id AS production_id,
     op.date,
     op.lot_id,
     so.code AS statut,
