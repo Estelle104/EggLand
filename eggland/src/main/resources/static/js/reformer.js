@@ -1,5 +1,5 @@
 document.querySelectorAll(".btn-reformer").forEach(button => {
-
+console.log(document.querySelectorAll(".btn-reformer").length);
     button.addEventListener("click", function () {
 
         const lotId = this.dataset.id;
@@ -18,7 +18,7 @@ document.querySelectorAll(".btn-reformer").forEach(button => {
 
         form.classList.add("reform-form");
         form.method = "post";
-        form.action = `/lots/reforme/${lotId}`;
+        form.action = `/admin/lots/reforme/${lotId}`;
 
         form.innerHTML = `
             <h3>Réformer le lot ${lotId}</h3>

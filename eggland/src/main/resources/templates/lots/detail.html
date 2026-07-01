@@ -4,7 +4,12 @@
       layout:decorate="~{fragments/layout}">
 
 <head>
-    <title>Détail Lot</title>
+
+  <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/detail_lot.css}">
 </head>
 
@@ -12,63 +17,84 @@
 <div layout:fragment="content">
 
     <div class="lot-title">
-        <h2>Lot #<span th:text="${lot['lot_id']}"></span></h2>
-        <span class="badge" th:text="${lot['statut_code']}"></span>
+        <h2>Lot #<span th:text="${lot[0]['lot_id']}"></span></h2>
+        <span class="badge" th:text="${lot[0]['statut_code']}"></span>
     </div>
 
-    <div class="grid">
+ <div class="grid">
 
-        <!-- IDENTITE -->
-        <div class="card">
-            <h3>Identité</h3>
+    <!-- IDENTITE -->
+    <div class="card">
 
+        <!-- RACES (liste) -->
+        <div th:each="r : ${lot}">
+            
             <div class="info">
                 <span>Race</span>
-                <b th:text="${lot['race_nom']}"></b>
+                <b th:text="${r['race_nom']}"></b>
             </div>
 
             <div class="info">
+                <span>Nombre</span>
+                <b th:text="${r['nombre']}"></b>
+            </div>
+
+        </div>
+
+        <!-- INFOS LOT (communes → première ligne) -->
+        <div th:if="${not #lists.isEmpty(lot)}">
+
+            <div class="info">
                 <span>Bâtiment</span>
-                <b th:text="${lot['batiment_nom']}"></b>
+                <b th:text="${lot[0]['batiment_nom']}"></b>
             </div>
 
             <div class="info">
                 <span>Date arrivée</span>
-                <b th:text="${lot['date_arrivee']}"></b>
+                <b th:text="${lot[0]['date_arrivee']}"></b>
             </div>
-        </div>
 
-        <!-- PRODUCTION -->
-        <div class="card">
-            <h3>Production</h3>
-
-            <div class="stat primary">
-                <span>Total œufs</span>
-                <strong th:text="${lot['total_oeufs_produits']}"></strong>
-            </div>
-        </div>
-
-        <!-- MORTALITE -->
-        <div class="card">
-            <h3>Mortalité</h3>
-
-            <div class="stat danger">
-                <span>Total morts</span>
-                <strong th:text="${lot['total_morts']}"></strong>
-            </div>
-        </div>
-
-        <!-- EFFECTIF -->
-        <div class="card">
-            <h3>Effectif</h3>
-
-            <div class="stat success">
-                <span>Restant</span>
-                <strong th:text="${lot['effectif_restant']}"></strong>
-            </div>
         </div>
 
     </div>
+
+    <!-- PRODUCTION -->
+    <div class="card">
+
+        <h3>Production</h3>
+
+        <div class="stat primary">
+            <span>Total œufs</span>
+            <strong th:text="${lot[0]['total_oeufs_produits']}"></strong>
+        </div>
+
+    </div>
+
+    <!-- MORTALITE -->
+    <div class="card">
+
+        <h3>Mortalité</h3>
+
+        <div class="stat danger">
+            <span>Total morts</span>
+            <strong th:text="${lot[0]['total_morts']}"></strong>
+        </div>
+
+    </div>
+
+    <!-- EFFECTIF -->
+    <div class="card">
+
+        <h3>Effectif</h3>
+
+        <div class="stat success">
+            <span>Restant</span>
+            <strong th:text="${lot[0]['effectif_restant']}"></strong>
+        </div>
+
+    </div>
+
+</div>
 
     <!-- TRAITEMENT -->
     <div class="card full">
@@ -77,16 +103,16 @@
 
         <div class="info">
             <span>Date</span>
-            <b th:text="${lot['date_traitement']} ?: 'Aucun'"></b>
+            <b th:text="${lot[0]['date_traitement'] != null ? lot[0]['date_traitement'] : 'Aucun'}"></b>
         </div>
 
         <div class="info">
             <span>Type</span>
-            <b th:text="${lot['type_dernier_traitement']} ?: '-'"></b>
+            <b th:text="${lot[0]['type_dernier_traitement'] != null ? lot[0]['type_dernier_traitement'] : '-'}"></b>
         </div>
 
     </div>
-<button type="button"   class="btn-reformer"th:data-id="${lot['lot_id']}">
+<button type="button"class="btn-reformer"th:data-id="${lot[0]['lot_id']}">
                         Réformer
                     </button>
 </div>

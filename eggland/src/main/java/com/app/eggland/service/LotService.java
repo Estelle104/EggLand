@@ -35,6 +35,9 @@ public class LotService {
     @Autowired
     MortRepository mortRepository;
 
+    @Autowired
+    LotRaceRepository lotRaceRepository;
+
    @Transactional
     public void createLot(Lot lot){
          Batiment batiment = batimentRepository.findById(lot.getBatiment().getId())
@@ -50,6 +53,7 @@ verifierCapacite(lot,batiment);
 lot.setBatiment(batiment);
 
 lotRepository.save(lot);
+lotRaceRepository.saveAll(lot.getLotRaces());
 
     }
 
@@ -84,6 +88,13 @@ lotRepository.save(lot);
         return lotRepository.calculerPlaceUtiliseePourBatiment(batiment);
     }
 
+    public int calculerPlaceUtilisee(Batiment batiment, Integer lotIdAExclure) {
+    if (lotIdAExclure == null) {
+        return calculerPlaceUtilisee(batiment);
+    }
+    return lotRepository.calculerPlaceUtiliseePourBatimentExcluantLot(batiment, lotIdAExclure);
+}
+
     public int getPlaceRestante(Integer idBatiment){
         int placeRestante;
             Batiment batiment = batimentRepository.findById(idBatiment)
@@ -95,34 +106,7 @@ lotRepository.save(lot);
             placeRestante = capacite - placeUtilise;
         return placeRestante;
     }
-//rehefa reforme
 
-// public void resetCapaciteBatiment(Batiment batiment, StatutLot statut) {
-    
-   
-//     Lot lot = lotRepository.findFirstByStatut(statut);
-    
-   
-//     if (lot == null) {
-//         System.out.println("Aucun lot trouvé avec le statut: " + statut);
-//         return;
-//     }
-    
-//     int nbrInitiale = lot.getNombreInitial();
-//     int placeRestante = getPlaceRestante(batiment.getId());
-//     int placeBatiment = 0;
-   
-//     if ("REFORME".equals(lot.getStatut().getCode())) {
-       
-//         placeBatiment = nbrInitiale + placeRestante;
-//     } else {
-        
-//         placeBatiment = placeRestante;
-//     }
-    
-//     System.out.println("Capacite batiment: " + placeBatiment);
-//     batiment.setCapacite(placeBatiment);
-// }
 public int calculerAgeActuel(Lot lot, LocalDate actuel) {
 
     LocalDate dateEntree = lot.getDateArrivee();
@@ -149,9 +133,41 @@ public  List<Lot> getAllLots(){
     return lotRepository.findAll();
  }
 
-public  void updateLot(Lot lot){
+public void updateLot(Lot lot) {
+    System.out.println("BATIMENT ID REÇU = " + lot.getBatiment().getId());
+    Batiment batiment = batimentRepository.findById(lot.getBatiment().getId())
+        .orElseThrow(() -> new IllegalArgumentException("Bâtiment non trouvé"));
+
+    int capacite = batiment.getCapacite();
+    int nbrInitiale = lot.getNombreInitial();
+
+    if(capacite < nbrInitiale) {
+        throw new IllegalArgumentException(
+            " Le nombre initial (" + nbrInitiale + 
+            ") dépasse la capacité du bâtiment (" + capacite + ")"
+        );
+    }
+   
+
+
+    int placeUtilise = calculerPlaceUtilisee(batiment, lot.getId());
+    int placeRestante = capacite - placeUtilise;
+
+    if(nbrInitiale > placeRestante) {
+        throw new IllegalArgumentException(
+            " Place insuffisante! " +
+            "Capacité: " + capacite + 
+            " | Utilisée: " + placeUtilise + 
+            " | Restante: " + placeRestante +
+            " | Demandé: " + nbrInitiale
+        );
+    }
+    System.out.println("BATIMENT AVANT SAVE = " + lot.getBatiment());
+System.out.println("LOT ID = " + lot.getId());
+    System.out.println("BATIMENT APRES SAVE = " + lot.getBatiment());
+
     lotRepository.save(lot);
- }
+}
 
 @Transactional
 public void deleteLot(Integer id) {
@@ -235,7 +251,7 @@ public void reformerUnLot(Integer idLot, LocalDate dateReforme) {
    
 }
 
-public Map<String, Object> getDetailLot(Integer id) {
+public List<Map<String, Object>> getDetailLot(Integer id) {
     return lotRepository.findLotDetail(id);
 }
 

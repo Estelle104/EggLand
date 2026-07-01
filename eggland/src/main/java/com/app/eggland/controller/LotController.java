@@ -2,6 +2,7 @@ package com.app.eggland.controller;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,9 +22,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.app.eggland.model.Batiment;
 import com.app.eggland.model.Lot;
+import com.app.eggland.model.LotRace;
 import com.app.eggland.model.Race;
 import com.app.eggland.model.StatutLot;
 import com.app.eggland.repository.BatimentRepository;
+import com.app.eggland.repository.LotRaceRepository;
 import com.app.eggland.repository.RaceRepository;
 import com.app.eggland.repository.StatutLotRepository;
 
@@ -31,7 +34,7 @@ import com.app.eggland.service.LotService;
 
 import jakarta.transaction.Transactional;
 
-@RequestMapping("/lots")
+@RequestMapping("/admin/lots")
 @RestController
 public class LotController {
     @Autowired
@@ -45,7 +48,8 @@ public class LotController {
     @Autowired
     private StatutLotRepository statutLotRepository;
 
-
+@Autowired
+LotRaceRepository lotRaceRepository;
 
      @GetMapping("/data/races")
 public List<Race> getRaces() {
@@ -56,10 +60,8 @@ public List<Race> getRaces() {
         return batimentRepository.findAll();
     }
 
-    @GetMapping("/data/statuts")
-    public List<StatutLot> getStatuts() {
-        return statutLotRepository.findAll();
-    }
+   
+
      @GetMapping("/create")
     public ModelAndView showLotForm(){
         ModelAndView mav = new ModelAndView("lots/form");
@@ -68,54 +70,81 @@ public List<Race> getRaces() {
         mav.addObject("batiments", batimentRepository.findAll());
         return mav;
     }
-      @PostMapping("/create")
-    public ModelAndView createLot(@ModelAttribute Lot lot){
-        ModelAndView mav = new ModelAndView();
-        
-        try {
-          
-            if (lot == null) {
-                throw new IllegalArgumentException(" Lot inexistant");
-            }
-            
-            if (lot.getDateArrivee() == null) {
-                throw new IllegalArgumentException(" La date d'arrivée est vide");
-            }
-            
-            if (lot.getBatiment() == null || lot.getBatiment().getId() == null) {
-                throw new IllegalArgumentException(" Le bâtiment est inexistant");
-            }
-            
-            if (lot.getRace() == null) {
-                throw new IllegalArgumentException(" La race est inexistante");
-            }
-            
-            if (lot.getNombreInitial() <= 0) {
-                throw new IllegalArgumentException(" Le nombre initial doit être positif");
-            }
-            
-          
-            lotService.createLot(lot);
-            
-            
-            mav.setViewName("redirect:/lots/list");
-            
-        } catch (IllegalArgumentException e) {
-           
-            System.out.println("Erreur d'insertion: " + e.getMessage());
-            
-            mav.setViewName("lots/form");
-            mav.addObject("lot", lot);
-            mav.addObject("error", e.getMessage());
-            mav.addObject("races", raceRepository.findAll());
-            mav.addObject("batiments", batimentRepository.findAll());
+@PostMapping("/create")
+public ModelAndView createLot(@ModelAttribute Lot lot,
+    @RequestParam(required = false) List<Integer> listeRace,
+    @RequestParam(required = false) List<Integer> nbrPoule
+){
+    ModelAndView mav = new ModelAndView();
+    
+    mav.addObject("races", raceRepository.findAll());
+    mav.addObject("batiments", batimentRepository.findAll());
+    
+    try {
+        if (lot == null) {
+            throw new IllegalArgumentException("Lot inexistant");
         }
         
-        return mav;
+        if (lot.getDateArrivee() == null) {
+            throw new IllegalArgumentException("La date d'arrivée est vide");
+        }
+        
+        if (lot.getBatiment() == null || lot.getBatiment().getId() == null) {
+            throw new IllegalArgumentException("Le bâtiment est inexistant");
+        }
+        
+       
+        int totalNombre = 0;
+        if (nbrPoule != null) {
+            for (Integer nombre : nbrPoule) {
+                if (nombre != null && nombre > 0) {
+                    totalNombre += nombre;
+                }
+            }
+        }
+        
+        if (totalNombre <= 0) {
+            throw new IllegalArgumentException("Le nombre total doit être positif");
+        }
+        
+        lot.setNombreInitial(totalNombre);
+        
+        
+        if (listeRace != null && !listeRace.isEmpty()) {
+            for (int i = 0; i < listeRace.size(); i++) {
+                Integer raceId = listeRace.get(i);
+                Integer nombre = (i < nbrPoule.size()) ? nbrPoule.get(i) : 0;
+                
+                if (nombre != null && nombre > 0) {
+                    Race race = raceRepository.findById(raceId).orElse(null);
+                    if (race != null) {
+                        LotRace lotRace = new LotRace();
+                        lotRace.setLot(lot);
+                        lotRace.setRace(race);
+                        lotRace.setNombre(nombre);
+                        lot.getLotRaces().add(lotRace);
+                    }
+                }
+            }
+        }
+        
+        lotService.createLot(lot);
+        mav.setViewName("redirect:/admin/lots");
+        
+    } catch (IllegalArgumentException e) {
+        System.out.println("Erreur: " + e.getMessage());
+        
+        mav.setViewName("lots/form");
+        mav.addObject("lot", lot);
+        mav.addObject("error", e.getMessage());
+        mav.addObject("races", raceRepository.findAll());
+        mav.addObject("batiments", batimentRepository.findAll());
     }
-  
+    
+    return mav;
+} 
 
-@GetMapping("/list")
+@GetMapping
 public ModelAndView showAllLot(
         @RequestParam(required = false) Integer batiment,
         @RequestParam(required = false) Integer statut) {
@@ -125,32 +154,32 @@ public ModelAndView showAllLot(
     List<Lot> lots;
 
     if (batiment != null && statut != null) {
-
         Batiment b = batimentRepository.findById(batiment).orElse(null);
         StatutLot s = statutLotRepository.findById(statut).orElse(null);
-
         lots = lotService.findByBatimentAndStatut(b, s);
 
     } else if (batiment != null && statut == null) {
-
         Batiment b = batimentRepository.findById(batiment).orElse(null);
-
-                lots = lotService.findByBatimentOrStatut(b, null);
-
+        lots = lotService.findByBatimentOrStatut(b, null);
 
     } else if (statut != null && batiment == null) {
-
         StatutLot s = statutLotRepository.findById(statut).orElse(null);
-
-                       lots = lotService.findByBatimentOrStatut(null, s);
-;
+        lots = lotService.findByBatimentOrStatut(null, s);
 
     } else {
-     
         lots = lotService.getAllLots();
     }
 
+  
+    Map<Integer, Integer> agesActuels = new HashMap<>();
+    LocalDate aujourd = LocalDate.now();
+    
+    for (Lot lot : lots) {
+        agesActuels.put(lot.getId(), lotService.getAgeActuel(lot, aujourd));
+    }
+
     mav.addObject("lots", lots);
+    mav.addObject("agesActuels", agesActuels); 
     mav.addObject("batiments", batimentRepository.findAll());
     mav.addObject("statuts", statutLotRepository.findAll());
 
@@ -202,7 +231,7 @@ RedirectAttributes redirectAttributes) {
     
 
 redirectAttributes.addFlashAttribute("success", "Reforme effectuée avec succès");
-mav.setViewName("redirect:/lots/list");
+mav.setViewName("redirect:/admin/lots");
         return mav;
         
 
@@ -223,36 +252,81 @@ mav.setViewName("redirect:/lots/list");
     }
 }
 
+@GetMapping("/api/{id}")
+@ResponseBody
+public Lot getLotWithRaces(@PathVariable("id") Integer id) {
+    Lot lot = lotService.findById(id);
+    return lot;
+}
 @PostMapping("/modifier/{id}")
 public ModelAndView modifierLots(@PathVariable("id") Integer id,
-                                  @ModelAttribute Lot formLot) {
-
-    Lot lot = lotService.findById(id);
-
-
-
+                                  @RequestParam(required = false) List<Integer> listeRace,
+                                  @RequestParam(required = false) List<Integer> nbrPoule,
+                                  @RequestParam Integer batimentId,
+                                  RedirectAttributes redirectAttributes) {
+    
+    try {
+        Lot lot = lotService.findById(id);
+        
+        if (lot == null) {
+            throw new IllegalArgumentException("Lot inexistant");
+        }
+           
+        if (batimentId != null) {
+            Batiment newBatiment = batimentRepository.findById(batimentId)
+                .orElseThrow(() -> new IllegalArgumentException("Bâtiment non trouvé"));
+            lot.setBatiment(newBatiment);
+        }
+        lot.getLotRaces().clear();
+        
+ 
+        int totalNombre = 0;
+        if (nbrPoule != null) {
+            for (Integer nombre : nbrPoule) {
+                if (nombre != null && nombre > 0) {
+                    totalNombre += nombre;
+                }
+            }
+        }
+        
+        if (totalNombre <= 0) {
+            throw new IllegalArgumentException("Le nombre total doit être positif");
+        }
+        
+        lot.setNombreInitial(totalNombre);
+        
    
-    if (formLot.getRace() != lot.getRace()) {
-        lot.setRace(formLot.getRace());
+        if (listeRace != null && !listeRace.isEmpty()) {
+            for (int i = 0; i < listeRace.size(); i++) {
+                Integer raceId = listeRace.get(i);
+                Integer nombre = (i < nbrPoule.size()) ? nbrPoule.get(i) : 0;
+                
+                if (nombre != null && nombre > 0) {
+                    Race race = raceRepository.findById(raceId).orElse(null);
+                    if (race != null) {
+                        LotRace lotRace = new LotRace();
+                        lotRace.setLot(lot);
+                        lotRace.setRace(race);
+                        lotRace.setNombre(nombre);
+                        lot.getLotRaces().add(lotRace);
+                    }
+                }
+            }
+        }
+        
+       System.out.println("Batiment "+ lot.getBatiment());
+        lotService.updateLot(lot);
+        
+        redirectAttributes.addFlashAttribute("successMessage", "Lot modifié avec succès");
+        return new ModelAndView("redirect:/admin/lots");
+        
+    } catch (IllegalArgumentException e) {
+        System.out.println("Erreur: " + e.getMessage());
+        redirectAttributes.addFlashAttribute("error", e.getMessage());
+               return new ModelAndView("redirect:/admin/lots");
+
     }
-
-    if (formLot.getStatut() != lot.getStatut()) {
-        lot.setStatut(formLot.getStatut());
-    }
-
-    if (formLot.getBatiment() != lot.getBatiment()) {
-        lot.setBatiment(formLot.getBatiment());
-    }
-
-    if (formLot.getNombreInitial() != lot.getNombreInitial()) {
-        lot.setNombreInitial(formLot.getNombreInitial());
-    }
-
-   lotService.updateLot(lot);
-
-    return new ModelAndView("redirect:/lots/list");
 }
-
 @GetMapping("/supprimer/{id}")
 public ModelAndView deleteLot(@PathVariable Integer id) {
 
@@ -264,6 +338,7 @@ public ModelAndView deleteLot(@PathVariable Integer id) {
 
     lotService.deleteLot(lot.getId());
 
-    return new ModelAndView("redirect:/lots/list");
+           return new ModelAndView("redirect:/admin/lots");
+
 }
 }
