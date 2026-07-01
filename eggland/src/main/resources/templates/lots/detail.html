@@ -1,35 +1,15 @@
 <!DOCTYPE html>
-
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
 
 <head>
-
-    <link rel="stylesheet" th:href="@{/css/variables.css}">
-
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
-
-    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
-
-    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <title>Détail Lot</title>
     <link rel="stylesheet" th:href="@{/css/detail_lot.css}">
-
-
 </head>
 
 <body>
-
-    <div class="app">
-
-        <div th:replace="fragments/sidebar :: sidebar"></div>
-
-        <div class="main">
-
-            <div th:replace="fragments/header :: header"></div>
-
-          <div class="content">
- </div>
-
-            <div class="lot-detail">
+<div layout:fragment="content">
 
     <div class="lot-title">
         <h2>Lot #<span th:text="${lot['lot_id']}"></span></h2>
@@ -119,7 +99,5 @@
     <div id="reform-container"></div>
 </div>
 <script th:src="@{/js/reformer.js}"></script>
-
-</body>
-
+</div>
 </html>
