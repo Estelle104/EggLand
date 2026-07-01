@@ -1,11 +1,5 @@
--- ============================================================
--- EggLand DB — Schéma reconstruit à partir des entités JPA
--- (reflète fidèlement ce que Hibernate a créé au lancement de Spring Boot)
--- ============================================================
 
--- ============================================================
 -- TABLES DE REFERENCE (statuts / types)
--- ============================================================
 
 CREATE TABLE statutlot (
     id   SERIAL PRIMARY KEY,
@@ -52,9 +46,7 @@ CREATE TABLE roleuser (
     code VARCHAR(30) NOT NULL UNIQUE
 );
 
--- ============================================================
 -- TABLES PRINCIPALES
--- ============================================================
 
 CREATE TABLE race (
     id                    SERIAL PRIMARY KEY,
@@ -100,11 +92,11 @@ CREATE TABLE client (
 -- déclaré dans l'entité Lot.java -> @JoinColumn(name = "statut")
 CREATE TABLE lot (
     id              SERIAL PRIMARY KEY,
-    race_id         INTEGER      NOT NULL REFERENCES race(id), -- ⚠️ NOT NULL ici, mais un ALTER TABLE précédent le rendait nullable en base réelle : à harmoniser
+    race_id         INTEGER      NOT NULL REFERENCES race(id), -- NOT NULL ici, mais un ALTER TABLE précédent le rendait nullable en base réelle : à harmoniser
     date_arrivee    DATE         NOT NULL,
     nombre_initial  INTEGER      NOT NULL,
     age_semaine     INTEGER      NOT NULL,
-    statut          INTEGER      NOT NULL REFERENCES statutlot(id), -- ⚠️ nom incohérent avec le reste du schéma (ailleurs c'est "id_statut")
+    statut          INTEGER      NOT NULL REFERENCES statutlot(id), -- nom incohérent avec le reste du schéma (ailleurs c'est "id_statut")
     batiment_id     INTEGER      NOT NULL REFERENCES batiment(id)
 );
 
