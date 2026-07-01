@@ -33,24 +33,38 @@ public class ClientAuthController {
 
     @GetMapping("/")//vue en premier interraction
     public String afficherLayoutClient(Model model) {
-        ajouterInfosLivraisonsClient(model);
+        ajouterEmailClient(model);
         return "client/layout";
     }
 
     @GetMapping("/client/layout")// vue tant que client connecter 
     public String afficherVueClient(Model model) {
-        ajouterInfosLivraisonsClient(model);
+        ajouterEmailClient(model);
         return "client/layout";
+    }
+
+    @GetMapping("/client/livraison")
+    public String afficherLivraisonsClient(Model model) {
+        ajouterInfosLivraisonsClient(model);
+        return "client/livraison";
+    }
+
+    private String ajouterEmailClient(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
+            model.addAttribute("userEmail", auth.getName());
+            return auth.getName();
+        }
+        return null;
     }
 
     private void ajouterInfosLivraisonsClient(Model model) {
         model.addAttribute("livraisons", List.of());
         model.addAttribute("nbLivraisons", 0);
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
-            List<Livraison> livraisons = livraisonService.listerLivraisonEnCoursPourClient(auth.getName());
-            model.addAttribute("userEmail", auth.getName());
+        String emailClient = ajouterEmailClient(model);
+        if (emailClient != null) {
+            List<Livraison> livraisons = livraisonService.listerLivraisonEnCoursPourClient(emailClient);
             model.addAttribute("livraisons", livraisons);
             model.addAttribute("nbLivraisons", livraisonService.compterLivraisonEnCoursPourClient(livraisons));
         }

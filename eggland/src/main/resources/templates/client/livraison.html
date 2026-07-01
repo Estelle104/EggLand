@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EggLand - Mes livraisons</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/client-layout.css}">
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</head>
+<body class="delivery-page">
+
+    <nav class="navbar navbar-expand-lg fixed-top dark" id="mainNavbar">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3" th:href="@{/}">EGGLAND</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto gap-4">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/}">Accueil</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/#produits}">Nos Produits</a></li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()"><a class="nav-link active" th:href="@{/client/livraison}">Livraisons</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/#partenaire}">Devenir Partenaire</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/#contact}">Contact</a></li>
+
+                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 fw-bold"
+                        href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span th:text="${userEmail}">Email</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2"
+                            aria-labelledby="userDropdown"
+                            style="background-color: var(--cream); border-radius: 12px;">
+
+                            <li><a class="dropdown-item rounded py-2 fw-semibold text-dark" th:href="@{/redirection}">Mon Espace</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="m-0 p-0">
+                                    <button type="submit" class="dropdown-item rounded py-2 fw-semibold text-danger" style="background: none; border: none; width: 100%; text-align: left;">Déconnexion</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="delivery-page-main">
+        <section class="delivery-section py-5">
+            <div class="container">
+                <div class="delivery-page-heading">
+                    <p class="section-subtitle mb-2">Suivi client</p>
+                    <h1 class="delivery-page-title">Mes livraisons</h1>
+                    <p class="delivery-page-text">Retrouvez ici vos livraisons en cours et leur statut actuel.</p>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                        <div th:if="${nbLivraisons > 0}" class="delivery-panel">
+                            <div class="delivery-header">
+                                <div>
+                                    <p class="delivery-kicker">En cours</p>
+                                    <h2 class="delivery-title">Livraison en cours</h2>
+                                </div>
+                                <span class="delivery-count">
+                                    <strong th:text="${nbLivraisons}">0</strong>
+                                    livraison(s)
+                                </span>
+                            </div>
+
+                            <div class="delivery-list">
+                                <div th:each="livraison : ${livraisons}" class="delivery-item">
+                                    <div>
+                                        <span class="delivery-label">Date prévue</span>
+                                        <span class="delivery-value" th:text="${#temporals.format(livraison.dateLivraison, 'dd/MM/yyyy')}">02/07/2026</span>
+                                    </div>
+                                    <div>
+                                        <span class="delivery-label">Adresse</span>
+                                        <span class="delivery-address" th:text="${livraison.adresseLivraison}">Adresse</span>
+                                    </div>
+                                    <div>
+                                        <span class="delivery-label">Statut</span>
+                                        <span class="delivery-status" th:text="${livraison.statut.code}">en_cours</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div th:if="${nbLivraisons == 0}" class="delivery-empty">
+                            Aucune livraison en cours.
+                        </div>
+
+                        <div class="delivery-page-actions">
+                            <a th:href="@{/}" class="btn delivery-back-button">Retour à l'accueil</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-4 text-center text-white" style="background: var(--dark);">
+        <div class="container">
+            <strong class="eggland-title">EGGLAND</strong> — QUALITÉ • ENGAGEMENT • DURABILITÉ<br>
+            © 2026 Eggland — Tous droits réservés
+        </div>
+    </footer>
+</body>
+</html>

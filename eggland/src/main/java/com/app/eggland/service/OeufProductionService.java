@@ -76,6 +76,44 @@ public class OeufProductionService {
         return oeufProductionRepository.findAllByOrderByDateDescIdDesc();
     }
 
+    @Transactional(readOnly = true)
+    public OeufProduction getOeufProductionPourEdition(Integer id) {
+        OeufProduction production = oeufProductionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Production introuvable"));
+
+        OeufProduction edition = new OeufProduction();
+        edition.setId(production.getId());
+        edition.setLot(production.getLot());
+        edition.setDate(production.getDate());
+        edition.setQuantite(production.getQuantite());
+
+        List<OeufStatut> statutsSaisis = new ArrayList<>();
+        if (production.getOeufStatuts() != null) {
+            for (OeufStatut ligne : production.getOeufStatuts()) {
+                if (ligne.getStatut() == null || ligne.getStatut().getCode() == null) {
+                    continue;
+                }
+                String code = ligne.getStatut().getCode();
+                if (!"valide".equalsIgnoreCase(code) && !"vendu".equalsIgnoreCase(code)) {
+                    OeufStatut ligneEdition = new OeufStatut();
+                    ligneEdition.setStatut(ligne.getStatut());
+                    ligneEdition.setQuantite(ligne.getQuantite());
+                    statutsSaisis.add(ligneEdition);
+                }
+            }
+        }
+        edition.setOeufStatuts(statutsSaisis);
+        return edition;
+    }
+
+    @Transactional
+    public void supprimerOeufProduction(Integer id) {
+        if (!oeufProductionRepository.existsById(id)) {
+            throw new RuntimeException("Production introuvable");
+        }
+        oeufProductionRepository.deleteById(id);
+    }
+
     private void verifierProduction(OeufProduction production) {
         if (production == null) {
             throw new RuntimeException("La production est obligatoire");

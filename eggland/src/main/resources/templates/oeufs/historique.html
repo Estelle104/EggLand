@@ -52,6 +52,11 @@
                     <p>Aucun historique enregistré.</p>
                 </div>
 
+                <div th:if="${error}" class="history-alert">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span th:text="${error}">Erreur</span>
+                </div>
+
                 <div th:if="${!#lists.isEmpty(historiqueProduction)}" class="table-responsive stats-table-card history-table-card">
                     <div class="table-heading">
                         <h3>Collectes enregistrées</h3>
@@ -64,19 +69,37 @@
                                 <th>Date</th>
                                 <th>Quantité</th>
                                 <th>Statut</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="item : ${historiqueProduction}">
-                                <td th:text="${item.lot_id}">1</td>
-                                <td th:text="${item.date}">2026-01-01</td>
+                            <tr th:each="item : ${historiqueProduction}" th:with="productionId=${item['production_id']}">
+                                <td th:text="${item['lot_id']}">1</td>
+                                <td th:text="${item['date']}">2026-01-01</td>
                                 <td>
-                                    <span class="quantity-pill" th:text="${item.quantite}">0</span>
+                                    <span class="quantity-pill" th:text="${item['quantite']}">0</span>
                                 </td>
                                 <td>
-                                    <span th:classappend="${'valide'.equalsIgnoreCase(item.statut)} ? 'status-pill' : 'status-anomaly'"
-                                        th:text="${item.statut}">
+                                    <span th:classappend="${'valide'.equalsIgnoreCase(item['statut'])} ? 'status-pill' : 'status-anomaly'"
+                                        th:text="${item['statut']}">
                                     </span>                                
+                                </td>
+                                <td>
+                                    <div class="history-actions" th:if="${productionId != null}">
+                                        <a th:href="@{/admin/oeufs/edit/{id}(id=${productionId})}"
+                                           class="btn-action btn-modifier">
+                                            <i class="fa-solid fa-pen"></i>
+                                            Modifier
+                                        </a>
+                                        <form th:action="@{/admin/oeufs/delete}" method="post" class="history-delete-form"
+                                            onsubmit="return confirm('Supprimer cette collecte ?')">
+                                            <input type="hidden" name="id" th:value="${productionId}">
+                                            <button type="submit" class="btn-action btn-supprimer">
+                                                <i class="fa-solid fa-trash"></i>
+                                                Supprimer
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
