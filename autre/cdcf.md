@@ -12,6 +12,7 @@
 
 - Midera
     - Affichage de aucune notification
+    - Pas de rechargement total de la page lors du filtre
 
 - Toavina
     - Police
