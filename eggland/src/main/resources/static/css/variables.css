@@ -5,7 +5,7 @@
 
     /* Sidebar - marron principal */
     --sidebar:#6E3B1F;
-/* 2f5edb */
+ /* 2f5edb */
     /* Couleur principale (boutons, liens actifs) */
     --primary:#B87A2A;
 
@@ -17,6 +17,12 @@
 
     /* Texte secondaire */
     --text-light:#7C6758;
+    
+    /* Texte muted */
+    --text-muted:#6c757d;
+    
+    /* Texte dark */
+    --text-dark:#212529;
 
     /* Hover */
     --hover:#8A4E28;
@@ -26,6 +32,15 @@
 
     /* Accent clair */
     --accent:#D8B77C;
+    
+    /* Success */
+    --success:#198754;
+    
+    /* Danger */
+    --danger:#dc3545;
+    
+    /* Background light */
+    --bg-light:#f8f9fa;
 
     /* Radius */
     --radius:16px;
