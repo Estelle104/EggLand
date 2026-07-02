@@ -1,10 +1,12 @@
 package com.app.eggland.service;
 
 import com.app.eggland.model.OeufStatut;
+import com.app.eggland.model.StatutOeuf;
 import com.app.eggland.repository.OeufProductionRepository;
 import com.app.eggland.repository.OeufStatutRepository;
+import com.app.eggland.repository.StatutOeufRepository;
 
-import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ public class OeufService {
     @Autowired
     private OeufStatutRepository oeufStatutRepository;
 
+    @Autowired
+    private StatutOeufRepository statutOeufRepository;
+
     public Integer getStockDisponible() {
         Integer quantiteProduite = oeufProductionRepository.sumQuantiteTotale();
         Integer quantiteIndisponible = oeufStatutRepository.sumQuantiteIndisponible();
@@ -32,50 +37,88 @@ public class OeufService {
         }
         return Math.toIntExact(stock);
     }
-  @Transactional
+
+
+    @Transactional
     public void retirerDuStock(int quantite) {
 
-        List<OeufStatut> stocks = oeufStatutRepository
+        List<OeufStatut> stocksValides = oeufStatutRepository
                 .findByStatutCodeOrderByProductionDateAsc("valide");
+
+        StatutOeuf statutVendu = statutOeufRepository.findByCode("vendu")
+                .orElseThrow(() -> new RuntimeException("Statut 'vendu' introuvable en base"));
 
         int restant = quantite;
 
-        for (OeufStatut stock : stocks) {
+        for (OeufStatut stock : stocksValides) {
 
             if (restant <= 0) {
                 break;
             }
 
-            if (stock.getQuantite() <= restant) {
-
-                restant -= stock.getQuantite();
-                stock.setQuantite(0);
-
-            } else {
-
-                stock.setQuantite(stock.getQuantite() - restant);
-                restant = 0;
+            int quantitePrise = Math.min(stock.getQuantite(), restant);
+            if (quantitePrise <= 0) {
+                continue;
             }
 
+            stock.setQuantite(stock.getQuantite() - quantitePrise);
             oeufStatutRepository.save(stock);
+
+            OeufStatut vendu = oeufStatutRepository
+                    .findByProductionIdAndStatutCode(stock.getProduction().getId(), "vendu")
+                    .orElseGet(() -> {
+                        OeufStatut nouveau = new OeufStatut();
+                        nouveau.setProduction(stock.getProduction());
+                        nouveau.setStatut(statutVendu);
+                        nouveau.setQuantite(0);
+                        return nouveau;
+                    });
+            vendu.setQuantite(vendu.getQuantite() + quantitePrise);
+            oeufStatutRepository.save(vendu);
+
+            restant -= quantitePrise;
         }
 
         if (restant > 0) {
             throw new RuntimeException("Stock insuffisant.");
         }
-    } 
-
+    }
     @Transactional
     public void ajouterAuStock(int quantite) {
         if (quantite <= 0) return;
-        List<OeufStatut> stocks = oeufStatutRepository
-                .findByStatutCodeOrderByProductionDateAsc("valide");
 
-        if (stocks.isEmpty()) {
-            throw new RuntimeException("Aucun enregistrement de stock valide trouvé pour restituer les œufs.");
+        List<OeufStatut> stocksVendus = oeufStatutRepository
+                .findByStatutCodeOrderByProductionDateAsc("vendu");
+        Collections.reverse(stocksVendus);
+
+        int restant = quantite;
+
+        for (OeufStatut vendu : stocksVendus) {
+            if (restant <= 0) {
+                break;
+            }
+
+            int quantiteRestituee = Math.min(vendu.getQuantite(), restant);
+            if (quantiteRestituee <= 0) {
+                continue;
+            }
+
+            vendu.setQuantite(vendu.getQuantite() - quantiteRestituee);
+            oeufStatutRepository.save(vendu);
+
+            OeufStatut valide = oeufStatutRepository
+                    .findByProductionIdAndStatutCode(vendu.getProduction().getId(), "valide")
+                    .orElseThrow(() -> new RuntimeException(
+                            "Statut 'valide' introuvable pour la production " + vendu.getProduction().getId()));
+            valide.setQuantite(valide.getQuantite() + quantiteRestituee);
+            oeufStatutRepository.save(valide);
+
+            restant -= quantiteRestituee;
         }
-        OeufStatut premierStock = stocks.get(0);
-        premierStock.setQuantite(premierStock.getQuantite() + quantite);
-        oeufStatutRepository.save(premierStock);
+
+        if (restant > 0) {
+            throw new RuntimeException(
+                    "Impossible de restituer plus d'œufs qu'il n'en a été vendu.");
+        }
     }
 }

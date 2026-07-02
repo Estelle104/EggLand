@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface OeufStatutRepository extends JpaRepository<OeufStatut, Integer>{  
-    @Query("SELECT COALESCE(SUM(o.quantite), 0) FROM OeufStatut o WHERE o.statut.id = :statutId")
+  @Query("SELECT COALESCE(SUM(o.quantite), 0) FROM OeufStatut o WHERE o.statut.id = :statutId")
     Integer sumQuantiteByStatutId(@Param("statutId") Integer statutId); // pour les 
 
     @Query("SELECT COALESCE(SUM(o.quantite), 0) FROM OeufStatut o WHERE LOWER(o.statut.code) IN ('vendu', 'casse', 'consomme')")
@@ -20,12 +20,11 @@ public interface OeufStatutRepository extends JpaRepository<OeufStatut, Integer>
 
     List<OeufStatut> findAllByOrderByProductionDateDescIdDesc();
 
-    Optional<OeufStatut> findByProductionIdAndStatutCode(Long productionId, String code);
+    Optional<OeufStatut> findByProductionIdAndStatutCode(Integer productionId, String code);
 
     Optional<OeufStatut> findFirstByStatutCodeAndQuantiteGreaterThan(String code, Integer quantite);
 
     List<OeufStatut> findByStatutCodeOrderByProductionDateAsc(String string);
-
 
     
 }
