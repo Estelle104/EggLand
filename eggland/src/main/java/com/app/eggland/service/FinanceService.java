@@ -24,19 +24,23 @@ public class FinanceService {
     private LotRepository lotRepository;
 
     public BigDecimal getTotalRecettes() {
-        return mvtArgentRepository.sumMontantByTypeCode("entree");
+        BigDecimal total = mvtArgentRepository.sumMontantByTypeCode("entree");
+        return total != null ? total : BigDecimal.ZERO;
     }
 
     public BigDecimal getTotalRecettes(LocalDate debut, LocalDate fin) {
-        return mvtArgentRepository.sumMontantByTypeCodeBetweenDates("entree", debut, fin);
+        BigDecimal total = mvtArgentRepository.sumMontantByTypeCodeBetweenDates("entree", debut, fin);
+        return total != null ? total : BigDecimal.ZERO;
     }
 
     public BigDecimal getTotalDepenses() {
-        return mvtArgentRepository.sumMontantByTypeCode("sortie");
+        BigDecimal total = mvtArgentRepository.sumMontantByTypeCode("sortie");
+        return total != null ? total : BigDecimal.ZERO;
     }
 
     public BigDecimal getTotalDepenses(LocalDate debut, LocalDate fin) {
-        return mvtArgentRepository.sumMontantByTypeCodeBetweenDates("sortie", debut, fin);
+        BigDecimal total = mvtArgentRepository.sumMontantByTypeCodeBetweenDates("sortie", debut, fin);
+        return total != null ? total : BigDecimal.ZERO;
     }
 
     public BigDecimal getBeneficeNet() {
