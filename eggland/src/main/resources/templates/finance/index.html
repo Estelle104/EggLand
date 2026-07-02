@@ -8,6 +8,7 @@
     <title>Finance - Eggland</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" th:href="@{/css/finance.css}" />
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
   </head>
   <body>
     <div layout:fragment="content">
@@ -199,6 +200,10 @@
         </div>
       </div>
 
+      <script th:inline="javascript">
+        const recettesMensuelles = /*[[${recettesMensuelles}]]*/ {};
+        const depensesMensuelles = /*[[${depensesMensuelles}]]*/ {};
+      </script>
       <script th:src="@{/js/finance.js}"></script>
     </div>
   </body>
