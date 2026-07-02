@@ -55,19 +55,26 @@ LotRaceRepository lotRaceRepository;
 public List<Race> getRaces() {
     return raceRepository.findAll();
 }
-    @GetMapping("/data/batiments")
-    public List<Batiment> getBatiments() {
-        return batimentRepository.findAll();
-    }
-
-   
 
      @GetMapping("/create")
     public ModelAndView showLotForm(){
         ModelAndView mav = new ModelAndView("lots/form");
+List<Batiment> listBatment = new ArrayList<>();
+
+for(Batiment batiment : batimentRepository.findAll()){
+
+    if(!lotService.existedLot(batiment)){
+
+        listBatment.add(batiment);
+    }
+
+
+
+    }
         mav.addObject("lot", new Lot());
         mav.addObject("races", raceRepository.findAll());
-        mav.addObject("batiments", batimentRepository.findAll());
+
+        mav.addObject("batiments", listBatment);
         return mav;
     }
 @PostMapping("/create")
@@ -148,7 +155,6 @@ public ModelAndView createLot(@ModelAttribute Lot lot,
 public ModelAndView showAllLot(
         @RequestParam(required = false) Integer batiment,
         @RequestParam(required = false) Integer statut) {
-
     ModelAndView mav = new ModelAndView("lots/liste");
 
     List<Lot> lots;
@@ -262,7 +268,6 @@ public Lot getLotWithRaces(@PathVariable("id") Integer id) {
 public ModelAndView modifierLots(@PathVariable("id") Integer id,
                                   @RequestParam(required = false) List<Integer> listeRace,
                                   @RequestParam(required = false) List<Integer> nbrPoule,
-                                  @RequestParam Integer batimentId,
                                   RedirectAttributes redirectAttributes) {
     
     try {
@@ -272,11 +277,7 @@ public ModelAndView modifierLots(@PathVariable("id") Integer id,
             throw new IllegalArgumentException("Lot inexistant");
         }
            
-        if (batimentId != null) {
-            Batiment newBatiment = batimentRepository.findById(batimentId)
-                .orElseThrow(() -> new IllegalArgumentException("Bâtiment non trouvé"));
-            lot.setBatiment(newBatiment);
-        }
+       
         lot.getLotRaces().clear();
         
  

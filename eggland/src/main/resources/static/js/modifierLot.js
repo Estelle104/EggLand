@@ -1,12 +1,12 @@
 async function loadSelects(form) {
     const races = await fetch("/admin/lots/data/races").then(r => r.json());
-    const batiments = await fetch("/admin/lots/data/batiments").then(r => r.json());
 
-    console.log("batiment", batiments);
+
+  
     console.log("race", races);
 
     window.racesData = races;
-    window.batimentsData = batiments;
+   
 }
 
 function createRaceRow(race = null, nombre = null) {
@@ -84,9 +84,7 @@ document.querySelectorAll(".btn-modifier").forEach(button => {
             // Charger les données
             await loadSelects(form);
 
-            const batimentsHTML = window.batimentsData.map(b => 
-                `<option value="${b.id}" ${lot.batiment && lot.batiment.id == b.id ? 'selected' : ''}>${b.nom}</option>`
-            ).join("");
+        
 
             //  Vérifier le nombre de races à afficher
             console.log("Nombre de races à afficher:", lot.lotRaces ? lot.lotRaces.length : 0);
@@ -108,14 +106,6 @@ document.querySelectorAll(".btn-modifier").forEach(button => {
                 <button type="button" id="btn-add-race" class="btn btn-success" style="margin: 10px 0; padding: 8px 15px;">
                     <i class="fa-solid fa-plus"></i> Ajouter une race
                 </button>
-
-                <div class="form-group">
-                    <label>Bâtiment :</label>
-                    <select name="batimentId" id="batiment" required style="width: 100%; padding: 8px;">
-                        <option value="">-- Sélectionnez un bâtiment --</option>
-                        ${batimentsHTML}
-                    </select>
-                </div>
 
                 <div class="modal-buttons" style="margin-top: 20px; display: flex; gap: 10px;">
                     <button type="submit" class="btn btn-primary btn-valider">Valider</button>
@@ -190,7 +180,7 @@ document.querySelectorAll(".btn-modifier").forEach(button => {
             // Supprimer
             form.querySelector(".btn-supprimer").addEventListener("click", function () {
                 if (confirm(`Supprimer le lot ${lot.id} ?`)) {
-                    window.location.href = `/lots/supprimer/${lot.id}`;
+                    window.location.href = `/admin/lots/supprimer/${lot.id}`;
                 }
             });
 

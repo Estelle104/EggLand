@@ -63,3 +63,22 @@
 .badge-type { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
 .badge-entree { background: #d4edda; color: #155724; }
 .badge-sortie { background: #f8d7da; color: #721c24; }
+
+.form-control-sm[type="date"],
+.form-control-sm[type="month"] {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  transition: 0.2s;
+  box-sizing: border-box;
+}
+.form-control-sm[type="date"]:focus,
+.form-control-sm[type="month"]:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(184, 122, 42, 0.12);
+  background: white;
+}

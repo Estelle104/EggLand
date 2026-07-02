@@ -1,19 +1,20 @@
-<div class="dropdown" th:fragment="notificationDropdown">
-    <button class="btn position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+<div class="notification-dropdown" th:fragment="notificationDropdown">
+    <button class="notification-btn position-relative" type="button" id="notif-toggle" aria-expanded="false" aria-haspopup="true">
         <i class="fa-solid fa-bell"></i>
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-              th:if="${@notificationService.compterNonLues() > 0}"
-              th:text="${@notificationService.compterNonLues()}">0</span>
+        <span class="notification-badge" th:if="${@notificationService.compterNonLues() > 0}" th:text="${@notificationService.compterNonLues()}"></span>
     </button>
-    <ul class="dropdown-menu dropdown-menu-end shadow" style="width: 340px;">
-        <li th:each="notif : ${@notificationService.listerNonLues()}">
-            <a class="dropdown-item d-flex flex-column py-2">
-                <small class="text-muted" th:text="${#temporals.format(notif.dateCreation, 'dd/MM/yyyy HH:mm')}">date</small>
-                <span th:text="${notif.message}">message</span>
-            </a>
-        </li>
-        <li th:if="${@notificationService.compterNonLues() == 0}">
-            <span class="dropdown-item text-muted text-center py-3">Aucune notification</span>
-        </li>
-    </ul>
+    <div class="notification-panel" id="notif-panel" role="menu">
+        <div class="notification-header">
+            <h4>Notifications</h4>
+        </div>
+        <div class="notification-list">
+            <div th:each="notif : ${@notificationService.listerNonLues()}" class="notification-item" role="menuitem">
+                <span class="notification-time" th:text="${#temporals.format(notif.dateCreation, 'dd/MM/yyyy HH:mm')}"></span>
+                <span class="notification-message" th:text="${notif.message}"></span>
+            </div>
+            <div th:if="${@notificationService.compterNonLues() == 0}" class="notification-empty">
+                Aucune notification
+            </div>
+        </div>
+    </div>
 </div>

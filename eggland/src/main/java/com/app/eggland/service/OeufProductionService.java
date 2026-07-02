@@ -15,12 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.app.eggland.model.Lot;
+import com.app.eggland.model.LotRace;
 import com.app.eggland.model.OeufProduction;
 import com.app.eggland.model.OeufStatut;
 import com.app.eggland.model.StatutOeuf;
 import com.app.eggland.repository.LotRepository;
 import com.app.eggland.repository.OeufProductionRepository;
 import com.app.eggland.repository.StatutOeufRepository;
+import com.app.eggland.repository.LotRaceRepository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +38,9 @@ public class OeufProductionService {
 
     @Autowired
     private LotRepository lotRepository;
+
+    @Autowired
+    private LotRaceRepository lotRaceRepository;
 
     @Transactional
     public OeufProduction addOeufProduction(OeufProduction production) {
@@ -74,6 +79,44 @@ public class OeufProductionService {
 
     public List<OeufProduction> getAllOeufsWithDetails() {
         return oeufProductionRepository.findAllByOrderByDateDescIdDesc();
+    }
+
+    @Transactional(readOnly = true)
+    public OeufProduction getOeufProductionPourEdition(Integer id) {
+        OeufProduction production = oeufProductionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Production introuvable"));
+
+        OeufProduction edition = new OeufProduction();
+        edition.setId(production.getId());
+        edition.setLot(production.getLot());
+        edition.setDate(production.getDate());
+        edition.setQuantite(production.getQuantite());
+
+        List<OeufStatut> statutsSaisis = new ArrayList<>();
+        if (production.getOeufStatuts() != null) {
+            for (OeufStatut ligne : production.getOeufStatuts()) {
+                if (ligne.getStatut() == null || ligne.getStatut().getCode() == null) {
+                    continue;
+                }
+                String code = ligne.getStatut().getCode();
+                if (!"valide".equalsIgnoreCase(code) && !"vendu".equalsIgnoreCase(code)) {
+                    OeufStatut ligneEdition = new OeufStatut();
+                    ligneEdition.setStatut(ligne.getStatut());
+                    ligneEdition.setQuantite(ligne.getQuantite());
+                    statutsSaisis.add(ligneEdition);
+                }
+            }
+        }
+        edition.setOeufStatuts(statutsSaisis);
+        return edition;
+    }
+
+    @Transactional
+    public void supprimerOeufProduction(Integer id) {
+        if (!oeufProductionRepository.existsById(id)) {
+            throw new RuntimeException("Production introuvable");
+        }
+        oeufProductionRepository.deleteById(id);
     }
 
     private void verifierProduction(OeufProduction production) {
@@ -204,17 +247,37 @@ public class OeufProductionService {
                 .sum();
 
         Lot lot = production.getLot();
-        double rendementMensuel = lot.getRace().getRendementMoyenMois();
-        double attenduParJourParPoule = rendementMensuel / 30.0;
+        List<LotRace> lotRaces = lotRaceRepository.findByLotId(lot.getId());
+        if(lotRaces.isEmpty()) {
+            throw new RuntimeException("Pas de race qui correspond au lot " + lot.getId());
+        }
+
+        int somme = 0;
+        for(LotRace lr : lotRaces) {
+            if(lr.getRace() == null) {
+                throw new RuntimeException("La race associée au lot " + lot.getId() + " est introuvable");
+            }
+            somme = somme + lr.getRace().getRendementMoyenMois();
+
+        }
+
+        double moyenne = (double) somme / lotRaces.size();
+
+        // LotRace lotRace = lotRaces.isEmpty() ? null : lotRaces.get(0);
+        // double rendementMensuel = lotRace != null ? lotRace.getRace().getRendementMoyenMois() : 0;
+        double attenduParJourParPoule = moyenne / 30.0;
         double attenduLotJour = lot.getNombreInitial() * attenduParJourParPoule;
-        double taux = attenduLotJour == 0 ? 0 : (quantiteValide / attenduLotJour) * 100;
+        double taux = attenduLotJour == 0 
+        ? 0 
+        : (quantiteValide / attenduLotJour) * 100;
 
         Map<String, Object> stat = new HashMap<>();
         stat.put("lotNumero", lot.getId());
-        stat.put("raceNom", lot.getRace().getNom());
+        // stat.put("raceNom", lot.getRace().getNom());
+        stat.put("races", lotRaceRepository.findByLotId(lot.getId())); // ceci une liste
         stat.put("date", production.getDate());
         stat.put("quantiteValide", quantiteValide);
-        stat.put("attendu", attenduLotJour);
+        stat.put("attendu", (int) Math.floor(attenduLotJour));
         stat.put("taux", taux);
         return stat;
     }

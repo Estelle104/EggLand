@@ -8,9 +8,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.app.eggland.model.OeufProduction;
 import com.app.eggland.service.LotService;
@@ -56,11 +58,22 @@ public class OeufController {
         return "oeufs/saisie";
     }
 
+    @GetMapping("/edit/{id}")
+    public String edit(@PathVariable Integer id, Model model) {
+        OeufProduction production = oeufProductionService.getOeufProductionPourEdition(id);
+        model.addAttribute("oeufProduction", production);
+        model.addAttribute("listeLots", lotService.getAllLotsActifs());
+        model.addAttribute("listeStatuts", oeufStatutService.getStatutsSaisissables());
+        model.addAttribute("dateMax", LocalDate.now());
+        return "oeufs/saisie";
+    }
+
     @PostMapping("/save")
     public String save(@ModelAttribute OeufProduction oeufProduction, Model model) {
         try {
+            boolean modification = oeufProduction.getId() != null;
             oeufProductionService.addOeufProduction(oeufProduction);
-            return "redirect:/admin/oeufs";
+            return modification ? "redirect:/admin/oeufs/historique" : "redirect:/admin/oeufs";
         } catch (RuntimeException exception) {
             model.addAttribute("erreur", exception.getMessage());
             model.addAttribute("oeufProduction", oeufProduction);
@@ -70,6 +83,16 @@ public class OeufController {
             
             return "oeufs/saisie";
         }
+    }
+
+    @PostMapping("/delete")
+    public String delete(@RequestParam Integer id, RedirectAttributes ra) {
+        try {
+            oeufProductionService.supprimerOeufProduction(id);
+        } catch (RuntimeException exception) {
+            ra.addFlashAttribute("error", exception.getMessage());
+        }
+        return "redirect:/admin/oeufs/historique";
     }
 
     @GetMapping("/historique")

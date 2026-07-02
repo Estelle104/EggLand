@@ -6,17 +6,31 @@
 
     <div class="header-right">
 
-        <form class="search-form" th:action="@{/search}" method="get">
+        <form class="search-form" th:action="@{/recherche}" method="get">
+            <i class="fa-solid fa-search search-icon"></i>
             <input type="text" name="q" placeholder="Rechercher..." required />
             <button type="submit" class="btn-search">
                 <i class="fa-solid fa-search"></i>
             </button>
         </form>
 
-        <div th:replace="fragments/notifications :: notificationDropdown"></div>
-
-        <div class="user-info">
-            <span>Admin</span>
+        <div class="notification-dropdown">
+            <button class="notification-btn" type="button" aria-expanded="false" aria-haspopup="true" aria-label="Notifications">
+                <i class="fa-solid fa-bell"></i>
+                <span class="notification-badge" th:if="${notificationsUnreadCount > 0}" th:text="${notificationsUnreadCount}"></span>
+            </button>
+            <div class="notification-panel" role="menu">
+                <div class="notification-header">
+                    <h4>Notifications</h4>
+                </div>
+                <div class="notification-list">
+                    <div th:each="notif : ${notificationsUnread}" class="notification-item" role="menuitem">
+                        <span class="notification-time" th:text="${#temporals.format(notif.dateCreation, 'dd/MM/yyyy HH:mm')}"></span>
+                        <span class="notification-message" th:text="${notif.message}"></span>
+                    </div>
+                    <div th:if="${notificationsUnreadCount == 0}" class="notification-empty">Aucune notification</div>
+                </div>
+            </div>
         </div>
 
     </div>

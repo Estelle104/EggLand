@@ -1,6 +1,7 @@
 
 package com.app.eggland.service;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.app.eggland.model.*;
@@ -50,13 +51,23 @@ verifierCapacite(lot,batiment);
         .orElseThrow(() -> new IllegalArgumentException("Statut ACTIF introuvable"));
 
     lot.setStatut(actif);
+
 lot.setBatiment(batiment);
+
 
 lotRepository.save(lot);
 lotRaceRepository.saveAll(lot.getLotRaces());
 
     }
+public  boolean existedLot(Batiment batiment){
 
+    if(!lotRepository.existsByBatimentId(batiment.getId())){
+        return false;
+    }
+
+    return true;
+
+}
     public void verifierCapacite(Lot lot,Batiment batiment){
         int capacite = batiment.getCapacite();
         int nbrInitiale = lot.getNombreInitial();
@@ -134,7 +145,7 @@ public  List<Lot> getAllLots(){
  }
 
 public void updateLot(Lot lot) {
-    System.out.println("BATIMENT ID REÇU = " + lot.getBatiment().getId());
+   
     Batiment batiment = batimentRepository.findById(lot.getBatiment().getId())
         .orElseThrow(() -> new IllegalArgumentException("Bâtiment non trouvé"));
 
@@ -162,9 +173,7 @@ public void updateLot(Lot lot) {
             " | Demandé: " + nbrInitiale
         );
     }
-    System.out.println("BATIMENT AVANT SAVE = " + lot.getBatiment());
-System.out.println("LOT ID = " + lot.getId());
-    System.out.println("BATIMENT APRES SAVE = " + lot.getBatiment());
+   
 
     lotRepository.save(lot);
 }
