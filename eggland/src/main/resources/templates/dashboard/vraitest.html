@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr" 
+      xmlns:th="http://www.thymeleaf.org" 
+      layout:decorate="~{fragments/layout}"> <!-- On dit qu'on utilise le layout global -->
+<head>
+    <title>Titre de ma page Test</title>
+</head>
+<body>
+
+    <!-- Tout ce qui est dans ce div sera automatiquement placé au bon endroit 
+         (dans le conteneur ".content" défini dans layout.html) -->
+    <div layout:fragment="content">
+        
+        <!-- Écrivez UNIQUEMENT le contenu propre à cette page ici -->
+        <h2>Contenu de test</h2>
+        <p>Cette page utilise le layout sans répéter le code de la sidebar ni du header !</p>
+        
+    </div>
+
+</body>
+</html>
