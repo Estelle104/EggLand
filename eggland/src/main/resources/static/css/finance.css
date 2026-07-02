@@ -1,0 +1,94 @@
+.card {
+  transition: transform 0.2s;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border);
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+.card-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.card-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+.text-success {
+  color: var(--success) !important;
+}
+.text-danger {
+  color: var(--danger) !important;
+}
+.text-primary {
+  color: var(--primary) !important;
+}
+.chart-container {
+  height: 350px;
+  position: relative;
+}
+.table th {
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+.table td {
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+.btn-export {
+  min-width: 180px;
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+}
+.lot-row:hover {
+  background-color: var(--bg-light);
+}
+.alert-import {
+  margin-top: 1rem;
+}
+.import-error {
+  color: var(--danger);
+  font-size: 0.85rem;
+}
+.import-success {
+  color: var(--success);
+  font-size: 0.85rem;
+}
+.import-instruction {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+.card-header.bg-white {
+  border-bottom: 1px solid var(--border) !important;
+}
+.card-header h5 {
+  font-weight: 700;
+  color: var(--text);
+}
+.form-control-sm {
+  border-radius: 8px;
+  border-color: var(--border);
+}
+.form-control-sm:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(184, 122, 42, 0.15);
+}
+h6.text-muted {
+  color: var(--primary) !important;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

@@ -1,0 +1,62 @@
+.card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s;
+  border: 1px solid var(--border);
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+.card-header {
+  border-radius: 12px 12px 0 0 !important;
+  background-color: var(--card) !important;
+}
+.card-header h5 {
+  font-weight: 700;
+  color: var(--text);
+}
+.card-body {
+  background-color: var(--card);
+}
+.btn-export {
+  min-width: 200px;
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+}
+.section-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+}
+.form-control-sm {
+  font-size: 0.85rem;
+  border-radius: 8px;
+  border-color: var(--border);
+}
+.form-control-sm:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(184, 122, 42, 0.15);
+}
+.alert-import {
+  margin-top: 1rem;
+}
+.import-instruction {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+.input-group-sm .btn {
+  border-radius: 8px;
+  font-weight: 500;
+}
+.page-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+}
