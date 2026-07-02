@@ -23,10 +23,17 @@ public class SimulationService {
         
         return chiffreAffaire;
     }
+    public int calculDate(Date dateFin) {
 
-    public int calculDate(Date dateFin){
-        int nombreDeJours = (int) ((dateFin.getTime() - new Date(System.currentTimeMillis()).getTime()) / (1000 * 60 * 60 * 24));
-        return nombreDeJours+1;
+        Date aujourdHui = new Date(System.currentTimeMillis());
+
+        long diffMs = dateFin.getTime() - aujourdHui.getTime();
+
+        long joursCalendaires = (diffMs / 86400000L) + 1;
+
+        int joursTravail = (int) ((joursCalendaires * 22) / 30);
+
+        return joursTravail;
     }
 
 }
