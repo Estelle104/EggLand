@@ -18,7 +18,9 @@ public class SimulationService {
         System.out.println("Nombre de oeuf actuelle : " + nbOeufActuelle);
         int nbOeufParJour = nombreDeJours * nombreOeufs;
         int nbOeufAvenir = nbOeufActuelle + nbOeufParJour;
-
+        System.out.println("Nombre de oeuf par jour : " + nbOeufParJour);
+        System.out.println("Nombre de jours : " + nombreDeJours);
+        System.out.println("Nombre de oeuf dans le futur : " + nbOeufAvenir);
         int chiffreAffaire = nbOeufAvenir * prixUnitaire;
         
         return chiffreAffaire;
@@ -33,7 +35,7 @@ public class SimulationService {
 
         int joursTravail = (int) ((joursCalendaires * 22) / 30);
 
-        return joursTravail;
+        return joursTravail+1;
     }
 
 }
