@@ -33,7 +33,7 @@
                     Message d'erreur
                 </div>
 
-                <form class="filters-bar" method="get" th:action="@{/employes/recap}">
+                <form class="filters-bar" method="get" th:action="@{/admin/employes/recap}">
                     <select name="mois" onchange="this.form.submit()">
                         <option th:each="m : ${listeMois}" th:value="${m.value}" th:text="${m.label}"
                                 th:selected="${m.value == moisSelectionne}">Juin 2026</option>
@@ -51,11 +51,11 @@
                     </select>
 
                     <div style="margin-left: auto;" >
-                        <a th:href="@{/employes/historique}" class="btn btn-dark  btn-primary">
+                        <a th:href="@{/admin/employes/historique}" class="btn btn-dark  btn-primary">
                             <i class="fa-solid fa-clock-rotate-left"></i> Historique
                         </a>
 
-                        <a th:href="@{/employes}" class="btn btn-outline">
+                        <a th:href="@{/admin/employes}" class="btn btn-outline">
                             <i class="fa-solid fa-arrow-left"></i> Retour
                         </a>
                     </div>
@@ -146,7 +146,7 @@
                     <span th:text="${#numbers.formatDecimal(r.montantVerse, 0, 'WHITESPACE', 0, 'COMMA')} + ' Ar'">300 000 Ar</span>
                 </div>
 
-                <form th:action="@{/employes/{id}/verser(id=${r.employe.id})}" method="post" style="margin-top:16px;">
+                <form th:action="@{/admin/employes/{id}/verser(id=${r.employe.id})}" method="post" style="margin-top:16px;">
                     <input type="hidden" name="mois" th:value="${moisSelectionne}">
 
                     <div class="form-group">

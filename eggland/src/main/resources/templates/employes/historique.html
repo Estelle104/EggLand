@@ -20,7 +20,7 @@
                     <h2>Historique des Paiements</h2>
                 </div>
 
-                <form class="filters-bar" method="get" th:action="@{/employes/historique}">
+                <form class="filters-bar" method="get" th:action="@{/admin/employes/historique}">
                     <select name="mois" onchange="this.form.submit()">
                         <option value="">Tous les mois</option>
                         <option th:each="m : ${listeMois}" th:value="${m.value}" th:text="${m.label}"
@@ -37,7 +37,7 @@
                                 th:text="${e.prenom} + ' ' + ${e.nom}"
                                 th:selected="${e.id == employeSelectionne}">Jean Dupont</option>
                     </select>
-                    <a th:href="@{/employes}" class="btn btn-outline" style="margin-left: auto;">
+                    <a th:href="@{/admin/employes}" class="btn btn-outline" style="margin-left: auto;">
                         <i class="fa-solid fa-arrow-left"></i> Retour
                     </a>
                 </form>

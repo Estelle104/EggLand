@@ -26,7 +26,7 @@ import com.app.eggland.service.PaiementSalaireService;
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("/employes")
+@RequestMapping("/admin/employes")
 @RequiredArgsConstructor
 public class EmployeController {
 
@@ -55,9 +55,9 @@ public class EmployeController {
             employeService.creer(employe);
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("erreur", e.getMessage());
-            return "redirect:/employes/nouveau";
+            return "redirect:/admin/employes/nouveau";
         }
-        return "redirect:/employes";
+        return "redirect:/admin/employes";
     }
 
     // ---------- Modification ----------
@@ -81,7 +81,7 @@ public class EmployeController {
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("erreur", e.getMessage());
         }
-        return "redirect:/employes";
+        return "redirect:/admin/employes";
     }
 
     // ---------- Suppression ----------
@@ -89,7 +89,7 @@ public class EmployeController {
     @PostMapping("/{id}/supprimer")
     public String supprimer(@PathVariable Integer id) {
         employeService.supprimer(id);
-        return "redirect:/employes";
+        return "redirect:/admin/employes";
     }
 
     // ---------- Historique des versements ----------
@@ -181,7 +181,7 @@ public class EmployeController {
             redirectAttributes.addFlashAttribute("erreur", e.getMessage());
         }
 
-        return "redirect:/employes/recap?mois=" + mois;
+        return "redirect:/admin/employes/recap?mois=" + mois;
     }
 
     // ---------- Utilitaire ----------
