@@ -156,21 +156,6 @@
 * `templates/oeufs/historique.html`
 * `templates/employes/recap.html`
 
----
-
-## Scripts SQL
-
-**Durée estimée : 2h**
-
-* [x] Créer `scripts/reset_db.sql` (~150 lignes, schéma complet + vues)
-* [x] Créer `scripts/insert_data.sql` (~530 lignes, données réalistes 07/2025-06/2026)
-
-**Fichiers :**
-
-* `scripts/reset_db.sql`
-* `scripts/insert_data.sql`
-
----
 
 ## Estimation Totale
 
