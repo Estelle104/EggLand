@@ -60,3 +60,23 @@
   font-weight: 700;
   color: var(--text);
 }
+
+.form-control[type="date"],
+.form-control[type="month"] {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  transition: 0.2s;
+  box-sizing: border-box;
+  min-height: 38px;
+}
+.form-control[type="date"]:focus,
+.form-control[type="month"]:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(184, 122, 42, 0.12);
+  background: white;
+}
