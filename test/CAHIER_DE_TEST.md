@@ -20,7 +20,7 @@
             - *Resultat attendu :* 
                 - create : Un nouveau race insérée dans la base
                 - update : race mis a jour
-                - delete : batimenr supprime
+                - delete : race supprime
                 - list : liste des races
 
             - *Reponse :* **OK**
@@ -53,9 +53,14 @@
         -CRUD de nourriture :
             - *Resultat attendu :* 
                 -create: Une nouvelle nourriture inseree dans la base avec son seuil d'alerte (verfication de la nourriture ne doit etre inferieur au seuil)
-                - update :  
-                - delete : 
-                - list : 
+            - *Reponse :* **OK**
+                - update : nourriture mis a jour
+            - *Reponse :* **OK**
+                - delete : nourriture supprime
+            - *Reponse :* **OK**
+                - list : liste des nourriture
+            - *Reponse :* **OK**
+
                 
                 
     - **Module stock**
