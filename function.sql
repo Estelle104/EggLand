@@ -27,6 +27,15 @@ LEFT JOIN mort m
     ON m.lot_id = l.id
 GROUP BY l.id;
 
+CREATE OR REPLACE VIEW v_total_reforme_lot AS
+SELECT
+    l.id AS lot_id,
+    COALESCE(SUM(rf.nombre), 0) AS total_reforme
+FROM lot l
+LEFT JOIN reforme rf
+    ON rf.lot_id = l.id
+GROUP BY l.id;
+
 
 CREATE OR REPLACE VIEW v_historique_production AS
 SELECT 
