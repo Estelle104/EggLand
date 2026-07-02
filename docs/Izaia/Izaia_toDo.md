@@ -69,3 +69,34 @@
 * [X] la date de vente est automatiquement mis pour le jour meme (modifiable si c'est necessaire )
 * [X] listeVente() : ici on affiche nos ventes avec les actions possible(voir detail,modifier , supprimer)
 * [X] detailVente.html() : ici il y a les infos de la vente 
+ 
+---
+### Simulation et Chiffre d'affaire
+**Durée estimée : 1h30**
+**Fichier :**
+* `SimulationController`
+* `SimulationService`
+* `OeufService`
+
+### SimulationController
+* [] Appeler SimulationService
+* [] Envoyer le lient vers la page de simulation
+
+
+### Template 
+**Durée estimée : 1h30**
+* `simulation`
+
+* [] ajouter une autre boutton sur le sidebar pour la simulation
+* [] ajouter un input pour entrer la date
+* [] ajouter un input pour entrer le nombre d'oeuf par jour
+* [] un boutton simuler pour calculer le chiffre d'affaire 
+
+### Service
+**Durée estimée : 1h30**
+* `SimulationService`
+* [] Prendre le stock actuelle
+* [] Ajouter la somme des nombres d'oeuf inserer dans le formulaire 
+* [] Prendre tous les depenses jusqu'a ce date 
+* [] Prendre les chiffres generer (rendement par Oeuf)
+* [] Calculer le chiffre d'affaire
