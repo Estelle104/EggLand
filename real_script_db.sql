@@ -1,6 +1,4 @@
 
--- TABLES DE REFERENCE (statuts / types)
-
 CREATE TABLE statutlot (
     id   SERIAL PRIMARY KEY,
     code VARCHAR(30) NOT NULL UNIQUE
@@ -88,19 +86,17 @@ CREATE TABLE client (
     id_statut         INTEGER      NOT NULL REFERENCES statutclient(id)
 );
 
--- NOTE: colonne "statut" (et non "id_statut") car c'est le nom
--- déclaré dans l'entité Lot.java -> @JoinColumn(name = "statut")
 CREATE TABLE lot (
     id              SERIAL PRIMARY KEY,
-    race_id         INTEGER      NOT NULL REFERENCES race(id), -- NOT NULL ici, mais un ALTER TABLE précédent le rendait nullable en base réelle : à harmoniser
+    race_id         INTEGER      NOT NULL REFERENCES race(id), 
     date_arrivee    DATE         NOT NULL,
     nombre_initial  INTEGER      NOT NULL,
     age_semaine     INTEGER      NOT NULL,
-    statut          INTEGER      NOT NULL REFERENCES statutlot(id), -- nom incohérent avec le reste du schéma (ailleurs c'est "id_statut")
+    statut          INTEGER      NOT NULL REFERENCES statutlot(id), 
     batiment_id     INTEGER      NOT NULL REFERENCES batiment(id)
 );
 
--- Table de répartition Lot <-> Race (relation @OneToMany dans Lot.java)
+
 CREATE TABLE lot_races (
     id      SERIAL PRIMARY KEY,
     lot_id  INTEGER REFERENCES lot(id),
@@ -172,8 +168,6 @@ CREATE TABLE vente (
     id_statut  INTEGER       NOT NULL REFERENCES statutvente(id)
 );
 
--- NOTE: correspond à l'entité DetailVente.java telle qu'écrite
--- (client_id et id_produit y sont référencés ; à créer si absents en base réelle)
 CREATE TABLE detailvente (
     id             SERIAL PRIMARY KEY,
     vente_id       INTEGER        NOT NULL REFERENCES vente(id),
@@ -219,7 +213,7 @@ CREATE TABLE notification (
 CREATE TABLE paiementsalaire (
     id             SERIAL PRIMARY KEY,
     employe_id     INTEGER       NOT NULL REFERENCES employe(id),
-    mois           DATE          NOT NULL, -- toujours le 1er jour du mois, ex: 2026-06-01
+    mois           DATE          NOT NULL,
     montant        NUMERIC(12,2) NOT NULL,
     paye           BOOLEAN       NOT NULL DEFAULT FALSE,
     date_paiement  DATE,
