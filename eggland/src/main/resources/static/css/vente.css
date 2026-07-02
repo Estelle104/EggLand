@@ -558,9 +558,6 @@
     justify-content: flex-end;
 }
 
-/* =============================================
-   Filtres liste vente
-   ============================================= */
 .filtre-card {
     background: var(--card);
     border-radius: var(--radius);
