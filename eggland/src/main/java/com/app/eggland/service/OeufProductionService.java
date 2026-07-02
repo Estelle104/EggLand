@@ -267,8 +267,9 @@ public class OeufProductionService {
         // double rendementMensuel = lotRace != null ? lotRace.getRace().getRendementMoyenMois() : 0;
         double attenduParJourParPoule = moyenne / 30.0;
         double attenduLotJour = lot.getNombreInitial() * attenduParJourParPoule;
-        int attenduLotJourArrondie= (int) Math.floor(attenduLotJour);
-        double taux = attenduLotJourArrondie == 0 ? 0 : (quantiteValide / attenduLotJourArrondie) * 100;
+        double taux = attenduLotJour == 0 
+        ? 0 
+        : (quantiteValide / attenduLotJour) * 100;
 
         Map<String, Object> stat = new HashMap<>();
         stat.put("lotNumero", lot.getId());
@@ -276,7 +277,7 @@ public class OeufProductionService {
         stat.put("races", lotRaceRepository.findByLotId(lot.getId())); // ceci une liste
         stat.put("date", production.getDate());
         stat.put("quantiteValide", quantiteValide);
-        stat.put("attendu", attenduLotJourArrondie);
+        stat.put("attendu", (int) Math.floor(attenduLotJour));
         stat.put("taux", taux);
         return stat;
     }
