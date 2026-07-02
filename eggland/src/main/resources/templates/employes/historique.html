@@ -31,6 +31,12 @@
                         <option value="paye" th:selected="${statutSelectionne == 'paye'}">Payé</option>
                         <option value="attente" th:selected="${statutSelectionne == 'attente'}">En attente</option>
                     </select>
+                    <select name="employeId" onchange="this.form.submit()">
+                        <option value="">Tous les employés</option>
+                        <option th:each="e : ${employes}" th:value="${e.id}"
+                                th:text="${e.prenom} + ' ' + ${e.nom}"
+                                th:selected="${e.id == employeSelectionne}">Jean Dupont</option>
+                    </select>
                     <a th:href="@{/employes}" class="btn btn-outline" style="margin-left: auto;">
                         <i class="fa-solid fa-arrow-left"></i> Retour
                     </a>

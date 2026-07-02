@@ -97,6 +97,7 @@ public class EmployeController {
     @GetMapping("/historique")
     public String historique(@RequestParam(required = false) String mois,
                               @RequestParam(required = false) String statut,
+                              @RequestParam(required = false) Integer employeId,
                               Model model) {
         List<PaiementSalaire> paiements = (mois != null && !mois.isBlank())
                 ? paiementSalaireService.listerParMois(LocalDate.parse(mois + "-01"))
@@ -108,6 +109,10 @@ public class EmployeController {
             paiements = paiements.stream().filter(p -> !Boolean.TRUE.equals(p.getPaye())).toList();
         }
 
+        if(employeId != null) {
+            paiements = paiements.stream().filter(p -> p.getEmploye().getId().equals(employeId)).toList();
+        }
+
         // Pour chaque PaiementSalaire (employé + mois), on attache le détail de ses versements.
         List<HistoriqueLigne> lignes = paiements.stream()
                 .map(p -> new HistoriqueLigne(p, paiementSalaireService.listerVersements(p)))
@@ -117,6 +122,8 @@ public class EmployeController {
         model.addAttribute("listeMois", genererListeMois());
         model.addAttribute("moisSelectionne", mois);
         model.addAttribute("statutSelectionne", statut);
+        model.addAttribute("employeSelectionne", employeId);
+        model.addAttribute("employes", employeService.listerTous());
         return "employes/historique";
     }
 
