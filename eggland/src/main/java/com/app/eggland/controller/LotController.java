@@ -155,7 +155,6 @@ public ModelAndView createLot(@ModelAttribute Lot lot,
 public ModelAndView showAllLot(
         @RequestParam(required = false) Integer batiment,
         @RequestParam(required = false) Integer statut) {
-
     ModelAndView mav = new ModelAndView("lots/liste");
 
     List<Lot> lots;
@@ -269,7 +268,6 @@ public Lot getLotWithRaces(@PathVariable("id") Integer id) {
 public ModelAndView modifierLots(@PathVariable("id") Integer id,
                                   @RequestParam(required = false) List<Integer> listeRace,
                                   @RequestParam(required = false) List<Integer> nbrPoule,
-                                 
                                   RedirectAttributes redirectAttributes) {
     
     try {
