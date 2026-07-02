@@ -29,12 +29,7 @@
 
                     <div class="form-group">
                         <label>Client</label>
-                        <select name="clientId" required>
-                            <option value="">Sélectionner un client</option>
-                            <th:block th:each="client : ${clients}">
-                                <option th:value="${client.id}" th:text="${client.nom}"></option>
-                            </th:block>
-                        </select>
+                        <input type="text" name="clientNom" placeholder="Saisir le nom du client" required />
                     </div>
 
                     <div class="lignes-header">

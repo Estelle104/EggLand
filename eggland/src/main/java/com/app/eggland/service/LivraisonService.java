@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.app.eggland.model.Client;
 import com.app.eggland.model.Livraison;
 import com.app.eggland.model.StatutLivraison;
 import com.app.eggland.model.Vente;
@@ -127,5 +128,56 @@ public class LivraisonService {
 
     public Integer compterLivraisonEnCoursPourClient(List<Livraison> livraisons) {
         return livraisons.size();
+    }
+
+    public List<Vente> obtenirVentesNonLivrees() {
+        return venteRepository.findVentesNonLivrees();
+    }
+
+    @Transactional
+    public Livraison creerLivraison(Vente vente, Client client, LocalDate dateLivraison, String adresseLivraison, BigDecimal fraisLivraison, String statutCode) {
+        if (dateLivraison == null) {
+            dateLivraison = LocalDate.now();
+        }
+
+        if (fraisLivraison == null) {
+            fraisLivraison = BigDecimal.ZERO;
+        }
+
+        String statutRecherche = (statutCode == null || statutCode.isBlank()) ? "en_attente" : statutCode;
+        StatutLivraison statut = statutLivraisonRepository.findByCode(statutRecherche)
+                .orElseThrow(() -> new RuntimeException("Statut de livraison introuvable : " + statutRecherche));
+
+        Livraison livraison = Livraison.builder()
+                .vente(vente)
+                .client(client)
+                .dateLivraison(dateLivraison)
+                .adresseLivraison(adresseLivraison)
+                .statut(statut)
+                .fraisLivraison(fraisLivraison)
+                .build();
+
+        Livraison saved = livraisonRepository.save(livraison);
+
+        if (fraisLivraison.compareTo(BigDecimal.ZERO) > 0) {
+            mvtArgentService.creerSortie(fraisLivraison, saved.getDateLivraison(), "livraison");
+        }
+
+        return saved;
+    }
+
+    public List<Livraison> filtrerLivraisonsParClient(String nomClient, LocalDate dateDebut, LocalDate dateFin) {
+        List<Livraison> livraisons = livraisonRepository.findByClientNomContainingIgnoreCase(nomClient);
+        
+        if (dateDebut != null || dateFin != null) {
+            LocalDate debut = dateDebut != null ? dateDebut : LocalDate.of(2000, 1, 1);
+            LocalDate fin = dateFin != null ? dateFin : LocalDate.of(2100, 12, 31);
+            
+            livraisons = livraisons.stream()
+                .filter(l -> !l.getDateLivraison().isBefore(debut) && !l.getDateLivraison().isAfter(fin))
+                .toList();
+        }
+        
+        return livraisons;
     }
 }

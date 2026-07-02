@@ -81,7 +81,6 @@ public class VenteController {
         model.addAttribute("produits", venteService.listeProduitVente());
         model.addAttribute("vente", new Vente());
         model.addAttribute("lots", lotService.getAllLots());
-        model.addAttribute("clients", clientService.listeClient());
         model.addAttribute("hideSearch", true);
         return "vente/formulairecreation";
     }
@@ -90,12 +89,12 @@ public class VenteController {
     @PostMapping("/ventes/creation")
     public String creerVente(HttpServletRequest request, RedirectAttributes ra) {
         try {
-            String clientIdStr = request.getParameter("clientId");
-            if (clientIdStr == null || clientIdStr.isBlank()) {
-                ra.addFlashAttribute("error", "Veuillez sélectionner un client.");
+            String clientNom = request.getParameter("clientNom");
+            if (clientNom == null || clientNom.isBlank()) {
+                ra.addFlashAttribute("error", "Veuillez saisir le nom du client.");
                 return "redirect:/ventes/creation";
             }
-            Client client = clientService.trouverClientParId(Integer.parseInt(clientIdStr));
+            Client client = clientService.trouverParNomOuCreer(clientNom);
             if (client == null) {
                 ra.addFlashAttribute("error", "Client introuvable.");
                 return "redirect:/ventes/creation";

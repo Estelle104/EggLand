@@ -1,0 +1,11 @@
+ .page-header { margin-bottom: 24px; }
+        .page-header h2 { color: var(--text); font-size: 22px; }
+        .card-form { background: var(--card); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 700; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); }
+        .form-actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 20px; }
+        .btn-primary, .btn-secondary { display: inline-block; text-decoration: none; border-radius: 8px; padding: 12px 18px; }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-secondary { background: var(--border); color: var(--text); }
+   
