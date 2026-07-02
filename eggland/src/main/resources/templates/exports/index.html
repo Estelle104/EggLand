@@ -28,7 +28,7 @@
                     <div class="card-body">
                         <div class="section-title">Bon de Livraison</div>
 
-                        <form th:action="@{/finance/export/pdf/bon-livraison}" method="get" target="_blank" class="mb-3">
+                        <form th:action="@{/admin/finance/export/pdf/bon-livraison}" method="get" target="_blank" class="mb-3">
                             <div class="input-group input-group-sm mb-2">
                                 <input type="date" name="date" th:value="${today}" class="form-control">
                                 <button type="submit" class="btn btn-outline-danger"><i class="fas fa-download me-1"></i>PDF</button>
@@ -37,7 +37,7 @@
 
                         <div class="section-title mt-3">Paiement de Salaire</div>
 
-                        <form th:action="@{/finance/export/pdf/paiement-salaire}" method="get" target="_blank">
+                        <form th:action="@{/admin/finance/export/pdf/paiement-salaire}" method="get" target="_blank">
                             <div class="input-group input-group-sm mb-2">
                                 <input type="month" name="mois" th:value="${currentMonth}" class="form-control">
                                 <button type="submit" class="btn btn-outline-danger"><i class="fas fa-download me-1"></i>PDF</button>
@@ -56,7 +56,7 @@
                     <div class="card-body">
                         <div class="section-title">Production Œufs</div>
 
-                        <form th:action="@{/finance/export/excel/production-oeufs}" method="get" target="_blank" class="mb-3">
+                        <form th:action="@{/admin/finance/export/excel/production-oeufs}" method="get" target="_blank" class="mb-3">
                             <div class="input-group input-group-sm mb-2">
                                 <input type="date" name="debut" th:value="${todayMinus30}" class="form-control" placeholder="Début">
                                 <input type="date" name="fin" th:value="${today}" class="form-control" placeholder="Fin">
@@ -66,7 +66,7 @@
 
                         <div class="section-title">Mouvement de Stock</div>
 
-                        <form th:action="@{/finance/export/excel/mouvement-stock}" method="get" target="_blank" class="mb-3">
+                        <form th:action="@{/admin/finance/export/excel/mouvement-stock}" method="get" target="_blank" class="mb-3">
                             <div class="input-group input-group-sm mb-2">
                                 <input type="date" name="debut" th:value="${todayMinus30}" class="form-control" placeholder="Début">
                                 <input type="date" name="fin" th:value="${today}" class="form-control" placeholder="Fin">
@@ -76,7 +76,7 @@
 
                         <div class="section-title">Paiements Salaires</div>
 
-                        <form th:action="@{/finance/export/excel/paiements-salaires}" method="get" target="_blank">
+                        <form th:action="@{/admin/finance/export/excel/paiements-salaires}" method="get" target="_blank">
                             <div class="input-group input-group-sm mb-2">
                                 <input type="month" name="mois" th:value="${currentMonth}" class="form-control">
                                 <button type="submit" class="btn btn-outline-success"><i class="fas fa-download me-1"></i>XLSX</button>
@@ -95,7 +95,7 @@
                     <div class="card-body">
                         <div class="section-title">Liste des Ventes</div>
                         
-                        <form th:action="@{/finance/import/liste-ventes}" method="post" enctype="multipart/form-data">
+                        <form th:action="@{/admin/finance/import/liste-ventes}" method="post" enctype="multipart/form-data">
                             <div class="input-group input-group-sm mb-2">
                                 <input type="file" name="file" accept=".xlsx,.xls" class="form-control" required>
                                 <button type="submit" class="btn btn-primary"><i class="fas fa-upload me-1"></i>Importer</button>
