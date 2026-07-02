@@ -39,7 +39,7 @@ private Lot lot;
         this.nombre = nombre;
     }
     
-    // Getters/Setters
+
     public Integer getId() { return id; }
     public Lot getLot() { return lot; }
     public void setLot(Lot lot) { this.lot = lot; }

@@ -190,7 +190,7 @@ document.querySelectorAll(".btn-modifier").forEach(button => {
             // Supprimer
             form.querySelector(".btn-supprimer").addEventListener("click", function () {
                 if (confirm(`Supprimer le lot ${lot.id} ?`)) {
-                    window.location.href = `/lots/supprimer/${lot.id}`;
+                    window.location.href = `/admin/lots/supprimer/${lot.id}`;
                 }
             });
 
