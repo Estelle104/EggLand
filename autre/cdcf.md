@@ -1,5 +1,5 @@
 - Miarantsoa
-    - race ne s'affoiche pas
+    - race ne s'affiche pas
 
 - Ricardo
     - Creation de livraison sans client
