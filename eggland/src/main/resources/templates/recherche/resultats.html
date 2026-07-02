@@ -69,7 +69,8 @@
                                 <span class="valeur" th:text="${r.valeur()}"></span>
                                 <span class="colonne" th:text="'(' + ${r.column()} + ')'"></span>
                             </div>
-                            <a class="btn-voir" th:href="@{${r.url()}}">
+                            <!-- si r.url() n'est pas null le bouton "Voir" est affiché sinon le bouton n'est pas affiché -->
+                            <a class="btn-voir" th:if="${r.url() != null}" th:href="@{${r.url()}}">
                                 <i class="fa-solid fa-eye"></i> Voir
                             </a>
                         </div>

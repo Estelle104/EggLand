@@ -6,19 +6,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.app.eggland.service.SearchService;
-import com.app.eggland.service.SearchService.SearchResult;
+import com.app.eggland.service.RechercheService;
+import com.app.eggland.service.RechercheService.RechercheResultat;
 
 @Controller
-public class SearchController {
+public class RechercheController {
 
     @Autowired
-    private SearchService searchService;
+    private RechercheService rechercheService;
 
     private static final Map<String, String> URL_MAP = new LinkedHashMap<>();
 
@@ -27,27 +28,30 @@ public class SearchController {
         URL_MAP.put("batiment", "/batiments");
         URL_MAP.put("nourriture", "/nourritures");
         URL_MAP.put("employe", "/employes");
-        URL_MAP.put("lot", "/lots");
-        URL_MAP.put("client", "/client");
+        URL_MAP.put("lot", "/admin/lots");
         URL_MAP.put("vente", "/ventes");
-        URL_MAP.put("mvtargent", "/mvtargent");
+        URL_MAP.put("mvtargent", "/admin/mvtargent");
         URL_MAP.put("mvtstock", "/stock");
-        URL_MAP.put("configuration", "/configuration");
-        URL_MAP.put("oeuf_production", "/oeufs");
-        URL_MAP.put("traitement", "/traitements");
-        URL_MAP.put("livraison", "/livraisons");
-        URL_MAP.put("produit_vente", "/produits");
-        URL_MAP.put("paiement_salaire", "/salaires");
-        URL_MAP.put("versement_salaire", "/salaires");
+        URL_MAP.put("oeuf_production", "/admin/oeufs");
+        URL_MAP.put("livraison", "/admin/livraisons");
+        URL_MAP.put("produit_vente", "/ventes");
+        URL_MAP.put("paiement_salaire", "/employes");
+        URL_MAP.put("versement_salaire", "/employes");
     }
 
-    @GetMapping("/search")
-    public String search(@RequestParam("q") String query, Model model) {
-        List<SearchResult> results = searchService.rechercher(query);
+    @GetMapping("/recherche")
+    public String recherche(@RequestParam("q") String query, Model model, Authentication auth) {
+        List<RechercheResultat> results = rechercheService.rechercher(query);
+
+        boolean isAdmin = auth.getAuthorities().stream()
+            .anyMatch(a -> a.getAuthority().equals("admin"));
 
         Map<String, List<ResultatAvecUrl>> grouped = new LinkedHashMap<>();
-        for (SearchResult r : results) {
-            String url = URL_MAP.getOrDefault(r.table(), "/" + r.table() + "s");
+        for (RechercheResultat r : results) {
+            String url = URL_MAP.get(r.table());
+            if (url != null && !isAdmin && (url.startsWith("/admin/") || url.startsWith("/client/"))) {
+                url = null;
+            }
             grouped.computeIfAbsent(r.table(), k -> new ArrayList<>())
                    .add(new ResultatAvecUrl(r.table(), r.column(), r.id(), r.valeur(), url));
         }
@@ -58,7 +62,7 @@ public class SearchController {
         model.addAttribute("totalResultats", total);
         model.addAttribute("nbCategories", grouped.size());
         model.addAttribute("pageTitle", "Recherche : " + query);
-        return "search/resultats";
+        return "recherche/resultats";
     }
 
     public record ResultatAvecUrl(String table, String column, int id, String valeur, String url) {}

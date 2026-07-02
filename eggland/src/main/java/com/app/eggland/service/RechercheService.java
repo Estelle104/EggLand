@@ -10,13 +10,14 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 
 @Service
-public class SearchService {
+public class RechercheService {
 
     @Autowired
     private EntityManager entityManager;
 
-    public List<SearchResult> rechercher(String motCle) {
-        List<SearchResult> results = new ArrayList<>();
+    // Recherche dans toutes les colonnes de type texte et numérique des tables de la base de données
+    public List<RechercheResultat> rechercher(String motCle) {
+        List<RechercheResultat> results = new ArrayList<>();
         if (motCle == null || motCle.isBlank()) return results;
 
         String likePattern = "%" + motCle.toLowerCase() + "%";
@@ -35,7 +36,7 @@ public class SearchService {
                 for (Object[] row : rows) {
                     Number id = (Number) row[0];
                     String valeur = row[1] != null ? row[1].toString() : "";
-                    results.add(new SearchResult(tc.table, tc.column, id.intValue(), valeur));
+                    results.add(new RechercheResultat(tc.table, tc.column, id.intValue(), valeur));
                 }
             } catch (Exception e) {
                 // ignorer les tables qui posent probleme (ex: pas de colonne id)
@@ -72,5 +73,5 @@ public class SearchService {
 
     public record TableColumn(String table, String column) {}
 
-    public record SearchResult(String table, String column, int id, String valeur) {}
+    public record RechercheResultat(String table, String column, int id, String valeur) {}
 }
