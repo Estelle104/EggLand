@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.app.eggland.model.Client;
-import com.app.eggland.model.DetailVente;
 import com.app.eggland.model.Livraison;
-import com.app.eggland.model.ProduitVente;
 import com.app.eggland.model.Vente;
 import com.app.eggland.repository.DetailVenteRepository;
 import com.app.eggland.repository.StatutLivraisonRepository;
@@ -48,6 +46,7 @@ public class LivraisonController {
     public String liste(
             @RequestParam(value = "dateDebut", required = false) String dateDebutStr,
             @RequestParam(value = "dateFin", required = false) String dateFinStr,
+            @RequestParam(value = "nomClient", required = false) String nomClient,
             Model model) {
 
         LocalDate dateDebut = (dateDebutStr != null && !dateDebutStr.isBlank())
@@ -55,16 +54,22 @@ public class LivraisonController {
         LocalDate dateFin   = (dateFinStr   != null && !dateFinStr.isBlank())
                               ? LocalDate.parse(dateFinStr)   : null;
 
-        boolean filtreActif = dateDebut != null || dateFin != null;
+        boolean filtreActif = dateDebut != null || dateFin != null || (nomClient != null && !nomClient.isBlank());
 
-        List<Livraison> livraisons = filtreActif
-            ? livraisonService.filtrerLivraisons(dateDebut, dateFin)
-            : livraisonService.listeLivraison();
+        List<Livraison> livraisons;
+        if (nomClient != null && !nomClient.isBlank()) {
+            livraisons = livraisonService.filtrerLivraisonsParClient(nomClient, dateDebut, dateFin);
+        } else if (filtreActif) {
+            livraisons = livraisonService.filtrerLivraisons(dateDebut, dateFin);
+        } else {
+            livraisons = livraisonService.listeLivraison();
+        }
 
         LocalDate today = LocalDate.now();
         model.addAttribute("livraisons", livraisons);
         model.addAttribute("dateDebutSelectionnee", dateDebutStr);
         model.addAttribute("dateFinSelectionnee", dateFinStr);
+        model.addAttribute("nomClientSelectionne", nomClient);
         model.addAttribute("pageTitle", "Livraisons");
         model.addAttribute("today", today.toString());
         model.addAttribute("todayMinus30", today.minusDays(30).toString());
@@ -74,14 +79,15 @@ public class LivraisonController {
     @GetMapping("/creation")
     public String creation(Model model) {
         model.addAttribute("livraison", new Livraison());
-        model.addAttribute("produits", venteService.listeProduitVente());
-        model.addAttribute("statuts", statutLivraisonRepository.findAll());
+        model.addAttribute("ventesNonLivrees", livraisonService.obtenirVentesNonLivrees());
+        model.addAttribute("statutsLivraison", statutLivraisonRepository.findAll());
         model.addAttribute("pageTitle", "Nouvelle livraison");
         return "livraisons/formulaireCreation";
     }
 
     @PostMapping("/save")
-    public String save(@RequestParam("produitCode") String produitCode,
+    public String save(@RequestParam(value = "clientNom", required = false) String clientNom,
+                       @RequestParam(value = "venteId", required = false) String venteIdStr,
                        @RequestParam(value = "dateLivraison", required = false) String dateLivraisonStr,
                        @RequestParam("adresseLivraison") String adresseLivraison,
                        @RequestParam(value = "fraisLivraison", required = false) String fraisLivraisonStr,
@@ -98,55 +104,27 @@ public class LivraisonController {
                 fraisLivraison = new BigDecimal(fraisLivraisonStr);
             }
 
-            if (statutCode == null || statutCode.isBlank()) {
-                statutCode = "en_attente";
+            if (clientNom == null || clientNom.isBlank()) {
+                throw new RuntimeException("Veuillez saisir le nom du client.");
+            }
+            
+            if (venteIdStr == null || venteIdStr.isBlank()) {
+                throw new RuntimeException("Veuillez sélectionner une vente.");
             }
 
-            if (produitCode == null || produitCode.isBlank()) {
-                throw new RuntimeException("Veuillez sélectionner un type de livraison.");
+            Integer venteId = Integer.parseInt(venteIdStr);
+
+            Client client = clientService.trouverParNomOuCreer(clientNom.trim());
+            if (client == null) {
+                throw new RuntimeException("Impossible de créer ou retrouver le client : " + clientNom);
             }
 
-            ProduitVente produit = venteService.trouverProduitVenteParCode(produitCode);
-            if (produit == null) {
-                throw new RuntimeException("Produit introuvable : " + produitCode);
+            Vente vente = venteService.trouverVenteParId(Math.toIntExact(venteId));
+            if (vente == null) {
+                throw new RuntimeException("Vente introuvable avec l'ID : " + venteId);
             }
 
-            var clients = clientService.listeClient();
-            Client client;
-            if (clients != null && !clients.isEmpty()) {
-                client = clients.get(0);
-            } else {
-                Client anon = new Client();
-                anon.setNom("Client anonyme");
-                anon.setEmail("anonyme@eggland.local");
-                anon.setAdresse("Créé automatiquement");
-                anon.setDateInscription(LocalDate.now());
-                client = clientService.registerClient(anon);
-            }
-
-            var statutVente = venteService.trouverStatutVenteParCode("paye");
-            if (statutVente == null) {
-                throw new RuntimeException("Statut de vente 'paye' introuvable. Initialisez la base de données.");
-            }
-
-            Vente nouvelleVente = Vente.builder()
-                    .client(client)
-                    .date(LocalDate.now())
-                    .total(BigDecimal.ZERO)
-                    .statut(statutVente)
-                    .build();
-            venteService.saveVente(nouvelleVente);
-
-            DetailVente detailVente = DetailVente.builder()
-                    .vente(nouvelleVente)
-                    .client(client)
-                    .produit(produit)
-                    .quantite(BigDecimal.ZERO)
-                    .prixUnitaire(BigDecimal.ZERO)
-                    .build();
-            detailVenteRepository.save(detailVente);
-
-            livraisonService.creerLivraisonDepuisVente(nouvelleVente.getId(), dateLivraison, adresseLivraison, fraisLivraison, statutCode);
+            livraisonService.creerLivraison(vente, client, dateLivraison, adresseLivraison, fraisLivraison, statutCode);
             ra.addFlashAttribute("success", "Livraison créée avec succès.");
         } catch (DateTimeParseException e) {
             ra.addFlashAttribute("error", "Date de livraison invalide.");

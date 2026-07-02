@@ -28,22 +28,22 @@ public class MortService {
     private NotificationService notificationService;
 
     public Integer getTotalMorts(Integer lotId, LocalDate debut, LocalDate fin) {
-        Long total;
+        Integer total;
         if (lotId != null && lotId > 0) {
             total = mortRepository.sumByLotIdAndDateBetween(lotId, debut, fin);
         } else {
             total = mortRepository.sumByDateBetween(debut, fin);
         }
-        return total != null ? total.intValue() : 0;
+        return total != null ? total : 0;
     }
 
     public Integer getVivants(Integer lotId) {
         if (lotId != null && lotId > 0) {
             Lot lot = lotService.findById(lotId);
             if (lot == null) return 0;
-            Long totalMorts = mortRepository.sumByLotId(lotId);
+            Integer totalMorts = mortRepository.sumByLotId(lotId);
             Long totalReformes = reformeRepository.sumByLotId(lotId);
-            int morts = totalMorts != null ? totalMorts.intValue() : 0;
+            int morts = totalMorts != null ? totalMorts : 0;
             int reformes = totalReformes != null ? totalReformes.intValue() : 0;
             int vivants = lot.getNombreInitial() - morts - reformes;
             return Math.max(vivants, 0);

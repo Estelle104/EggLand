@@ -8,19 +8,9 @@
     <link rel="stylesheet" th:href="@{/css/layout.css}">
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/creationLivraison.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <style>
-        .page-header { margin-bottom: 24px; }
-        .page-header h2 { color: var(--text); font-size: 22px; }
-        .card-form { background: var(--card); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 700; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); }
-        .form-actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 20px; }
-        .btn-primary, .btn-secondary { display: inline-block; text-decoration: none; border-radius: 8px; padding: 12px 18px; }
-        .btn-primary { background: var(--primary); color: #fff; }
-        .btn-secondary { background: var(--border); color: var(--text); }
-    </style>
+    
 </head>
 <body>
 <div class="app">
@@ -37,16 +27,16 @@
                 <form th:action="@{/admin/livraisons/save}" method="post">
 
                     <div class="form-group">
-                        <label>Type de produit</label>
-                        <select name="produitCode" required>
-                            <option value="">Sélectionner un type</option>
-                            <th:block th:if="${#lists.isEmpty(produits)}">
-                                <option value="oeuf">Oeufs</option>
-                                <option value="poule">Viande</option>
-                                <option value="fumier">Engrais</option>
-                            </th:block>
-                            <th:block th:unless="${#lists.isEmpty(produits)}">
-                                <option th:each="produit : ${produits}" th:value="${produit.code}" th:text="${produit.code}"></option>
+                        <label>Nom du client</label>
+                        <input type="text" name="clientNom" value="" placeholder="Saisir le nom du client" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Type de vente (non livrées)</label>
+                        <select name="venteId" required>
+                            <option value="">Sélectionner une vente</option>
+                            <th:block th:each="vente : ${ventesNonLivrees}">
+                                <option th:value="${vente.id}" th:text="${vente.id + ' - ' + vente.client.nom + ' - ' + #temporals.format(vente.date, 'dd/MM/yyyy') + ' - ' + vente.total}"></option>
                             </th:block>
                         </select>
                     </div>
@@ -70,10 +60,13 @@
                         <label>Statut</label>
                         <select name="statutCode" required>
                             <option value="">Sélectionner un statut</option>
-                            <th:block th:each="statut : ${statuts}">
-                                <option th:value="${statut.code}" th:text="${statut.code}"></option>
+                            <th:block th:each="statut : ${statutsLivraison}">
+                                <option th:value="${statut.code}"
+                                        th:text="${statut.code}"
+                                        th:selected="${statut.code == 'en_attente'}"></option>
                             </th:block>
                         </select>
+                        <small style="color: #666; font-size: 12px;">Défini lors de la création de la livraison.</small>
                     </div>
 
                     <div class="form-actions">
