@@ -1,16 +1,5 @@
 package com.app.eggland.controller;
 
-import com.app.eggland.model.Employe;
-import com.app.eggland.model.PaiementSalaire;
-import com.app.eggland.model.VersementSalaire;
-import com.app.eggland.service.EmployeService;
-import com.app.eggland.service.PaiementSalaireService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -18,8 +7,26 @@ import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.app.eggland.model.Employe;
+import com.app.eggland.model.PaiementSalaire;
+import com.app.eggland.model.VersementSalaire;
+import com.app.eggland.service.EmployeService;
+import com.app.eggland.service.PaiementSalaireService;
+
+import lombok.RequiredArgsConstructor;
+
 @Controller
-@RequestMapping("/employes")
+@RequestMapping("/admin/employes")
 @RequiredArgsConstructor
 public class EmployeController {
 
@@ -48,9 +55,9 @@ public class EmployeController {
             employeService.creer(employe);
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("erreur", e.getMessage());
-            return "redirect:/employes/nouveau";
+            return "redirect:/admin/employes/nouveau";
         }
-        return "redirect:/employes";
+        return "redirect:/admin/employes";
     }
 
     // ---------- Modification ----------
@@ -74,7 +81,7 @@ public class EmployeController {
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("erreur", e.getMessage());
         }
-        return "redirect:/employes";
+        return "redirect:/admin/employes";
     }
 
     // ---------- Suppression ----------
@@ -82,7 +89,7 @@ public class EmployeController {
     @PostMapping("/{id}/supprimer")
     public String supprimer(@PathVariable Integer id) {
         employeService.supprimer(id);
-        return "redirect:/employes";
+        return "redirect:/admin/employes";
     }
 
     // ---------- Historique des versements ----------
@@ -90,6 +97,7 @@ public class EmployeController {
     @GetMapping("/historique")
     public String historique(@RequestParam(required = false) String mois,
                               @RequestParam(required = false) String statut,
+                              @RequestParam(required = false) Integer employeId,
                               Model model) {
         List<PaiementSalaire> paiements = (mois != null && !mois.isBlank())
                 ? paiementSalaireService.listerParMois(LocalDate.parse(mois + "-01"))
@@ -101,6 +109,10 @@ public class EmployeController {
             paiements = paiements.stream().filter(p -> !Boolean.TRUE.equals(p.getPaye())).toList();
         }
 
+        if(employeId != null) {
+            paiements = paiements.stream().filter(p -> p.getEmploye().getId().equals(employeId)).toList();
+        }
+
         // Pour chaque PaiementSalaire (employé + mois), on attache le détail de ses versements.
         List<HistoriqueLigne> lignes = paiements.stream()
                 .map(p -> new HistoriqueLigne(p, paiementSalaireService.listerVersements(p)))
@@ -110,6 +122,8 @@ public class EmployeController {
         model.addAttribute("listeMois", genererListeMois());
         model.addAttribute("moisSelectionne", mois);
         model.addAttribute("statutSelectionne", statut);
+        model.addAttribute("employeSelectionne", employeId);
+        model.addAttribute("employes", employeService.listerTous());
         return "employes/historique";
     }
 
@@ -118,17 +132,23 @@ public class EmployeController {
     @GetMapping("/recap")
     public String recap(@RequestParam(required = false) String mois,
                          @RequestParam(required = false) String statut,
+                         @RequestParam(required = false) Integer employeId,
                          Model model) {
         LocalDate moisDate = (mois != null && !mois.isBlank())
                 ? LocalDate.parse(mois + "-01")
                 : LocalDate.now().withDayOfMonth(1);
 
         List<PaiementSalaireService.RecapLigne> recap = paiementSalaireService.recapMois(moisDate);
-
+        
+        
         if ("paye".equals(statut)) {
             recap = recap.stream().filter(PaiementSalaireService.RecapLigne::paye).toList();
         } else if ("attente".equals(statut)) {
             recap = recap.stream().filter(r -> !r.paye()).toList();
+        }
+
+        if (employeId != null) {
+            recap = recap.stream().filter(r -> r.employe().getId().equals(employeId)).toList();
         }
 
         long nbPayes = recap.stream().filter(PaiementSalaireService.RecapLigne::paye).count();
@@ -141,6 +161,8 @@ public class EmployeController {
         model.addAttribute("listeMois", genererListeMois());
         model.addAttribute("moisSelectionne", YearMonth.from(moisDate).toString());
         model.addAttribute("statutSelectionne", statut);
+        model.addAttribute("employeSelectionne", employeId);
+        model.addAttribute("employes", employeService.listerTous());
         return "employes/recap";
     }
 
@@ -159,7 +181,7 @@ public class EmployeController {
             redirectAttributes.addFlashAttribute("erreur", e.getMessage());
         }
 
-        return "redirect:/employes/recap?mois=" + mois;
+        return "redirect:/admin/employes/recap?mois=" + mois;
     }
 
     // ---------- Utilitaire ----------
