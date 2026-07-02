@@ -70,15 +70,33 @@ public class PdfExportService {
 
         for (Livraison l : livraisons) {
             List<DetailVente> details = detailVenteRepository.findByVenteId(l.getVente().getId());
-            for (DetailVente d : details) {
-                totalQuantite = totalQuantite.add(d.getQuantite());
-                totalMontant = totalMontant.add(d.getQuantite().multiply(d.getPrixUnitaire()));
+            String clientName = l.getClient().getNom();
+            if (l.getClient().getPrenom() != null && !l.getClient().getPrenom().isBlank()) {
+                clientName += " " + l.getClient().getPrenom();
+            }
+            String adresse = l.getAdresseLivraison() != null ? l.getAdresseLivraison() : "";
+
+            if (details.isEmpty()) {
                 table.addCell(createCell(l.getId().toString(), font, TextAlignment.CENTER));
-                table.addCell(createCell(l.getClient().getNom() + " " + l.getClient().getPrenom(), font, TextAlignment.LEFT));
+                table.addCell(createCell(clientName, font, TextAlignment.LEFT));
                 table.addCell(createCell(l.getDateLivraison().format(DATE_FMT), font, TextAlignment.CENTER));
-                table.addCell(createCell(l.getAdresseLivraison(), font, TextAlignment.LEFT));
-                table.addCell(createCell(d.getProduit().getCode(), font, TextAlignment.CENTER));
-                table.addCell(createCell(d.getQuantite().toString(), font, TextAlignment.CENTER));
+                table.addCell(createCell(adresse, font, TextAlignment.LEFT));
+                table.addCell(createCell("-", font, TextAlignment.CENTER));
+                table.addCell(createCell("-", font, TextAlignment.CENTER));
+            } else {
+                for (DetailVente d : details) {
+                    BigDecimal qty = d.getQuantite() != null ? d.getQuantite() : BigDecimal.ZERO;
+                    BigDecimal prix = d.getPrixUnitaire() != null ? d.getPrixUnitaire() : BigDecimal.ZERO;
+                    totalQuantite = totalQuantite.add(qty);
+                    totalMontant = totalMontant.add(qty.multiply(prix));
+
+                    table.addCell(createCell(l.getId().toString(), font, TextAlignment.CENTER));
+                    table.addCell(createCell(clientName, font, TextAlignment.LEFT));
+                    table.addCell(createCell(l.getDateLivraison().format(DATE_FMT), font, TextAlignment.CENTER));
+                    table.addCell(createCell(adresse, font, TextAlignment.LEFT));
+                    table.addCell(createCell(d.getProduit() != null ? d.getProduit().getCode() : "-", font, TextAlignment.CENTER));
+                    table.addCell(createCell(qty.toString(), font, TextAlignment.CENTER));
+                }
             }
         }
 

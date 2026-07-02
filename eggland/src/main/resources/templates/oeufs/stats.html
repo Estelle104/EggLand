@@ -90,10 +90,14 @@
                         <tbody>
                             <tr th:each="item : ${tauxParLot}">
                                 <td th:text="${item.lotNumero}">1</td>
-                                <td th:text="${item.raceNom}">Race</td>
+                                <td>
+                                    <span th:each="lotRace : ${item.races}"
+                                        th:text="${lotRace.race.nom} + ' '">
+                                    </span>
+                                </td>
                                 <td th:text="${item.date}">2026-01-01</td>
                                 <td th:text="${item.quantiteValide}">0</td>
-                                <td th:text="${#numbers.formatDecimal(item.attendu, 1, 1)}">0</td>
+                                <td th:text="${#numbers.formatDecimal(item.attendu, 1, 0)}">0</td>
                                 <td>
                                     <span class="taux-badge"
                                         th:text="${#numbers.formatDecimal(item.taux, 1, 1)} + '%'"
