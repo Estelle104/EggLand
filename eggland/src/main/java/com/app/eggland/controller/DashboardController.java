@@ -46,7 +46,7 @@ public class DashboardController {
         model.addAttribute("oeufsJour", dashboardService.getOeufsJour());
         model.addAttribute("stockDisponible", dashboardService.getStockDisponible());
         model.addAttribute("ventesJour", dashboardService.getVentesJour());
-        model.addAttribute("beneficeMois", dashboardService.getBeneficeMois());
+        model.addAttribute("beneficeJour", dashboardService.getBeneficeJour());
         model.addAttribute("livraisonsEnCours", dashboardService.getLivraisonsEnCours());
         model.addAttribute("production14Jours", oeufProductionService.getProductionDes14DerniersJours());
         model.addAttribute("totalMorts", totalMorts);

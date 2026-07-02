@@ -11,6 +11,6 @@ import com.app.eggland.model.Reforme;
 public interface ReformeRepository extends JpaRepository<Reforme, Integer>{   
       void deleteByLotId(Integer lotId);
 
-      @Query("SELECT COALESCE(SUM(r.nombre), 0) FROM Reforme r WHERE r.lot.id = :lotId")
-      Integer sumByLotId(@Param("lotId") Integer lotId);
+      @Query("SELECT SUM(r.nombre) FROM Reforme r WHERE r.lot.id = :lotId")
+      Long sumByLotId(@Param("lotId") Integer lotId);
 }

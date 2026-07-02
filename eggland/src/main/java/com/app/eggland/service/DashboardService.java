@@ -42,6 +42,11 @@ public class DashboardService {
         return total != null ? total : BigDecimal.ZERO;
     }
 
+    public BigDecimal getBeneficeJour() {
+        LocalDate today = LocalDate.now();
+        return financeService.getBeneficeNet(today, today);
+    }
+
     public BigDecimal getBeneficeMois() {
         LocalDate now = LocalDate.now();
         LocalDate debut = now.withDayOfMonth(1);
