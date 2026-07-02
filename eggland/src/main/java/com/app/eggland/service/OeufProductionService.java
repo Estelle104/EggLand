@@ -15,12 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.app.eggland.model.Lot;
+import com.app.eggland.model.LotRace;
 import com.app.eggland.model.OeufProduction;
 import com.app.eggland.model.OeufStatut;
 import com.app.eggland.model.StatutOeuf;
 import com.app.eggland.repository.LotRepository;
 import com.app.eggland.repository.OeufProductionRepository;
 import com.app.eggland.repository.StatutOeufRepository;
+import com.app.eggland.repository.LotRaceRepository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +38,9 @@ public class OeufProductionService {
 
     @Autowired
     private LotRepository lotRepository;
+
+    @Autowired
+    private LotRaceRepository lotRaceRepository;
 
     @Transactional
     public OeufProduction addOeufProduction(OeufProduction production) {
@@ -242,17 +247,36 @@ public class OeufProductionService {
                 .sum();
 
         Lot lot = production.getLot();
-        double rendementMensuel = lot.getRace().getRendementMoyenMois();
-        double attenduParJourParPoule = rendementMensuel / 30.0;
+        List<LotRace> lotRaces = lotRaceRepository.findByLotId(lot.getId());
+        if(lotRaces.isEmpty()) {
+            throw new RuntimeException("Pas de race qui correspond au lot " + lot.getId());
+        }
+
+        int somme = 0;
+        for(LotRace lr : lotRaces) {
+            if(lr.getRace() == null) {
+                throw new RuntimeException("La race associée au lot " + lot.getId() + " est introuvable");
+            }
+            somme = somme + lr.getRace().getRendementMoyenMois();
+
+        }
+
+        double moyenne = (double) somme / lotRaces.size();
+
+        // LotRace lotRace = lotRaces.isEmpty() ? null : lotRaces.get(0);
+        // double rendementMensuel = lotRace != null ? lotRace.getRace().getRendementMoyenMois() : 0;
+        double attenduParJourParPoule = moyenne / 30.0;
         double attenduLotJour = lot.getNombreInitial() * attenduParJourParPoule;
-        double taux = attenduLotJour == 0 ? 0 : (quantiteValide / attenduLotJour) * 100;
+        int attenduLotJourArrondie= (int) Math.floor(attenduLotJour);
+        double taux = attenduLotJourArrondie == 0 ? 0 : (quantiteValide / attenduLotJourArrondie) * 100;
 
         Map<String, Object> stat = new HashMap<>();
         stat.put("lotNumero", lot.getId());
-        stat.put("raceNom", lot.getRace().getNom());
+        // stat.put("raceNom", lot.getRace().getNom());
+        stat.put("races", lotRaceRepository.findByLotId(lot.getId())); // ceci une liste
         stat.put("date", production.getDate());
         stat.put("quantiteValide", quantiteValide);
-        stat.put("attendu", attenduLotJour);
+        stat.put("attendu", attenduLotJourArrondie);
         stat.put("taux", taux);
         return stat;
     }
