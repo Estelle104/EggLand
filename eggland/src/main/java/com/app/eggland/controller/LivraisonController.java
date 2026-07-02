@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.app.eggland.model.Client;
+import com.app.eggland.model.DetailVente;
 import com.app.eggland.model.Livraison;
 import com.app.eggland.model.ProduitVente;
 import com.app.eggland.model.Vente;
+import com.app.eggland.repository.DetailVenteRepository;
 import com.app.eggland.repository.StatutLivraisonRepository;
 import com.app.eggland.service.ClientService;
 import com.app.eggland.service.LivraisonService;
@@ -38,6 +40,9 @@ public class LivraisonController {
 
     @Autowired
     private StatutLivraisonRepository statutLivraisonRepository;
+
+    @Autowired
+    private DetailVenteRepository detailVenteRepository;
 
     @GetMapping
     public String liste(
@@ -131,6 +136,15 @@ public class LivraisonController {
                     .statut(statutVente)
                     .build();
             venteService.saveVente(nouvelleVente);
+
+            DetailVente detailVente = DetailVente.builder()
+                    .vente(nouvelleVente)
+                    .client(client)
+                    .produit(produit)
+                    .quantite(BigDecimal.ZERO)
+                    .prixUnitaire(BigDecimal.ZERO)
+                    .build();
+            detailVenteRepository.save(detailVente);
 
             livraisonService.creerLivraisonDepuisVente(nouvelleVente.getId(), dateLivraison, adresseLivraison, fraisLivraison, statutCode);
             ra.addFlashAttribute("success", "Livraison créée avec succès.");

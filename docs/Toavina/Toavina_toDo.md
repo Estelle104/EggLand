@@ -168,5 +168,4 @@
 | Correctifs & Optimisations | 3h00 |
 | Page centralisée Import/Export | 1h00 |
 | Boutons pages entités | 0h30 |
-| Scripts SQL | 2h00 |
 | **Total** | **~15h** |
