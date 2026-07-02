@@ -25,5 +25,20 @@
 
 ## Service :
 
+- `OeufProductionService` :
+    * `addOeufProduction` 
+    * `getAllOeufsWithDetails`
+    * `getOeufProductionPourEdition`
+    * `supprimerOeufProduction`
+    * `preparerStatuts`
+    * `buildTauxPonteParLot`
+    * `getTauxPonteParLot`
+    * `getProductionDes14DerniersJours`
+    * `getHistoriqueProduction`
+
+- `OeufService`
+    * 
+- `OeufStatutService`
+
 
 
