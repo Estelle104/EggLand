@@ -36,6 +36,6 @@ List<Map<String, Object>> findLotDetail(@Param("id") Integer id);
 
 
 List<Lot> findAllByStatutCodeIgnoreCaseOrderByIdAsc(String code);
-
+boolean existsByBatimentId(Integer batimentId);
 }
 
