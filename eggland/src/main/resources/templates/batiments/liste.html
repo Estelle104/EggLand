@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" 
+      xmlns:th="http://www.thymeleaf.org" 
+      layout:decorate="~{fragments/layout}">
 
 <head>
     <meta charset="UTF-8">
@@ -15,15 +17,8 @@
 </head>
 
 <body>
-    <div class="app">
 
-        <div th:replace="fragments/sidebar :: sidebar"></div>
-
-        <div class="main">
-
-            <div th:replace="fragments/header :: header"></div>
-
-            <div class="content">
+        <div layout:fragment="content">
 
                 <div class="page-header">
                     <h2 th:text="${pageTitle ?: 'Liste des bâtiments'}">Liste des bâtiments</h2>
@@ -76,12 +71,8 @@
                         Aucun bâtiment enregistré.
                     </div>
                 </div>
-
             </div>
 
-        </div>
-
-    </div>
 </body>
 
 </html>
