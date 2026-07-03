@@ -15,9 +15,9 @@
 
 <body>
     <div class="app">
-        <div th:replace="fragments/sidebar :: sidebar"></div>
+        <div th:replace="~{fragments/sidebar :: sidebar}"></div>
         <div class="main">
-            <div th:replace="fragments/header :: header"></div>
+            <div th:replace="~{fragments/header :: header}"></div>
             <div class="content">
 
                 <div class="page-header">
@@ -39,6 +39,8 @@
                         <option value="attente" th:selected="${statutSelectionne == 'attente'}">En attente</option>
                     </select>
                 </form>
+                
+                <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url='/admin/employes/historique')}"></div> 
 
                 <div class="card" th:each="ligne : ${lignes}" style="margin-bottom:16px;">
                     <div class="card-header-row">
@@ -84,6 +86,7 @@
                 </div>
 
             </div>
+            
         </div>
     </div>
 </body>

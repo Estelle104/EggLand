@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.app.eggland.model.Batiment;
 import com.app.eggland.service.BatimentService;
+import com.app.eggland.service.PaginationUtils;
 
 @Controller
 @RequestMapping("/admin/batiments")
@@ -32,15 +33,10 @@ public class BatimentController {
         @RequestParam(defaultValue = "10")int size,
         Model model) {
         List<Batiment> batiments = batimentService.findAll();
-        // 2. On calcule le nombre total de pages manuellement
-        int totalElements = batiments.size();
-        int totalPages = (int) Math.ceil((double) totalElements / size);
-        if (totalPages == 0) totalPages = 1;
-        
-        List<Batiment> batimentsPage = batimentService.getPage(batiments, page, size);
-        model.addAttribute("batiments", batimentsPage);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", totalPages);
+        Page<Batiment> batimentsPage = PaginationUtils.paginerListe(batiments, page, size);
+        model.addAttribute("batiments", batimentsPage.getContent());
+        model.addAttribute("currentPage", batimentsPage.getNumber());
+        model.addAttribute("totalPages", batimentsPage.getTotalPages());
         model.addAttribute("size", size);
         model.addAttribute("pageTitle", "Liste des bâtiments");
         return "batiments/liste";

@@ -182,13 +182,4 @@ public class LivraisonService {
         return livraisons;
     }
 
-    /*méthode pour la pagination*/
-    public List<Livraison> getPage(List<Livraison> livraisons, int page, int size) {
-        int start = page * size;
-        int end = Math.min(start + size, livraisons.size());
-        if (start > end) {
-            return List.of(); // Retourne une liste vide si la page demandée est hors limites
-        }
-        return livraisons.subList(start, end);
-    }
 }

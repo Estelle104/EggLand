@@ -33,13 +33,5 @@ public class BatimentService {
         return batimentRepository.findById(id);
     }
     
-    /*méthode pour la pagination*/
-    public List<Batiment> getPage(List<Batiment> batiments, int page, int size) {
-        int start = page * size;
-        int end = Math.min(start + size, batiments.size());
-        if (start > end) {
-            return List.of(); // Retourne une liste vide si la page demandée est hors limites
-        }
-        return batiments.subList(start, end);
-    }
+    
 }

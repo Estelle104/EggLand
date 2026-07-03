@@ -32,13 +32,5 @@ public class RaceService {
         raceRepository.deleteById(id);
     }
 
-    /*méthode pour la pagination*/
-    public List<Race> getPage(List<Race> races, int page, int size) {
-        int start = page * size;
-        int end = Math.min(start + size, races.size());
-        if (start > end) {
-            return List.of(); // Retourne une liste vide si la page demandée est hors limites
-        }
-        return races.subList(start, end);
-    }
+    
 }

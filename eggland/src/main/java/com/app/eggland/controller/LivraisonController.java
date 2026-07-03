@@ -5,7 +5,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,7 @@ import com.app.eggland.repository.DetailVenteRepository;
 import com.app.eggland.repository.StatutLivraisonRepository;
 import com.app.eggland.service.ClientService;
 import com.app.eggland.service.LivraisonService;
+import com.app.eggland.service.PaginationUtils;
 import com.app.eggland.service.VenteService;
 
 @Controller
@@ -47,6 +50,8 @@ public class LivraisonController {
             @RequestParam(value = "dateDebut", required = false) String dateDebutStr,
             @RequestParam(value = "dateFin", required = false) String dateFinStr,
             @RequestParam(value = "nomClient", required = false) String nomClient,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
             Model model) {
 
         LocalDate dateDebut = (dateDebutStr != null && !dateDebutStr.isBlank())
@@ -65,7 +70,13 @@ public class LivraisonController {
             livraisons = livraisonService.listeLivraison();
         }
 
+        Page<Livraison> livraisonsPage = PaginationUtils.paginerListe(livraisons, page, size);
         LocalDate today = LocalDate.now();
+        model.addAttribute("livraisons", livraisonsPage.getContent());
+        model.addAttribute("currentPage", livraisonsPage.getNumber());
+        model.addAttribute("totalPages", livraisonsPage.getTotalPages());
+        model.addAttribute("size", size);
+
         model.addAttribute("livraisons", livraisons);
         model.addAttribute("dateDebutSelectionnee", dateDebutStr);
         model.addAttribute("dateFinSelectionnee", dateFinStr);
@@ -77,7 +88,7 @@ public class LivraisonController {
     }
 
     @GetMapping("/creation")
-    public String creation(Model model) {
+    public String creation(Model model) { 
         model.addAttribute("livraison", new Livraison());
         model.addAttribute("ventesNonLivrees", livraisonService.obtenirVentesNonLivrees());
         model.addAttribute("statutsLivraison", statutLivraisonRepository.findAll());

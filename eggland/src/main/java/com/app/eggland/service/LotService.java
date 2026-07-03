@@ -69,15 +69,6 @@ public class LotService {
         lotRaceRepository.saveAll(lot.getLotRaces());
     }
 
-    /*méthode pour la pagination*/
-    public List<Lot> getPage(List<Lot> lots, int page, int size) {
-        int start = page * size;
-        int end = Math.min(start + size, lots.size());
-        if (start > end) {
-            return List.of(); // Retourne une liste vide si la page demandée est hors limites
-        }
-        return lots.subList(start, end);
-    }
 
     public  boolean existedLot(Batiment batiment){
 

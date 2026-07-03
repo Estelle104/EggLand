@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.app.eggland.model.Race;
+import com.app.eggland.service.PaginationUtils;
 import com.app.eggland.service.RaceService;
 
 @Controller
@@ -29,17 +31,15 @@ public class RaceController {
         @RequestParam(defaultValue = "10")int size,
         Model model) {
         List<Race> races = raceService.findAll();
-        int totalElements = races.size();
-        int totalPages = (int) Math.ceil((double) totalElements / size);
-        if (totalPages == 0) totalPages = 1;
-        List<Race> racesPage = raceService.getPage(races, page, size);
-        model.addAttribute("races", racesPage);
-        model.addAttribute("pageTitle", "Liste des races");
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", totalPages);
+        Page<Race> pageRaces = PaginationUtils.paginerListe(races, page, size);
+        model.addAttribute("races", pageRaces.getContent());
+        model.addAttribute("currentPage", pageRaces.getNumber());
+        model.addAttribute("totalPages", pageRaces.getTotalPages());
         model.addAttribute("size", size);
+        model.addAttribute("pageTitle", "Liste des races");
         return "races/liste";
     }
+
 
     @GetMapping("/nouveau")
     public String nouveau(Model model) {

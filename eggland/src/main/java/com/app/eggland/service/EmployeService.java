@@ -56,13 +56,5 @@ public class EmployeService {
         }
     }
 
-    /*méthode pour la pagination*/
-    public List<Employe> getPage(List<Employe> employes, int page, int size) {
-        int start = page * size;
-        int end = Math.min(start + size, employes.size());
-        if (start > end) {
-            return List.of(); // Retourne une liste vide si la page demandée est hors limites
-        }
-        return employes.subList(start, end);
-    }
+    
 }

@@ -34,6 +34,7 @@
                     <i class="fa-solid fa-circle-exclamation"></i>
                     <span th:text="${error}"></span>
                 </div>
+                <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url='/admin/livraisons')}"></div>
 
                 <div class="page-header">
                     <h2 th:text="${pageTitle}">Livraisons</h2>
