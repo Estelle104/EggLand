@@ -29,6 +29,9 @@ public interface VenteRepository extends JpaRepository<Vente, Integer>{
 
     List<Vente> findByClientIdAndStatutIdAndDateBetweenOrderByDateDesc(Integer clientId, Integer statutId, LocalDate debut, LocalDate fin);
 
-    @Query("SELECT COALESCE(SUM(v.total), 0) FROM Vente v WHERE v.date = :date")
-    BigDecimal sumTotalByDate(@Param("date") LocalDate date);   
+    @Query("SELECT SUM(v.total) FROM Vente v WHERE v.date = :date")
+    BigDecimal sumTotalByDate(@Param("date") LocalDate date);
+    
+    @Query("SELECT DISTINCT v FROM Vente v WHERE v.statut.code IN ('en_attente','paye') AND NOT EXISTS (SELECT 1 FROM Livraison l WHERE l.vente = v AND l.statut.code = 'livre') ORDER BY v.date DESC")
+    List<Vente> findVentesNonLivrees();
 }

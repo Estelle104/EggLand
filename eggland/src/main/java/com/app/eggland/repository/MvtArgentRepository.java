@@ -15,19 +15,19 @@ import com.app.eggland.model.MvtArgent;
 public interface MvtArgentRepository extends JpaRepository<MvtArgent, Integer> {
     List<MvtArgent> findAllByOrderByDateDesc();
 
-    @Query("SELECT COALESCE(SUM(m.montant), 0) FROM MvtArgent m WHERE m.type.code = :typeCode")
+    @Query("SELECT SUM(m.montant) FROM MvtArgent m WHERE m.type.code = :typeCode")
     BigDecimal sumMontantByTypeCode(@Param("typeCode") String typeCode);
 
-    @Query("SELECT COALESCE(SUM(m.montant), 0) FROM MvtArgent m WHERE m.type.code = :typeCode AND m.date BETWEEN :debut AND :fin")
+    @Query("SELECT SUM(m.montant) FROM MvtArgent m WHERE m.type.code = :typeCode AND m.date BETWEEN :debut AND :fin")
     BigDecimal sumMontantByTypeCodeBetweenDates(@Param("typeCode") String typeCode, @Param("debut") LocalDate debut, @Param("fin") LocalDate fin);
 
-    @Query("SELECT m.categorie, COALESCE(SUM(m.montant), 0) FROM MvtArgent m WHERE m.type.code = :typeCode GROUP BY m.categorie ORDER BY m.categorie")
+    @Query("SELECT m.categorie, SUM(m.montant) FROM MvtArgent m WHERE m.type.code = :typeCode GROUP BY m.categorie ORDER BY m.categorie")
     List<Object[]> sumMontantByCategorie(@Param("typeCode") String typeCode);
 
-    @Query("SELECT m.categorie, COALESCE(SUM(m.montant), 0) FROM MvtArgent m WHERE m.type.code = :typeCode AND m.date BETWEEN :debut AND :fin GROUP BY m.categorie ORDER BY m.categorie")
+    @Query("SELECT m.categorie, SUM(m.montant) FROM MvtArgent m WHERE m.type.code = :typeCode AND m.date BETWEEN :debut AND :fin GROUP BY m.categorie ORDER BY m.categorie")
     List<Object[]> sumMontantByCategorieBetweenDates(@Param("typeCode") String typeCode, @Param("debut") LocalDate debut, @Param("fin") LocalDate fin);
 
-    @Query("SELECT m.lot.id, COALESCE(SUM(m.montant), 0) FROM MvtArgent m WHERE m.type.code = 'sortie' AND m.lot IS NOT NULL GROUP BY m.lot.id")
+    @Query("SELECT m.lot.id, SUM(m.montant) FROM MvtArgent m WHERE m.type.code = 'sortie' AND m.lot IS NOT NULL GROUP BY m.lot.id")
     List<Object[]> sumMontantByLotForSorties();
 
     @Query(value = """

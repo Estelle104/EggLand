@@ -19,6 +19,8 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/","/client/accueil","/inscription","/client/inscription","/css/**","/js/**","/images/**","/test-session").permitAll() //tout le monde peut voir l'accueil et l'inscription en tant que client
             .requestMatchers("/client/connexion","/login","/redirection","/admin/login").permitAll()
+            .requestMatchers("/admin/finance/**").hasAnyAuthority("gestionnaire", "admin")
+            .requestMatchers("/admin/exports").hasAnyAuthority("gestionnaire", "admin")
             .requestMatchers("/admin/**").hasAuthority("admin")// l'admin a acces a ses fonctionnalités et toute url contenant layout et liste
             .requestMatchers("/lots/**","/gestionnaire/**").hasAnyAuthority("gestionnaire","admin")// gestionnaire a acces aux url de lots et gestionnaire définissez en fonction de vos besoin
             .requestMatchers("/client/**").hasAnyAuthority("client","admin")// le client a acces aux fonctionnalité de l'url /client
@@ -27,7 +29,6 @@ public class SecurityConfig {
             .requestMatchers("/stock/**").hasAnyAuthority("gestionnaire", "admin")
             .requestMatchers("/nourritures/**").hasAnyAuthority("gestionnaire", "admin")
             .requestMatchers("/mvtargent/**").hasAnyAuthority("gestionnaire", "admin")
-            .requestMatchers("/finance/**").hasAnyAuthority("gestionnaire", "admin")
             .requestMatchers("/dashboard/**").hasAnyAuthority("admin", "gestionnaire")
         .anyRequest().authenticated()
        )

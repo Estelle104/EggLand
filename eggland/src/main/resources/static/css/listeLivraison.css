@@ -1,0 +1,105 @@
+.page-header { margin-bottom: 24px; }
+        .page-header h2 { color: var(--text); font-size: 22px; }
+        .card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 14px 12px; color: var(--text-light); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--border); }
+        td { padding: 14px 12px; border-bottom: 1px solid var(--border); color: var(--text); font-size: 14px; }
+        tr:hover td { background: rgba(184, 122, 42, 0.04); }
+        .btn-primary { background: var(--primary); color: #fff; padding: .75rem 1.25rem; border-radius: 8px; text-decoration: none; display: inline-block; margin-bottom: 16px; }
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; text-transform: uppercase; letter-spacing: .25px; }
+        .badge-en_attente { background: #ffe8a1; color: #7a5d00; }
+        .badge-en_cours { background: #cce5ff; color: #084298; }
+        .badge-livre { background: #d4edda; color: #0f5132; }
+        .small-form { margin: 0; }
+        .small-form select { border-radius: 8px; padding: 8px; border: 1px solid var(--border); }
+        .small-form button { margin-left: 8px; }
+        .btn-pdf { background: #c41e3a; color: #fff; padding: 8px 12px; border-radius: 6px; border: none; font-size: 12px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-pdf:hover { background: #a01830; }
+        .btn-supp-liv { background: #e47373; color: #fff; padding: 8px 12px; border-radius: 6px; border: none; font-size: 12px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-supp-liv:hover { background: #cc5a5a; }
+        /* Filtres */
+        .filtre-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px 24px;
+            margin-bottom: 18px;
+        }
+        .filtre-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: flex-end;
+        }
+        .filtre-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex: 1;
+            min-width: 160px;
+        }
+        .filtre-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .filtre-group input[type="date"] {
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            background: var(--bg);
+            color: var(--text);
+            outline: none;
+            transition: 0.2s;
+            box-sizing: border-box;
+        }
+        .filtre-group input[type="date"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(184,122,42,0.12);
+            background: white;
+        }
+        .filtre-actions {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+            padding-bottom: 1px;
+        }
+        .btn-filtrer {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .btn-filtrer:hover { background: var(--hover); }
+        .btn-reset {
+            background: var(--bg);
+            color: var(--text-light);
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .btn-reset:hover { background: var(--border); color: var(--text); }

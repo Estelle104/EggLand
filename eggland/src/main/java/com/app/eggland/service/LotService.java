@@ -93,14 +93,16 @@ public void verifierCapacite(Lot lot, Batiment batiment) {
 
     //rehefa mapiditra lot vaovao
    public int calculerPlaceUtilisee(Batiment batiment) {
-        return lotRepository.calculerPlaceUtiliseePourBatiment(batiment);
+        Long total = lotRepository.calculerPlaceUtiliseePourBatiment(batiment);
+        return total != null ? total.intValue() : 0;
     }
 
     public int calculerPlaceUtilisee(Batiment batiment, Integer lotIdAExclure) {
     if (lotIdAExclure == null) {
         return calculerPlaceUtilisee(batiment);
     }
-    return lotRepository.calculerPlaceUtiliseePourBatimentExcluantLot(batiment, lotIdAExclure);
+    Long total = lotRepository.calculerPlaceUtiliseePourBatimentExcluantLot(batiment, lotIdAExclure);
+    return total != null ? total.intValue() : 0;
 }
 
     public int getPlaceRestante(Integer idBatiment){
@@ -109,9 +111,10 @@ public void verifierCapacite(Lot lot, Batiment batiment) {
             .orElseThrow(() -> new IllegalArgumentException("Bâtiment non trouvé"));
            
             int capacite = batiment.getCapacite();
-            int placeUtilise = lotRepository.calculerPlaceUtiliseePourBatiment(batiment);
+            Long placeUtilise = lotRepository.calculerPlaceUtiliseePourBatiment(batiment);
+            int place = placeUtilise != null ? placeUtilise.intValue() : 0;
 
-            placeRestante = capacite - placeUtilise;
+            placeRestante = capacite - place;
         return placeRestante;
     }
 
@@ -221,8 +224,8 @@ public void reformerUnLot(Integer idLot, LocalDate dateReforme) {
     updateLot(lot); 
     System.out.println("Lot sauvegardé dans la base");
     
- 
-    int nbrPoule = lot.getNombreInitial();
+    int totalMortsDejaEnregistrees = mortRepository.sumByLotId(idLot);
+    int nbrPoule = Math.max(lot.getNombreInitial() - totalMortsDejaEnregistrees, 0);
     System.out.println("Nombre de poules à réformer: " + nbrPoule);
     
 

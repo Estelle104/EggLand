@@ -1,4 +1,6 @@
-## Vinod | Production d'œufs
+# Vinod | Production d'œufs
+
+## Taches
 
 | Code | Tâche | Fichiers à utiliser | Durée |
 |------|-------|---------------------|-------|
@@ -6,6 +8,12 @@
 | T4.2 | `OeufService.getStockDisponible()` : méthode partagée utilisée par P8 (Izaia) | `OeufService.java` | 1,5h |
 | T4.3 | Calcul taux de ponte par lot (% réel vs rendement attendu de la race) | `OeufProductionService.java`, `RaceRepository.java` | 1,5h |
 | T4.4 | Template `oeufs/saisie.html` + `oeufs/stats.html` + Chart.js BarChart 14 jours | `templates/oeufs/saisie.html`, `templates/oeufs/stats.html` | 2h |
+
+## Taches supplementaires
+| Code | Tâche | Fichiers à utiliser | Durée |
+|------|-------|---------------------|-------|
+| T4.5 | Historique production | `OeufProductionService.java`, `OeufStatutService.java`, `OeufProductionRepository.java` | 1h |
+| T4.6 | Livraisons en cours pour Client | `client/livraison.html` | 1,5h |
 
 **Total : 6h — 2 jours (3h/jour)**
 
@@ -39,13 +47,20 @@
     * Methode `buildTauxPonteParLot` pour le calcul et stockage des donnees pour un lot
     * Methode `getTauxPondeParLot` pour faire le calcul pour chaque lot (puisque ca parcours tous les productions)
     * 
-
+*
 **T4.4 - Templates**
 - Attribuer le resultat du stock dans le mapping `/oeufs` et afficher dans le view `stats.html`
 - Attribuer les resultat des calcul du taux de ponte dans le mapping `/oeufs` et afficher dans le view `stats.html`
 - Creer `chart.js` et creer le chart
 
+**T4.5 - Historique**
+- view pour l'historique `v_historique_production`
+- utiliser dans repository et dans service
+- afficher dans un template `historique.html`
 
+**T4.6 - Livraisons Client**
+- fonction dans repository pour prendre livraisons en cours
+- afficher dans `client/livraison.html`
 
 **Autre**
 - Methodes supplementaire dans `OeufProductionService` pour les regles metiers
