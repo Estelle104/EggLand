@@ -1,210 +1,151 @@
-<!doctype html>
-<html
-  lang="fr"
-  xmlns:th="http://www.thymeleaf.org"
-  layout:decorate="~{fragments/layout}"
->
-  <head>
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
+<head>
     <title>Finance - Eggland</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <link rel="stylesheet" th:href="@{/css/finance.css}" />
-    <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
-  </head>
-  <body>
-    <div layout:fragment="content">
-      <div class="container-fluid py-4">
+    <link rel="stylesheet" th:href="@{/css/finance.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container-fluid py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-          <h1 class="h3 mb-0">Tableau de Bord Financier</h1>
-          <a
-            sec:authorize="hasAuthority('admin')"
-            th:href="@{/admin/mvtargent}"
-            class="btn btn-primary"
-          >
-            <i class="fas fa-exchange-alt me-1"></i> Mouvements d'argent
-          </a>
+            <h1 class="h3 mb-0">Tableau de Bord Financier</h1>
+            <a sec:authorize="hasAuthority('admin')" th:href="@{/admin/mvtargent}" class="btn btn-primary">
+                <i class="fas fa-exchange-alt me-1"></i> Mouvements d'argent
+            </a>
         </div>
 
         <div class="row g-4 mb-4">
-          <div class="col-md-3">
-            <div class="card h-100 border-0">
-              <div class="card-body">
-                <div class="card-title">Total Recettes</div>
-                <div
-                  class="card-value text-success"
-                  th:text="${#numbers.formatDecimal(resume.totalRecettes, 0, 'COMMA', 2, 'POINT')} + ' Ar'"
-                >
-                  0 Ar
+            <div class="col-md-3">
+                <div class="card h-100 border-0">
+                    <div class="card-body">
+                        <div class="card-title">Total Recettes</div>
+                        <div class="card-value text-success" th:text="${#numbers.formatDecimal(resume.totalRecettes, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
-          <div class="col-md-3">
-            <div class="card h-100 border-0">
-              <div class="card-body">
-                <div class="card-title">Total Dépenses</div>
-                <div
-                  class="card-value text-danger"
-                  th:text="${#numbers.formatDecimal(resume.totalDepenses, 0, 'COMMA', 2, 'POINT')} + ' Ar'"
-                >
-                  0 Ar
+            <div class="col-md-3">
+                <div class="card h-100 border-0">
+                    <div class="card-body">
+                        <div class="card-title">Total Dépenses</div>
+                        <div class="card-value text-danger" th:text="${#numbers.formatDecimal(resume.totalDepenses, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
-          <div class="col-md-3">
-            <div class="card h-100 border-0">
-              <div class="card-body">
-                <div class="card-title">Bénéfice Net</div>
-                <div
-                  class="card-value"
-                  th:text="${#numbers.formatDecimal(resume.beneficeNet, 0, 'COMMA', 2, 'POINT')} + ' Ar'"
-                  th:classappend="${resume.beneficeNet} lt 0 ? 'text-danger' : 'text-success'"
-                >
-                  0 Ar
+            <div class="col-md-3">
+                <div class="card h-100 border-0">
+                    <div class="card-body">
+                        <div class="card-title">Bénéfice Net</div>
+                        <div class="card-value" th:text="${#numbers.formatDecimal(resume.beneficeNet, 0, 'COMMA', 2, 'POINT')} + ' Ar'" th:classappend="${resume.beneficeNet} lt 0 ? 'text-danger' : 'text-success'">0 Ar</div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
-          <div class="col-md-3">
-            <div class="card h-100 border-0">
-              <div class="card-body">
-                <div class="card-title">Marge</div>
-                <div
-                  class="card-value text-primary"
-                  th:with="marge=${resume.totalRecettes != 0 ? (resume.beneficeNet / resume.totalRecettes * 100) : 0}"
-                  th:text="${#numbers.formatDecimal(marge, 1, 'COMMA', 2, 'POINT')} + '%'"
-                >
-                  0%
+            <div class="col-md-3">
+                <div class="card h-100 border-0">
+                    <div class="card-body">
+                        <div class="card-title">Marge</div>
+                        <div class="card-value text-primary" th:with="marge=${resume.totalRecettes != 0 ? (resume.beneficeNet / resume.totalRecettes * 100) : 0}" th:text="${#numbers.formatDecimal(marge, 1, 'COMMA', 2, 'POINT')} + '%'">0%</div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
 
         <div class="row g-4 mb-4">
-          <div class="col-lg-6">
-            <div class="card h-100 border-0">
-              <div class="card-header bg-white border-0 pb-0">
-                <h5 class="mb-0">Évolution 12 Mois (Recettes vs Dépenses)</h5>
-              </div>
-              <div class="card-body">
-                <div class="chart-container">
-                  <canvas id="chartMensuel"></canvas>
+            <div class="col-lg-6">
+                <div class="card h-100 border-0">
+                    <div class="card-header bg-white border-0 pb-0">
+                        <h5 class="mb-0">Évolution 12 Mois (Recettes vs Dépenses)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="chartMensuel"></canvas>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
-          <div class="col-lg-6">
-            <div class="card h-100 border-0">
-              <div class="card-header bg-white border-0 pb-0">
-                <h5 class="mb-0">Répartition par Catégorie</h5>
-              </div>
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-6">
-                    <h6 class="text-success">Recettes</h6>
-                    <table class="table table-sm table-borderless">
-                      <tbody>
-                        <tr th:each="cat, iter : ${recettesParCategorie}">
-                          <td class="ps-0" th:text="${cat.key}">Catégorie</td>
-                          <td
-                            class="text-end pe-0"
-                            th:text="${#numbers.formatDecimal(cat.value, 0, 'COMMA', 2, 'POINT')} + ' Ar'"
-                          >
-                            0 Ar
-                          </td>
-                        </tr>
-                        <tr th:if="${recettesParCategorie.isEmpty()}">
-                          <td colspan="2" class="text-center text-muted">
-                            Aucune donnée
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="col-6">
-                    <h6 class="text-danger">Dépenses</h6>
-                    <table class="table table-sm table-borderless">
-                      <tbody>
-                        <tr th:each="cat, iter : ${depensesParCategorie}">
-                          <td class="ps-0" th:text="${cat.key}">Catégorie</td>
-                          <td
-                            class="text-end pe-0"
-                            th:text="${#numbers.formatDecimal(cat.value, 0, 'COMMA', 2, 'POINT')} + ' Ar'"
-                          >
-                            0 Ar
-                          </td>
-                        </tr>
-                        <tr th:if="${depensesParCategorie.isEmpty()}">
-                          <td colspan="2" class="text-center text-muted">
-                            Aucune donnée
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+            <div class="col-lg-6">
+                <div class="card h-100 border-0">
+                    <div class="card-header bg-white border-0 pb-0">
+                        <h5 class="mb-0">Répartition par Catégorie</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 class="text-success">Recettes</h6>
+                                <table class="table table-sm table-borderless">
+                                    <tbody>
+                                        <tr th:each="cat, iter : ${recettesParCategorie}">
+                                            <td class="ps-0" th:text="${cat.key}">Catégorie</td>
+                                            <td class="text-end pe-0" th:text="${#numbers.formatDecimal(cat.value, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</td>
+                                        </tr>
+                                        <tr th:if="${recettesParCategorie.isEmpty()}">
+                                            <td colspan="2" class="text-center text-muted">Aucune donnée</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-danger">Dépenses</h6>
+                                <table class="table table-sm table-borderless">
+                                    <tbody>
+                                        <tr th:each="cat, iter : ${depensesParCategorie}">
+                                            <td class="ps-0" th:text="${cat.key}">Catégorie</td>
+                                            <td class="text-end pe-0" th:text="${#numbers.formatDecimal(cat.value, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</td>
+                                        </tr>
+                                        <tr th:if="${depensesParCategorie.isEmpty()}">
+                                            <td colspan="2" class="text-center text-muted">Aucune donnée</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
 
         <div class="row g-4 mb-4">
-          <div class="col-lg-12">
-            <div class="card h-100 border-0">
-              <div
-                class="card-header bg-white border-0 d-flex justify-content-between align-items-center"
-              >
-                <h5 class="mb-0">Coût de Revient par Lot</h5>
-              </div>
-              <div class="card-body p-0">
-                <div class="table-responsive">
-                  <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                      <tr>
-                        <th>Lot</th>
-                        <th>Race</th>
-                        <th>Bâtiment</th>
-                        <th class="text-end">Coût Total</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        th:each="entry : ${coutRevientParLot}"
-                        class="lot-row"
-                        th:if="${entry.key != null}"
-                      >
-                        <td th:text="${entry.key.id}">#</td>
-                        <td th:text="${entry.key.race?.nom}">-</td>
-                        <td th:text="${entry.key.batiment?.nom}">-</td>
-                        <td
-                          class="text-end"
-                          th:text="${#numbers.formatDecimal(entry.value, 0, 'COMMA', 2, 'POINT')} + ' Ar'"
-                        >
-                          0 Ar
-                        </td>
-                      </tr>
-                      <tr
-                        th:if="${coutRevientParLot.isEmpty() or (coutRevientParLot.size() == 1 and coutRevientParLot.keySet().iterator().next() == null)}"
-                      >
-                        <td colspan="4" class="text-center text-muted py-4">
-                          Aucun coût de revient calculé
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+            <div class="col-lg-12">
+                <div class="card h-100 border-0">
+                    <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Coût de Revient par Lot</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Lot</th>
+                                        <th>Race</th>
+                                        <th>Bâtiment</th>
+                                        <th class="text-end">Coût Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="entry : ${coutRevientParLot}" class="lot-row" th:if="${entry.key != null}">
+                                        <td th:text="${entry.key.id}">#</td>
+                                        <td th:text="${entry.key.race?.nom}">-</td>
+                                        <td th:text="${entry.key.batiment?.nom}">-</td>
+                                        <td class="text-end" th:text="${#numbers.formatDecimal(entry.value, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</td>
+                                    </tr>
+                                    <tr th:if="${coutRevientParLot.isEmpty() or (coutRevientParLot.size() == 1 and coutRevientParLot.keySet().iterator().next() == null)}">
+                                        <td colspan="4" class="text-center text-muted py-4">Aucun coût de revient calculé</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
+    </div>
 
-      <script th:inline="javascript">
+    <script th:inline="javascript">
         const recettesMensuelles = /*[[${recettesMensuelles}]]*/ {};
         const depensesMensuelles = /*[[${depensesMensuelles}]]*/ {};
-      </script>
-      <script th:src="@{/js/finance.js}"></script>
-    </div>
-  </body>
+    </script>
+    <script th:src="@{/js/finance.js}"></script>
+</div>
+</body>
 </html>
