@@ -14,7 +14,7 @@
                 <div class="page-header">
                     <h2 th:text="${pageTitle}">Stock des nourritures</h2>
                     <div style="display:flex; gap:8px; align-items:center;">
-                        <form th:action="@{/finance/export/excel/mouvement-stock}" method="get" target="_blank" style="margin:0; display:flex; gap:6px; align-items:center;">
+                        <form th:action="@{/admin/finance/export/excel/mouvement-stock}" method="get" target="_blank" style="margin:0; display:flex; gap:6px; align-items:center;">
                             <input type="date" name="debut" th:value="${todayMinus30}" class="form-control form-control-sm" style="width:140px;" placeholder="Début">
                             <input type="date" name="fin" th:value="${today}" class="form-control form-control-sm" style="width:140px;" placeholder="Fin">
                             <button type="submit" class="btn-action-header" style="background:#28a745; padding:8px 14px; font-size:13px; margin:0;"><i class="fa-solid fa-file-excel"></i> XLSX</button>

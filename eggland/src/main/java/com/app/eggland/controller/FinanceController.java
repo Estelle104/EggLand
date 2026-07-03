@@ -21,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/finance")
@@ -132,6 +131,14 @@ public class FinanceController {
         } catch (IOException e) {
             model.addAttribute("importErrors", java.util.List.of("Erreur lecture fichier: " + e.getMessage()));
         }
-        return index(model);
+        addExportDefaults(model);
+        return "exports/index";
+    }
+
+    private void addExportDefaults(Model model) {
+        LocalDate today = LocalDate.now();
+        model.addAttribute("today", today.toString());
+        model.addAttribute("todayMinus30", today.minusDays(30).toString());
+        model.addAttribute("currentMonth", today.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM")));
     }
 }

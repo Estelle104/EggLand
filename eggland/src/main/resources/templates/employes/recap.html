@@ -23,11 +23,11 @@
                 <div class="page-header">
                     <h2 th:text="'Récap Mensuel — ' + ${moisLabel}">Récap Mensuel — Juin 2026</h2>
                     <div style="display:flex; gap:8px; align-items:center;">
-                        <form th:action="@{/finance/export/pdf/paiement-salaire}" method="get" target="_blank" style="margin:0; display:flex; gap:4px;">
+                        <form th:action="@{/admin/finance/export/pdf/paiement-salaire}" method="get" target="_blank" style="margin:0; display:flex; gap:4px;">
                             <input type="month" name="mois" th:value="${moisSelectionne}" class="form-control form-control-sm" style="width:140px;">
                             <button type="submit" class="btn btn-outline" style="padding:6px 10px; font-size:12px;"><i class="fa-solid fa-file-pdf"></i> PDF</button>
                         </form>
-                        <form th:action="@{/finance/export/excel/paiements-salaires}" method="get" target="_blank" style="margin:0; display:flex; gap:4px;">
+                        <form th:action="@{/admin/finance/export/excel/paiements-salaires}" method="get" target="_blank" style="margin:0; display:flex; gap:4px;">
                             <input type="month" name="mois" th:value="${moisSelectionne}" class="form-control form-control-sm" style="width:140px;">
                             <button type="submit" class="btn btn-outline" style="padding:6px 10px; font-size:12px;"><i class="fa-solid fa-file-excel"></i> XLSX</button>
                         </form>
