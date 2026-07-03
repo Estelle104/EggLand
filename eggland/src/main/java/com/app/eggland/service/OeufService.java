@@ -27,15 +27,17 @@ public class OeufService {
     private StatutOeufRepository statutOeufRepository;
 
     public Integer getStockDisponible() {
-        Integer quantiteProduite = oeufProductionRepository.sumQuantiteTotale();
-        Integer quantiteIndisponible = oeufStatutRepository.sumQuantiteIndisponible();
-        Integer stock = quantiteProduite - quantiteIndisponible;
+        Long quantiteProduite = oeufProductionRepository.sumQuantiteTotale();
+        Long quantiteIndisponible = oeufStatutRepository.sumQuantiteIndisponible();
+        long prod = quantiteProduite != null ? quantiteProduite : 0L;
+        long indispo = quantiteIndisponible != null ? quantiteIndisponible : 0L;
+        long stock = prod - indispo;
 
         if (stock < 0) {
             throw new IllegalStateException(
                     "Le stock d'œufs est incohérent : les sorties dépassent la production.");
         }
-        return Math.toIntExact(stock);
+        return (int) stock;
     }
 
 
