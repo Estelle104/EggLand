@@ -40,12 +40,12 @@ public class VenteController {
     @Autowired
     private ClientService clientService;
     
-    @GetMapping("/ventes")
+    @GetMapping("/admin/ventes")
     public String afficherVentes() {
-        return "redirect:/ventes/listevente";
+        return "redirect:/admin/ventes/listevente";
     }
 
-    @GetMapping("/ventes/listevente")
+    @GetMapping("/admin/ventes/listevente")
     public String listeVente(
             @RequestParam(value = "clientId",  required = false) Integer clientId,
             @RequestParam(value = "statutId",  required = false) Integer statutId,
@@ -76,7 +76,7 @@ public class VenteController {
         return "vente/listeVente";
     }
 
-    @GetMapping("/ventes/creation")
+    @GetMapping("/admin/ventes/creation")
     public String creationVente(Model model) {
         model.addAttribute("produits", venteService.listeProduitVente());
         model.addAttribute("vente", new Vente());
@@ -86,18 +86,18 @@ public class VenteController {
     }
 
     
-    @PostMapping("/ventes/creation")
+    @PostMapping("/admin/ventes/creation")
     public String creerVente(HttpServletRequest request, RedirectAttributes ra) {
         try {
             String clientNom = request.getParameter("clientNom");
             if (clientNom == null || clientNom.isBlank()) {
                 ra.addFlashAttribute("error", "Veuillez saisir le nom du client.");
-                return "redirect:/ventes/creation";
+                return "redirect:/admin/ventes/creation";
             }
             Client client = clientService.trouverParNomOuCreer(clientNom);
             if (client == null) {
                 ra.addFlashAttribute("error", "Client introuvable.");
-                return "redirect:/ventes/creation";
+                return "redirect:/admin/ventes/creation";
             }
 
             String[] produitIdsStr = request.getParameterValues("produitId");
@@ -107,7 +107,7 @@ public class VenteController {
 
             if (produitIdsStr == null || produitIdsStr.length == 0) {
                 ra.addFlashAttribute("error", "Ajoutez au moins une ligne de vente.");
-                return "redirect:/ventes/creation";
+                return "redirect:/admin/ventes/creation";
             }
 
             List<Integer>    produitIds = new ArrayList<>();
@@ -136,7 +136,7 @@ public class VenteController {
 
             if (produitIds.isEmpty()) {
                 ra.addFlashAttribute("error", "Remplissez au moins une ligne de vente complète.");
-                return "redirect:/ventes/creation";
+                return "redirect:/admin/ventes/creation";
             }
 
             venteService.enregistrerVente(client.getId(), produitIds, lotIds, quantites, prix, client);
@@ -144,14 +144,14 @@ public class VenteController {
 
         } catch (RuntimeException e) {
             ra.addFlashAttribute("error", e.getMessage());
-            return "redirect:/ventes/creation";
+            return "redirect:/admin/ventes/creation";
         }
 
-        return "redirect:/ventes";
+        return "redirect:/admin/ventes";
     }
 
    
-    @PostMapping("/ventes/supprimer")
+    @PostMapping("/admin/ventes/supprimer")
     public String supprimerVente(@RequestParam("id") int id, RedirectAttributes ra) {
         try {
             venteService.supprimerVente(id);
@@ -159,16 +159,16 @@ public class VenteController {
         } catch (Exception e) {
             ra.addFlashAttribute("error", "Erreur suppression : " + e.getMessage());
         }
-        return "redirect:/ventes/listevente";
+        return "redirect:/admin/ventes/listevente";
     }
 
  
-    @PostMapping("/ventes/modifier")
+    @PostMapping("/admin/ventes/modifier")
     public String modifierVente(@RequestParam("id") int id, Model model, RedirectAttributes ra) {
         Vente vente = venteService.trouverVenteParId(id);
         if (vente == null) {
             ra.addFlashAttribute("error", "Vente introuvable.");
-            return "redirect:/ventes/listevente";
+            return "redirect:/admin/ventes/listevente";
         }
         model.addAttribute("vente", vente);
         model.addAttribute("details", venteService.listeDetailVente(id));
@@ -179,39 +179,39 @@ public class VenteController {
     }
 
   
-    @PostMapping("/ventes/detail")
+    @PostMapping("/admin/ventes/detail")
     public String detailVente(@RequestParam("id") int id,
                                @RequestParam("clientId") int clientId,
                                Model model, RedirectAttributes ra) {
         Vente vente = venteService.trouverVenteParId(id);
         if (vente == null) {
             ra.addFlashAttribute("error", "Vente introuvable.");
-            return "redirect:/ventes/listevente";
+            return "redirect:/admin/ventes/listevente";
         }
         model.addAttribute("vente", vente);
         model.addAttribute("details", venteService.listeDetailVente(id));
         return "vente/detailVente";
     }
 
-    @PostMapping("/ventes/enregistrerModification")
+    @PostMapping("/admin/ventes/enregistrerModification")
     public String enregistrerModificationVente(HttpServletRequest request, RedirectAttributes ra) {
         try {
             String venteIdStr = request.getParameter("id");
             if (venteIdStr == null || venteIdStr.isBlank()) {
                 ra.addFlashAttribute("error", "Identifiant de vente manquant.");
-                return "redirect:/ventes/listevente";
+                return "redirect:/admin/ventes/listevente";
             }
             int venteId = Integer.parseInt(venteIdStr);
 
             String clientIdStr = request.getParameter("clientId");
             if (clientIdStr == null || clientIdStr.isBlank()) {
                 ra.addFlashAttribute("error", "Veuillez sélectionner un client.");
-                return "redirect:/ventes/modifier?id=" + venteId;
+                return "redirect:/admin/ventes/modifier?id=" + venteId;
             }
             Client client = clientService.trouverClientParId(Integer.parseInt(clientIdStr));
             if (client == null) {
                 ra.addFlashAttribute("error", "Client introuvable.");
-                return "redirect:/ventes/modifier?id=" + venteId;
+                return "redirect:/admin/ventes/modifier?id=" + venteId;
             }
 
             String[] produitIdsStr = request.getParameterValues("produitId");
@@ -221,7 +221,7 @@ public class VenteController {
 
             if (produitIdsStr == null || produitIdsStr.length == 0) {
                 ra.addFlashAttribute("error", "La vente doit contenir au moins une ligne.");
-                return "redirect:/ventes/modifier?id=" + venteId;
+                return "redirect:/admin/ventes/modifier?id=" + venteId;
             }
 
             List<Integer>    produitIds = new ArrayList<>();
@@ -247,7 +247,7 @@ public class VenteController {
 
             if (produitIds.isEmpty()) {
                 ra.addFlashAttribute("error", "Veuillez remplir correctement au moins une ligne complète.");
-                return "redirect:/ventes/modifier?id=" + venteId;
+                return "redirect:/admin/ventes/modifier?id=" + venteId;
             }
 
             venteService.enregistrerModificationVente(venteId, produitIds, lotIds, quantites, prix, client);
@@ -255,9 +255,9 @@ public class VenteController {
 
         } catch (Exception e) {
             ra.addFlashAttribute("error", "Erreur lors de la modification : " + e.getMessage());
-            return "redirect:/ventes/listevente";
+            return "redirect:/admin/ventes/listevente";
         }
 
-        return "redirect:/ventes/listevente";
+        return "redirect:/admin/ventes/listevente";
     }
 }

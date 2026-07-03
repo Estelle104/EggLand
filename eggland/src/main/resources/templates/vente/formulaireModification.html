@@ -27,7 +27,7 @@
             </div>
 
             <div class="card-form">
-                <form th:action="@{/ventes/enregistrerModification}" method="post">
+                <form th:action="@{/admin/ventes/enregistrerModification}" method="post">
                     <input type="hidden" name="id" th:value="${vente.id}">
 
                     <div class="form-group">
@@ -113,7 +113,7 @@
                     </table>
 
                     <div class="form-actions">
-                        <a th:href="@{/ventes/listevente}" class="btn-annuler">
+                        <a th:href="@{/admin/ventes/listevente}" class="btn-annuler">
                             <i class="fa-solid fa-xmark"></i> Annuler
                         </a>
                         <button type="submit" class="btn-enregistrer">

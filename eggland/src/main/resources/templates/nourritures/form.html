@@ -18,7 +18,7 @@
                 </div>
 
                 <div class="card-form">
-                    <form th:action="@{/nourritures/save}" th:object="${nourriture}" method="post">
+                    <form th:action="@{/admin/nourritures/save}" th:object="${nourriture}" method="post">
 
                         <input type="hidden" th:field="*{id}" />
 
@@ -37,7 +37,7 @@
 
                         <div class="form-actions">
                             <button type="submit" class="btn-enregistrer"><i class="fa-solid fa-save"></i> Enregistrer</button>
-                            <a th:href="@{/nourritures}" class="btn-annuler"><i class="fa-solid fa-xmark"></i> Annuler</a>
+                            <a th:href="@{/admin/nourritures}" class="btn-annuler"><i class="fa-solid fa-xmark"></i> Annuler</a>
                         </div>
                     </form>
                 </div>

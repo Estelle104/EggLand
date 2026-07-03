@@ -17,7 +17,7 @@
 
                 <div class="page-header">
                     <h2 th:text="${pageTitle ?: 'Liste des bâtiments'}">Liste des bâtiments</h2>
-                    <a th:href="@{/batiments/nouveau}" class="btn-ajouter" style="background: var(--primary); color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
+                    <a th:href="@{/admin/batiments/nouveau}" class="btn-ajouter" style="background: var(--primary); color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
                         <i class="fa-solid fa-plus"></i> Nouveau bâtiment
                     </a>
                 </div>
@@ -48,11 +48,11 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a th:href="@{/batiments/edit/{id}(id=${b.id})}"
+                                    <a th:href="@{/admin/batiments/edit/{id}(id=${b.id})}"
                                        style="padding:6px 14px; border-radius:8px; text-decoration:none; font-size:13px; font-weight:500; display:inline-flex; align-items:center; gap:6px; background:#D8B77C; color:#33241A; margin-right:6px;">
                                         <i class="fa-solid fa-pen"></i> Modifier
                                     </a>
-                                    <a th:href="@{/batiments/delete/{id}(id=${b.id})}"
+                                    <a th:href="@{/admin/batiments/delete/{id}(id=${b.id})}"
                                        style="padding:6px 14px; border-radius:8px; text-decoration:none; font-size:13px; font-weight:500; display:inline-flex; align-items:center; gap:6px; background:#e47373; color:white;"
                                        onclick="return confirm('Supprimer ce bâtiment ?')">
                                         <i class="fa-solid fa-trash"></i> Supprimer

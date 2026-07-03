@@ -15,7 +15,7 @@ import com.app.eggland.model.Race;
 import com.app.eggland.service.RaceService;
 
 @Controller
-@RequestMapping("/races")
+@RequestMapping("/admin/races")
 public class RaceController {
     @Autowired
     private RaceService raceService;
@@ -37,7 +37,7 @@ public class RaceController {
     @PostMapping("/save")
     public String save(@ModelAttribute Race race) {
         raceService.save(race);
-        return "redirect:/races";
+        return "redirect:/admin/races";
     }
 
     @GetMapping("/edit/{id}")
@@ -56,6 +56,6 @@ public class RaceController {
         } catch (DataIntegrityViolationException e) {
             ra.addFlashAttribute("error", "Impossible de supprimer : cette race est liée à des lots.");
         }
-        return "redirect:/races";
+        return "redirect:/admin/races";
     }
 }

@@ -20,7 +20,7 @@ import com.app.eggland.service.MvtStockService;
 import com.app.eggland.service.NourritureService;
 
 @Controller
-@RequestMapping("/stock")
+@RequestMapping("/admin/stock")
 public class MvtStockController {
 
     @Autowired
@@ -72,7 +72,7 @@ public class MvtStockController {
                 .date(date)
                 .build();
         mvtStockService.save(mvtStock);
-        return "redirect:/stock";
+        return "redirect:/admin/stock";
     }
 
     // Afficher le formulaire pour une sortie de stock
@@ -96,7 +96,7 @@ public class MvtStockController {
                 .date(date)
                 .build();
         mvtStockService.save(mvtStock);
-        return "redirect:/stock";
+        return "redirect:/admin/stock";
     }
 
     // Afficher l'historique des mouvements de stock avec filtres

@@ -22,7 +22,7 @@
 
                 <div class="page-header">
                     <h2 th:text="${employe.id != null} ? 'Modifier l\'employé' : 'Nouvel employé'">Nouvel employé</h2>
-                    <a th:href="@{/employes}" class="btn btn-outline">
+                    <a th:href="@{/admin/employes}" class="btn btn-outline">
                         <i class="fa-solid fa-arrow-left"></i> Retour
                     </a>
                 </div>
@@ -32,7 +32,7 @@
                 </div>
 
                 <div class="card card-form">
-                    <form th:action="${employe.id != null} ? @{/employes/{id}/modifier(id=${employe.id})} : @{/employes/nouveau}"
+                    <form th:action="${employe.id != null} ? @{/admin/employes/{id}/modifier(id=${employe.id})} : @{/admin/employes/nouveau}"
                           th:object="${employe}" method="post">
 
                         <div class="form-group">
@@ -57,7 +57,7 @@
                         </div>
 
                         <div class="form-actions">
-                            <a th:href="@{/employes}" class="btn btn-outline">Annuler</a>
+                            <a th:href="@{/admin/employes}" class="btn btn-outline">Annuler</a>
                             <button type="submit" class="btn btn-primary">
                                 <i class="fa-solid fa-check"></i> Enregistrer
                             </button>

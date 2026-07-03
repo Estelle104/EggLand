@@ -24,19 +24,19 @@ public class RechercheController {
     private static final Map<String, String> URL_MAP = new LinkedHashMap<>();
 
     static {
-        URL_MAP.put("race", "/races");
-        URL_MAP.put("batiment", "/batiments");
-        URL_MAP.put("nourriture", "/nourritures");
-        URL_MAP.put("employe", "/employes");
+        URL_MAP.put("race", "/admin/races");
+        URL_MAP.put("batiment", "/admin/batiments");
+        URL_MAP.put("nourriture", "/admin/nourritures");
+        URL_MAP.put("employe", "/admin/employes");
         URL_MAP.put("lot", "/admin/lots");
-        URL_MAP.put("vente", "/ventes");
+        URL_MAP.put("vente", "/admin/ventes");
         URL_MAP.put("mvtargent", "/admin/mvtargent");
-        URL_MAP.put("mvtstock", "/stock");
+        URL_MAP.put("mvtstock", "/admin/stock");
         URL_MAP.put("oeuf_production", "/admin/oeufs");
         URL_MAP.put("livraison", "/admin/livraisons");
-        URL_MAP.put("produit_vente", "/ventes");
-        URL_MAP.put("paiement_salaire", "/employes");
-        URL_MAP.put("versement_salaire", "/employes");
+        URL_MAP.put("produit_vente", "/admin/ventes");
+        URL_MAP.put("paiement_salaire", "/admin/employes");
+        URL_MAP.put("versement_salaire", "/admin/employes");
     }
 
     @GetMapping("/recherche")

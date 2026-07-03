@@ -16,12 +16,12 @@ public class SimulationController {
     @Autowired
     private SimulationService simulationService;
 
-    @GetMapping("/simulation")
+    @GetMapping("/admin/simulation")
     public String simulation(Model model) {
         return "simulation/simulation";
     }
 
-    @PostMapping("/simulation")
+    @PostMapping("/admin/simulation")
     public String runSimulation(Model model,
                                 @RequestParam("date") Date dateFin,
                                 @RequestParam("nbOeufs") int nombreOeufs,
