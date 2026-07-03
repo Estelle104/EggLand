@@ -1,24 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Livraisons - Eggland</title>
-    <link rel="stylesheet" th:href="@{/css/variables.css}">
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
-    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/components.css}">
     <link rel="stylesheet" th:href="@{/css/listeLivraison.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
    
 </head>
 <body>
-    <div class="app">
-        <div th:replace="fragments/sidebar :: sidebar"></div>
-        <div class="main">
-            <div th:replace="fragments/header :: header"></div>
-            <div class="content">
+    <div layout:fragment="content">
 
                 <div th:if="${#strings.isEmpty(param.success)}" th:remove="tag">
                     <div th:if="${#strings.isEmpty(param.error)}" th:remove="tag">
@@ -118,9 +109,6 @@
                         Aucune livraison enregistrée.
                     </div>
                 </div>
-
-            </div>
-        </div>
     </div>
 </body>
 </html>

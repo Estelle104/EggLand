@@ -234,7 +234,7 @@ public void reformerUnLot(Integer idLot, LocalDate dateReforme) {
  }
     updateLot(lot); 
     System.out.println("Lot sauvegardé dans la base");
-    
+    int nbrPoule = lot.getNombreInitial();
 
     System.out.println("Nombre de poules à réformer: " + nbrPoule);
     

@@ -1,42 +1,31 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="'Statistiques des Œufs - Eggland'">Statistiques - Eggland</title>
-
-    <link rel="stylesheet" th:href="@{/css/variables.css}">
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
-    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/oeufs.css}">
     <link rel="stylesheet" th:href="@{/css/oeufs-stats.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/simulation.css}">
 </head>
 
 <body>
-    <div class="app">
-
-        <div th:replace="fragments/sidebar :: sidebar"></div>
-
-        <div class="main">
-
-            <div th:replace="fragments/header :: header"></div>
-
-            <div class="content stats-page">
+    <div layout:fragment="content" class="stats-page">
 
                 <div class="page-header">
                     <div>
                         <h2>Statistiques des Œufs</h2>
                         <p>Suivez le stock disponible et le rendement quotidien de chaque lot.</p>
                     </div>
-                    <a th:href="@{/admin/simulation}" class="btn btn-primary">
-                        <i class="fa-solid fa-plus"></i>Simuler
-                    </a>
-                    <a th:href="@{/admin/oeufs/saisie}" class="btn btn-primary">
-                        <i class="fa-solid fa-plus"></i> Nouvelle Collecte
-                    </a>
+                    <div class="page-actions">
+                        <a th:href="@{/admin/simulation}" class="btn btn-simulation-ca">
+                            <i class="fa-solid fa-chart-line me-1"></i> Simuler
+                        </a>
+                        <a th:href="@{/admin/oeufs/saisie}" class="btn btn-primary">
+                            <i class="fa-solid fa-plus"></i> Nouvelle Collecte
+                        </a>
+                    </div>
                 </div>
 
                 <div class="stats-container">
@@ -100,10 +89,10 @@
                                 </td>
                                 <td th:text="${item.date}">2026-01-01</td>
                                 <td th:text="${item.quantiteValide}">0</td>
-                                <td th:text="${#numbers.formatDecimal(item.attendu, 1, 0)}">0</td>
+                                <td th:text="${#numbers.formatDecimal(item.attendu, 1, 'COMMA', 2, 'POINT')}">0</td>
                                 <td>
                                     <span class="taux-badge"
-                                        th:text="${#numbers.formatDecimal(item.taux, 1, 1)} + '%'"
+                                        th:text="${#numbers.formatDecimal(item.taux, 1, 'COMMA', 2, 'POINT')} + '%'"
                                         th:classappend="${item.taux >= 90} ? ' text-success' :
                                                         (${item.taux >= 70} ? ' text-warning' : ' text-danger')">
                                     </span>
@@ -112,11 +101,6 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-
-        </div>
-
-    </div>
 
     <script th:inline="javascript">
         window.productionChartData = {
@@ -126,7 +110,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
     <script th:src="@{/js/chart.js}"></script>
-    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    </div>
 
 </body>
 

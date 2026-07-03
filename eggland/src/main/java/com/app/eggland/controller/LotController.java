@@ -120,11 +120,14 @@ public ModelAndView createLot(@ModelAttribute Lot lot,
         if (listeRace != null && !listeRace.isEmpty()) {
             for (int i = 0; i < listeRace.size(); i++) {
                 Integer raceId = listeRace.get(i);
-                Integer nombre = (i < nbrPoule.size()) ? nbrPoule.get(i) : 0;
+                Integer nombre = (nbrPoule != null && i < nbrPoule.size()) ? nbrPoule.get(i) : 0;
                 
-                if (nombre != null && nombre > 0) {
+                if (raceId != null && nombre != null && nombre > 0) {
                     Race race = raceRepository.findById(raceId).orElse(null);
                     if (race != null) {
+                        if (lot.getRace() == null) {
+                            lot.setRace(race);
+                        }
                         LotRace lotRace = new LotRace();
                         lotRace.setLot(lot);
                         lotRace.setRace(race);
@@ -133,6 +136,10 @@ public ModelAndView createLot(@ModelAttribute Lot lot,
                     }
                 }
             }
+        }
+
+        if (lot.getRace() == null) {
+            throw new IllegalArgumentException("Veuillez selectionner une race valide");
         }
         
         lotService.createLot(lot);
@@ -298,13 +305,17 @@ public ModelAndView modifierLots(@PathVariable("id") Integer id,
         
    
         if (listeRace != null && !listeRace.isEmpty()) {
+            lot.setRace(null);
             for (int i = 0; i < listeRace.size(); i++) {
                 Integer raceId = listeRace.get(i);
-                Integer nombre = (i < nbrPoule.size()) ? nbrPoule.get(i) : 0;
+                Integer nombre = (nbrPoule != null && i < nbrPoule.size()) ? nbrPoule.get(i) : 0;
                 
-                if (nombre != null && nombre > 0) {
+                if (raceId != null && nombre != null && nombre > 0) {
                     Race race = raceRepository.findById(raceId).orElse(null);
                     if (race != null) {
+                        if (lot.getRace() == null) {
+                            lot.setRace(race);
+                        }
                         LotRace lotRace = new LotRace();
                         lotRace.setLot(lot);
                         lotRace.setRace(race);
@@ -313,6 +324,10 @@ public ModelAndView modifierLots(@PathVariable("id") Integer id,
                     }
                 }
             }
+        }
+
+        if (lot.getRace() == null) {
+            throw new IllegalArgumentException("Veuillez selectionner une race valide");
         }
         
        System.out.println("Batiment "+ lot.getBatiment());

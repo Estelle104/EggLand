@@ -63,7 +63,7 @@
                                     <span class="badge-type" th:class="${m.type.code == 'entree'} ? 'badge-type badge-entree' : 'badge-type badge-sortie'"
                                           th:text="${m.type.code == 'entree'} ? 'Entrée' : 'Sortie'"></span>
                                 </td>
-                                <td th:text="${#numbers.formatDecimal(m.quantite, 1, 'WHITESPACE', 3, 'COMMA')} + ' kg'"></td>
+                                <td th:text="${#numbers.formatDecimal(m.quantite, 1, 'WHITESPACE', 2, 'COMMA')} + ' kg'"></td>
                             </tr>
                         </tbody>
                     </table>

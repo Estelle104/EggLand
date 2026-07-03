@@ -35,12 +35,42 @@ public class MortService {
 
     public Integer getTotalMorts(Integer lotId, LocalDate debut, LocalDate fin) {
         Long total;
-        if (lotId != null && lotId > 0) {
-            total = mortRepository.sumByLotIdAndDateBetween(lotId, debut, fin);
+        boolean hasLot = lotId != null && lotId > 0;
+        boolean hasDateFilter = debut != null || fin != null;
+
+        if (!hasDateFilter) {
+            if (hasLot) {
+                total = mortRepository.sumByLotId(lotId);
+            } else {
+                total = mortRepository.findAll().stream()
+                        .mapToLong(Mort::getNombre)
+                        .sum();
+            }
+            return total != null ? total.intValue() : 0;
+        }
+
+        LocalDate dateDebut = debut != null ? debut : LocalDate.of(1900, 1, 1);
+        LocalDate dateFin = fin != null ? fin : LocalDate.of(9999, 12, 31);
+
+        if (hasLot) {
+            total = mortRepository.sumByLotIdAndDateBetween(lotId, dateDebut, dateFin);
         } else {
-            total = mortRepository.sumByDateBetween(debut, fin);
+            total = mortRepository.sumByDateBetween(dateDebut, dateFin);
         }
         return total != null ? total.intValue() : 0;
+    }
+
+    public Integer getTotalInitial(Integer lotId) {
+        if (lotId != null && lotId > 0) {
+            Lot lot = lotService.findById(lotId);
+            return lot != null && lot.getNombreInitial() != null ? lot.getNombreInitial() : 0;
+        }
+
+        return lotService.getAllLots().stream()
+                .map(Lot::getNombreInitial)
+                .filter(nombre -> nombre != null)
+                .mapToInt(Integer::intValue)
+                .sum();
     }
 
     public Integer getVivants(Integer lotId) {
