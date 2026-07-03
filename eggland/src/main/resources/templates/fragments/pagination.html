@@ -2,7 +2,7 @@
     <div style="display: flex; align-items: center; gap: 20px; justify-content: center; margin-top: 20px;">
         
         <form th:action="@{${url}}" method="get">
-            <label>Lignes par page :</label>
+            <label>Lignes :</label>
             <select name="size" onchange="this.form.submit()">
                 <option th:value="5" th:selected="${size == 5}">5</option>
                 <option th:value="10" th:selected="${size == 10}">10</option>
@@ -11,11 +11,21 @@
             <input type="hidden" name="page" value="0" />
         </form>
 
-        <nav>
-            <a th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-               th:href="@{${url}(page=${i}, size=${size})}"
-               th:text="${i + 1}"
-               th:style="${i == currentPage} ? 'font-weight:bold; color:red; padding: 5px;' : 'padding: 5px;'">
+        <nav style="display: flex; gap: 10px;">
+            <a th:if="${currentPage > 0}" 
+               th:href="@{${url}(page=${currentPage - 1}, size=${size})}"
+               style="padding: 8px 12px; background: #eee; border-radius: 5px; text-decoration: none; color: black;">
+               « Précédent
+            </a>
+
+            <span style="align-self: center;">
+                Page <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
+            </span>
+
+            <a th:if="${currentPage < totalPages - 1}" 
+               th:href="@{${url}(page=${currentPage + 1}, size=${size})}"
+               style="padding: 8px 12px; background: #eee; border-radius: 5px; text-decoration: none; color: black;">
+               Suivant »
             </a>
         </nav>
     </div>
