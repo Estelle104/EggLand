@@ -1,0 +1,14 @@
+<div class="pagination-container" style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
+    
+    <a th:if="${currentPage > 0}" 
+       th:href="@{/batiments(page=${currentPage - 1}, size=${size})}">Précédent</a>
+
+    <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+        <a th:href="@{/batiments(page=${i}, size=${size})}" 
+           th:text="${i + 1}"
+           th:style="${i == currentPage} ? 'font-weight:bold; color:var(--primary);' : ''"></a>
+    </span>
+
+    <a th:if="${currentPage < totalPages - 1}" 
+       th:href="@{/batiments(page=${currentPage + 1}, size=${size})}">Suivant</a>
+</div>
