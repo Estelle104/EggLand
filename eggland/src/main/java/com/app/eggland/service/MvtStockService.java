@@ -91,6 +91,8 @@ public class MvtStockService {
     public BigDecimal calculerStockActuel(Integer nourritureId) {
         BigDecimal entrees = mvtStockRepository.sumQuantiteByNourritureAndType(nourritureId, getTypeEntree());
         BigDecimal sorties = mvtStockRepository.sumQuantiteByNourritureAndType(nourritureId, getTypeSortie());
-        return entrees.subtract(sorties);
+        BigDecimal e = entrees != null ? entrees : BigDecimal.ZERO;
+        BigDecimal s = sorties != null ? sorties : BigDecimal.ZERO;
+        return e.subtract(s);
     }
 }
