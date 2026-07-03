@@ -1,14 +1,23 @@
 package com.app.eggland.service;
 
+import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.app.eggland.repository.MvtArgentRepository;
+import com.app.eggland.service.OeufService;
+import com.app.eggland.service.FinanceService;
 
 @Service
 public class SimulationService {
     @Autowired
     private OeufService oeufService;
+    @Autowired
+    private MvtArgentRepository mvtArgentRepository;
+    @Autowired
+    private FinanceService financeService;
 
     public int runSimulation(Date dateFin,int nombreOeufs,int prixUnitaire){
         int nombreDeJours = calculDate(dateFin);
@@ -25,6 +34,7 @@ public class SimulationService {
         
         return chiffreAffaire;
     }
+
     public int calculDate(Date dateFin) {
 
         Date aujourdHui = new Date(System.currentTimeMillis());
@@ -38,4 +48,14 @@ public class SimulationService {
         return joursTravail+1;
     }
 
+    public BigDecimal getDepenseNourriture(LocalDate debut, LocalDate fin) {
+        return mvtArgentRepository.sumDepensesByCategorieBetweenDates("achat_nourriture", debut, fin);
+    }
+    public BigDecimal getChiffreAffaires(LocalDate debut, LocalDate fin) {
+        return financeService.getTotalRecettes(debut, fin);
+    }
+    public BigDecimal getBeneficeNet(LocalDate debut, LocalDate fin) {
+        return financeService.getBeneficeNet(debut, fin);
+}
+    
 }

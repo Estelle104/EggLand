@@ -1,0 +1,18 @@
+.btn-simuler {
+    background: #8a4a1d;
+    color: white;
+    text-decoration: none;
+    padding: 12px 22px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 2px 5px rgba(138, 74, 29, 0.2);
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-simuler:hover {
+    background: #733b17;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(138, 74, 29, 0.3);
+}

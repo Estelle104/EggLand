@@ -39,4 +39,7 @@ public interface MvtArgentRepository extends JpaRepository<MvtArgent, Integer> {
             ORDER BY TO_CHAR(m.date, 'YYYY-MM')
             """, nativeQuery = true)
     List<Object[]> sumMontantByMoisBetweenDates(@Param("typeCode") String typeCode, @Param("debut") LocalDate debut, @Param("fin") LocalDate fin);
+
+    @Query("SELECT COALESCE(SUM(m.montant), 0) FROM MvtArgent m WHERE m.type.code = 'sortie' AND m.categorie = :cat AND m.date BETWEEN :debut AND :fin")
+    BigDecimal sumDepensesByCategorieBetweenDates(@Param("cat") String cat, @Param("debut") LocalDate debut, @Param("fin") LocalDate fin);
 }

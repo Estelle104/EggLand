@@ -1,6 +1,8 @@
 package com.app.eggland.controller;
 
+import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,7 +20,14 @@ public class SimulationController {
 
     @GetMapping("/simulation")
     public String simulation(Model model) {
+        model.addAttribute("dateDebut", LocalDate.now());
         return "simulation/simulation";
+    }
+
+    @GetMapping("/simulation/chiffre-affaire")
+    public String chiffreAffaireForm(Model model) {
+        model.addAttribute("dateDebut", LocalDate.now());
+        return "simulation/chiffre-affaire";
     }
 
     @PostMapping("/simulation")
@@ -30,4 +39,18 @@ public class SimulationController {
         model.addAttribute("resultat", resultat);
         return "simulation/simulation";
     }
+
+    @PostMapping("/simulation/chiffre-affaire")
+    public String runSimulationChiffreAffaire(Model model,
+                                @RequestParam("dateDebut") LocalDate dateDebut,
+                                @RequestParam("dateFin") LocalDate dateFin) {
+
+        LocalDate debut = dateDebut != null ? dateDebut : LocalDate.now();
+        model.addAttribute("chiffreAffaires", simulationService.getChiffreAffaires(debut, dateFin));
+        model.addAttribute("depenseNourriture", simulationService.getDepenseNourriture(debut, dateFin));
+        model.addAttribute("beneficeNet", simulationService.getBeneficeNet(debut, dateFin));
+        return "simulation/chiffre-affaire";
+    }
+
+
 }
