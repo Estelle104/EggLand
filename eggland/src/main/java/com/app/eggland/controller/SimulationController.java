@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.app.eggland.dto.SimulationMortaliteResult;
@@ -19,6 +20,7 @@ import com.app.eggland.repository.RaceRepository;
 import com.app.eggland.service.SimulationService;
 
 @Controller
+@RequestMapping("/admin/simulation")
 public class SimulationController {
     @Autowired
     private SimulationService simulationService;
@@ -29,7 +31,7 @@ public class SimulationController {
     @Autowired
     private RaceRepository raceRepository;
 
-    @GetMapping("/simulation")
+    @GetMapping({"", "/"})
     public String simulation(Model model) {
         model.addAttribute("dateDebut", LocalDate.now());
         
@@ -44,13 +46,7 @@ public class SimulationController {
         return "simulation/simulation";
     }
 
-    @GetMapping("/simulation/chiffre-affaire")
-    public String chiffreAffaireForm(Model model) {
-        model.addAttribute("dateDebut", LocalDate.now());
-        return "simulation/chiffre-affaire";
-    }
-
-    @PostMapping("/simulation")
+    @PostMapping({"", "/"})
     public String runSimulation(Model model,
                                @RequestParam("date") Date dateFin,
                                @RequestParam("nbOeufs") int nombreOeufs,
@@ -99,7 +95,13 @@ public class SimulationController {
         return "simulation/simulation";
     }
 
-    @PostMapping("/simulation/chiffre-affaire")
+    @GetMapping("/chiffre-affaire")
+    public String simulationChiffreAffaire(Model model) {
+        model.addAttribute("dateDebut", LocalDate.now());
+        return "simulation/chiffre-affaire";
+    }
+
+    @PostMapping("/chiffre-affaire")
     public String runSimulationChiffreAffaire(Model model,
                                              @RequestParam("dateDebut") LocalDate dateDebut,
                                              @RequestParam("dateFin") LocalDate dateFin) {

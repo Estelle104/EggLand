@@ -19,7 +19,7 @@ public interface MortRepository extends JpaRepository<Mort, Integer>{
       @Query("SELECT SUM(m.nombre) FROM Mort m WHERE m.date BETWEEN :debut AND :fin")
       Long sumByDateBetween(@Param("debut") LocalDate debut, @Param("fin") LocalDate fin);
 
-      @Query("SELECT SUM(m.nombre) FROM Mort m WHERE m.lot.id = :lotId")
+      @Query("SELECT COALESCE(SUM(m.nombre), 0) FROM Mort m WHERE m.lot.id = :lotId")
       Long sumByLotId(@Param("lotId") Integer lotId);
       
 }

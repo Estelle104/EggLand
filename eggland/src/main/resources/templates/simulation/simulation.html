@@ -1,5 +1,7 @@
 <!DOCTYPE html>
+
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,24 +10,27 @@
     <link rel="stylesheet" th:href="@{/css/layout.css}">
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/simulation.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 </head>
 <body>
-    <div class="app">
-        <div th:replace="fragments/sidebar :: sidebar"></div>
-        <div class="main">
-            <div th:replace="fragments/header :: header"></div>
-            <div class="content">
+<div layout:fragment="content">
 
+
+    <div class="app">
+        <div class="main">
+            <div class="content">
                 <div class="page-header">
                     <h2>Simulation</h2>
                 </div>
 
                 <!-- SIMULATION DE PRODUCTION EXISTANTE -->
                 <div class="simulation-card">
+
                     <h3>Simulation de production</h3>
                     <form th:action="@{/simulation}" method="post" class="simulation-form">
+
                         <div class="form-group">
                             <label for="date">Date :</label>
                             <input type="date" id="date" name="date" required>
@@ -66,7 +71,8 @@
                         th:text="${lot.race.nom} + ' - ' + ${lot.nombreInitial} + ' poules'">
                 </option>
             </select>
-        </div>
+    
+    </div>
         
     
         <div class="form-group">
@@ -122,3 +128,6 @@
             </div>
         </div>
     </div>
+
+                
+    

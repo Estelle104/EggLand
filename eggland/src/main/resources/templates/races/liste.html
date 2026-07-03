@@ -16,7 +16,7 @@
 
                 <div class="page-header">
                     <h2 th:text="${pageTitle ?: 'Liste des races'}">Liste des races</h2>
-                    <a th:href="@{/races/nouveau}" class="btn-ajouter">
+                    <a th:href="@{/admin/races/nouveau}" class="btn-ajouter">
                         <i class="fa-solid fa-plus"></i> Nouvelle race
                     </a>
                 </div>
@@ -43,11 +43,11 @@
                                 <td th:text="${#numbers.formatDecimal(race.prixUnitaire, 0, 'WHITESPACE', 2, 'COMMA')} + ' Ar'"></td>
                                 <td th:text="${race.rendementMoyenMois}"></td>
                                 <td>
-                                    <a th:href="@{/races/edit/{id}(id=${race.id})}"
+                                    <a th:href="@{/admin/races/edit/{id}(id=${race.id})}"
                                        class="btn-action btn-modifier">
                                         <i class="fa-solid fa-pen"></i> Modifier
                                     </a>
-                                    <a th:href="@{/races/delete/{id}(id=${race.id})}"
+                                    <a th:href="@{/admin/races/delete/{id}(id=${race.id})}"
                                        class="btn-action btn-supprimer"
                                        onclick="return confirm('Supprimer cette race ?')">
                                         <i class="fa-solid fa-trash"></i> Supprimer

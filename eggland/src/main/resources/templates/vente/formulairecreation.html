@@ -22,7 +22,7 @@ layout:decorate="~{fragments/layout}">
             </div>
 
             <div class="card-form">
-                <form th:action="@{/ventes/creation}" method="post">
+                <form th:action="@{/admin/ventes/creation}" method="post">
 
                     <div class="form-group">
                         <label>Client</label>
@@ -58,7 +58,7 @@ layout:decorate="~{fragments/layout}">
                     </table>
                     
                     <div class="form-actions">
-                        <a th:href="@{/ventes/listevente}" class="btn-annuler">
+                        <a th:href="@{/admin/ventes/listevente}" class="btn-annuler">
                             <i class="fa-solid fa-xmark"></i> Annuler
                         </a>
                         <button type="submit" class="btn-enregistrer">

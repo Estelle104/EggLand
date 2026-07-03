@@ -27,6 +27,12 @@ public class MortService {
     @Autowired
     private NotificationService notificationService;
 
+    public Integer getTotalMortsParLot(Integer lotId) {
+        if (lotId == null || lotId <= 0) return 0;
+        Long total = mortRepository.sumByLotId(lotId);
+        return total != null ? total.intValue() : 0;
+    }
+
     public Integer getTotalMorts(Integer lotId, LocalDate debut, LocalDate fin) {
         Long total;
         if (lotId != null && lotId > 0) {
@@ -48,8 +54,8 @@ public class MortService {
             int vivants = lot.getNombreInitial() - morts - reformes;
             return Math.max(vivants, 0);
         }
-        List<Lot> lotsActifs = lotService.getAllLotsActifs();
-        int totalInitial = lotsActifs.stream().mapToInt(Lot::getNombreInitial).sum();
+        List<Lot> tousLesLots = lotService.getAllLots();
+        int totalInitial = tousLesLots.stream().mapToInt(Lot::getNombreInitial).sum();
         int totalMorts = mortRepository.findAll().stream().mapToInt(Mort::getNombre).sum();
         int totalReformes = reformeRepository.findAll().stream().mapToInt(Reforme::getNombre).sum();
         int vivants = totalInitial - totalMorts - totalReformes;
