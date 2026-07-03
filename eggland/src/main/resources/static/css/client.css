@@ -1,0 +1,66 @@
+:root {
+    --dark: #46220E;
+    --deep-brown: #93441A;
+    --card-brown: #B67332;
+    --accent: #DAAB3A;
+    --cream: #EEE6D8;
+}
+body {
+    background-color: var(--cream);
+    font-family: 'Inter', system-ui, sans-serif;
+    /* Permet de bien centrer la carte sur les grands écrans */
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+}
+h1, h2, h3 {
+    font-family: 'Playfair Display', serif;
+}
+/* La carte principale qui englobe tout */
+.main-card {
+    background-color: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    width: 100%;
+}
+.left-panel {
+    background-color: var(--dark);
+    color: white;
+    padding: 40px;
+}
+.right-panel {
+    background-color: white; /* Fond blanc pour le formulaire pour couper avec le fond crème du site */
+    padding: 40px;
+}
+.form-control, .form-select {
+    background-color: #F8F9FA;
+    border: 1px solid #E9ECEF;
+    padding: 12px 16px;
+    border-radius: 8px;
+}
+.form-control:focus, .form-select:focus {
+    background-color: white;
+    border-color: var(--card-brown);
+    box-shadow: 0 0 0 0.25rem rgba(182, 115, 50, 0.25);
+}
+.btn-submit {
+    background-color: var(--dark);
+    color: white;
+    padding: 14px 40px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+.btn-submit:hover {
+    background-color: var(--deep-brown);
+    transform: translateY(-2px);
+}
+.section-subtitle {
+    color: var(--accent);
+    font-size: 0.95rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
