@@ -31,7 +31,7 @@
                             <input type="month" name="mois" th:value="${moisSelectionne}" class="form-control form-control-sm" style="width:140px;">
                             <button type="submit" class="btn btn-outline" style="padding:6px 10px; font-size:12px;"><i class="fa-solid fa-file-excel"></i> XLSX</button>
                         </form>
-                        <a th:href="@{/employes/historique}" class="btn btn-outline">
+                        <a th:href="@{/admin/employes/historique}" class="btn btn-outline">
                             <i class="fa-solid fa-clock-rotate-left"></i> Historique
                         </a>
                     </div>
@@ -41,7 +41,7 @@
                     Message d'erreur
                 </div>
 
-                <form class="filters-bar" method="get" th:action="@{/employes/recap}">
+                <form class="filters-bar" method="get" th:action="@{/admin/employes/recap}">
                     <select name="mois" onchange="this.form.submit()">
                         <option th:each="m : ${listeMois}" th:value="${m.value}" th:text="${m.label}"
                                 th:selected="${m.value == moisSelectionne}">Juin 2026</option>
@@ -139,7 +139,7 @@
                 <span th:text="${#numbers.formatDecimal(r.montantVerse, 0, 'WHITESPACE', 0, 'COMMA')} + ' Ar'">300 000 Ar</span>
             </div>
 
-            <form th:action="@{/employes/{id}/verser(id=${r.employe.id})}" method="post" style="margin-top:16px;">
+            <form th:action="@{/admin/employes/{id}/verser(id=${r.employe.id})}" method="post" style="margin-top:16px;">
                 <input type="hidden" name="mois" th:value="${moisSelectionne}">
 
                 <div class="form-group">

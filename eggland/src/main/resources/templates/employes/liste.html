@@ -20,10 +20,10 @@
             <div th:replace="fragments/header :: header"></div>
             <div class="content">
 
-                <a th:href="@{/employes/recap}" class="btn btn-sm">Voir les recap</a>
+                <a th:href="@{/admin/employes/recap}" class="btn btn-sm">Voir les recap</a>
                 <div class="page-header">
                     <h2>Gestion des Employés</h2>
-                    <a th:href="@{/employes/nouveau}" class="btn btn-primary">
+                    <a th:href="@{/admin/employes/nouveau}" class="btn btn-primary">
                         <i class="fa-solid fa-plus"></i> Nouvel employé
                     </a>
                 </div>
@@ -124,7 +124,7 @@
                 <button type="button" class="modal-close" onclick="closeModals()">&times;</button>
             </div>
 
-            <form th:action="@{/employes/{id}/modifier(id=${e.id})}" method="post">
+            <form th:action="@{/admin/employes/{id}/modifier(id=${e.id})}" method="post">
                 <div class="form-group">
                     <label>Nom</label>
                     <input type="text" th:value="${e.nom}" name="nom" required>
@@ -157,7 +157,7 @@
                 </div>
             </form>
 
-            <form th:id="'form-delete-' + ${e.id}" th:action="@{/employes/{id}/supprimer(id=${e.id})}" method="post" style="display:none;"></form>
+            <form th:id="'form-delete-' + ${e.id}" th:action="@{/admin/employes/{id}/supprimer(id=${e.id})}" method="post" style="display:none;"></form>
         </div>
     </div>
 

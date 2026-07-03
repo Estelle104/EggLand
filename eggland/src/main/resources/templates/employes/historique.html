@@ -22,12 +22,12 @@
 
                 <div class="page-header">
                     <h2>Historique des Paiements</h2>
-                    <a th:href="@{/employes}" class="btn btn-outline">
+                    <a th:href="@{/admin/employes}" class="btn btn-outline">
                         <i class="fa-solid fa-arrow-left"></i> Retour
                     </a>
                 </div>
 
-                <form class="filters-bar" method="get" th:action="@{/employes/historique}">
+                <form class="filters-bar" method="get" th:action="@{/admin/employes/historique}">
                     <select name="mois" onchange="this.form.submit()">
                         <option value="">Tous les mois</option>
                         <option th:each="m : ${listeMois}" th:value="${m.value}" th:text="${m.label}"

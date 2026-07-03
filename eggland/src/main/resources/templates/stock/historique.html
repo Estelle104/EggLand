@@ -13,11 +13,11 @@
 
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
                     <h2 style="color:var(--text); font-size:22px; margin:0;">Historique des mouvements</h2>
-                    <a th:href="@{/stock}" class="btn-retour"><i class="fa-solid fa-arrow-left"></i> Retour au stock</a>
+                    <a th:href="@{/admin/stock}" class="btn-retour"><i class="fa-solid fa-arrow-left"></i> Retour au stock</a>
                 </div>
 
                 <div class="card-filtres">
-                    <form class="filtres-form" th:action="@{/stock/historique}" method="get">
+                    <form class="filtres-form" th:action="@{/admin/stock/historique}" method="get">
                         <div class="filtre-group">
                             <label>Nourriture</label>
                             <select name="nourritureId">

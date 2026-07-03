@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<html lang="fr"      xmlns:th="http://www.thymeleaf.org" 
+      layout:decorate="~{fragments/layout}">>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,17 +13,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 <body>
-<div class="app">
-    <div th:replace="fragments/sidebar :: sidebar"></div>
+<div layout:fragment="content">
     <div class="main">
-        <div th:replace="fragments/header :: header"></div>
         <div class="content">
-
             <div class="page-header">
                 <h2><i class="fa-solid fa-receipt"></i> Détail de la vente <span th:text="'#' + ${vente.id}"></span></h2>
-
             </div>
-
             <div class="card detail-page">
                 <div class="detail-info-grid">
                     <div class="detail-info-item">
@@ -69,7 +65,7 @@
                 </table>
 
                 <div class="form-actions">
-                    <a th:href="@{/ventes/listevente}" class="btn-annuler">
+                    <a th:href="@{/admin/ventes/listevente}" class="btn-annuler">
                         <i class="fa-solid fa-arrow-left"></i> Retour à la liste
                     </a>
                 </div>
