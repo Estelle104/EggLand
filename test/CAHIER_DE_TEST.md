@@ -64,18 +64,63 @@
                 
                 
     - **Module stock**
-        -
-        
+        - Sortie nourriture
+            - *Reponse :* **Non ok** : 
+                - Possible alors que quantite de nourriture vide (quantite negatif)
+                - On peut faire un entree dans le futur
+        - Entree nourriture
+            - *Reponse:* **Non ok** : 
+                - On peut faire un entree dans le futur
+        - Historique
+            - *Reponse:* **Ok** 
     - **Module finance**
-        -
+        - Cadre d'information
+            - **Ok**
+        - Barchart 
+            - **Ok**
+        - Repartition
+            - **Non ok** :
+                - titre de chaque categorie de depense/recette a modifier
+        - Cout de revient par lot
+            - **?**
         
     - **Module export/import**
-        -
+        - Importation des ventes
+            - **A voir**
+        - Exportation pdf de bon livraison a une date
+            - *Reponse :* **OK**
+        - Exportation excel d'oeufs
+            - *Reponse :* **Erreur**
+                - Erreur par rapport aux races
+        - Exportation excel mouvement stock
+            - *Reponse :* **Ok**
+        - Exportation excel paiement salaire
+            - *Reponse :* **Non ok** : 
+                - sans detail des autres paiement (juste le dernier)
         
     - **Module livraisons**
-        -
+        - Insertion Livraison
+            - *Reponse :* **Non ok** :
+                - On peut encore choisir le statut
+        - Liste des livraisons
+            - *Reponse :* **Non ok** :
+                - Le statut devrait etre modifiable
+        - Filtre
+            - *Reponse :* **Ok**
+        - Recherche par nom de client
+            - *Reponse :* **Ok**
         
     - **Module vente**
-        -
+        - Insertion Vente
+            - *Reponse :* **Non ok** : 
+                - Le nombre de poulet du lot, apres vente ne change pas
+                - On peut vendre des poules dans des lot encore actif (a discuter)
+        - Liste vente
+            - *Reponse :* **Ok**
+        - Details vente
+            - *Reponse :* **Ok**
+        - Modification Vente
+            - *Reponse :* **Non ok**
+                - Meme issue que l'insertion mais modification marche
     
 

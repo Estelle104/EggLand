@@ -15,7 +15,7 @@ import com.app.eggland.model.Batiment;
 import com.app.eggland.service.BatimentService;
 
 @Controller
-@RequestMapping("/batiments")
+@RequestMapping("/admin/batiments")
 public class BatimentController {
     @Autowired
     private BatimentService batimentService;
@@ -37,7 +37,7 @@ public class BatimentController {
     @PostMapping("/save")
     public String save(@ModelAttribute Batiment batiment) {
         batimentService.save(batiment);
-        return "redirect:/batiments";
+        return "redirect:/admin/batiments";
     }
 
     @GetMapping("/edit/{id}")
@@ -56,6 +56,6 @@ public class BatimentController {
         } catch (DataIntegrityViolationException e) {
             ra.addFlashAttribute("error", "Impossible de supprimer : ce bâtiment est lié à des lots.");
         }
-        return "redirect:/batiments";
+        return "redirect:/admin/batiments";
     }
 }

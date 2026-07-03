@@ -1,6 +1,7 @@
 package com.app.eggland.controller;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,22 +15,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.app.eggland.model.Client;
-import com.app.eggland.model.DetailVente;
 import com.app.eggland.model.Vente;
-import com.app.eggland.model.Lot;
-import com.app.eggland.model.ProduitVente;
 import com.app.eggland.service.ClientService;
 import com.app.eggland.service.DetailVenteService;
 import com.app.eggland.service.LotService;
 import com.app.eggland.service.VenteService;
 
-import java.time.LocalDate;
-import com.app.eggland.model.StatutVente;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/admin/ventes")
-
 public class VenteController {
     @Autowired
     private VenteService venteService;
@@ -42,44 +37,44 @@ public class VenteController {
 
     @Autowired
     private ClientService clientService;
-    
-    // @GetMapping
-    // public String afficherVentes() {
-    //     return "redirect:/ventes/listevente";
-    // }
 
-    @GetMapping
+    @GetMapping({"", "/"})
+    public String afficherVentes() {
+        return "redirect:/admin/ventes/listevente";
+    }
+
+    @GetMapping("/listevente")
     public String listeVente(
-            @RequestParam(value = "clientId",  required = false) Integer clientId,
-            @RequestParam(value = "statutId",  required = false) Integer statutId,
-            @RequestParam(value = "dateDebut", required = false) String  dateDebutStr,
-            @RequestParam(value = "dateFin",   required = false) String  dateFinStr,
+            @RequestParam(value = "clientId", required = false) Integer clientId,
+            @RequestParam(value = "statutId", required = false) Integer statutId,
+            @RequestParam(value = "dateDebut", required = false) String dateDebutStr,
+            @RequestParam(value = "dateFin", required = false) String dateFinStr,
             Model model) {
 
         LocalDate dateDebut = (dateDebutStr != null && !dateDebutStr.isBlank())
-                              ? LocalDate.parse(dateDebutStr) : null;
-        LocalDate dateFin   = (dateFinStr   != null && !dateFinStr.isBlank())
-                              ? LocalDate.parse(dateFinStr)   : null;
+                ? LocalDate.parse(dateDebutStr) : null;
+        LocalDate dateFin = (dateFinStr != null && !dateFinStr.isBlank())
+                ? LocalDate.parse(dateFinStr) : null;
 
         boolean filtreActif = clientId != null || statutId != null
-                              || dateDebut != null || dateFin != null;
+                || dateDebut != null || dateFin != null;
 
         List<Vente> ventes = filtreActif
-            ? venteService.filtrerVentes(clientId, statutId, dateDebut, dateFin)
-            : venteService.listeVente();
+                ? venteService.filtrerVentes(clientId, statutId, dateDebut, dateFin)
+                : venteService.listeVente();
 
-        model.addAttribute("ventes",    ventes);
-        model.addAttribute("clients",   clientService.listeClient());
-        model.addAttribute("statuts",   venteService.listeStatutVente());
-        model.addAttribute("clientIdSelectionne",  clientId);
-        model.addAttribute("statutIdSelectionne",  statutId);
+        model.addAttribute("ventes", ventes);
+        model.addAttribute("clients", clientService.listeClient());
+        model.addAttribute("statuts", venteService.listeStatutVente());
+        model.addAttribute("clientIdSelectionne", clientId);
+        model.addAttribute("statutIdSelectionne", statutId);
         model.addAttribute("dateDebutSelectionnee", dateDebutStr);
-        model.addAttribute("dateFinSelectionnee",   dateFinStr);
+        model.addAttribute("dateFinSelectionnee", dateFinStr);
         model.addAttribute("hideSearch", true);
         return "vente/listeVente";
     }
 
-    @GetMapping("creation")
+    @GetMapping("/creation")
     public String creationVente(Model model) {
         model.addAttribute("produits", venteService.listeProduitVente());
         model.addAttribute("vente", new Vente());
@@ -88,8 +83,7 @@ public class VenteController {
         return "vente/formulairecreation";
     }
 
-    
-    @PostMapping("creation")
+    @PostMapping("/creation")
     public String creerVente(HttpServletRequest request, RedirectAttributes ra) {
         try {
             String clientNom = request.getParameter("clientNom");
@@ -104,19 +98,19 @@ public class VenteController {
             }
 
             String[] produitIdsStr = request.getParameterValues("produitId");
-            String[] quantitesStr  = request.getParameterValues("quantite");
-            String[] prixStr       = request.getParameterValues("prixUnitaire");
-            String[] lotIdsStr     = request.getParameterValues("lotId");
+            String[] quantitesStr = request.getParameterValues("quantite");
+            String[] prixStr = request.getParameterValues("prixUnitaire");
+            String[] lotIdsStr = request.getParameterValues("lotId");
 
             if (produitIdsStr == null || produitIdsStr.length == 0) {
                 ra.addFlashAttribute("error", "Ajoutez au moins une ligne de vente.");
                 return "redirect:/admin/ventes/creation";
             }
 
-            List<Integer>    produitIds = new ArrayList<>();
-            List<BigDecimal> quantites  = new ArrayList<>();
-            List<BigDecimal> prix       = new ArrayList<>();
-            List<Integer>    lotIds     = new ArrayList<>();
+            List<Integer> produitIds = new ArrayList<>();
+            List<BigDecimal> quantites = new ArrayList<>();
+            List<BigDecimal> prix = new ArrayList<>();
+            List<Integer> lotIds = new ArrayList<>();
 
             for (int i = 0; i < produitIdsStr.length; i++) {
                 if (produitIdsStr[i] == null || produitIdsStr[i].isBlank()) continue;
@@ -153,8 +147,7 @@ public class VenteController {
         return "redirect:/admin/ventes";
     }
 
-   
-    @PostMapping("supprimer")
+    @PostMapping("/supprimer")
     public String supprimerVente(@RequestParam("id") int id, RedirectAttributes ra) {
         try {
             venteService.supprimerVente(id);
@@ -162,16 +155,15 @@ public class VenteController {
         } catch (Exception e) {
             ra.addFlashAttribute("error", "Erreur suppression : " + e.getMessage());
         }
-        return "redirect:/admin/ventes";
+        return "redirect:/admin/ventes/listevente";
     }
 
- 
-    @PostMapping("modifier")
+    @PostMapping("/modifier")
     public String modifierVente(@RequestParam("id") int id, Model model, RedirectAttributes ra) {
         Vente vente = venteService.trouverVenteParId(id);
         if (vente == null) {
             ra.addFlashAttribute("error", "Vente introuvable.");
-            return "redirect:/admin/ventes";
+            return "redirect:/admin/ventes/listevente";
         }
         model.addAttribute("vente", vente);
         model.addAttribute("details", venteService.listeDetailVente(id));
@@ -181,15 +173,14 @@ public class VenteController {
         return "vente/formulaireModification";
     }
 
-  
-    @PostMapping("detail")
+    @PostMapping("/detail")
     public String detailVente(@RequestParam("id") int id,
-                               @RequestParam("clientId") int clientId,
-                               Model model, RedirectAttributes ra) {
+                              @RequestParam("clientId") int clientId,
+                              Model model, RedirectAttributes ra) {
         Vente vente = venteService.trouverVenteParId(id);
         if (vente == null) {
             ra.addFlashAttribute("error", "Vente introuvable.");
-            return "redirect:/ventes/listevente";
+            return "redirect:/admin/ventes/listevente";
         }
         model.addAttribute("vente", vente);
         model.addAttribute("details", venteService.listeDetailVente(id));
@@ -202,47 +193,50 @@ public class VenteController {
             String venteIdStr = request.getParameter("id");
             if (venteIdStr == null || venteIdStr.isBlank()) {
                 ra.addFlashAttribute("error", "Identifiant de vente manquant.");
-                return "redirect:/admin/ventes";
+                return "redirect:/admin/ventes/listevente";
             }
             int venteId = Integer.parseInt(venteIdStr);
 
             String clientIdStr = request.getParameter("clientId");
             if (clientIdStr == null || clientIdStr.isBlank()) {
                 ra.addFlashAttribute("error", "Veuillez sélectionner un client.");
-                return "redirect:/admin/ventes/modifier?id=" + venteId;
+                return "redirect:/admin/ventes/listevente";
             }
             Client client = clientService.trouverClientParId(Integer.parseInt(clientIdStr));
             if (client == null) {
                 ra.addFlashAttribute("error", "Client introuvable.");
-                return "redirect:/admin/ventes/modifier?id=" + venteId;
+                return "redirect:/admin/ventes/listevente";
             }
 
             String[] produitIdsStr = request.getParameterValues("produitId");
-            String[] quantitesStr  = request.getParameterValues("quantite");
-            String[] prixStr       = request.getParameterValues("prixUnitaire");
-            String[] lotIdsStr     = request.getParameterValues("lotId");
+            String[] quantitesStr = request.getParameterValues("quantite");
+            String[] prixStr = request.getParameterValues("prixUnitaire");
+            String[] lotIdsStr = request.getParameterValues("lotId");
 
             if (produitIdsStr == null || produitIdsStr.length == 0) {
                 ra.addFlashAttribute("error", "La vente doit contenir au moins une ligne.");
-                return "redirect:/admin/ventes/modifier?id=" + venteId;
+                return "redirect:/admin/ventes/listevente";
             }
 
-            List<Integer>    produitIds = new ArrayList<>();
-            List<BigDecimal> quantites  = new ArrayList<>();
-            List<BigDecimal> prix       = new ArrayList<>();
-            List<Integer>    lotIds     = new ArrayList<>();
+            List<Integer> produitIds = new ArrayList<>();
+            List<BigDecimal> quantites = new ArrayList<>();
+            List<BigDecimal> prix = new ArrayList<>();
+            List<Integer> lotIds = new ArrayList<>();
 
             for (int i = 0; i < produitIdsStr.length; i++) {
                 if (produitIdsStr[i] == null || produitIdsStr[i].isBlank()) continue;
-                if (quantitesStr == null || i >= quantitesStr.length || quantitesStr[i] == null || quantitesStr[i].isBlank()) continue;
-                if (prixStr == null || i >= prixStr.length || prixStr[i] == null || prixStr[i].isBlank()) continue;
+                if (quantitesStr == null || i >= quantitesStr.length
+                        || quantitesStr[i] == null || quantitesStr[i].isBlank()) continue;
+                if (prixStr == null || i >= prixStr.length
+                        || prixStr[i] == null || prixStr[i].isBlank()) continue;
 
                 produitIds.add(Integer.parseInt(produitIdsStr[i]));
                 quantites.add(new BigDecimal(quantitesStr[i]));
                 prix.add(new BigDecimal(prixStr[i]));
 
                 Integer lotId = null;
-                if (lotIdsStr != null && i < lotIdsStr.length && lotIdsStr[i] != null && !lotIdsStr[i].isBlank()) {
+                if (lotIdsStr != null && i < lotIdsStr.length
+                        && lotIdsStr[i] != null && !lotIdsStr[i].isBlank()) {
                     lotId = Integer.parseInt(lotIdsStr[i]);
                 }
                 lotIds.add(lotId);
@@ -250,7 +244,7 @@ public class VenteController {
 
             if (produitIds.isEmpty()) {
                 ra.addFlashAttribute("error", "Veuillez remplir correctement au moins une ligne complète.");
-                return "redirect:/admin/ventes/modifier?id=" + venteId;
+                return "redirect:/admin/ventes/listevente";
             }
 
             venteService.enregistrerModificationVente(venteId, produitIds, lotIds, quantites, prix, client);
@@ -258,9 +252,9 @@ public class VenteController {
 
         } catch (Exception e) {
             ra.addFlashAttribute("error", "Erreur lors de la modification : " + e.getMessage());
-            return "redirect:/admin/ventes";
+            return "redirect:/admin/ventes/listevente";
         }
 
-        return "redirect:/admin/ventes";
+        return "redirect:/admin/ventes/listevente";
     }
 }

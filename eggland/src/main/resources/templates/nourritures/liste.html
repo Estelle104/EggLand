@@ -15,7 +15,7 @@
 
                 <div class="page-header">
                     <h2 th:text="${pageTitle}">Liste des nourritures</h2>
-                    <a th:href="@{/nourritures/nouveau}" class="btn-ajouter"><i class="fa-solid fa-plus"></i> Nouvelle nourriture</a>
+                    <a th:href="@{/admin/nourritures/nouveau}" class="btn-ajouter"><i class="fa-solid fa-plus"></i> Nouvelle nourriture</a>
                 </div>
 
                 <div th:if="${error}" style="background:#f8d7da; color:#721c24; padding:12px 16px; border-radius:10px; margin-bottom:16px; font-size:14px;">
@@ -40,8 +40,8 @@
                                 <td th:text="${#numbers.formatDecimal(n.prixUnitaire, 0, 'WHITESPACE', 2, 'COMMA')} + ' Ar'"></td>
                                 <td th:text="${n.seuilAlerte}"></td>
                                 <td>
-                                    <a th:href="@{/nourritures/edit/{id}(id=${n.id})}" class="btn-action btn-modifier"><i class="fa-solid fa-pen"></i> Modifier</a>
-                                    <a th:href="@{/nourritures/delete/{id}(id=${n.id})}" class="btn-action btn-supprimer" onclick="return confirm('Supprimer cette nourriture ?')"><i class="fa-solid fa-trash"></i> Supprimer</a>
+                                    <a th:href="@{/admin/nourritures/edit/{id}(id=${n.id})}" class="btn-action btn-modifier"><i class="fa-solid fa-pen"></i> Modifier</a>
+                                    <a th:href="@{/admin/nourritures/delete/{id}(id=${n.id})}" class="btn-action btn-supprimer" onclick="return confirm('Supprimer cette nourriture ?')"><i class="fa-solid fa-trash"></i> Supprimer</a>
                                 </td>
                             </tr>
                         </tbody>
