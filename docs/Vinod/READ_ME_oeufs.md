@@ -44,6 +44,7 @@
 
 - **RO2 — Les erreurs métier sont des `IllegalArgumentException`.** Le service lève cette exception avec un message clair et destiné à l'utilisateur final. Le controller l'attrape et la transmet à la vue via `RedirectAttributes` (`flash attribute "erreur"`), jamais via une page d'erreur Spring générique.
 
+
 - **RO3 — Une vue = un seul objectif.**
   - `saisie.html` : Enregistrer un collecte des oeufs produit d'un lot a une date.
   - `stats.html` : Afficher le stock d'oeufs, les productions des 14 dernieres jours et le taux de ponte de chaque production par lot.
