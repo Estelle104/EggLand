@@ -49,6 +49,8 @@ public class SimulationController {
         model.addAttribute("chiffreAffaires", simulationService.getChiffreAffaires(debut, dateFin));
         model.addAttribute("depenseNourriture", simulationService.getDepenseNourriture(debut, dateFin));
         model.addAttribute("beneficeNet", simulationService.getBeneficeNet(debut, dateFin));
+        model.addAttribute("dateDebut", debut);
+        model.addAttribute("dateFin", dateFin);
         return "simulation/chiffre-affaire";
     }
 
