@@ -21,4 +21,5 @@ public interface MortRepository extends JpaRepository<Mort, Integer>{
 
       @Query("SELECT SUM(m.nombre) FROM Mort m WHERE m.lot.id = :lotId")
       Long sumByLotId(@Param("lotId") Integer lotId);
+      
 }
