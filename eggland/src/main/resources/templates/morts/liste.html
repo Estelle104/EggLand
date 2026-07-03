@@ -158,7 +158,6 @@
                 <table class="table-race">
                     <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Lot</th>
                         <th>Date</th>
                         <th>Nombre de morts</th>
@@ -167,7 +166,6 @@
                     </thead>
                     <tbody>
                     <tr th:each="mort : ${morts}">
-                        <td th:text="${mort.id}"></td>
                         <td th:text="'Lot #' + ${mort.lot.id}"></td>
                         <td th:text="${mort.date}"></td>
                         <td th:text="${mort.nombre}"></td>

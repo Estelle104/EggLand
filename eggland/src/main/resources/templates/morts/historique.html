@@ -15,6 +15,24 @@
     <style>
         .page-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
         .page-header h2 { color: var(--text); font-size: 22px; margin: 0; }
+        .btn-ajouter {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-ajouter:hover {
+            background: var(--hover);
+            color: white;
+        }
+
         .btn-link {
             background: linear-gradient(135deg, var(--primary), #a86a22);
             color: white;
@@ -63,6 +81,16 @@
         <div class="content">
             <div class="page-header">
                 <h2>Historique Mortalité (30 derniers jours)</h2>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <a th:href="@{/morts/liste}" class="btn-ajouter" style="background:#8d6e63;">
+                        <i class="fa-solid fa-list"></i>
+                        Liste
+                    </a>
+                    <a th:href="@{/morts/insertion}" class="btn-ajouter">
+                        <i class="fa-solid fa-plus"></i>
+                        Nouvelle mortalité
+                    </a>
+                </div>
             </div>
 
             <div class="filters">
@@ -81,10 +109,10 @@
                     <div class="stat-label">Morts totales (30j)</div>
                     <div class="stat-value" th:text="${#aggregates.sum(morts.![nombre]) != null ? #aggregates.sum(morts.![nombre]) : 0}">0</div>
                 </div>
-                <div class="stat-card">
+                <!--<div class="stat-card">
                     <div class="stat-label">Taux moyen</div>
                     <div class="stat-value">0%</div>
-                </div>
+                </div>-->
                 <div class="stat-card">
                     <div class="stat-label">Morts/jour moyen</div>
                     <div class="stat-value" th:text="${morts != null and !#lists.isEmpty(morts) ? #numbers.formatDecimal(#aggregates.sum(morts.![nombre]) / 30.0, 1, 2) : '0'}">0</div>

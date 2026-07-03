@@ -25,17 +25,20 @@ public class MortController {
     @Autowired
     private MortService mortService;
 
-    @GetMapping
+    @GetMapping("/liste")
     public String liste(Model model) {
         List<Mort> morts = mortService.findAll();
         Map<Integer, Integer> currentCounts = new HashMap<>();
+        int totalMorts = 0;
         for (Mort mort : morts) {
             currentCounts.put(mort.getId(), mortService.getNombreActuel(mort.getLot()));
+            totalMorts += mort.getNombre() == null ? 0 : mort.getNombre();
         }
 
         model.addAttribute("morts", morts);
         model.addAttribute("currentCounts", currentCounts);
-        model.addAttribute("pageTitle", "Liste des morts");
+        model.addAttribute("totalMorts", totalMorts);
+        model.addAttribute("pageTitle", "Nombre de morts par lot");
         return "morts/liste";
     }
 
