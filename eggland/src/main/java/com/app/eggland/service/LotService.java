@@ -243,8 +243,9 @@ public void reformerUnLot(Integer idLot, LocalDate dateReforme) {
     updateLot(lot); 
     System.out.println("Lot sauvegardé dans la base");
     
-    int totalMortsDejaEnregistrees = mortRepository.sumByLotId(idLot);
-    int nbrPoule = Math.max(lot.getNombreInitial() - totalMortsDejaEnregistrees, 0);
+    Long totalMortsDejaEnregistrees = mortRepository.sumByLotId(idLot);
+    int morts = totalMortsDejaEnregistrees != null ? totalMortsDejaEnregistrees.intValue() : 0;
+    int nbrPoule = Math.max(lot.getNombreInitial() - morts, 0);
     System.out.println("Nombre de poules à réformer: " + nbrPoule);
     
 
