@@ -15,14 +15,12 @@ layout:decorate="~{fragments/layout}">
 <body>
 <div layout:fragment="content">
     <div class="app">
-        <!-- <div th:replace="fragments/sidebar :: sidebar"></div> -->
         <div class="main">
-            <!-- <div th:replace="fragments/header :: header"></div> -->
             <div class="content">
                 
                 <div class="page-header">
                     <h2>Liste des ventes</h2>
-                    <a th:href="@{/ventes/creation}" class="btn-ajouter">
+                    <a th:href="@{/admin/ventes/creation}" class="btn-ajouter">
                         <i class="fa-solid fa-plus"></i> Ajouter une vente
                     </a>
                 </div>
@@ -36,7 +34,7 @@ layout:decorate="~{fragments/layout}">
                 </div>
                 
                 <div class="filtre-card">
-                    <form th:action="@{/ventes/listevente}" method="get" class="filtre-form">
+                    <form th:action="@{/admin/ventes/listevente}" method="get" class="filtre-form">
                         <div class="filtre-group">
                             <label for="f-client"><i class="fa-solid fa-user"></i> Client</label>
                             <select id="f-client" name="clientId">
@@ -77,7 +75,7 @@ layout:decorate="~{fragments/layout}">
                             <button type="submit" class="btn-filtrer">
                                 <i class="fa-solid fa-filter"></i> Filtrer
                             </button>
-                            <a th:href="@{/ventes/listevente}" class="btn-reset">
+                            <a th:href="@{/admin/ventes/listevente}" class="btn-reset">
                                 <i class="fa-solid fa-rotate-left"></i> Réinitialiser
                             </a>
                         </div>
@@ -112,20 +110,20 @@ layout:decorate="~{fragments/layout}">
                                     <span class="badge badge-gray"  th:if="${vente.statut == null}">N/A</span>
                                 </td>
                                 <td class="actions-cell">
-                                    <form th:action="@{/ventes/detail}" method="post" style="display:inline;">
+                                    <form th:action="@{/admin/ventes/detail}" method="post" style="display:inline;">
                                         <input type="hidden" name="id"       th:value="${vente.id}">
                                         <input type="hidden" name="clientId" th:value="${vente.client != null ? vente.client.id : 0}">
                                         <button type="submit" class="btn-action btn-detail" title="Voir détail">
                                             <i class="fa-solid fa-eye"></i>
                                         </button>
                                     </form>
-                                    <form th:action="@{/ventes/modifier}" method="post" style="display:inline;">
+                                    <form th:action="@{/admin/ventes/modifier}" method="post" style="display:inline;">
                                         <input type="hidden" name="id" th:value="${vente.id}">
                                         <button type="submit" class="btn-action btn-modifier" title="Modifier">
                                             <i class="fa-solid fa-pen"></i>
                                         </button>
                                     </form>
-                                    <form th:action="@{/ventes/supprimer}" method="post" style="display:inline;"
+                                    <form th:action="@{/admin/ventes/supprimer}" method="post" style="display:inline;"
                                     onsubmit="return confirm('Supprimer cette vente ?')">
                                         <input type="hidden" name="id" th:value="${vente.id}">
                                         <button type="submit" class="btn-action btn-supprimer" title="Supprimer">
