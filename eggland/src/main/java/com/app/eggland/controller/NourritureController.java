@@ -15,7 +15,7 @@ import com.app.eggland.model.Nourriture;
 import com.app.eggland.service.NourritureService;
 
 @Controller
-@RequestMapping("/nourritures")
+@RequestMapping("/admin/nourritures")
 public class NourritureController {
 
     @Autowired
@@ -38,7 +38,7 @@ public class NourritureController {
     @PostMapping("/save")
     public String save(@ModelAttribute Nourriture nourriture) {
         nourritureService.save(nourriture);
-        return "redirect:/nourritures";
+        return "redirect:/admin/nourritures";
     }
 
     @GetMapping("/edit/{id}")
@@ -57,6 +57,6 @@ public class NourritureController {
         } catch (DataIntegrityViolationException e) {
             ra.addFlashAttribute("error", "Impossible de supprimer : cette nourriture est liée à des mouvements de stock.");
         }
-        return "redirect:/nourritures";
+        return "redirect:/admin/nourritures";
     }
 }

@@ -1,15 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
 <head>
-    <title>Export / Import - Eggland</title>
-        <link rel="stylesheet" th:href="@{/css/variables.css}">
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
-    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
-    <link rel="stylesheet" th:href="@{/css/components.css}">
-     <link rel="stylesheet" th:href="@{/css/exports.css}">
-         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
+    <title>Export &amp; Import - Eggland</title>
+    <link rel="stylesheet" th:href="@{/css/exports.css}">
 </head>
 <body>
 <div layout:fragment="content">
@@ -94,7 +87,7 @@
                     </div>
                     <div class="card-body">
                         <div class="section-title">Liste des Ventes</div>
-                        
+
                         <form th:action="@{/admin/finance/import/liste-ventes}" method="post" enctype="multipart/form-data">
                             <div class="input-group input-group-sm mb-2">
                                 <input type="file" name="file" accept=".xlsx,.xls" class="form-control" required>
@@ -110,10 +103,11 @@
                             <h6 class="alert-heading">Importés (${importSuccessCount}) :</h6>
                             <ul class="mb-0 small"><li th:each="s : ${importSuccesses}" th:text="${s}"></li></ul>
                         </div>
-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-</div>
-
 </body>
 </html>

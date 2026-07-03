@@ -16,7 +16,7 @@ import com.app.eggland.service.MortService;
 import com.app.eggland.service.OeufProductionService;
 
 @Controller
-@RequestMapping("/dashboard")
+@RequestMapping("/admin/dashboard")
 public class DashboardController {
 
     @Autowired

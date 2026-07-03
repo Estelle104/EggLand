@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" 
+layout:decorate="~{fragments/layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,20 +13,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 <body>
-<div class="app">
-    <div th:replace="fragments/sidebar :: sidebar"></div>
-    <div class="main">
 
-        <div th:replace="fragments/header :: header"></div>
-
+<div layout:fragment="content">
         <div class="content">
-
+            
             <div th:if="${error}" class="alert alert-danger">
                 <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${error}"></span>
             </div>
 
             <div class="card-form">
-                <form th:action="@{/ventes/creation}" method="post">
+                <form th:action="@{/admin/ventes/creation}" method="post">
 
                     <div class="form-group">
                         <label>Client</label>
@@ -38,7 +35,7 @@
                             <i class="fa-solid fa-plus"></i> Ajouter une ligne
                         </button>
                     </div>
-
+                    
                     <table id="lignes-table">
                         <thead>
                             <tr>
@@ -59,9 +56,9 @@
                             </tr>
                         </tfoot>
                     </table>
-
+                    
                     <div class="form-actions">
-                        <a th:href="@{/ventes/listevente}" class="btn-annuler">
+                        <a th:href="@{/admin/ventes/listevente}" class="btn-annuler">
                             <i class="fa-solid fa-xmark"></i> Annuler
                         </a>
                         <button type="submit" class="btn-enregistrer">
@@ -71,15 +68,14 @@
 
                 </form>
             </div>
-
+            
         </div>
-    </div>
-</div>
 
-<script th:inline="javascript">
-    var produitsData = /*[[${produits}]]*/ [];
-    var lotsData     = /*[[${lots}]]*/ [];
-</script>
-<script th:src="@{/js/vente.js}"></script>
+    <script th:inline="javascript">
+        var produitsData = /*[[${produits}]]*/ [];
+        var lotsData     = /*[[${lots}]]*/ [];
+    </script>
+    <script th:src="@{/js/vente.js}"></script>
+</div>
 </body>
 </html>
