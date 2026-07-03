@@ -1,0 +1,156 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.app:eggland >---------------------------
+[INFO] Building  0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.1.0:run (default-cli) > test-compile @ eggland >>>
+[WARNING] The artifact com.itextpdf:itext7-core:pom:8.0.2 has been relocated to com.itextpdf:itext-core:pom:8.0.2
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ eggland ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 90 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ eggland ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ eggland ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ eggland ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:4.1.0:run (default-cli) < test-compile @ eggland <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:4.1.0:run (default-cli) @ eggland ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.0)
+
+2026-07-03T14:20:52.736+03:00  INFO 8276 --- [eggland] [  restartedMain] com.app.eggland.EgglandApplication       : Starting EgglandApplication using Java 21.0.6 with PID 8276 (E:\S4\Projet Mme Baovolo\tena izy\EggLand\eggland\target\classes started by mande in E:\S4\Projet Mme Baovolo\tena izy\EggLand\eggland)
+2026-07-03T14:20:52.738+03:00  INFO 8276 --- [eggland] [  restartedMain] com.app.eggland.EgglandApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-07-03T14:20:52.988+03:00  INFO 8276 --- [eggland] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-07-03T14:20:52.988+03:00  INFO 8276 --- [eggland] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-07-03T14:20:53.707+03:00  INFO 8276 --- [eggland] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-07-03T14:20:53.841+03:00  INFO 8276 --- [eggland] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 126 ms. Found 30 JPA repository interfaces.
+2026-07-03T14:20:54.393+03:00  INFO 8276 --- [eggland] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 1404 (http)
+2026-07-03T14:20:54.416+03:00  INFO 8276 --- [eggland] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-07-03T14:20:54.418+03:00  INFO 8276 --- [eggland] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-07-03T14:20:54.469+03:00  INFO 8276 --- [eggland] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1481 ms
+2026-07-03T14:20:54.641+03:00  INFO 8276 --- [eggland] [  restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-07-03T14:20:54.694+03:00  INFO 8276 --- [eggland] [  restartedMain] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.1.Final
+2026-07-03T14:20:55.078+03:00  INFO 8276 --- [eggland] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-07-03T14:20:55.113+03:00  INFO 8276 --- [eggland] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-07-03T14:20:55.294+03:00  INFO 8276 --- [eggland] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@21d2e2dd
+2026-07-03T14:20:55.294+03:00  INFO 8276 --- [eggland] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-07-03T14:20:55.374+03:00  INFO 8276 --- [eggland] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5432/eggland_db]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 17.9
+	Default catalog/schema: eggland_db/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-07-03T14:20:56.791+03:00  INFO 8276 --- [eggland] [  restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-07-03T14:20:56.887+03:00  INFO 8276 --- [eggland] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-07-03T14:20:56.956+03:00  INFO 8276 --- [eggland] [  restartedMain] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-07-03T14:20:58.600+03:00  WARN 8276 --- [eggland] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-07-03T14:20:58.690+03:00  INFO 8276 --- [eggland] [  restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
+2026-07-03T14:20:59.268+03:00  INFO 8276 --- [eggland] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 1404 (http) with context path '/'
+2026-07-03T14:20:59.274+03:00  INFO 8276 --- [eggland] [  restartedMain] com.app.eggland.EgglandApplication       : Started EgglandApplication in 7.061 seconds (process running for 7.875)
+2026-07-03T14:21:06.043+03:00  INFO 8276 --- [eggland] [nio-1404-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-07-03T14:21:06.043+03:00  INFO 8276 --- [eggland] [nio-1404-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-07-03T14:21:06.058+03:00  INFO 8276 --- [eggland] [nio-1404-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 15 ms
+Hibernate: select ua1_0.id,ua1_0.actif,ua1_0.email,ua1_0.mot_de_passe,ua1_0.nom,ua1_0.role from useradmin ua1_0 where ua1_0.email=?
+Hibernate: select c1_0.id,c1_0.adresse,c1_0.date_inscription,c1_0.email,c1_0.nom,c1_0.prenom,c1_0.id_statut,c1_0.tel from client c1_0 where c1_0.email=?
+Hibernate: select ru1_0.id,ru1_0.code from roleuser ru1_0 where ru1_0.id=?
+Hibernate: select sum(m1_0.nombre) from mort m1_0 where m1_0.date between ? and ?
+Hibernate: select l1_0.id,l1_0.age_semaine,l1_0.batiment_id,l1_0.date_arrivee,l1_0.nombre_initial,l1_0.race_id,l1_0.statut from lot l1_0
+Hibernate: select m1_0.id,m1_0.date,m1_0.lot_id,m1_0.nombre from mort m1_0
+Hibernate: select r1_0.id,r1_0.date,r1_0.lot_id,r1_0.nombre from reforme r1_0
+Hibernate: select l1_0.id,l1_0.age_semaine,l1_0.batiment_id,l1_0.date_arrivee,l1_0.nombre_initial,l1_0.race_id,l1_0.statut from lot l1_0
+Hibernate: select sum(op1_0.quantite) from oeufproduction op1_0 where op1_0.date=?
+Hibernate: select sum(op1_0.quantite) from oeufproduction op1_0
+Hibernate: select sum(os1_0.quantite) from oeufstatut os1_0 join statutoeuf s1_0 on s1_0.id=os1_0.id_statut where lower(s1_0.code) in ('vendu','casse','consomme')
+Hibernate: select sum(v1_0.total) from vente v1_0 where v1_0.date=?
+Hibernate: select sum(ma1_0.montant) from mvtargent ma1_0 join typemvt t1_0 on t1_0.id=ma1_0.id_type where t1_0.code=? and ma1_0.date between ? and ?
+Hibernate: select sum(ma1_0.montant) from mvtargent ma1_0 join typemvt t1_0 on t1_0.id=ma1_0.id_type where t1_0.code=? and ma1_0.date between ? and ?
+Hibernate: select count(l1_0.id) from livraison l1_0 join statutlivraison s1_0 on s1_0.id=l1_0.id_statut where s1_0.code=?
+Hibernate: select op1_0.date,sum(op1_0.quantite) from oeufproduction op1_0 where op1_0.date between ? and ? group by op1_0.date order by op1_0.date
+Hibernate: select l1_0.id,l1_0.age_semaine,l1_0.batiment_id,l1_0.date_arrivee,l1_0.nombre_initial,l1_0.race_id,l1_0.statut from lot l1_0
+2026-07-03T14:21:15.699+03:00  WARN 8276 --- [eggland] [io-1404-exec-10] actStandardFragmentInsertionTagProcessor : [THYMELEAF][http-nio-1404-exec-10][fragments/layout] Deprecated unwrapped fragment expression "fragments/sidebar :: sidebar" found in template fragments/layout, line 27, col 28. Please use the complete syntax of fragment expressions instead ("~{fragments/sidebar :: sidebar}"). The old, unwrapped syntax for fragment expressions will be removed in future versions of Thymeleaf.
+2026-07-03T14:21:15.725+03:00  WARN 8276 --- [eggland] [io-1404-exec-10] actStandardFragmentInsertionTagProcessor : [THYMELEAF][http-nio-1404-exec-10][fragments/layout] Deprecated unwrapped fragment expression "fragments/header :: header" found in template fragments/layout, line 34, col 17. Please use the complete syntax of fragment expressions instead ("~{fragments/header :: header}"). The old, unwrapped syntax for fragment expressions will be removed in future versions of Thymeleaf.
+Hibernate: select ua1_0.id,ua1_0.actif,ua1_0.email,ua1_0.mot_de_passe,ua1_0.nom,ua1_0.role from useradmin ua1_0 where ua1_0.email=?
+Hibernate: select c1_0.id,c1_0.adresse,c1_0.date_inscription,c1_0.email,c1_0.nom,c1_0.prenom,c1_0.id_statut,c1_0.tel from client c1_0 where c1_0.email=?
+Hibernate: select ru1_0.id,ru1_0.code from roleuser ru1_0 where ru1_0.id=?
+Hibernate: select sum(m1_0.nombre) from mort m1_0 where m1_0.date between ? and ?
+Hibernate: select l1_0.id,l1_0.age_semaine,l1_0.batiment_id,l1_0.date_arrivee,l1_0.nombre_initial,l1_0.race_id,l1_0.statut from lot l1_0
+Hibernate: select m1_0.id,m1_0.date,m1_0.lot_id,m1_0.nombre from mort m1_0
+Hibernate: select r1_0.id,r1_0.date,r1_0.lot_id,r1_0.nombre from reforme r1_0
+Hibernate: select l1_0.id,l1_0.age_semaine,l1_0.batiment_id,l1_0.date_arrivee,l1_0.nombre_initial,l1_0.race_id,l1_0.statut from lot l1_0
+Hibernate: select sum(op1_0.quantite) from oeufproduction op1_0 where op1_0.date=?
+Hibernate: select sum(op1_0.quantite) from oeufproduction op1_0
+Hibernate: select sum(os1_0.quantite) from oeufstatut os1_0 join statutoeuf s1_0 on s1_0.id=os1_0.id_statut where lower(s1_0.code) in ('vendu','casse','consomme')
+Hibernate: select sum(v1_0.total) from vente v1_0 where v1_0.date=?
+Hibernate: select sum(ma1_0.montant) from mvtargent ma1_0 join typemvt t1_0 on t1_0.id=ma1_0.id_type where t1_0.code=? and ma1_0.date between ? and ?
+Hibernate: select sum(ma1_0.montant) from mvtargent ma1_0 join typemvt t1_0 on t1_0.id=ma1_0.id_type where t1_0.code=? and ma1_0.date between ? and ?
+Hibernate: select count(l1_0.id) from livraison l1_0 join statutlivraison s1_0 on s1_0.id=l1_0.id_statut where s1_0.code=?
+Hibernate: select op1_0.date,sum(op1_0.quantite) from oeufproduction op1_0 where op1_0.date between ? and ? group by op1_0.date order by op1_0.date
+Hibernate: select l1_0.id,l1_0.age_semaine,l1_0.batiment_id,l1_0.date_arrivee,l1_0.nombre_initial,l1_0.race_id,l1_0.statut from lot l1_0
+2026-07-03T14:21:35.452+03:00  WARN 8276 --- [eggland] [nio-1404-exec-5] actStandardFragmentInsertionTagProcessor : [THYMELEAF][http-nio-1404-exec-5][fragments/layout] Deprecated unwrapped fragment expression "fragments/sidebar :: sidebar" found in template fragments/layout, line 27, col 28. Please use the complete syntax of fragment expressions instead ("~{fragments/sidebar :: sidebar}"). The old, unwrapped syntax for fragment expressions will be removed in future versions of Thymeleaf.
+2026-07-03T14:21:35.452+03:00  WARN 8276 --- [eggland] [nio-1404-exec-5] actStandardFragmentInsertionTagProcessor : [THYMELEAF][http-nio-1404-exec-5][fragments/layout] Deprecated unwrapped fragment expression "fragments/header :: header" found in template fragments/layout, line 34, col 17. Please use the complete syntax of fragment expressions instead ("~{fragments/header :: header}"). The old, unwrapped syntax for fragment expressions will be removed in future versions of Thymeleaf.
+Hibernate: select sum(m1_0.nombre) from mort m1_0 where m1_0.date between ? and ?
+Hibernate: select l1_0.id,l1_0.age_semaine,l1_0.batiment_id,l1_0.date_arrivee,l1_0.nombre_initial,l1_0.race_id,l1_0.statut from lot l1_0
+Hibernate: select m1_0.id,m1_0.date,m1_0.lot_id,m1_0.nombre from mort m1_0
+Hibernate: select r1_0.id,r1_0.date,r1_0.lot_id,r1_0.nombre from reforme r1_0
+Hibernate: select l1_0.id,l1_0.age_semaine,l1_0.batiment_id,l1_0.date_arrivee,l1_0.nombre_initial,l1_0.race_id,l1_0.statut from lot l1_0
+Hibernate: select sum(op1_0.quantite) from oeufproduction op1_0 where op1_0.date=?
+Hibernate: select sum(op1_0.quantite) from oeufproduction op1_0
+Hibernate: select sum(os1_0.quantite) from oeufstatut os1_0 join statutoeuf s1_0 on s1_0.id=os1_0.id_statut where lower(s1_0.code) in ('vendu','casse','consomme')
+Hibernate: select sum(v1_0.total) from vente v1_0 where v1_0.date=?
+Hibernate: select sum(ma1_0.montant) from mvtargent ma1_0 join typemvt t1_0 on t1_0.id=ma1_0.id_type where t1_0.code=? and ma1_0.date between ? and ?
+Hibernate: select sum(ma1_0.montant) from mvtargent ma1_0 join typemvt t1_0 on t1_0.id=ma1_0.id_type where t1_0.code=? and ma1_0.date between ? and ?
+Hibernate: select count(l1_0.id) from livraison l1_0 join statutlivraison s1_0 on s1_0.id=l1_0.id_statut where s1_0.code=?
+Hibernate: select op1_0.date,sum(op1_0.quantite) from oeufproduction op1_0 where op1_0.date between ? and ? group by op1_0.date order by op1_0.date
+Hibernate: select l1_0.id,l1_0.age_semaine,l1_0.batiment_id,l1_0.date_arrivee,l1_0.nombre_initial,l1_0.race_id,l1_0.statut from lot l1_0
+2026-07-03T14:27:56.637+03:00  WARN 8276 --- [eggland] [nio-1404-exec-9] actStandardFragmentInsertionTagProcessor : [THYMELEAF][http-nio-1404-exec-9][fragments/layout] Deprecated unwrapped fragment expression "fragments/sidebar :: sidebar" found in template fragments/layout, line 27, col 28. Please use the complete syntax of fragment expressions instead ("~{fragments/sidebar :: sidebar}"). The old, unwrapped syntax for fragment expressions will be removed in future versions of Thymeleaf.
+2026-07-03T14:27:56.637+03:00  WARN 8276 --- [eggland] [nio-1404-exec-9] actStandardFragmentInsertionTagProcessor : [THYMELEAF][http-nio-1404-exec-9][fragments/layout] Deprecated unwrapped fragment expression "fragments/header :: header" found in template fragments/layout, line 34, col 17. Please use the complete syntax of fragment expressions instead ("~{fragments/header :: header}"). The old, unwrapped syntax for fragment expressions will be removed in future versions of Thymeleaf.
+Hibernate: select ua1_0.id,ua1_0.actif,ua1_0.email,ua1_0.mot_de_passe,ua1_0.nom,ua1_0.role from useradmin ua1_0 where ua1_0.email=?
+Hibernate: select c1_0.id,c1_0.adresse,c1_0.date_inscription,c1_0.email,c1_0.nom,c1_0.prenom,c1_0.id_statut,c1_0.tel from client c1_0 where c1_0.email=?
+Hibernate: select ru1_0.id,ru1_0.code from roleuser ru1_0 where ru1_0.id=?
+Hibernate: select r1_0.id,r1_0.nom,r1_0.prix_unitaire,r1_0.rendement_moyen_mois from race r1_0
+2026-07-03T14:47:38.966+03:00  WARN 8276 --- [eggland] [nio-1404-exec-3] actStandardFragmentInsertionTagProcessor : [THYMELEAF][http-nio-1404-exec-3][fragments/layout] Deprecated unwrapped fragment expression "fragments/sidebar :: sidebar" found in template fragments/layout, line 27, col 28. Please use the complete syntax of fragment expressions instead ("~{fragments/sidebar :: sidebar}"). The old, unwrapped syntax for fragment expressions will be removed in future versions of Thymeleaf.
+2026-07-03T14:47:38.973+03:00  WARN 8276 --- [eggland] [nio-1404-exec-3] actStandardFragmentInsertionTagProcessor : [THYMELEAF][http-nio-1404-exec-3][fragments/layout] Deprecated unwrapped fragment expression "fragments/header :: header" found in template fragments/layout, line 34, col 17. Please use the complete syntax of fragment expressions instead ("~{fragments/header :: header}"). The old, unwrapped syntax for fragment expressions will be removed in future versions of Thymeleaf.
+Hibernate: select sum(m1_0.nombre) from mort m1_0 where m1_0.date between ? and ?
+Hibernate: select l1_0.id,l1_0.age_semaine,l1_0.batiment_id,l1_0.date_arrivee,l1_0.nombre_initial,l1_0.race_id,l1_0.statut from lot l1_0
+Hibernate: select m1_0.id,m1_0.date,m1_0.lot_id,m1_0.nombre from mort m1_0
+Hibernate: select r1_0.id,r1_0.date,r1_0.lot_id,r1_0.nombre from reforme r1_0
+Hibernate: select l1_0.id,l1_0.age_semaine,l1_0.batiment_id,l1_0.date_arrivee,l1_0.nombre_initial,l1_0.race_id,l1_0.statut from lot l1_0
+Hibernate: select sum(op1_0.quantite) from oeufproduction op1_0 where op1_0.date=?
+Hibernate: select sum(op1_0.quantite) from oeufproduction op1_0
+Hibernate: select sum(os1_0.quantite) from oeufstatut os1_0 join statutoeuf s1_0 on s1_0.id=os1_0.id_statut where lower(s1_0.code) in ('vendu','casse','consomme')
+Hibernate: select sum(v1_0.total) from vente v1_0 where v1_0.date=?
+Hibernate: select sum(ma1_0.montant) from mvtargent ma1_0 join typemvt t1_0 on t1_0.id=ma1_0.id_type where t1_0.code=? and ma1_0.date between ? and ?
+Hibernate: select sum(ma1_0.montant) from mvtargent ma1_0 join typemvt t1_0 on t1_0.id=ma1_0.id_type where t1_0.code=? and ma1_0.date between ? and ?
+Hibernate: select count(l1_0.id) from livraison l1_0 join statutlivraison s1_0 on s1_0.id=l1_0.id_statut where s1_0.code=?
+Hibernate: select op1_0.date,sum(op1_0.quantite) from oeufproduction op1_0 where op1_0.date between ? and ? group by op1_0.date order by op1_0.date
+Hibernate: select l1_0.id,l1_0.age_semaine,l1_0.batiment_id,l1_0.date_arrivee,l1_0.nombre_initial,l1_0.race_id,l1_0.statut from lot l1_0
+2026-07-03T14:47:41.835+03:00  WARN 8276 --- [eggland] [nio-1404-exec-8] actStandardFragmentInsertionTagProcessor : [THYMELEAF][http-nio-1404-exec-8][fragments/layout] Deprecated unwrapped fragment expression "fragments/sidebar :: sidebar" found in template fragments/layout, line 27, col 28. Please use the complete syntax of fragment expressions instead ("~{fragments/sidebar :: sidebar}"). The old, unwrapped syntax for fragment expressions will be removed in future versions of Thymeleaf.
+2026-07-03T14:47:41.837+03:00  WARN 8276 --- [eggland] [nio-1404-exec-8] actStandardFragmentInsertionTagProcessor : [THYMELEAF][http-nio-1404-exec-8][fragments/layout] Deprecated unwrapped fragment expression "fragments/header :: header" found in template fragments/layout, line 34, col 17. Please use the complete syntax of fragment expressions instead ("~{fragments/header :: header}"). The old, unwrapped syntax for fragment expressions will be removed in future versions of Thymeleaf.
+2026-07-03T15:38:41.716+03:00  WARN 8276 --- [eggland] [l-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=5m44s827ms811µs300ns).
+2026-07-03T15:43:27.183+03:00  WARN 8276 --- [eggland] [l-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m45s401ms965µs300ns).
+2026-07-03T15:49:53.353+03:00  WARN 8276 --- [eggland] [l-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=3m26s125ms874µs400ns).
+2026-07-03T15:58:21.405+03:00  WARN 8276 --- [eggland] [l-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=57s932ms903µs100ns).
