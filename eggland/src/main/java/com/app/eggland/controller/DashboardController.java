@@ -1,6 +1,7 @@
 package com.app.eggland.controller;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.app.eggland.model.Lot;
 import com.app.eggland.service.DashboardService;
 import com.app.eggland.service.MortService;
 import com.app.eggland.service.OeufProductionService;
@@ -40,7 +42,14 @@ public class DashboardController {
         Integer totalVivants = mortService.getVivants(lotId);
 
         if (lotId != null && lotId > 0) {
-            mortService.verifierSeuil(lotId, totalMorts);
+            Integer totalMortsLot = mortService.getTotalMortsParLot(lotId);
+            mortService.verifierSeuil(lotId, totalMortsLot);
+        } else {
+            List<Lot> lots = mortService.getAllLots();
+            for (Lot lot : lots) {
+                Integer totalMortsLot = mortService.getTotalMortsParLot(lot.getId());
+                mortService.verifierSeuil(lot.getId(), totalMortsLot);
+            }
         }
 
         model.addAttribute("oeufsJour", dashboardService.getOeufsJour());

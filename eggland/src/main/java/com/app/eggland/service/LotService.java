@@ -172,7 +172,6 @@ public class LotService {
 
         lotRepository.deleteById(id);
     }
-
     public  Lot findById(Integer idLot){
         return lotRepository.findById(idLot).orElse(null);
     }
@@ -184,6 +183,8 @@ public class LotService {
     public List<Lot> findByBatimentAndStatut(Batiment batiment,StatutLot statutLot){
         return lotRepository.findByBatimentAndStatut(batiment, statutLot);
     }
+
+ }
 
 
     @Transactional
