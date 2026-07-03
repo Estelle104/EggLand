@@ -29,8 +29,8 @@ public class DashboardService {
     private FinanceService financeService;
 
     public Integer getOeufsJour() {
-        Integer total = oeufProductionRepository.sumQuantiteByDate(LocalDate.now());
-        return total != null ? total : 0;
+        Long total = oeufProductionRepository.sumQuantiteByDate(LocalDate.now());
+        return total != null ? total.intValue() : 0;
     }
 
     public Integer getStockDisponible() {

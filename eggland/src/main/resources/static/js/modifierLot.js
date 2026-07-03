@@ -39,7 +39,7 @@ function createRaceRow(race = null, nombre = null) {
 document.querySelectorAll(".btn-modifier").forEach(button => {
 
     button.addEventListener("click", async function () {
-
+console.log("modifierLot.js chargé");
         const btn = this;
         const lotId = btn.dataset.id;
 
