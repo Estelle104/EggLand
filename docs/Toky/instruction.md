@@ -139,3 +139,9 @@ Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             }
         }
 ```
+
+***T1.5, T1.7***
+* `client/layout.html` : site vitrine + vue des clients connecter avec leur email afficher qui montre un dropdown `Deconnexion` + `Mon Espace` 
+* `client/inscription.html` : formulaire d'inscription des futurs client 
+* `login.html` : page de connexion client 
+* `stafflogin.html` : page de connexion pour le backoffice 
