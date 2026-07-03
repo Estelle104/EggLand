@@ -95,14 +95,14 @@ public class PdfExportService {
                     table.addCell(createCell(l.getDateLivraison().format(DATE_FMT), font, TextAlignment.CENTER));
                     table.addCell(createCell(adresse, font, TextAlignment.LEFT));
                     table.addCell(createCell(d.getProduit() != null ? d.getProduit().getCode() : "-", font, TextAlignment.CENTER));
-                    table.addCell(createCell(qty.toString(), font, TextAlignment.CENTER));
+                    table.addCell(createCell(qty.intValue() + "", font, TextAlignment.CENTER));
                 }
             }
         }
 
         document.add(table);
 
-        document.add(new Paragraph("\nTotal Quantité: " + totalQuantite + " | Total Montant: " + totalMontant + " Ar")
+        document.add(new Paragraph("Total Quantité: " + totalQuantite.intValue() + " | Total Montant: " + totalMontant + " Ar")
                 .setFont(fontBold).setFontSize(12).setTextAlignment(TextAlignment.RIGHT).setMarginTop(20));
 
         document.close();
