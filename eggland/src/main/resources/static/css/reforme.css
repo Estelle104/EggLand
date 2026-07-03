@@ -1,0 +1,125 @@
+/* Overlay */
+#reform-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+#reform-overlay.active {
+    display: flex;
+}
+
+/* Fenêtre */
+#reform-container {
+    width: 100%;
+    max-width: 450px;
+    /* background: #fff; */
+    border-radius: 15px;
+    /* box-shadow: 0 10px 25px rgba(0,0,0,.15); */
+    overflow: hidden;
+}
+
+/* Formulaire */
+.reform-form {
+    padding: 30px;
+}
+
+/* Titre */
+.reform-form h3 {
+    margin: 0 0 25px;
+    text-align: center;
+    color: #1f2937;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+/* Label */
+.reform-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Input */
+.reform-form input[type="date"] {
+    width: 100%;
+    height: 46px;
+    padding: 0 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: #f7f8fa;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: .2s;
+}
+
+.reform-form input[type="date"]:focus {
+    outline: none;
+    border-color: #8b4a1f;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(139,74,31,.15);
+}
+
+/* Boutons */
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+/* Bouton Valider */
+.btn-danger {
+    border: none;
+    background: #8b4a1f;
+    color: white;
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.btn-danger:hover {
+    background: #733b17;
+}
+
+/* Bouton Annuler */
+.btn-secondary {
+    border: 1px solid #d1d5db;
+    background: white;
+    color: #374151;
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.btn-secondary:hover {
+    background: #f3f4f6;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+    #reform-container {
+        width: calc(100% - 30px);
+    }
+
+    .modal-buttons {
+        flex-direction: column;
+    }
+
+    .btn-danger,
+    .btn-secondary {
+        width: 100%;
+    }
+}
