@@ -1,18 +1,43 @@
 package com.app.eggland.service;
 
-import com.app.eggland.model.*;
-import com.app.eggland.repository.*;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.app.eggland.model.Client;
+import com.app.eggland.model.DetailVente;
+import com.app.eggland.model.MvtStock;
+import com.app.eggland.model.OeufProduction;
+import com.app.eggland.model.PaiementSalaire;
+import com.app.eggland.model.ProduitVente;
+import com.app.eggland.model.StatutVente;
+import com.app.eggland.model.Vente;
+import com.app.eggland.repository.ClientRepository;
+import com.app.eggland.repository.DetailVenteRepository;
+import com.app.eggland.repository.MvtStockRepository;
+import com.app.eggland.repository.OeufProductionRepository;
+import com.app.eggland.repository.PaiementSalaireRepository;
+import com.app.eggland.repository.ProduitVenteRepository;
+import com.app.eggland.repository.StatutVenteRepository;
+import com.app.eggland.repository.VenteRepository;
 
 @Service
 public class ExcelExportService {
@@ -98,7 +123,7 @@ public class ExcelExportService {
                 row.createCell(1).setCellValue(m.getType().getCode());
                 row.createCell(2).setCellValue(m.getNourriture().getLibelle());
                 row.createCell(3).setCellValue(m.getLot() != null ? m.getLot().getId().toString() : "");
-                row.createCell(4).setCellValue(m.getQuantite().doubleValue());
+                row.createCell(4).setCellValue(m.getQuantite().intValue());
             }
 
             autoSizeColumns(sheet, 5);
