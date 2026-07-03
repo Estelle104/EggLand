@@ -93,6 +93,7 @@
 ### Service
 **Durée estimée : 1h**
 * `SimulationService`
+
 * [X] Faire la conversion de la date en jour (22 jour ouvrable)
 
 * [X] Prendre le stock actuelle
