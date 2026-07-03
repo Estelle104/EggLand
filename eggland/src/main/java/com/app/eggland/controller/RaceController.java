@@ -1,5 +1,7 @@
 package com.app.eggland.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.app.eggland.model.Race;
@@ -21,9 +24,20 @@ public class RaceController {
     private RaceService raceService;
 
     @GetMapping
-    public String liste(Model model) {
-        model.addAttribute("races", raceService.findAll());
+    public String liste(
+        @RequestParam(defaultValue = "1")int page,
+        @RequestParam(defaultValue = "10")int size,
+        Model model) {
+        List<Race> races = raceService.findAll();
+        int totalElements = races.size();
+        int totalPages = (int) Math.ceil((double) totalElements / size);
+        if (totalPages == 0) totalPages = 1;
+        List<Race> racesPage = raceService.getPage(races, page, size);
+        model.addAttribute("races", racesPage);
         model.addAttribute("pageTitle", "Liste des races");
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("size", size);
         return "races/liste";
     }
 

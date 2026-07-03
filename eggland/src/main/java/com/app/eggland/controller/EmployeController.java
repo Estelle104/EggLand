@@ -36,12 +36,16 @@ public class EmployeController {
         @RequestParam(defaultValue="1")int page,
         @RequestParam(defaultValue="5") int size,
         Model model) {
-        Pageable pageable = PageRequest.of(page,size);
-        Page<Employe> employesPage = employeService.listerTous(pageable);
+        List<Employe> employes = employeService.listerTous();
+        int totalElements = employes.size();
+        int totalPages = (int) Math.ceil((double) totalElements / size);
+        if (totalPages == 0) totalPages = 1;
+        List<Employe> employesPage = employeService.getPage(employes, page, size);
         model.addAttribute("employes", employesPage);
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages",employesPage.getTotalPages());
-        model.addAttribute("size",size);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("size", size);
+        model.addAttribute("pageTitle", "Liste des employés");
         return "employes/liste";
     }
 

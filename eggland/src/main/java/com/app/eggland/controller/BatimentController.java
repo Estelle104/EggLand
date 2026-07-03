@@ -1,5 +1,7 @@
 package com.app.eggland.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -29,15 +31,21 @@ public class BatimentController {
         @RequestParam(defaultValue = "0")int page,
         @RequestParam(defaultValue = "10")int size,
         Model model) {
-        Pageable pageable = PageRequest.of(page,size);
-        Page<Batiment> batimentsPage = batimentService.findAll(pageable);  
-        model.addAttribute("batiments", batimentsPage.getContent());
-        model.addAttribute("currentPage",page);
-        model.addAttribute("totalPages",batimentsPage.getTotalPages());
-        model.addAttribute("size",size);
+        List<Batiment> batiments = batimentService.findAll();
+        // 2. On calcule le nombre total de pages manuellement
+        int totalElements = batiments.size();
+        int totalPages = (int) Math.ceil((double) totalElements / size);
+        if (totalPages == 0) totalPages = 1;
+        
+        List<Batiment> batimentsPage = batimentService.getPage(batiments, page, size);
+        model.addAttribute("batiments", batimentsPage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("size", size);
         model.addAttribute("pageTitle", "Liste des bâtiments");
         return "batiments/liste";
     }
+
 
     @GetMapping("/nouveau")
     public String nouveau(Model model) {

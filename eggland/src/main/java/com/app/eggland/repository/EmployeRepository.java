@@ -12,5 +12,6 @@ import java.util.List;
 
 @Repository
 public interface EmployeRepository extends JpaRepository<Employe, Integer>{    
-    Page<Employe> findAllByOrderByNomAscPrenomAsc(Pageable pageable);
+    
+    List<Employe> findAllByOrderByNomAscPrenomAsc();
 }

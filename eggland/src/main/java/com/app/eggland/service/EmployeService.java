@@ -1,12 +1,10 @@
 package com.app.eggland.service;
 
+import com.app.eggland.model.Batiment;
 import com.app.eggland.model.Employe;
 import com.app.eggland.repository.EmployeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,8 +16,8 @@ public class EmployeService {
 
     private final EmployeRepository employeRepository;
 
-    public Page<Employe> listerTous(Pageable pageable) {
-        return employeRepository.findAllByOrderByNomAscPrenomAsc(pageable);
+    public List<Employe> listerTous() {
+        return employeRepository.findAllByOrderByNomAscPrenomAsc();
     }
 
     public Employe trouverParId(Integer id) {
@@ -56,5 +54,15 @@ public class EmployeService {
         if (dateEmbauche.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("La date d'embauche ne peut pas être dans le futur.");
         }
+    }
+
+    /*méthode pour la pagination*/
+    public List<Employe> getPage(List<Employe> employes, int page, int size) {
+        int start = page * size;
+        int end = Math.min(start + size, employes.size());
+        if (start > end) {
+            return List.of(); // Retourne une liste vide si la page demandée est hors limites
+        }
+        return employes.subList(start, end);
     }
 }
