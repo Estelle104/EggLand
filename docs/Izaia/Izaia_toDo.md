@@ -79,24 +79,25 @@
 * `OeufService`
 
 ### SimulationController
-* [] Appeler SimulationService
-* [] Envoyer le lient vers la page de simulation
+* [X] Appeler SimulationService
+* [X] Envoyer le lient vers la page de simulation
 
 
 ### Template 
-**Durée estimée : 1h30**
-* `simulation`
+**Durée estimée : 30 min**
+* `simulation.html`
 
-* [] ajouter une autre boutton sur le sidebar pour la simulation
-* [] ajouter un input pour entrer la date
-* [] ajouter un input pour entrer le nombre d'oeuf par jour
-* [] un boutton simuler pour calculer le chiffre d'affaire 
+* [X] prendre les donnees (date ,nbOeuf et prix unitaire)
+* [X] envoyer les donnees dans controller
 
 ### Service
-**Durée estimée : 1h30**
+**Durée estimée : 1h**
 * `SimulationService`
-* [] Prendre le stock actuelle
-* [] Ajouter la somme des nombres d'oeuf inserer dans le formulaire 
-* [] Prendre tous les depenses jusqu'a ce date 
-* [] Prendre les chiffres generer (rendement par Oeuf)
-* [] Calculer le chiffre d'affaire
+
+* [X] Faire la conversion de la date en jour (22 jour ouvrable)
+
+* [X] Prendre le stock actuelle
+
+* [X] Ajouter la somme des nombres d'oeuf inserer dans le formulaire avec le nombre de jour
+
+* [X] faire le calcul du chiffre d'affaire 

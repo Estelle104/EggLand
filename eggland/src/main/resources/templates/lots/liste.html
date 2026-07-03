@@ -1,13 +1,12 @@
 <!doctype html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" 
+      xmlns:th="http://www.thymeleaf.org" 
+      layout:decorate="~{fragments/layout}"> 
   <head>
     <meta charset="UTF-8" />
     <title>Gestion des Lots</title>
 
-    <link rel="stylesheet" th:href="@{/css/variables.css}" />
-    <link rel="stylesheet" th:href="@{/css/layout.css}" />
-    <link rel="stylesheet" th:href="@{/css/sidebar.css}" />
-    <link rel="stylesheet" th:href="@{/css/header.css}" />
+  
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
@@ -17,14 +16,10 @@
   </head>
 
   <body>
-    <div class="app">
-      <!-- Sidebar -->
-      <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    
+     <div layout:fragment="content">
 
       <div class="main">
-        <!-- Header -->
-        <div th:replace="~{fragments/header :: header}"></div>
-
         <div class="content">
           <div class="liste-header">
             <div>
@@ -204,14 +199,19 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <div id="reform-overlay">
-      <div id="reform-container"></div>
-    </div>
 
-    <script th:src="@{/js/reformer.js}"></script>
-    <script th:src="@{/js/modifierLot.js}"></script>
-    <script th:src="@{/js/menuLot.js}"></script>
-  </body>
+     
+      
+      
+      <div id="reform-overlay">
+        <div id="reform-container"></div>
+      </div>
+      
+      <script th:src="@{/js/reformer.js}"></script>
+      <script th:src="@{/js/modifierLot.js}"></script>
+      <script th:src="@{/js/menuLot.js}"></script>
+    </div>
+      
+    </body>
 </html>

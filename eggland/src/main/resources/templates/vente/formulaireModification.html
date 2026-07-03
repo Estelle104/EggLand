@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+ layout:decorate="~{fragments/layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,120 +13,121 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 <body>
-<div class="app">
-    <div th:replace="fragments/sidebar :: sidebar"></div>
-    <div class="main">
-        <div th:replace="fragments/header :: header" th:with="hideSearch=true"></div>
-        <div class="content">
+<div layout:fragment="content">
 
-            <div class="page-header">
-                <h2>Modifier la vente <span th:text="'#' + ${vente.id}"></span></h2>
+    <div class="app">
+        <div class="main">
+            <div class="content">
+
+                <div class="page-header">
+                    <h2>Modifier la vente <span th:text="'#' + ${vente.id}"></span></h2>
+                </div>
+                
+                <div th:if="${error}" class="alert alert-danger">
+                    <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${error}"></span>
+                </div>
+
+                <div class="card-form">
+                    <form th:action="@{/ventes/enregistrerModification}" method="post">
+                        <input type="hidden" name="id" th:value="${vente.id}">
+
+                        <div class="form-group">
+                            <label>Client</label>
+                            <select name="clientId" required>
+                                <option value="">Sélectionner un client</option>
+                                <th:block th:each="client : ${clients}">
+                                    <option th:value="${client.id}"
+                                            th:text="${client.nom}"
+                                            th:selected="${vente.client != null and vente.client.id == client.id}">
+                                    </option>
+                                </th:block>
+                            </select>
+                        </div>
+                        
+                        <!-- Lignes de détail existantes -->
+                        <div class="lignes-header">
+                            <h3>Lignes de vente</h3>
+                            <button type="button" class="btn-ajouter-ligne" id="btn-ajouter-ligne">
+                                <i class="fa-solid fa-plus"></i> Ajouter une ligne
+                            </button>
+                        </div>
+
+                        <table id="lignes-table">
+                            <thead>
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Lot</th>
+                                    <th>Quantité</th>
+                                    <th>Prix unitaire</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="lignes-tbody">
+                                <!-- Lignes existantes pré-remplies -->
+                                <tr th:each="d, iter : ${details}">
+                                    <td>
+                                        <select th:name="'produitId'" required>
+                                            <option value="">-- Produit --</option>
+                                            <th:block th:each="p : ${produits}">
+                                                <option th:value="${p.id}"
+                                                        th:text="${p.code}"
+                                                        th:selected="${d.produit != null and d.produit.id == p.id}">
+                                                    </option>
+                                                </th:block>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select th:name="'lotId'">
+                                            <option value="">-- Lot (si poulet) --</option>
+                                            <th:block th:each="l : ${lots}">
+                                                <option th:value="${l.id}"
+                                                        th:text="'Lot ' + ${l.id}">
+                                                </option>
+                                            </th:block>
+                                        </se
+lect>
+                                    </td>
+                                    <td>
+                                        <input type="number" th:name="'quantite'"
+                                        th:value="${d.quantite}" min="1" step="0.001" required>
+                                    </td>
+                                    <td>
+                                        <input type="number" th:name="'prixUnitaire'"
+                                        th:value="${d.prixUnitaire}" min="0" step="0.01" required>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn-supprimer-ligne" title="Supprimer">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2" style="border-bottom:none;"></td>
+                                    <td style="text-align:right; font-weight:700; padding:18px 12px; font-size:15px; color:var(--text);">Total :</td>
+                                    <td style="font-weight:700; padding:18px 12px; font-size:15px; color:var(--primary);" id="total-vente">
+                                        <span th:text="${vente.total != null ? vente.total + ' Ar' : '0.00 Ar'}"></span>
+                                    </td>
+                                    <td style="border-bottom:none;"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <div class="form-actions">
+                            <a th:href="@{/ventes/listevente}" class="btn-annuler">
+                                <i class="fa-solid fa-xmark"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn-enregistrer">
+                                <i class="fa-solid fa-save"></i> Enregistrer les modifications
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
             </div>
-
-            <div th:if="${error}" class="alert alert-danger">
-                <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${error}"></span>
-            </div>
-
-            <div class="card-form">
-                <form th:action="@{/ventes/enregistrerModification}" method="post">
-                    <input type="hidden" name="id" th:value="${vente.id}">
-
-                    <div class="form-group">
-                        <label>Client</label>
-                        <select name="clientId" required>
-                            <option value="">Sélectionner un client</option>
-                            <th:block th:each="client : ${clients}">
-                                <option th:value="${client.id}"
-                                        th:text="${client.nom}"
-                                        th:selected="${vente.client != null and vente.client.id == client.id}">
-                                </option>
-                            </th:block>
-                        </select>
-                    </div>
-
-                    <!-- Lignes de détail existantes -->
-                    <div class="lignes-header">
-                        <h3>Lignes de vente</h3>
-                        <button type="button" class="btn-ajouter-ligne" id="btn-ajouter-ligne">
-                            <i class="fa-solid fa-plus"></i> Ajouter une ligne
-                        </button>
-                    </div>
-
-                    <table id="lignes-table">
-                        <thead>
-                            <tr>
-                                <th>Produit</th>
-                                <th>Lot</th>
-                                <th>Quantité</th>
-                                <th>Prix unitaire</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id="lignes-tbody">
-                            <!-- Lignes existantes pré-remplies -->
-                            <tr th:each="d, iter : ${details}">
-                                <td>
-                                    <select th:name="'produitId'" required>
-                                        <option value="">-- Produit --</option>
-                                        <th:block th:each="p : ${produits}">
-                                            <option th:value="${p.id}"
-                                                    th:text="${p.code}"
-                                                    th:selected="${d.produit != null and d.produit.id == p.id}">
-                                            </option>
-                                        </th:block>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select th:name="'lotId'">
-                                        <option value="">-- Lot (si poulet) --</option>
-                                        <th:block th:each="l : ${lots}">
-                                            <option th:value="${l.id}"
-                                                    th:text="'Lot ' + ${l.id}">
-                                            </option>
-                                        </th:block>
-                                    </select>
-                                </td>
-                                <td>
-                                    <input type="number" th:name="'quantite'"
-                                           th:value="${d.quantite}" min="1" step="0.001" required>
-                                </td>
-                                <td>
-                                    <input type="number" th:name="'prixUnitaire'"
-                                           th:value="${d.prixUnitaire}" min="0" step="0.01" required>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn-supprimer-ligne" title="Supprimer">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="2" style="border-bottom:none;"></td>
-                                <td style="text-align:right; font-weight:700; padding:18px 12px; font-size:15px; color:var(--text);">Total :</td>
-                                <td style="font-weight:700; padding:18px 12px; font-size:15px; color:var(--primary);" id="total-vente">
-                                    <span th:text="${vente.total != null ? vente.total + ' Ar' : '0.00 Ar'}"></span>
-                                </td>
-                                <td style="border-bottom:none;"></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-
-                    <div class="form-actions">
-                        <a th:href="@{/ventes/listevente}" class="btn-annuler">
-                            <i class="fa-solid fa-xmark"></i> Annuler
-                        </a>
-                        <button type="submit" class="btn-enregistrer">
-                            <i class="fa-solid fa-save"></i> Enregistrer les modifications
-                        </button>
-                    </div>
-                </form>
-            </div>
-
         </div>
     </div>
-</div>
 
 <script th:inline="javascript">
     var produitsData = /*[[${produits}]]*/ [];
@@ -133,8 +135,8 @@
 </script>
 <script th:src="@{/js/vente.js}"></script>
 <script>
-document.querySelectorAll('.btn-supprimer-ligne').forEach(function(btn) {
-    btn.addEventListener('click', function() {
+    document.querySelectorAll('.btn-supprimer-ligne').forEach(function(btn) {
+        btn.addEventListener('click', function() {
         var tbody = document.getElementById('lignes-tbody');
         if (tbody && tbody.rows.length > 1) {
             btn.closest('tr').remove();
@@ -142,5 +144,6 @@ document.querySelectorAll('.btn-supprimer-ligne').forEach(function(btn) {
     });
 });
 </script>
+</div>    
 </body>
 </html>

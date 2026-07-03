@@ -79,31 +79,28 @@ public  boolean existedLot(Batiment batiment){
     return true;
 
 }
-    public void verifierCapacite(Lot lot,Batiment batiment){
-        int capacite = batiment.getCapacite();
-        int nbrInitiale = lot.getNombreInitial();
+public void verifierCapacite(Lot lot, Batiment batiment) {
+    int capacite = batiment.getCapacite();
+    int nbrInitiale = lot.getNombreInitial();
 
-        if(capacite < nbrInitiale){
-             throw new IllegalArgumentException(
-                " Le nombre initial (" + nbrInitiale + 
-                ") dépasse la capacité du bâtiment (" + capacite + ")"
-            );
-        }
+    int placeUtilisee = 0;
+    if (lot.getId() == null) {
+        placeUtilisee = calculerPlaceUtilisee(batiment);
+    } else {
+        placeUtilisee = calculerPlaceUtilisee(batiment, lot.getId());
+    }
 
-        int placeUtilise = calculerPlaceUtilisee(batiment);
-        int placeRestante = capacite - placeUtilise;
+    int placeRestante = capacite - placeUtilisee;
 
-        if(nbrInitiale > placeRestante){
-            throw new IllegalArgumentException(
-                   " Place insuffisante! " +
-                "Capacité: " + capacite + 
-                " | Utilisée: " + placeUtilise + 
+    if (nbrInitiale > placeRestante) {
+        throw new IllegalArgumentException(
+                "Place insuffisante ! Capacité: " + capacite +
+                " | Utilisée: " + placeUtilisee +
                 " | Restante: " + placeRestante +
                 " | Demandé: " + nbrInitiale
-            );
-
-        }
+        );
     }
+}
 
     //rehefa mapiditra lot vaovao
    public int calculerPlaceUtilisee(Batiment batiment) {
@@ -163,30 +160,14 @@ public void updateLot(Lot lot) {
     Batiment batiment = batimentRepository.findById(lot.getBatiment().getId())
         .orElseThrow(() -> new IllegalArgumentException("Bâtiment non trouvé"));
 
-    int capacite = batiment.getCapacite();
-    int nbrInitiale = lot.getNombreInitial();
 
-    if(capacite < nbrInitiale) {
-        throw new IllegalArgumentException(
-            " Le nombre initial (" + nbrInitiale + 
-            ") dépasse la capacité du bâtiment (" + capacite + ")"
-        );
-    }
    
 
 
-    int placeUtilise = calculerPlaceUtilisee(batiment, lot.getId());
-    int placeRestante = capacite - placeUtilise;
+   verifierCapacite(lot,batiment);
+    
 
-    if(nbrInitiale > placeRestante) {
-        throw new IllegalArgumentException(
-            " Place insuffisante! " +
-            "Capacité: " + capacite + 
-            " | Utilisée: " + placeUtilise + 
-            " | Restante: " + placeRestante +
-            " | Demandé: " + nbrInitiale
-        );
-    }
+ 
    
 
     lotRepository.save(lot);
@@ -254,8 +235,10 @@ public void reformerUnLot(Integer idLot, LocalDate dateReforme) {
     updateLot(lot); 
     System.out.println("Lot sauvegardé dans la base");
     
+
   Long totalMorts = mortRepository.sumByLotId(idLot);
   int totalMortsDejaEnregistrees = totalMorts != null ? totalMorts.intValue() : 0;
+
     int nbrPoule = Math.max(lot.getNombreInitial() - totalMortsDejaEnregistrees, 0);
     System.out.println("Nombre de poules à réformer: " + nbrPoule);
     
