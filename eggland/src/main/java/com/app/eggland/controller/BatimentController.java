@@ -33,7 +33,7 @@ public class BatimentController {
         Page<Batiment> batimentsPage = batimentService.findAll(pageable);  
         model.addAttribute("batiments", batimentsPage.getContent());
         model.addAttribute("currentPage",page);
-        model.addAttribute("totalPage",batimentsPage.getTotalPages());
+        model.addAttribute("totalPages",batimentsPage.getTotalPages());
         model.addAttribute("size",size);
         model.addAttribute("pageTitle", "Liste des bâtiments");
         return "batiments/liste";
