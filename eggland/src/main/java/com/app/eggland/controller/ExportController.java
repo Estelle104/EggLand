@@ -17,4 +17,14 @@ public class ExportController {
         model.addAttribute("currentMonth", today.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM")));
         return "exports/index";
     }
+
+    @GetMapping("/admin/exports/test")
+    public String exportsTestPage() {
+        return "exports/test";
+    }
+
+    @GetMapping("/admin/exports/vraitest")
+    public String exportsVraiTestPage() {
+        return "exports/vraitest";
+    }
 }

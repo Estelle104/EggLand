@@ -55,6 +55,16 @@ public class FinanceController {
         return "finance/index";
     }
 
+    @GetMapping("/test")
+    public String testPage() {
+        return "finance/test";
+    }
+
+    @GetMapping("/vraitest")
+    public String vraiTestPage() {
+        return "finance/vraitest";
+    }
+
     @GetMapping("/export/pdf/bon-livraison")
     public ResponseEntity<Resource> exportBonLivraisonPdf(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) throws IOException {
         byte[] pdf = pdfExportService.generateBonLivraisonPdf(date);
