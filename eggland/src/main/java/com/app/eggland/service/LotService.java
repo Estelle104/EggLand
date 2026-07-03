@@ -2,17 +2,28 @@
 package com.app.eggland.service;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import com.app.eggland.model.*;
-import com.app.eggland.repository.*;
-
-import jakarta.transaction.Transactional;
-
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.app.eggland.model.Batiment;
+import com.app.eggland.model.Lot;
+import com.app.eggland.model.Reforme;
+import com.app.eggland.model.StatutLot;
+import com.app.eggland.repository.BatimentRepository;
+import com.app.eggland.repository.LotRaceRepository;
+import com.app.eggland.repository.LotRepository;
+import com.app.eggland.repository.MortRepository;
+import com.app.eggland.repository.OeufProductionRepository;
+import com.app.eggland.repository.ReformeRepository;
+import com.app.eggland.repository.StatutLotRepository;
+import com.app.eggland.repository.TraitementRepository;
+
+import jakarta.transaction.Transactional;
 @Service
 public class LotService {
     @Autowired
@@ -224,7 +235,10 @@ public void reformerUnLot(Integer idLot, LocalDate dateReforme) {
     updateLot(lot); 
     System.out.println("Lot sauvegardé dans la base");
     
-    int totalMortsDejaEnregistrees = mortRepository.sumByLotId(idLot).intValue();
+
+  Long totalMorts = mortRepository.sumByLotId(idLot);
+  int totalMortsDejaEnregistrees = totalMorts != null ? totalMorts.intValue() : 0;
+
     int nbrPoule = Math.max(lot.getNombreInitial() - totalMortsDejaEnregistrees, 0);
     System.out.println("Nombre de poules à réformer: " + nbrPoule);
     
@@ -241,7 +255,7 @@ public void reformerUnLot(Integer idLot, LocalDate dateReforme) {
     
     System.out.println("Réforme sauvegardée avec l'ID: " + reforme.getId());
     System.out.println("Lot " + lot.getId() + " réformé avec " + nbrPoule + " poules");
-   
+
 }
 
 public List<Map<String, Object>> getDetailLot(Integer id) {

@@ -9,10 +9,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.app.eggland.model.MvtStock;
 import com.app.eggland.model.Nourriture;
@@ -63,8 +65,12 @@ public class MvtStockController {
     @PostMapping("/entree")
     public String entreeSubmit(@RequestParam Integer nourriture,
             @RequestParam BigDecimal quantite, @RequestParam LocalDate date) {
+        if (date.isAfter(LocalDate.now()))
+            throw new StockException("La date ne peut pas être dans le futur", "/stock/entree");
+        if (quantite.compareTo(BigDecimal.ZERO) <= 0)
+            throw new StockException("La quantité doit être supérieure à 0", "/stock/entree");
         Nourriture n = nourritureService.findById(nourriture)
-                .orElseThrow(() -> new RuntimeException("Nourriture non trouvée"));
+                .orElseThrow(() -> new StockException("Nourriture non trouvée", "/stock/entree"));
         MvtStock mvtStock = MvtStock.builder()
                 .nourriture(n)
                 .type(mvtStockService.getTypeEntree())
@@ -78,7 +84,13 @@ public class MvtStockController {
     // Afficher le formulaire pour une sortie de stock
     @GetMapping("/sortie")
     public String sortieForm(Model model) {
-        model.addAttribute("nourritures", nourritureService.findAll());
+        List<Nourriture> nourritures = nourritureService.findAll();
+        Map<Integer, BigDecimal> stocks = new HashMap<>();
+        for (Nourriture n : nourritures) {
+            stocks.put(n.getId(), mvtStockService.calculerStockActuel(n.getId()));
+        }
+        model.addAttribute("nourritures", nourritures);
+        model.addAttribute("stocks", stocks);
         model.addAttribute("pageTitle", "Sortie de stock");
         return "stock/sortie";
     }
@@ -87,8 +99,15 @@ public class MvtStockController {
     @PostMapping("/sortie")
     public String sortieSubmit(@RequestParam Integer nourriture,
             @RequestParam BigDecimal quantite, @RequestParam LocalDate date) {
+        if (date.isAfter(LocalDate.now()))
+            throw new StockException("La date ne peut pas être dans le futur", "/stock/sortie");
+        if (quantite.compareTo(BigDecimal.ZERO) <= 0)
+            throw new StockException("La quantité doit être supérieure à 0", "/stock/sortie");
         Nourriture n = nourritureService.findById(nourriture)
-                .orElseThrow(() -> new RuntimeException("Nourriture non trouvée"));
+                .orElseThrow(() -> new StockException("Nourriture non trouvée", "/stock/sortie"));
+        BigDecimal stockActuel = mvtStockService.calculerStockActuel(nourriture);
+        if (quantite.compareTo(stockActuel) > 0)
+            throw new StockException("Stock insuffisant. Stock actuel : " + stockActuel + " kg", "/stock/sortie");
         MvtStock mvtStock = MvtStock.builder()
                 .nourriture(n)
                 .type(mvtStockService.getTypeSortie())
@@ -135,5 +154,25 @@ public class MvtStockController {
         model.addAttribute("nourritures", nourritureService.findAll());
         model.addAttribute("pageTitle", "Historique des mouvements");
         return "stock/historique";
+    }
+
+    //Exception handler pour gérer les erreurs de stock et rediriger vers la page appropriée avec un message d'erreur
+    @ExceptionHandler(StockException.class)
+    public String handleStockException(StockException e, RedirectAttributes ra) {
+        ra.addFlashAttribute("error", e.getMessage());
+        return "redirect:" + e.getRedirectUrl();
+    }
+
+    private static class StockException extends RuntimeException {
+        private final String redirectUrl;
+
+        StockException(String message, String redirectUrl) {
+            super(message);
+            this.redirectUrl = redirectUrl;
+        }
+
+        String getRedirectUrl() {
+            return redirectUrl;
+        }
     }
 }
