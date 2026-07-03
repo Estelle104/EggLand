@@ -4,6 +4,9 @@ import com.app.eggland.model.Employe;
 import com.app.eggland.repository.EmployeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,8 +18,8 @@ public class EmployeService {
 
     private final EmployeRepository employeRepository;
 
-    public List<Employe> listerTous() {
-        return employeRepository.findAllByOrderByNomAscPrenomAsc();
+    public Page<Employe> listerTous(Pageable pageable) {
+        return employeRepository.findAllByOrderByNomAscPrenomAsc(pageable);
     }
 
     public Employe trouverParId(Integer id) {

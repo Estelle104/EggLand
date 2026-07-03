@@ -70,11 +70,12 @@
                             </tr>
                         </tbody>
                     </table>
-
+            <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url='/employes')}"></div>
                     <div th:if="${#lists.isEmpty(employes)}" class="vide-message">
                         Aucun employé enregistré.
                     </div>
                 </div>
+                
 
             </div>
         </div>

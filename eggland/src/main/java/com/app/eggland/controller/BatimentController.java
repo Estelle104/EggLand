@@ -24,7 +24,7 @@ public class BatimentController {
     @Autowired
     private BatimentService batimentService;
 
-    @GetMapping
+    @GetMapping 
     public String liste(
         @RequestParam(defaultValue = "0")int page,
         @RequestParam(defaultValue = "10")int size,

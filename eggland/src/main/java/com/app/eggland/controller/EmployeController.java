@@ -10,6 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -29,8 +32,16 @@ public class EmployeController {
     // ---------- Liste ----------
 
     @GetMapping
-    public String liste(Model model) {
-        model.addAttribute("employes", employeService.listerTous());
+    public String liste(
+        @RequestParam(defaultValue="1")int page,
+        @RequestParam(defaultValue="5") int size,
+        Model model) {
+        Pageable pageable = PageRequest.of(page,size);
+        Page<Employe> employesPage = employeService.listerTous(pageable);
+        model.addAttribute("employes", employesPage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages",employesPage.getTotalPages());
+        model.addAttribute("size",size);
         return "employes/liste";
     }
 
