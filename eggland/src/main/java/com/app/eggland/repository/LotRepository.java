@@ -16,14 +16,14 @@ import java.util.Map;
 public interface LotRepository extends JpaRepository<Lot, Integer>{
        
    @Query("""
-    SELECT COALESCE(SUM(l.nombreInitial), 0)
+    SELECT SUM(l.nombreInitial)
     FROM Lot l
     WHERE l.batiment = :batiment
 """)
-    int calculerPlaceUtiliseePourBatiment(@Param("batiment") Batiment batiment);
+    Long calculerPlaceUtiliseePourBatiment(@Param("batiment") Batiment batiment);
     
-    @Query("SELECT COALESCE(SUM(l.nombreInitial), 0) FROM Lot l WHERE l.batiment = :batiment AND l.id != :lotId")
-int calculerPlaceUtiliseePourBatimentExcluantLot(@Param("batiment") Batiment batiment, @Param("lotId") Integer lotId);
+    @Query("SELECT SUM(l.nombreInitial) FROM Lot l WHERE l.batiment = :batiment AND l.id != :lotId")
+Long calculerPlaceUtiliseePourBatimentExcluantLot(@Param("batiment") Batiment batiment, @Param("lotId") Integer lotId);
         List<Lot> findByBatimentOrStatut(Batiment batiment, StatutLot statutLot); 
         List<Lot> findByBatimentAndStatut(Batiment batiment, StatutLot statutLot);
         
