@@ -1,3 +1,104 @@
+/* =============================================
+   Page Simulation
+   ============================================= */
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.page-header h2 {
+    color: var(--text);
+    font-size: 20px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.simulation-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px;
+    max-width: 480px;
+}
+
+.simulation-form .form-group {
+    margin-bottom: 18px;
+}
+
+.simulation-form .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+}
+
+.simulation-form .form-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg);
+    font-size: 14px;
+    color: var(--text);
+    box-sizing: border-box;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.simulation-form .form-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: white;
+}
+
+.btn-simuler {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 16px;
+    margin-top: 6px;
+    border: none;
+    border-radius: 10px;
+    background: var(--primary);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.btn-simuler:hover {
+    background: var(--hover);
+}
+
+.simulation-result {
+    margin-top: 24px;
+    padding: 18px 20px;
+    border-radius: var(--radius);
+    background: var(--bg);
+    border: 1px solid var(--border);
+}
+
+.simulation-result h3 {
+    font-size: 15px;
+    color: var(--text);
+    margin: 0 0 10px 0;
+}
+
+.simulation-result p {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 0;
+}
+
 .btn-simuler {
     background: #8a4a1d;
     color: white;
