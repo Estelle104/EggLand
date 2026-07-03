@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.app.eggland.model.Batiment;
 import com.app.eggland.service.BatimentService;
@@ -21,8 +25,16 @@ public class BatimentController {
     private BatimentService batimentService;
 
     @GetMapping
-    public String liste(Model model) {
-        model.addAttribute("batiments", batimentService.findAll());
+    public String liste(
+        @RequestParam(defaultValue = "0")int page,
+        @RequestParam(defaultValue = "10")int size,
+        Model model) {
+        Pageable pageable = PageRequest.of(page,size);
+        Page<Batiment> batimentsPage = batimentService.findAll(pageable);  
+        model.addAttribute("batiments", batimentsPage.getContent());
+        model.addAttribute("currentPage",page);
+        model.addAttribute("totalPage",batimentsPage.getTotalPages());
+        model.addAttribute("size",size);
         model.addAttribute("pageTitle", "Liste des bâtiments");
         return "batiments/liste";
     }
