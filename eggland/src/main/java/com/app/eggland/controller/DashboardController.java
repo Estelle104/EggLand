@@ -35,11 +35,9 @@ public class DashboardController {
             @RequestParam(value = "dateFin", required = false) LocalDate dateFin,
             Model model) {
 
-        if (dateDebut == null) dateDebut = LocalDate.now().minusDays(30);
-        if (dateFin == null) dateFin = LocalDate.now();
-
         Integer totalMorts = mortService.getTotalMorts(lotId, dateDebut, dateFin);
         Integer totalVivants = mortService.getVivants(lotId);
+        Integer totalInitial = mortService.getTotalInitial(lotId);
 
         if (lotId != null && lotId > 0) {
             Integer totalMortsLot = mortService.getTotalMortsParLot(lotId);
@@ -60,10 +58,11 @@ public class DashboardController {
         model.addAttribute("production14Jours", oeufProductionService.getProductionDes14DerniersJours());
         model.addAttribute("totalMorts", totalMorts);
         model.addAttribute("totalVivants", totalVivants);
+        model.addAttribute("totalInitial", totalInitial);
         model.addAttribute("lots", mortService.getAllLots());
         model.addAttribute("lotIdSelectionne", lotId);
-        model.addAttribute("dateDebutSelectionnee", dateDebut.toString());
-        model.addAttribute("dateFinSelectionnee", dateFin.toString());
+        model.addAttribute("dateDebutSelectionnee", dateDebut != null ? dateDebut.toString() : "");
+        model.addAttribute("dateFinSelectionnee", dateFin != null ? dateFin.toString() : "");
         model.addAttribute("pageTitle", "Dashboard");
         return "dashboard/index";
     }

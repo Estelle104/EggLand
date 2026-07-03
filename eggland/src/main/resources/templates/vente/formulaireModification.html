@@ -98,7 +98,7 @@
                         <td colspan="2" style="border-bottom:none;"></td>
                         <td style="text-align:right; font-weight:700; padding:18px 12px; font-size:15px; color:var(--text);">Total :</td>
                         <td style="font-weight:700; padding:18px 12px; font-size:15px; color:var(--primary);" id="total-vente">
-                            <span th:text="${vente.total != null ? vente.total + ' Ar' : '0.00 Ar'}"></span>
+                            <span th:text="${vente.total != null ? #numbers.formatDecimal(vente.total, 0, 'COMMA', 2, 'POINT') + ' Ar' : '0.00 Ar'}"></span>
                         </td>
                         <td style="border-bottom:none;"></td>
                     </tr>

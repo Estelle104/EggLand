@@ -1,23 +1,14 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Créer une livraison</title>
-    <link rel="stylesheet" th:href="@{/css/variables.css}">
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
-    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/creationLivraison.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     
 </head>
 <body>
-<div class="app">
-    <div th:replace="fragments/sidebar :: sidebar"></div>
-    <div class="main">
-        <div th:replace="fragments/header :: header"></div>
-        <div class="content">
+    <div layout:fragment="content">
 
             <div class="page-header">
                 <h2>Créer une livraison</h2>
@@ -36,7 +27,7 @@
                         <select name="venteId" required>
                             <option value="">Sélectionner une vente</option>
                             <th:block th:each="vente : ${ventesNonLivrees}">
-                                <option th:value="${vente.id}" th:text="${vente.id + ' - ' + vente.client.nom + ' - ' + #temporals.format(vente.date, 'dd/MM/yyyy') + ' - ' + vente.total}"></option>
+                                <option th:value="${vente.id}" th:text="${vente.id + ' - ' + vente.client.nom + ' - ' + #temporals.format(vente.date, 'dd/MM/yyyy') + ' - ' + #numbers.formatDecimal(vente.total, 0, 'COMMA', 2, 'POINT') + ' Ar'}"></option>
                             </th:block>
                         </select>
                     </div>
@@ -76,9 +67,6 @@
 
                 </form>
             </div>
-
-        </div>
     </div>
-</div>
 </body>
 </html>
