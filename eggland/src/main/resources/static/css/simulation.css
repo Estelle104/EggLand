@@ -38,7 +38,8 @@
     margin-bottom: 6px;
 }
 
-.simulation-form .form-group input {
+.simulation-form .form-group input,
+.simulation-form .form-group select {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid var(--border);
@@ -50,7 +51,13 @@
     transition: border-color 0.15s, background 0.15s;
 }
 
-.simulation-form .form-group input:focus {
+.simulation-form .form-group select {
+    min-height: 42px;
+    cursor: pointer;
+}
+
+.simulation-form .form-group input:focus,
+.simulation-form .form-group select:focus {
     outline: none;
     border-color: var(--primary);
     background: white;

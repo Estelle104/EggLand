@@ -18,7 +18,7 @@
 
         <div class="simulation-card">
             <h3>Simulation de production</h3>
-            <form th:action="@{/simulation}" method="post" class="simulation-form">
+            <form th:action="@{/admin/simulation}" method="post" class="simulation-form">
                 <div class="form-group">
                     <label for="date">Date :</label>
                     <input type="date" id="date" name="date" required>
@@ -28,30 +28,31 @@
                     <input type="number" id="prixUnitaire" name="prixUnitaire" min="0" step="0.01" required>
                 </div>
                 <div class="form-group">
-                    <label for="nbOeufs">Nombre d'Å“ufs :</label>
+                    <label for="nbOeufs">Nombre d'oeufs :</label>
                     <input type="number" id="nbOeufs" name="nbOeufs" min="0" required>
                 </div>
                 <button type="submit" class="btn-simuler">Simuler</button>
             </form>
 
             <div th:if="${resultat != null}" class="simulation-result">
-                <h3>RÃ©sultat de la simulation :</h3>
-                <p th:text="'Chiffre d affaire : ' + ${#numbers.formatDecimal(resultat, 0, 'COMMA', 2, 'POINT')} + ' Ar'"></p>
+                <h3>Résultat de la simulation :</h3>
+                <p th:text="'Chiffre d affaires : ' + ${#numbers.formatDecimal(resultat, 0, 'COMMA', 2, 'POINT')} + ' Ar'"></p>
             </div>
         </div>
 
         <div class="simulation-card" style="margin-top: 30px;">
-            <h3>Simulation de mortalitÃ©</h3>
+            <h3>Simulation de mortalité</h3>
 
             <div th:if="${erreur != null}" class="alert alert-danger">
                 <p th:text="${erreur}"></p>
             </div>
 
-            <form th:action="@{/simulation/mortalite}" method="post" class="simulation-form">
+            <form th:action="@{/admin/simulation/mortalite}" method="post" class="simulation-form">
                 <div class="form-group">
-                    <label for="lotId">Lots :</label>
+                    <label for="lotId">Lot :</label>
                     <select id="lotId" name="lotId" required>
-                        <option value="">SÃ©lectionner un lot</option>
+                        <option value="">Sélectionner un lot</option>
+                        <option th:if="${#lists.isEmpty(lots)}" value="" disabled>Aucun lot actif disponible</option>
                         <option th:each="lot : ${lots}"
                                 th:value="${lot.id}"
                                 th:text="${lot.race.nom} + ' - ' + ${lot.nombreInitial} + ' poules'">
@@ -65,9 +66,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="raceId">Nombre de morts par race :</label>
+                    <label for="raceId">Race concernée :</label>
                     <select id="raceId" name="raceId" required>
-                        <option value="">SÃ©lectionner une race</option>
+                        <option value="">Sélectionner une race</option>
                         <option th:each="race : ${races}"
                                 th:value="${race.id}"
                                 th:text="${race.nom} + ' - Rendement: ' + ${race.rendementMoyenMois} + ' oeufs/mois'">
@@ -89,14 +90,14 @@
             </form>
 
             <div th:if="${resultatMortalite != null}" class="simulation-result">
-                <h3>RÃ©sultats de la simulation de mortalitÃ©</h3>
+                <h3>Résultats de la simulation de mortalité</h3>
                 <div style="border: 1px solid #ddd; padding: 15px; border-radius: 5px; margin-top: 10px;">
                     <p>
-                        <strong>Chiffre d'affaires aprÃ¨s mort :</strong>
+                        <strong>Chiffre d'affaires après mortalité :</strong>
                         <span th:text="${#numbers.formatDecimal(resultatMortalite.chiffreAffaire, 0, 'COMMA', 2, 'POINT')} + ' Ar'"></span>
                     </p>
                     <p>
-                        <strong>Nombre d'Å“ufs restants aprÃ¨s mort :</strong>
+                        <strong>Nombre d'oeufs estimés après mortalité :</strong>
                         <span th:text="${resultatMortalite.nbOeufsRestants}"></span>
                     </p>
                     <p>
@@ -104,7 +105,7 @@
                         <span th:text="${resultatMortalite.totalMorts}"></span>
                     </p>
                     <p>
-                        <strong>Race concernÃ©e :</strong>
+                        <strong>Race concernée :</strong>
                         <span th:text="${resultatMortalite.nomRace}"></span>
                     </p>
                     <p th:if="${resultatMortalite.message != null}"
