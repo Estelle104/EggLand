@@ -50,7 +50,6 @@ public class OeufController {
         ) {
         List <Map<String, Object>> stats = oeufProductionService.getTauxPonteParLot();
         Page<Map<String, Object>> historique = PaginationUtils.paginerListe(stats, page, size);
-
         model.addAttribute("stock", oeufService.getStockDisponible());
         model.addAttribute("production14Jours", oeufProductionService.getProductionDes14DerniersJours());
 
@@ -58,6 +57,7 @@ public class OeufController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", historique.getTotalPages());
         model.addAttribute("size", size);
+        model.addAttribute("filtres", Map.of()); // Aucun filtre pour l'instant
         model.addAttribute("baseUrl", "/admin/oeufs");
         return "oeufs/stats";
     }
@@ -123,6 +123,7 @@ public class OeufController {
             pageable = PageRequest.of(page, size);
             historique = oeufProductionService.getHistoriqueProduction(pageable);
         }
+        Map<String, String> filtres = Map.of(); // Aucun filtre pour l'instant
         
         LocalDate today = LocalDate.now();
         model.addAttribute("historique", historique);
@@ -131,6 +132,7 @@ public class OeufController {
         model.addAttribute("todayMinus30", today.minusDays(30).toString());
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", size);
+        model.addAttribute("filtres", filtres);
         model.addAttribute("totalPages", historique.getTotalPages());
         return "oeufs/historique";
     }

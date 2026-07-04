@@ -1,6 +1,7 @@
 package com.app.eggland.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -33,12 +34,13 @@ public class NourritureController {
         Model model) {
         List<Nourriture> nourritures = nourritureService.findAll();
         Page<Nourriture> nourriturePage = PaginationUtils.paginerListe(nourritures, page, size);
-
+        Map<String, String> filtres = Map.of(); // Aucun filtre pour l'instant
         model.addAttribute("nourritures", nourriturePage.getContent());
         model.addAttribute("pageTitle", "Liste des nourritures");
         model.addAttribute("currentPage", nourriturePage.getNumber());
         model.addAttribute("totalPages", nourriturePage.getTotalPages());
         model.addAttribute("size", size);
+        model.addAttribute("filtres", filtres);
         model.addAttribute("baseUrl", "/admin/nourritures");
         return "nourritures/liste";
     }

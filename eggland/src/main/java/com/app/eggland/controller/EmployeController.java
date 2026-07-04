@@ -19,8 +19,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/employes")
@@ -109,6 +111,10 @@ public class EmployeController {
                               @RequestParam(defaultValue="0") int page,
                               @RequestParam(defaultValue="10") int size,
                               Model model) {
+        if(size <= 0) {
+            size = 1; // Valeur par défaut si la taille est invalide
+
+        }
         List<PaiementSalaire> paiements = (mois != null && !mois.isBlank())
                 ? paiementSalaireService.listerParMois(LocalDate.parse(mois + "-01"))
                 : paiementSalaireService.listerHistorique();
@@ -127,10 +133,15 @@ public class EmployeController {
         if (mois != null && !mois.isBlank()) url.append("mois=").append(mois).append("&");
         if (statut != null && !statut.isBlank()) url.append("statut=").append(statut).append("&");
 
+        Map<String, String> filtres = new HashMap<>();
+        if (mois != null && !mois.isBlank()) filtres.put("mois", mois);
+        if (statut != null && !statut.isBlank()) filtres.put("statut", statut);
+
         String urlFinale = url.toString().replaceAll("[&?]$", "");
 
         model.addAttribute("url", urlFinale);
         model.addAttribute("lignes", lignesPage.getContent());
+        model.addAttribute("filter", filtres);
         model.addAttribute("currentPage", lignesPage.getNumber());
         model.addAttribute("totalPages", lignesPage.getTotalPages());
         model.addAttribute("size", size);
@@ -149,6 +160,9 @@ public class EmployeController {
                         @RequestParam(defaultValue="0") int page,
                         @RequestParam(defaultValue="10") int size,
                          Model model) {
+        if(size <= 0) {
+            size = 1;
+        }
         LocalDate moisDate = (mois != null && !mois.isBlank())
                 ? LocalDate.parse(mois + "-01")
                 : LocalDate.now().withDayOfMonth(1);
@@ -171,12 +185,21 @@ public class EmployeController {
         if (statut != null && !statut.isBlank()) url.append("statut=").append(statut).append("&");
         String urlFinale = url.toString().replaceAll("[&?]$", "");
 
+        Map<String, String> filtres = new HashMap<>();
+        if(mois != null && !mois.isBlank()) {
+            filtres.put("mois", mois);
+        } 
+        if(statut != null && !statut.isBlank()) {
+            filtres.put("statut", statut);
+        }
+
         model.addAttribute("recap", recapPage.getContent());
         model.addAttribute("currentPage", recapPage.getNumber());
         model.addAttribute("totalPages", recapPage.getTotalPages());
         model.addAttribute("size", size);
         model.addAttribute("baseUrl", urlFinale);
-
+        model.addAttribute("filtres", filtres);
+        // les noms ici sont important pour le fragment de pagination
         model.addAttribute("nbPayes", nbPayes);
         model.addAttribute("nbEnAttente", nbEnAttente);
         model.addAttribute("moisLabel", paiementSalaireService.formatMoisLabel(moisDate));

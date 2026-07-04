@@ -195,10 +195,15 @@ public ModelAndView showAllLot(
         agesActuels.put(lot.getId(), lotService.getAgeActuel(lot, aujourd));
     }
 
+    Map<String, String> filtres = new HashMap<>();
+    if (batiment != null) filtres.put("batiment", batiment.toString());
+    if (statut != null) filtres.put("statut", statut.toString());
+
     mav.addObject("lots", lotsPage.getContent()); // On envoie uniquement la tranche actuelle
     mav.addObject("currentPage", lotsPage.getNumber());
     mav.addObject("totalPages", lotsPage.getTotalPages());
     mav.addObject("size", size);
+    mav.addObject("filtres", filtres);
     mav.addObject("baseUrl", baseUrl);
     
     mav.addObject("agesActuels", agesActuels); 

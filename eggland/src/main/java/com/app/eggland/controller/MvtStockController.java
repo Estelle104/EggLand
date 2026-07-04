@@ -46,7 +46,8 @@ public class MvtStockController {
             stocks.put(n.getId(), mvtStockService.calculerStockActuel(n.getId()));
         }
         Page<Nourriture> nourrituresPage = PaginationUtils.paginerListe(nourritures, page, size);
-
+        String baseUrl = "/admin/stock";
+        Map<String, String> filtres = new HashMap<>();
         LocalDate today = LocalDate.now();
         model.addAttribute("stocks", stocks);
         model.addAttribute("pageTitle", "Stock des nourritures");
@@ -57,6 +58,8 @@ public class MvtStockController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", nourrituresPage.getTotalPages());
         model.addAttribute("size", size);
+        model.addAttribute("filtres", filtres);
+        model.addAttribute("baseUrl", baseUrl);
         return "stock/liste";
     }
 
@@ -173,16 +176,22 @@ public class MvtStockController {
         if (baseUrl.endsWith("&") || baseUrl.endsWith("?")) {
             baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
         }
+        Map<String, String> filtres = new HashMap<>();
+        if (nourritureId != null) filtres.put("nourritureId", nourritureId.toString());
+        if (typeCode != null && !typeCode.isEmpty()) filtres.put("typeCode", typeCode);
+        if (dateDebut != null) filtres.put("dateDebut", dateDebut.toString());
+        if (dateFin != null) filtres.put("dateFin", dateFin.toString());
         
 
         model.addAttribute("nourritures", nourritureService.findAll());
         model.addAttribute("pageTitle", "Historique des mouvements");
-        
+
         model.addAttribute("mouvements", mouvementsPage.getContent());
         model.addAttribute("currentPage", mouvementsPage.getNumber());
         model.addAttribute("totalPages", mouvementsPage.getTotalPages());
         model.addAttribute("size", size);
         model.addAttribute("baseUrl", baseUrl);
+        model.addAttribute("filtres", filtres);
         return "stock/historique";
     }
 

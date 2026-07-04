@@ -1,6 +1,7 @@
 package com.app.eggland.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -32,11 +33,13 @@ public class RaceController {
         Model model) {
         List<Race> races = raceService.findAll();
         Page<Race> pageRaces = PaginationUtils.paginerListe(races, page, size);
+        Map<String, String> filtres = Map.of(); // Pas de filtres pour l'instant
         model.addAttribute("races", pageRaces.getContent());
         model.addAttribute("currentPage", pageRaces.getNumber());
         model.addAttribute("totalPages", pageRaces.getTotalPages());
         model.addAttribute("size", size);
         model.addAttribute("pageTitle", "Liste des races");
+        model.addAttribute("filtres", filtres);
         return "races/liste";
     }
 

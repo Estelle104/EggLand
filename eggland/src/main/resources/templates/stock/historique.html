@@ -43,6 +43,7 @@
                         </div>
                         <button type="submit" class="btn-filtrer"><i class="fa-solid fa-filter"></i> Filtrer</button>
                     </form>
+                    <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${baseUrl}, filters=${filtres})}"></div>
                 </div>
 
                 <div class="card-table">

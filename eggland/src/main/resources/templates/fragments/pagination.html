@@ -1,7 +1,7 @@
-<div th:fragment="pager(currentPage, totalPages, size, url)">
+<div th:fragment="pager(currentPage, totalPages, size, url, filters)">
     <div style="display: flex; align-items: center; gap: 20px; justify-content: center; margin-top: 20px;">
         
-        <form th:action="@{${url}}" method="get" style="display: flex; align-items: center; gap: 8px;">
+        <!--<form th:action="@{${url}}" method="get" style="display: flex; align-items: center; gap: 8px;">
             <label for="lignesInput">Lignes :</label>
             
             <input type="number" 
@@ -23,6 +23,13 @@
             <input type="hidden" name="page" value="0" />
             
             <button type="submit" style="display: none;"></button>
+        </form>-->
+        <form th:action="@{${url}}" method="get">
+            <input type="hidden" th:each="entry : ${filters}" 
+            th:name="${entry.key}" th:value="${entry.value}" />
+            
+            <label>Lignes :</label>
+            <input type="number" min="1" name="size" th:value="${size}" onchange="this.form.submit()">
         </form>
 
         <nav style="display: flex; gap: 10px;">

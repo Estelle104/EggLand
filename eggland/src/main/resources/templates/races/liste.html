@@ -20,7 +20,7 @@
                         <i class="fa-solid fa-plus"></i> Nouvelle race
                     </a>
                 </div>
-        <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url='/admin/races')}"></div>   
+        <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url='/admin/races', filters=${filtres})}"></div>   
                 <div th:if="${error}" style="background:#f8d7da; color:#721c24; padding:12px 16px; border-radius:10px; margin-bottom:16px; font-size:14px;">
                     <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${error}"></span>
                 </div>
