@@ -106,7 +106,7 @@ public class EmployeController {
     @GetMapping("/historique")
     public String historique(@RequestParam(required = false) String mois,
                               @RequestParam(required = false) String statut,
-                              @RequestParam(defaultValue="1") int page,
+                              @RequestParam(defaultValue="0") int page,
                               @RequestParam(defaultValue="10") int size,
                               Model model) {
         List<PaiementSalaire> paiements = (mois != null && !mois.isBlank())
@@ -125,8 +125,8 @@ public class EmployeController {
         Page<HistoriqueLigne> lignesPage = PaginationUtils.paginerListe(lignes, page, size); 
         StringBuilder url = new StringBuilder("/admin/employes/historique?");
         if (mois != null && !mois.isBlank()) url.append("mois=").append(mois).append("&");
-        if (statut != null && !statut.isBlank()) url.append("statut=").append(statut).append("&");     
-        url.append("page=").append(page).append("&size=").append(size);
+        if (statut != null && !statut.isBlank()) url.append("statut=").append(statut).append("&");
+
         String urlFinale = url.toString().replaceAll("[&?]$", "");
 
         model.addAttribute("url", urlFinale);
@@ -165,16 +165,17 @@ public class EmployeController {
         long nbEnAttente = recap.size() - nbPayes; 
 
         Page<PaiementSalaireService.RecapLigne> recapPage = PaginationUtils.paginerListe(recap, page, size);
-        StringBuilder url = new StringBuilder("/admin/employes/historique?");
+
+        StringBuilder url = new StringBuilder("/admin/employes/recap?");
         if(mois !=null && !mois.isBlank()) url.append("mois=").append(mois).append("&");
-        if (statut != null && !statut.isBlank()) url.append("statut=").append(statut).append("&");     
-        url.append("page=").append(page).append("&size=").append(size);
+        if (statut != null && !statut.isBlank()) url.append("statut=").append(statut).append("&");
+        String urlFinale = url.toString().replaceAll("[&?]$", "");
 
         model.addAttribute("recap", recapPage.getContent());
         model.addAttribute("currentPage", recapPage.getNumber());
         model.addAttribute("totalPages", recapPage.getTotalPages());
         model.addAttribute("size", size);
-
+        model.addAttribute("baseUrl", urlFinale);
 
         model.addAttribute("nbPayes", nbPayes);
         model.addAttribute("nbEnAttente", nbEnAttente);

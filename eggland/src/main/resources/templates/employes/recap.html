@@ -112,7 +112,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${baseUrl})}"></div>
+                    <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${url})}"></div>
                     <div th:if="${#lists.isEmpty(recap)}" class="vide-message">
                         Aucune donnée pour cette période.
                     </div>

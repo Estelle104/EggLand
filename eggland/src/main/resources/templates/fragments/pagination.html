@@ -36,6 +36,11 @@
                 Page <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
             </span>
 
+            <!--<a th:if="${currentPage < totalPages - 1}" 
+               th:href="@{${url}(page=${currentPage + 1}, size=${size})}"
+               style="padding: 8px 12px; background: #eee; border-radius: 5px; text-decoration: none; color: black; font-weight: 500;">
+               Suivant »
+            </a>-->
             <a th:if="${currentPage < totalPages - 1}" 
                th:href="@{${url}(page=${currentPage + 1}, size=${size})}"
                style="padding: 8px 12px; background: #eee; border-radius: 5px; text-decoration: none; color: black; font-weight: 500;">
