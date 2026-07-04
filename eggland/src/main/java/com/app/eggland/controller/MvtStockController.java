@@ -76,11 +76,11 @@ public class MvtStockController {
     public String entreeSubmit(@RequestParam Integer nourriture,
             @RequestParam BigDecimal quantite, @RequestParam LocalDate date) {
         if (date.isAfter(LocalDate.now()))
-            throw new StockException("La date ne peut pas être dans le futur", "/stock/entree");
+            throw new StockException("La date ne peut pas être dans le futur", "/admin/stock/entree");
         if (quantite.compareTo(BigDecimal.ZERO) <= 0)
-            throw new StockException("La quantité doit être supérieure à 0", "/stock/entree");
+            throw new StockException("La quantité doit être supérieure à 0", "/admin/stock/entree");
         Nourriture n = nourritureService.findById(nourriture)
-                .orElseThrow(() -> new StockException("Nourriture non trouvée", "/stock/entree"));
+                .orElseThrow(() -> new StockException("Nourriture non trouvée", "/admin/stock/entree"));
         MvtStock mvtStock = MvtStock.builder()
                 .nourriture(n)
                 .type(mvtStockService.getTypeEntree())
@@ -110,14 +110,14 @@ public class MvtStockController {
     public String sortieSubmit(@RequestParam Integer nourriture,
             @RequestParam BigDecimal quantite, @RequestParam LocalDate date) {
         if (date.isAfter(LocalDate.now()))
-            throw new StockException("La date ne peut pas être dans le futur", "/stock/sortie");
+            throw new StockException("La date ne peut pas être dans le futur", "/admin/stock/sortie");
         if (quantite.compareTo(BigDecimal.ZERO) <= 0)
-            throw new StockException("La quantité doit être supérieure à 0", "/stock/sortie");
+            throw new StockException("La quantité doit être supérieure à 0", "/admin/stock/sortie");
         Nourriture n = nourritureService.findById(nourriture)
-                .orElseThrow(() -> new StockException("Nourriture non trouvée", "/stock/sortie"));
+                .orElseThrow(() -> new StockException("Nourriture non trouvée", "/admin/stock/sortie"));
         BigDecimal stockActuel = mvtStockService.calculerStockActuel(nourriture);
         if (quantite.compareTo(stockActuel) > 0)
-            throw new StockException("Stock insuffisant. Stock actuel : " + stockActuel + " kg", "/stock/sortie");
+            throw new StockException("Stock insuffisant. Stock actuel : " + stockActuel + " kg", "/admin/stock/sortie");
         MvtStock mvtStock = MvtStock.builder()
                 .nourriture(n)
                 .type(mvtStockService.getTypeSortie())
