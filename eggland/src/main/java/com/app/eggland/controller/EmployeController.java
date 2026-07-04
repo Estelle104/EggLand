@@ -12,8 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
 
 import com.app.eggland.service.PaginationUtils;
 
@@ -147,7 +145,9 @@ public class EmployeController {
 
     @GetMapping("/recap")
     public String recap(@RequestParam(required = false) String mois,
-                         @RequestParam(required = false) String statut,
+                        @RequestParam(required = false) String statut,
+                        @RequestParam(defaultValue="0") int page,
+                        @RequestParam(defaultValue="10") int size,
                          Model model) {
         LocalDate moisDate = (mois != null && !mois.isBlank())
                 ? LocalDate.parse(mois + "-01")
@@ -162,9 +162,20 @@ public class EmployeController {
         }
 
         long nbPayes = recap.stream().filter(PaiementSalaireService.RecapLigne::paye).count();
-        long nbEnAttente = recap.size() - nbPayes;
+        long nbEnAttente = recap.size() - nbPayes; 
 
-        model.addAttribute("recap", recap);
+        Page<PaiementSalaireService.RecapLigne> recapPage = PaginationUtils.paginerListe(recap, page, size);
+        StringBuilder url = new StringBuilder("/admin/employes/historique?");
+        if(mois !=null && !mois.isBlank()) url.append("mois=").append(mois).append("&");
+        if (statut != null && !statut.isBlank()) url.append("statut=").append(statut).append("&");     
+        url.append("page=").append(page).append("&size=").append(size);
+
+        model.addAttribute("recap", recapPage.getContent());
+        model.addAttribute("currentPage", recapPage.getNumber());
+        model.addAttribute("totalPages", recapPage.getTotalPages());
+        model.addAttribute("size", size);
+
+
         model.addAttribute("nbPayes", nbPayes);
         model.addAttribute("nbEnAttente", nbEnAttente);
         model.addAttribute("moisLabel", paiementSalaireService.formatMoisLabel(moisDate));
