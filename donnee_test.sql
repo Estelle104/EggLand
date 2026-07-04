@@ -165,8 +165,8 @@ INSERT INTO mort (id, lot_id, date, nombre) VALUES
 (9, 7, '2024-10-01', 5);
 
 INSERT INTO reforme (id, lot_id, date, nombre) VALUES
-(1, 6, '2025-01-15', 3000),
-(2, 7, '2025-01-20', 3000);
+(1, 6, '2025-01-15', 2992),
+(2, 7, '2025-01-20', 2995);
 
 INSERT INTO traitement (id, lot_id, id_type, description, date, cout) VALUES
 (1, 1, 1, 'Vaccination Newcastle', '2025-01-12', 120000.00),
