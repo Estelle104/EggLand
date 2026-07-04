@@ -30,11 +30,11 @@
                             <tr th:each="m : ${mouvements}">
                                 <td th:text="${#temporals.format(m.date, 'dd/MM/yyyy')}"></td>
                                 <td>
-                                    <span class="badge-type" th:class="${m.type.code == 'entree'} ? 'badge-type badge-entree' : 'badge-type badge-sortie'"
-                                          th:text="${m.type.code == 'entree'} ? 'Entrée' : 'Sortie'"></span>
+                                    <span class="badge-type" th:class="${#strings.toLowerCase(m.type.code) == 'entree'} ? 'badge-type badge-entree' : 'badge-type badge-sortie'"
+                                          th:text="${#strings.toLowerCase(m.type.code) == 'entree'} ? 'Entrée' : 'Sortie'"></span>
                                 </td>
                                 <td th:text="${#numbers.formatDecimal(m.montant, 0, 'WHITESPACE', 2, 'COMMA')} + ' Ar'"
-                                    th:class="${m.type.code == 'entree'} ? 'montant-positif' : 'montant-negatif'"></td>
+                                    th:class="${#strings.toLowerCase(m.type.code) == 'entree'} ? 'montant-positif' : 'montant-negatif'"></td>
                                 <td th:text="${m.categorie}"></td>
                                 <td th:text="${m.reference}"></td>
                             </tr>

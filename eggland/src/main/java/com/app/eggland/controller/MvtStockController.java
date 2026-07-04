@@ -149,7 +149,7 @@ public class MvtStockController {
 
         if (typeCode != null && !typeCode.isEmpty()) {
             mouvements = mouvements.stream()
-                    .filter(m -> m.getType().getCode().equals(typeCode))
+                    .filter(m -> m.getType().getCode().equalsIgnoreCase(typeCode))
                     .toList();
         }
         if (dateDebut != null) {

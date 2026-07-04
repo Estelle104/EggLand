@@ -46,7 +46,7 @@ public class MvtStockService {
     public MvtStock save(MvtStock mvtStock) {
         MvtStock saved = mvtStockRepository.save(mvtStock);
         //si c'est une entrée de stock, créer un mouvement d'argent correspondant à l'achat
-        if (saved.getType().getCode().equals("entree")) {
+        if (saved.getType().getCode().equalsIgnoreCase("entree")) {
             creerMvtArgentPourAchat(saved);
         }
         //après chaque mouvement de stock, vérifier le seuil d'alerte
