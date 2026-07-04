@@ -184,7 +184,6 @@ public class LotService {
         return lotRepository.findByBatimentAndStatut(batiment, statutLot);
     }
 
- }
 
 
     @Transactional
