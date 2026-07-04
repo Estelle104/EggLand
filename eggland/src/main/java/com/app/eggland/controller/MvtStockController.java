@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,6 +21,7 @@ import com.app.eggland.model.MvtStock;
 import com.app.eggland.model.Nourriture;
 import com.app.eggland.service.MvtStockService;
 import com.app.eggland.service.NourritureService;
+import com.app.eggland.service.PaginationUtils;
 
 @Controller
 @RequestMapping("/admin/stock")
@@ -33,20 +35,28 @@ public class MvtStockController {
 
     // Afficher la liste des stocks avec le stock actuel pour chaque nourriture
     @GetMapping
-    public String liste(Model model) {
+    public String liste(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        Model model) {
         List<Nourriture> nourritures = nourritureService.findAll();
 
         Map<Integer, BigDecimal> stocks = new HashMap<>();
         for (Nourriture n : nourritures) {
             stocks.put(n.getId(), mvtStockService.calculerStockActuel(n.getId()));
         }
+        Page<Nourriture> nourrituresPage = PaginationUtils.paginerListe(nourritures, page, size);
 
         LocalDate today = LocalDate.now();
-        model.addAttribute("nourritures", nourritures);
         model.addAttribute("stocks", stocks);
         model.addAttribute("pageTitle", "Stock des nourritures");
         model.addAttribute("today", today.toString());
         model.addAttribute("todayMinus30", today.minusDays(30).toString());
+
+        model.addAttribute("nourritures", nourrituresPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", nourrituresPage.getTotalPages());
+        model.addAttribute("size", size);
         return "stock/liste";
     }
 
@@ -124,7 +134,10 @@ public class MvtStockController {
             @RequestParam(required = false) Integer nourritureId,
             @RequestParam(required = false) String typeCode,
             @RequestParam(required = false) LocalDate dateDebut,
-            @RequestParam(required = false) LocalDate dateFin) {
+            @RequestParam(required = false) LocalDate dateFin,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+        ) {
 
         List<MvtStock> mouvements;
 
@@ -150,9 +163,26 @@ public class MvtStockController {
                     .toList();
         }
 
-        model.addAttribute("mouvements", mouvements);
+        Page<MvtStock> mouvementsPage = PaginationUtils.paginerListe(mouvements, page, size);
+        StringBuilder url = new StringBuilder("/admin/stock/historique?");
+        if (nourritureId != null) url.append("nourritureId=").append(nourritureId).append("&");
+        if (typeCode != null && !typeCode.isEmpty()) url.append("typeCode=").append(typeCode).append("&");
+        if (dateDebut != null) url.append("dateDebut=").append(dateDebut).append("&");
+        if (dateFin != null) url.append("dateFin=").append(dateFin).append("&");
+        String baseUrl = url.toString();
+        if (baseUrl.endsWith("&") || baseUrl.endsWith("?")) {
+            baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+        }
+        
+
         model.addAttribute("nourritures", nourritureService.findAll());
         model.addAttribute("pageTitle", "Historique des mouvements");
+        
+        model.addAttribute("mouvements", mouvementsPage.getContent());
+        model.addAttribute("currentPage", mouvementsPage.getNumber());
+        model.addAttribute("totalPages", mouvementsPage.getTotalPages());
+        model.addAttribute("size", size);
+        model.addAttribute("baseUrl", baseUrl);
         return "stock/historique";
     }
 

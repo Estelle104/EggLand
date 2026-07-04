@@ -5,7 +5,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,7 @@ import com.app.eggland.repository.DetailVenteRepository;
 import com.app.eggland.repository.StatutLivraisonRepository;
 import com.app.eggland.service.ClientService;
 import com.app.eggland.service.LivraisonService;
+import com.app.eggland.service.PaginationUtils;
 import com.app.eggland.service.VenteService;
 
 @Controller
@@ -47,15 +50,13 @@ public class LivraisonController {
             @RequestParam(value = "dateDebut", required = false) String dateDebutStr,
             @RequestParam(value = "dateFin", required = false) String dateFinStr,
             @RequestParam(value = "nomClient", required = false) String nomClient,
+            @RequestParam(defaultValue = "0") int page, 
+            @RequestParam(defaultValue = "10") int size, 
             Model model) {
 
-        LocalDate dateDebut = (dateDebutStr != null && !dateDebutStr.isBlank())
-                              ? LocalDate.parse(dateDebutStr) : null;
-        LocalDate dateFin   = (dateFinStr   != null && !dateFinStr.isBlank())
-                              ? LocalDate.parse(dateFinStr)   : null;
-
+        LocalDate dateDebut = (dateDebutStr != null && !dateDebutStr.isBlank()) ? LocalDate.parse(dateDebutStr) : null;
+        LocalDate dateFin   = (dateFinStr   != null && !dateFinStr.isBlank()) ? LocalDate.parse(dateFinStr)   : null;
         boolean filtreActif = dateDebut != null || dateFin != null || (nomClient != null && !nomClient.isBlank());
-
         List<Livraison> livraisons;
         if (nomClient != null && !nomClient.isBlank()) {
             livraisons = livraisonService.filtrerLivraisonsParClient(nomClient, dateDebut, dateFin);
@@ -65,8 +66,26 @@ public class LivraisonController {
             livraisons = livraisonService.listeLivraison();
         }
 
+        Page<Livraison> livraisonsPage = PaginationUtils.paginerListe(livraisons, page, size);
+        StringBuilder url = new StringBuilder("/admin/livraisons?");
+        if (nomClient != null && !nomClient.isBlank()) url.append("nomClient=").append(nomClient).append("&");
+        if (dateDebutStr != null && !dateDebutStr.isBlank()) url.append("dateDebut=").append(dateDebutStr).append("&");
+        if (dateFinStr != null && !dateFinStr.isBlank()) url.append("dateFin=").append(dateFinStr).append("&");
+        url.append("size=").append(size).append("&");
+        
+        String urlFinale = url.toString();
+        if (urlFinale.endsWith("&") || urlFinale.endsWith("?")) {
+            urlFinale = urlFinale.substring(0, urlFinale.length() - 1);
+        }
+        
+
         LocalDate today = LocalDate.now();
-        model.addAttribute("livraisons", livraisons);
+        model.addAttribute("livraisons", livraisonsPage.getContent());
+        model.addAttribute("currentPage", livraisonsPage.getNumber());
+        model.addAttribute("totalPages", livraisonsPage.getTotalPages());
+        model.addAttribute("size", size);
+        model.addAttribute("baseUrl", urlFinale);
+
         model.addAttribute("dateDebutSelectionnee", dateDebutStr);
         model.addAttribute("dateFinSelectionnee", dateFinStr);
         model.addAttribute("nomClientSelectionne", nomClient);
@@ -77,7 +96,7 @@ public class LivraisonController {
     }
 
     @GetMapping("/creation")
-    public String creation(Model model) {
+    public String creation(Model model) { 
         model.addAttribute("livraison", new Livraison());
         model.addAttribute("ventesNonLivrees", livraisonService.obtenirVentesNonLivrees());
         model.addAttribute("statutsLivraison", statutLivraisonRepository.findAll());

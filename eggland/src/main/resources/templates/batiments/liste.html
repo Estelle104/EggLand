@@ -60,11 +60,14 @@
                                 </td>
                             </tr>
                         </tbody>
-                    </table>
 
+                        
+                    </table>
+                    
                     <div th:if="${#lists.isEmpty(batiments)}" class="vide-message">
                         Aucun bâtiment enregistré.
                     </div>
+                    <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url='/admin/batiments')}"></div>
                 </div>
             </div>
 

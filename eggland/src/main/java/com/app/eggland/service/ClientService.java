@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
 
+import com.app.eggland.model.Batiment;
 import com.app.eggland.model.Client;
 import com.app.eggland.model.StatutClient;
 import com.app.eggland.repository.ClientRepository;
@@ -44,6 +45,7 @@ public class ClientService {
         
         return saveClient;
     }
+
 
     public void authentifierClientManuellement(String email, HttpServletRequest request) {
         // 1. Création du badge

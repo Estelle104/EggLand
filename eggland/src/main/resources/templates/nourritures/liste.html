@@ -46,6 +46,7 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${baseUrl})}"></div>
                     <div th:if="${#lists.isEmpty(nourritures)}" class="vide-message">Aucune nourriture enregistrée.</div>
                 </div>
 
