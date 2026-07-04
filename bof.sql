@@ -524,3 +524,17 @@ FROM OeufStatut os
 JOIN StatutOeuf so ON so.id = os.id_statut
 JOIN OeufProduction op ON os.production_id = op.id
 ORDER BY op.date DESC, op.lot_id, so.code DESC;
+
+DO $$ 
+DECLARE 
+    r RECORD;
+BEGIN
+    FOR r IN (SELECT table_name FROM information_schema.tables WHERE table_schema = 'public') 
+    LOOP
+        BEGIN
+            EXECUTE 'SELECT setval(pg_get_serial_sequence(''' || r.table_name || ''', ''id''), COALESCE(MAX(id), 0) + 1, false) FROM ' || quote_ident(r.table_name) || ';';
+        EXCEPTION WHEN OTHERS THEN
+            -- Ignore les tables sans id
+        END;
+    END LOOP;
+END $$;
