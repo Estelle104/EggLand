@@ -78,12 +78,12 @@ public class MvtStockService {
     }
 
     public TypeMvt getTypeEntree() {
-        return typeMvtRepository.findByCode("entree")
+        return typeMvtRepository.findByCodeIgnoreCase("entree")
                 .orElseThrow(() -> new RuntimeException("Type de mouvement 'entree' introuvable"));
     }
 
     public TypeMvt getTypeSortie() {
-        return typeMvtRepository.findByCode("sortie")
+        return typeMvtRepository.findByCodeIgnoreCase("sortie")
                 .orElseThrow(() -> new RuntimeException("Type de mouvement 'sortie' introuvable"));
     }
 

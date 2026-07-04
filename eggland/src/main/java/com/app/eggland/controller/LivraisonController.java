@@ -73,7 +73,10 @@ public class LivraisonController {
         if (dateFinStr != null && !dateFinStr.isBlank()) url.append("dateFin=").append(dateFinStr).append("&");
         url.append("size=").append(size).append("&");
         
-        String urlFinale = url.toString().replaceAll("[&?]$", "");
+        String urlFinale = url.toString();
+        if (urlFinale.endsWith("&") || urlFinale.endsWith("?")) {
+            urlFinale = urlFinale.substring(0, urlFinale.length() - 1);
+        }
         
 
         LocalDate today = LocalDate.now();

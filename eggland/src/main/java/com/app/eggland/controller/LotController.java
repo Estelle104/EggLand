@@ -8,6 +8,7 @@ import java.util.Map;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,6 +32,7 @@ import com.app.eggland.repository.RaceRepository;
 import com.app.eggland.repository.StatutLotRepository;
 
 import com.app.eggland.service.LotService;
+import com.app.eggland.service.PaginationUtils;
 
 import jakarta.transaction.Transactional;
 
@@ -48,35 +50,35 @@ public class LotController {
     @Autowired
     private StatutLotRepository statutLotRepository;
 
-@Autowired
-LotRaceRepository lotRaceRepository;
+    @Autowired
+    LotRaceRepository lotRaceRepository;
 
      @GetMapping("/data/races")
-public List<Race> getRaces() {
-    return raceRepository.findAll();
-}
+    public List<Race> getRaces() {
+        return raceRepository.findAll();
+    }
 
      @GetMapping("/create")
     public ModelAndView showLotForm(){
         ModelAndView mav = new ModelAndView("lots/form");
-List<Batiment> listBatment = new ArrayList<>();
+        List<Batiment> listBatment = new ArrayList<>();
 
-for(Batiment batiment : batimentRepository.findAll()){
+        for(Batiment batiment : batimentRepository.findAll()){
 
-    if(!lotService.existedLot(batiment)){
+            if(!lotService.existedLot(batiment)){
 
-        listBatment.add(batiment);
-    }
+                listBatment.add(batiment);
+            }
 
 
 
-    }
-        mav.addObject("lot", new Lot());
-        mav.addObject("races", raceRepository.findAll());
+            }
+                mav.addObject("lot", new Lot());
+                mav.addObject("races", raceRepository.findAll());
 
-        mav.addObject("batiments", listBatment);
-        return mav;
-    }
+                mav.addObject("batiments", listBatment);
+                return mav;
+        }
 @PostMapping("/create")
 public ModelAndView createLot(@ModelAttribute Lot lot,
     @RequestParam(required = false) List<Integer> listeRace,
@@ -154,29 +156,31 @@ public ModelAndView createLot(@ModelAttribute Lot lot,
 @GetMapping
 public ModelAndView showAllLot(
         @RequestParam(required = false) Integer batiment,
-        @RequestParam(required = false) Integer statut) {
+        @RequestParam(required = false) Integer statut,
+        @RequestParam(required = false, defaultValue = "0") Integer page,
+        @RequestParam(required = false, defaultValue = "10") Integer size) {
     ModelAndView mav = new ModelAndView("lots/liste");
 
     List<Lot> lots;
-
     if (batiment != null && statut != null) {
         Batiment b = batimentRepository.findById(batiment).orElse(null);
         StatutLot s = statutLotRepository.findById(statut).orElse(null);
         lots = lotService.findByBatimentAndStatut(b, s);
-
     } else if (batiment != null && statut == null) {
         Batiment b = batimentRepository.findById(batiment).orElse(null);
         lots = lotService.findByBatimentOrStatut(b, null);
-
     } else if (statut != null && batiment == null) {
         StatutLot s = statutLotRepository.findById(statut).orElse(null);
         lots = lotService.findByBatimentOrStatut(null, s);
-
     } else {
         lots = lotService.getAllLots();
     }
 
-  
+    Page<Lot> lotsPage = PaginationUtils.paginerListe(lots, page, size);
+    String baseUrl = "/admin/lots?"; // Ajuste selon ton chemin réel
+    if (batiment != null) baseUrl += "batiment=" + batiment + "&";
+    if (statut != null) baseUrl += "statut=" + statut + "&";
+
     Map<Integer, Integer> agesActuels = new HashMap<>();
     LocalDate aujourd = LocalDate.now();
     
@@ -184,7 +188,12 @@ public ModelAndView showAllLot(
         agesActuels.put(lot.getId(), lotService.getAgeActuel(lot, aujourd));
     }
 
-    mav.addObject("lots", lots);
+    mav.addObject("lots", lotsPage.getContent()); // On envoie uniquement la tranche actuelle
+    mav.addObject("currentPage", lotsPage.getNumber());
+    mav.addObject("totalPages", lotsPage.getTotalPages());
+    mav.addObject("size", size);
+    mav.addObject("baseUrl", baseUrl);
+    
     mav.addObject("agesActuels", agesActuels); 
     mav.addObject("batiments", batimentRepository.findAll());
     mav.addObject("statuts", statutLotRepository.findAll());

@@ -30,7 +30,7 @@ public class BatimentController {
     @GetMapping 
     public String liste(
         @RequestParam(defaultValue = "0")int page,
-        @RequestParam(defaultValue = "10")int size,
+        @RequestParam(defaultValue = "10")int size, 
         Model model) {
         List<Batiment> batiments = batimentService.findAll();
         Page<Batiment> batimentsPage = PaginationUtils.paginerListe(batiments, page, size);
@@ -38,6 +38,7 @@ public class BatimentController {
         model.addAttribute("currentPage", batimentsPage.getNumber());
         model.addAttribute("totalPages", batimentsPage.getTotalPages());
         model.addAttribute("size", size);
+        model.addAttribute("baseUrl", "/admin/batiments");
         model.addAttribute("pageTitle", "Liste des bâtiments");
         return "batiments/liste";
     }

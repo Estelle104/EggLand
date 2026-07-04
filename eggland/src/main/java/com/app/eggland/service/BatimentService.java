@@ -20,7 +20,7 @@ public class BatimentService {
     public List<Batiment> findAll() {
         return batimentRepository.findAll();
     }
-
+ 
     public Batiment save(Batiment batiment) {
         return batimentRepository.save(batiment);
     }
