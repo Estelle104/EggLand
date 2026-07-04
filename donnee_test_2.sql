@@ -1,0 +1,447 @@
+-- ============================================================
+-- Script de nettoyage et données de test — Eggland
+-- ============================================================
+
+-- Désactiver les contraintes FK (PostgreSQL)
+SET session_replication_role = 'replica';
+
+-- ============================================================
+-- 1. VIDER TOUTES LES TABLES
+-- ============================================================
+TRUNCATE TABLE versementsalaire CASCADE;
+TRUNCATE TABLE paiementsalaire CASCADE;
+TRUNCATE TABLE detailvente CASCADE;
+TRUNCATE TABLE livraison CASCADE;
+TRUNCATE TABLE vente CASCADE;
+TRUNCATE TABLE oeufstatut CASCADE;
+TRUNCATE TABLE oeufproduction CASCADE;
+TRUNCATE TABLE mvtstock CASCADE;
+TRUNCATE TABLE mvtargent CASCADE;
+TRUNCATE TABLE traitement CASCADE;
+TRUNCATE TABLE reforme CASCADE;
+TRUNCATE TABLE mort CASCADE;
+TRUNCATE TABLE lot_races CASCADE;
+TRUNCATE TABLE lot CASCADE;
+TRUNCATE TABLE client CASCADE;
+TRUNCATE TABLE useradmin CASCADE;
+TRUNCATE TABLE notification CASCADE;
+TRUNCATE TABLE configuration CASCADE;
+TRUNCATE TABLE nourriture CASCADE;
+TRUNCATE TABLE employe CASCADE;
+TRUNCATE TABLE race CASCADE;
+TRUNCATE TABLE batiment CASCADE;
+TRUNCATE TABLE produitvente CASCADE;
+TRUNCATE TABLE roleuser CASCADE;
+TRUNCATE TABLE statutclient CASCADE;
+TRUNCATE TABLE statutlivraison CASCADE;
+TRUNCATE TABLE statutlot CASCADE;
+TRUNCATE TABLE statutoeuf CASCADE;
+TRUNCATE TABLE statutvente CASCADE;
+TRUNCATE TABLE typemvt CASCADE;
+TRUNCATE TABLE typetraitement CASCADE;
+
+-- Réactiver les contraintes FK
+SET session_replication_role = 'origin';
+
+-- ============================================================
+-- 2. TABLES DE RÉFÉRENCE (STATUTS, TYPES, ETC.)
+-- ============================================================
+
+-- statutclient
+INSERT INTO statutclient (id, code) VALUES
+(1, 'ACTIF'),
+(2, 'INACTIF'),
+(3, 'FIDELE');
+
+-- statutlivraison
+INSERT INTO statutlivraison (id, code) VALUES
+(1, 'EN_ATTENTE'),
+(2, 'EN_COURS'),
+(3, 'LIVREE'),
+(4, 'ANNULEE');
+
+-- statutlot
+INSERT INTO statutlot (id, code) VALUES
+(1, 'ACTIF'),
+(2, 'EN_REPRODUCTION'),
+(3, 'REFORME'),
+(4, 'TERMINE');
+
+-- statutoeuf
+INSERT INTO statutoeuf (id, code) VALUES
+(1, 'COMMERCIAL'),
+(2, 'INCUBE'),
+(3, 'CASSE'),
+(4, 'EN_STOCK');
+
+-- statutvente
+INSERT INTO statutvente (id, code) VALUES
+(1, 'EN_ATTENTE'),
+(2, 'CONFIRMEE'),
+(3, 'LIVREE'),
+(4, 'ANNULEE');
+
+-- typemvt (mouvements argent & stock)
+INSERT INTO typemvt (id, code) VALUES
+(1, 'ENTREE'),
+(2, 'SORTIE');
+
+-- typetraitement
+INSERT INTO typetraitement (id, code) VALUES
+(1, 'VACCINATION'),
+(2, 'VITAMINE'),
+(3, 'TRAITEMENT_MALADIE'),
+(4, 'DEVERMINAGE'),
+(5, 'AUTRE');
+
+-- roleuser
+INSERT INTO roleuser (id, code) VALUES
+(1, 'admin'),
+(2, 'user'),
+(3, 'superviseur');
+
+-- produitvente
+INSERT INTO produitvente (id, code) VALUES
+(1, 'OEUF_COMMERCIAL'),
+(2, 'OEUF_INCUBE'),
+(3, 'POULET_VIVANT'),
+(4, 'POULET_ABATTU'),
+(5, 'FIENTE');
+
+-- ============================================================
+-- 3. TABLES CORE
+-- ============================================================
+
+-- batiment
+INSERT INTO batiment (id, nom, capacite) VALUES
+(1, 'Bâtiment A - Pondeuses', 5000),
+(2, 'Bâtiment B - Poulets de chair', 3000),
+(3, 'Bâtiment C - Élevage', 4000),
+(4, 'Bâtiment D - Reproduction', 2000),
+(5, 'Bâtiment E - Quarantaine', 1000);
+
+-- race
+INSERT INTO race (id, nom, prix_unitaire, rendement_moyen_mois) VALUES
+(1, 'Lohmann Brown', 12000.00, 28),
+(2, 'Hy-Line Brown', 11500.00, 26),
+(3, 'Isa Brown', 11000.00, 25),
+(4, 'Cobb 500', 8000.00, 0),
+(5, 'Ross 308', 7500.00, 0);
+
+-- employe
+INSERT INTO employe (id, nom, prenom, tel, salaire, date_embauche) VALUES
+(1, 'Rakoto', 'Jean', '+261 34 12 345 01', 450000.00, '2023-01-15'),
+(2, 'Rabe', 'Marie', '+261 34 12 345 02', 420000.00, '2023-02-20'),
+(3, 'Randria', 'Paul', '+261 34 12 345 03', 380000.00, '2023-03-10'),
+(4, 'Rasoa', 'Lucienne', '+261 34 12 345 04', 400000.00, '2023-04-05'),
+(5, 'Rakotoson', 'Faly', '+261 34 12 345 05', 350000.00, '2023-05-12'),
+(6, 'Andriamparany', 'Tiana', '+261 34 12 345 06', 370000.00, '2023-06-01'),
+(7, 'Ravelojaona', 'Hery', '+261 34 12 345 07', 430000.00, '2023-07-18'),
+(8, 'Rajaonarison', 'Miora', '+261 34 12 345 08', 390000.00, '2024-01-10'),
+(9, 'Rafanomezana', 'Soa', '+261 34 12 345 09', 360000.00, '2024-02-14'),
+(10, 'Ralambo', 'Tafita', '+261 34 12 345 10', 410000.00, '2024-03-22');
+
+-- nourriture
+INSERT INTO nourriture (id, libelle, prix_unitaire, seuil_alerte) VALUES
+(1, 'Aliment pondeuse démarrage', 2500.00, 500),
+(2, 'Aliment pondeuse croissance', 2300.00, 500),
+(3, 'Aliment pondeuse ponte', 2800.00, 1000),
+(4, 'Aliment poulet chair démarrage', 2200.00, 500),
+(5, 'Aliment poulet chair finition', 2600.00, 500),
+(6, 'Maïs grain', 1500.00, 2000),
+(7, 'Son de riz', 800.00, 1000),
+(8, 'Farine de poisson', 3500.00, 300),
+(9, 'Coquillage broyé', 1200.00, 400),
+(10, 'Complément vitaminé', 5000.00, 200);
+
+-- ============================================================
+-- 4. TABLES DÉPENDANTES
+-- ============================================================
+
+-- lot (10 lots)
+INSERT INTO lot (id, race_id, date_arrivee, nombre_initial, age_semaine, statut, batiment_id) VALUES
+(1, 1, '2025-01-10', 4800, 24, 1, 1),
+(2, 1, '2025-02-15', 4500, 20, 1, 1),
+(3, 3, '2025-03-01', 3800, 18, 1, 3),
+(4, 2, '2025-04-10', 4200, 14, 1, 2),
+(5, 4, '2025-05-05', 2800, 10, 1, 4),
+(6, 5, '2025-06-01', 2500, 8, 1, 4),
+(7, 1, '2024-08-15', 5000, 46, 3, 1),
+(8, 2, '2024-09-20', 4000, 42, 3, 2),
+(9, 3, '2024-10-01', 3500, 40, 3, 3),
+(10, 1, '2024-06-01', 4800, 56, 4, 1);
+
+-- lot_races (associations supplémentaires)
+INSERT INTO lot_races (lot_id, race_id, nombre) VALUES
+(1, 1, 4800),
+(2, 1, 4500),
+(3, 3, 3800),
+(4, 2, 4200),
+(5, 4, 2800),
+(6, 5, 2500);
+
+-- client (10 clients)
+INSERT INTO client (id, nom, prenom, tel, email, adresse, date_inscription, id_statut) VALUES
+(1, 'Rakotoarimanana', 'Haja', '+261 32 11 111 01', 'haja.rakoto@email.com', 'Antananarivo', '2024-01-05', 1),
+(2, 'Andrianjatovo', 'Nivo', '+261 33 22 222 02', 'nivo.andria@email.com', 'Antsirabe', '2024-02-10', 1),
+(3, 'Razafindrakoto', 'Mamy', '+261 34 33 333 03', 'mamy.razaf@email.com', 'Fianarantsoa', '2024-03-15', 3),
+(4, 'Rakotonirina', 'Lalao', '+261 32 44 444 04', 'lalao.rakoto@email.com', 'Toamasina', '2024-04-20', 1),
+(5, 'Ravelo', 'Tahiry', '+261 33 55 555 05', 'tahiry.ravelo@email.com', 'Mahajanga', '2024-05-25', 2),
+(6, 'Rasolofomanana', 'Herizo', '+261 34 66 666 06', 'herizo.rasolo@email.com', 'Toliara', '2024-06-30', 1),
+(7, 'Rakotoson', 'Manoa', '+261 32 77 777 07', 'manoa.rakotoson@email.com', 'Antananarivo', '2024-07-05', 3),
+(8, 'Rabeharisoa', 'Miora', '+261 33 88 888 08', 'miora.rabe@email.com', 'Antsiranana', '2024-08-10', 1),
+(9, 'Randriamanana', 'Tolotra', '+261 34 99 999 09', 'tolotra.randria@email.com', 'Antananarivo', '2024-09-15', 2),
+(10, 'Razafimahatratra', 'Sariaka', '+261 32 10 010 10', 'sariaka.razafy@email.com', 'Fianarantsoa', '2024-10-20', 1);
+
+-- useradmin
+INSERT INTO useradmin (id, nom, email, mot_de_passe, role, actif) VALUES
+(1, 'Admin Principal', 'admin@eggland.mg', 'admin123', 1, true),
+(2, 'User Test', 'user@eggland.mg', 'user123', 2, true),
+(3, 'Superviseur', 'superviseur@eggland.mg', 'visor123', 3, true);
+
+-- configuration (une seule ligne)
+INSERT INTO configuration (id, seuil_mort, seuil_nourriture) VALUES
+(1, 10, 500.00);
+
+-- ============================================================
+-- 5. DONNÉES DE TRANSACTIONS
+-- ============================================================
+
+-- mort (mortalité par lot)
+INSERT INTO mort (id, lot_id, date, nombre) VALUES
+(1, 1, '2025-01-15', 5),   (2, 1, '2025-01-20', 3),
+(3, 1, '2025-02-01', 4),   (4, 1, '2025-02-15', 2),
+(5, 1, '2025-03-01', 6),   (6, 2, '2025-02-20', 4),
+(7, 2, '2025-03-05', 3),   (8, 2, '2025-03-20', 5),
+(9, 2, '2025-04-01', 2),   (10, 3, '2025-03-10', 4),
+(11, 3, '2025-03-25', 3),  (12, 3, '2025-04-10', 5),
+(13, 4, '2025-04-15', 3),  (14, 4, '2025-05-01', 4),
+(15, 4, '2025-05-15', 2),  (16, 5, '2025-05-10', 2),
+(17, 5, '2025-05-25', 3),  (18, 6, '2025-06-05', 1),
+(19, 7, '2024-09-01', 8),  (20, 7, '2024-10-01', 6),
+(21, 7, '2024-11-01', 10), (22, 8, '2024-10-01', 5),
+(23, 8, '2024-11-01', 7),  (24, 9, '2024-11-01', 4);
+
+-- reforme
+INSERT INTO reforme (id, lot_id, date, nombre) VALUES
+(1, 7, '2025-01-15', 2000),
+(2, 7, '2025-02-15', 1500),
+(3, 8, '2025-01-20', 1800),
+(4, 8, '2025-02-20', 1200),
+(5, 9, '2025-01-25', 1500),
+(6, 9, '2025-02-25', 1000),
+(7, 10, '2025-01-10', 4800);
+
+-- traitement
+INSERT INTO traitement (id, lot_id, id_type, description, date, cout) VALUES
+(1, 1, 1, 'Vaccination Newcastle', '2025-01-12', 120000.00),
+(2, 1, 2, 'Supplément vitaminé eau de boisson', '2025-02-01', 45000.00),
+(3, 1, 4, 'Déworming routine', '2025-02-15', 35000.00),
+(4, 2, 1, 'Vaccination Gumboro', '2025-02-18', 110000.00),
+(5, 2, 2, 'Complexe vitaminé', '2025-03-05', 42000.00),
+(6, 3, 1, 'Vaccination Newcastle', '2025-03-05', 95000.00),
+(7, 3, 3, 'Traitement coccidiose', '2025-03-20', 78000.00),
+(8, 4, 1, 'Vaccination bronchite infectieuse', '2025-04-12', 105000.00),
+(9, 4, 4, 'Déworming', '2025-04-25', 32000.00),
+(10, 5, 1, 'Vaccination Newcastle', '2025-05-08', 70000.00),
+(11, 6, 1, 'Vaccination Gumboro', '2025-06-03', 62000.00),
+(12, 7, 1, 'Vaccination rappel', '2024-09-01', 130000.00),
+(13, 8, 3, 'Traitement respiratoire', '2024-10-15', 95000.00),
+(14, 9, 2, 'Vitamine boost', '2024-10-20', 38000.00),
+(15, 10, 1, 'Vaccination complète', '2024-06-15', 150000.00);
+
+-- oeufproduction (production d'oeufs — lots actifs)
+INSERT INTO oeufproduction (id, lot_id, date, quantite) VALUES
+(1, 1, '2025-01-20', 3200),  (2, 1, '2025-02-01', 3500),
+(3, 1, '2025-02-15', 3800),  (4, 1, '2025-03-01', 4000),
+(5, 1, '2025-03-15', 4100),  (6, 1, '2025-04-01', 3900),
+(7, 1, '2025-04-15', 3800),  (8, 1, '2025-05-01', 3700),
+(9, 1, '2025-05-15', 3600),  (10, 1, '2025-06-01', 3500),
+(11, 2, '2025-03-01', 3000), (12, 2, '2025-03-15', 3200),
+(13, 2, '2025-04-01', 3400), (14, 2, '2025-04-15', 3600),
+(15, 2, '2025-05-01', 3700), (16, 2, '2025-05-15', 3800),
+(17, 2, '2025-06-01', 3900), (18, 3, '2025-04-01', 2800),
+(19, 3, '2025-04-15', 3000), (20, 3, '2025-05-01', 3100),
+(21, 3, '2025-05-15', 3200), (22, 3, '2025-06-01', 3000),
+(23, 4, '2025-05-01', 3500), (24, 4, '2025-05-15', 3700),
+(25, 4, '2025-06-01', 3800);
+
+-- oeufstatut (répartition des oeufs par statut)
+INSERT INTO oeufstatut (id, production_id, id_statut, quantite) VALUES
+(1, 1, 1, 3000),  (2, 1, 3, 200),   (3, 2, 1, 3300),  (4, 2, 3, 200),
+(5, 3, 1, 3600),  (6, 3, 3, 200),   (7, 4, 1, 3800),  (8, 4, 3, 200),
+(9, 5, 1, 3900),  (10, 5, 3, 200),  (11, 6, 1, 3700), (12, 6, 3, 200),
+(13, 11, 1, 2800), (14, 11, 2, 200), (15, 13, 1, 3200), (16, 13, 2, 200),
+(17, 18, 1, 2600), (18, 18, 3, 200), (19, 23, 1, 3300), (20, 23, 3, 200);
+
+-- vente
+INSERT INTO vente (id, client_id, date, total, id_statut) VALUES
+(1, 1, '2025-02-10', 450000.00, 3),
+(2, 2, '2025-02-15', 320000.00, 3),
+(3, 3, '2025-03-05', 680000.00, 3),
+(4, 4, '2025-03-20', 250000.00, 2),
+(5, 1, '2025-04-01', 510000.00, 3),
+(6, 5, '2025-04-10', 180000.00, 1),
+(7, 6, '2025-04-20', 720000.00, 2),
+(8, 7, '2025-05-05', 390000.00, 3),
+(9, 3, '2025-05-15', 560000.00, 2),
+(10, 8, '2025-05-25', 410000.00, 1),
+(11, 2, '2025-06-01', 275000.00, 2),
+(12, 9, '2025-06-05', 620000.00, 1),
+(13, 10, '2025-06-10', 340000.00, 3),
+(14, 4, '2025-06-15', 480000.00, 2),
+(15, 7, '2025-06-20', 590000.00, 1);
+
+-- detailvente
+INSERT INTO detailvente (id, vente_id, client_id, id_produit, quantite, prix_unitaire) VALUES
+(1, 1, 1, 1, 1500.000, 300.00),
+(2, 2, 2, 1, 1000.000, 320.00),
+(3, 3, 3, 1, 2000.000, 340.00),
+(4, 3, 3, 4, 50.000, 8000.00),
+(5, 4, 4, 1, 800.000, 310.00),
+(6, 5, 1, 1, 1700.000, 300.00),
+(7, 6, 5, 1, 600.000, 300.00),
+(8, 7, 6, 1, 2200.000, 320.00),
+(9, 7, 6, 4, 40.000, 7500.00),
+(10, 8, 7, 1, 1300.000, 300.00),
+(11, 9, 3, 1, 1800.000, 310.00),
+(12, 10, 8, 1, 1400.000, 290.00),
+(13, 11, 2, 1, 900.000, 305.00),
+(14, 12, 9, 1, 2000.000, 310.00),
+(15, 13, 10, 1, 1100.000, 310.00),
+(16, 14, 4, 1, 1600.000, 300.00),
+(17, 15, 7, 1, 1900.000, 310.00);
+
+-- livraison
+INSERT INTO livraison (id, vente_id, client_id, date_livraison, adresse_livraison, id_statut, frais_livraison) VALUES
+(1, 1, 1, '2025-02-12', 'Lot IAV 1B, Antananarivo', 3, 25000.00),
+(2, 2, 2, '2025-02-17', 'Route nationale 7, Antsirabe', 3, 35000.00),
+(3, 3, 3, '2025-03-07', 'Avenue de l''Indépendance, Fianarantsoa', 3, 40000.00),
+(4, 4, 4, '2025-03-22', 'Boulevard Ratsimilaho, Toamasina', 2, 30000.00),
+(5, 5, 1, '2025-04-03', 'Lot IAV 1B, Antananarivo', 3, 25000.00),
+(6, 8, 7, '2025-05-07', 'Anosy, Antananarivo', 3, 20000.00),
+(7, 13, 10, '2025-06-12', 'Tsianolondroa, Fianarantsoa', 3, 35000.00);
+
+-- mvtargent (entrées et sorties financières)
+INSERT INTO mvtargent (id, id_type, montant, date, categorie, reference, lot_id) VALUES
+(1, 1, 450000.00, '2025-02-10', 'VENTE_OEUF', 'V-2025-001', NULL),
+(2, 1, 320000.00, '2025-02-15', 'VENTE_OEUF', 'V-2025-002', NULL),
+(3, 2, 120000.00, '2025-01-12', 'VACCINATION', 'TRT-001', 1),
+(4, 2, 45000.00, '2025-02-01', 'VITAMINE', 'TRT-002', 1),
+(5, 2, 35000.00, '2025-02-15', 'DEVERMINAGE', 'TRT-003', 1),
+(6, 1, 680000.00, '2025-03-05', 'VENTE_MIXTE', 'V-2025-003', NULL),
+(7, 2, 110000.00, '2025-02-18', 'VACCINATION', 'TRT-004', 2),
+(8, 2, 480000.00, '2025-03-01', 'ACHAT_ALIMENT', 'ACH-AL-001', NULL),
+(9, 1, 250000.00, '2025-03-20', 'VENTE_OEUF', 'V-2025-004', NULL),
+(10, 2, 95000.00, '2025-03-05', 'VACCINATION', 'TRT-006', 3),
+(11, 2, 78000.00, '2025-03-20', 'TRAITEMENT', 'TRT-007', 3),
+(12, 1, 510000.00, '2025-04-01', 'VENTE_OEUF', 'V-2025-005', NULL),
+(13, 2, 320000.00, '2025-04-05', 'SALAIRE', 'SAL-2025-04', NULL),
+(14, 2, 560000.00, '2025-04-10', 'ACHAT_ALIMENT', 'ACH-AL-002', NULL),
+(15, 2, 350000.00, '2025-05-05', 'ACHAT_POUSSIER', 'ACH-POU-001', NULL),
+(16, 1, 390000.00, '2025-05-05', 'VENTE_OEUF', 'V-2025-008', NULL),
+(17, 1, 410000.00, '2025-05-25', 'VENTE_OEUF', 'V-2025-010', NULL),
+(18, 2, 320000.00, '2025-05-28', 'SALAIRE', 'SAL-2025-05', NULL),
+(19, 1, 620000.00, '2025-06-05', 'VENTE_OEUF', 'V-2025-012', NULL),
+(20, 2, 340000.00, '2025-06-08', 'ACHAT_ALIMENT', 'ACH-AL-003', NULL),
+(21, 1, 590000.00, '2025-06-20', 'VENTE_OEUF', 'V-2025-015', NULL),
+(22, 2, 320000.00, '2025-06-25', 'SALAIRE', 'SAL-2025-06', NULL),
+(23, 2, 150000.00, '2024-06-15', 'VACCINATION', 'TRT-015', 10),
+(24, 2, 130000.00, '2024-09-01', 'VACCINATION', 'TRT-012', 7);
+
+-- mvtstock (mouvements de nourriture)
+INSERT INTO mvtstock (id, nourriture_id, lot_id, id_type, quantite, date) VALUES
+(1, 3, 1, 2, 500.000, '2025-01-15'),
+(2, 3, 1, 2, 550.000, '2025-02-01'),
+(3, 3, 1, 2, 600.000, '2025-02-15'),
+(4, 3, 2, 2, 400.000, '2025-02-20'),
+(5, 3, 2, 2, 450.000, '2025-03-05'),
+(6, 5, 5, 2, 300.000, '2025-05-10'),
+(7, 5, 5, 2, 350.000, '2025-05-25'),
+(8, 5, 6, 2, 250.000, '2025-06-05'),
+(9, 3, 1, 2, 600.000, '2025-03-01'),
+(10, 3, 1, 2, 550.000, '2025-03-15'),
+(11, 3, 2, 2, 450.000, '2025-04-01'),
+(12, 3, 3, 2, 400.000, '2025-04-01'),
+(13, 3, 4, 2, 450.000, '2025-05-01'),
+(14, 1, 3, 2, 350.000, '2025-03-10'),
+(15, 1, 4, 2, 300.000, '2025-04-15'),
+(16, 3, 1, 1, 2000.000, '2025-01-10'),
+(17, 5, 5, 1, 1000.000, '2025-05-05'),
+(18, 5, 6, 1, 800.000, '2025-06-01'),
+(19, 3, 2, 1, 1500.000, '2025-02-15'),
+(20, 3, 4, 1, 1200.000, '2025-04-10');
+
+-- paiementsalaire (bulletins de salaire)
+INSERT INTO paiementsalaire (id, employe_id, mois, montant, paye, date_paiement, reference) VALUES
+(1, 1, '2025-04-01', 450000.00, true, '2025-04-05', 'SAL-2025-04-001'),
+(2, 2, '2025-04-01', 420000.00, true, '2025-04-05', 'SAL-2025-04-002'),
+(3, 3, '2025-04-01', 380000.00, true, '2025-04-05', 'SAL-2025-04-003'),
+(4, 4, '2025-04-01', 400000.00, true, '2025-04-05', 'SAL-2025-04-004'),
+(5, 5, '2025-04-01', 350000.00, true, '2025-04-05', 'SAL-2025-04-005'),
+(6, 1, '2025-05-01', 450000.00, true, '2025-05-02', 'SAL-2025-05-001'),
+(7, 2, '2025-05-01', 420000.00, true, '2025-05-02', 'SAL-2025-05-002'),
+(8, 3, '2025-05-01', 380000.00, true, '2025-05-02', 'SAL-2025-05-003'),
+(9, 4, '2025-05-01', 400000.00, true, '2025-05-02', 'SAL-2025-05-004'),
+(10, 5, '2025-05-01', 350000.00, true, '2025-05-02', 'SAL-2025-05-005'),
+(11, 6, '2025-05-01', 370000.00, true, '2025-05-02', 'SAL-2025-05-006'),
+(12, 7, '2025-05-01', 430000.00, true, '2025-05-02', 'SAL-2025-05-007');
+
+-- versementsalaire (versements effectifs)
+INSERT INTO versementsalaire (id, paiement_salaire_id, montant, date) VALUES
+(1, 1, 450000.00, '2025-04-05'),
+(2, 2, 420000.00, '2025-04-05'),
+(3, 3, 380000.00, '2025-04-05'),
+(4, 4, 400000.00, '2025-04-05'),
+(5, 5, 350000.00, '2025-04-05'),
+(6, 6, 450000.00, '2025-05-02'),
+(7, 7, 420000.00, '2025-05-02'),
+(8, 8, 380000.00, '2025-05-02'),
+(9, 9, 400000.00, '2025-05-02'),
+(10, 10, 350000.00, '2025-05-02'),
+(11, 11, 370000.00, '2025-05-02'),
+(12, 12, 430000.00, '2025-05-02');
+
+-- notification
+INSERT INTO notification (id, type, message, date_creation, lu) VALUES
+(1, 'INFO', 'Bienvenue sur Eggland Management', '2025-01-01 08:00:00', true),
+(2, 'WARNING', 'Seuil d''alerte aliment atteint pour le lot #1', '2025-02-15 09:30:00', false),
+(3, 'INFO', 'Nouveau lot #5 enregistré', '2025-05-05 10:00:00', true),
+(4, 'DANGER', 'Taux de mortalité élevé détecté sur le lot #7', '2024-10-15 14:00:00', true),
+(5, 'INFO', 'Production mensuelle : 14500 oeufs en avril', '2025-05-01 08:00:00', false),
+(6, 'WARNING', 'Stock de maïs faible (< 2000 kg)', '2025-06-10 11:00:00', false),
+(7, 'INFO', 'Paiement des salaires effectué', '2025-05-02 16:00:00', true),
+(8, 'SUCCESS', 'Vente #8 confirmée et livrée', '2025-05-07 09:00:00', true);
+
+/* mettre à jour les séquences pour chaque table */
+SELECT setval('batiment_id_seq', COALESCE((SELECT MAX(id) FROM batiment), 0) + 1, false);
+SELECT setval('client_id_seq', COALESCE((SELECT MAX(id) FROM client), 0) + 1, false);
+SELECT setval('configuration_id_seq', COALESCE((SELECT MAX(id) FROM configuration), 0) + 1, false);
+SELECT setval('detailvente_id_seq', COALESCE((SELECT MAX(id) FROM detailvente), 0) + 1, false);
+SELECT setval('employe_id_seq', COALESCE((SELECT MAX(id) FROM employe), 0) + 1, false);
+SELECT setval('livraison_id_seq', COALESCE((SELECT MAX(id) FROM livraison), 0) + 1, false);
+SELECT setval('lot_id_seq', COALESCE((SELECT MAX(id) FROM lot), 0) + 1, false);
+SELECT setval('lot_races_id_seq', COALESCE((SELECT MAX(id) FROM lot_races), 0) + 1, false);
+SELECT setval('mort_id_seq', COALESCE((SELECT MAX(id) FROM mort), 0) + 1, false);
+SELECT setval('mvtargent_id_seq', COALESCE((SELECT MAX(id) FROM mvtargent), 0) + 1, false);
+SELECT setval('mvtstock_id_seq', COALESCE((SELECT MAX(id) FROM mvtstock), 0) + 1, false);
+SELECT setval('notification_id_seq', COALESCE((SELECT MAX(id) FROM notification), 0) + 1, false);
+SELECT setval('nourriture_id_seq', COALESCE((SELECT MAX(id) FROM nourriture), 0) + 1, false);
+SELECT setval('oeufproduction_id_seq', COALESCE((SELECT MAX(id) FROM oeufproduction), 0) + 1, false);
+SELECT setval('oeufstatut_id_seq', COALESCE((SELECT MAX(id) FROM oeufstatut), 0) + 1, false);
+SELECT setval('paiementsalaire_id_seq', COALESCE((SELECT MAX(id) FROM paiementsalaire), 0) + 1, false);
+SELECT setval('produitvente_id_seq', COALESCE((SELECT MAX(id) FROM produitvente), 0) + 1, false);
+SELECT setval('race_id_seq', COALESCE((SELECT MAX(id) FROM race), 0) + 1, false);
+SELECT setval('reforme_id_seq', COALESCE((SELECT MAX(id) FROM reforme), 0) + 1, false);
+SELECT setval('roleuser_id_seq', COALESCE((SELECT MAX(id) FROM roleuser), 0) + 1, false);
+SELECT setval('statutclient_id_seq', COALESCE((SELECT MAX(id) FROM statutclient), 0) + 1, false);
+SELECT setval('statutlivraison_id_seq', COALESCE((SELECT MAX(id) FROM statutlivraison), 0) + 1, false);
+SELECT setval('statutlot_id_seq', COALESCE((SELECT MAX(id) FROM statutlot), 0) + 1, false);
+SELECT setval('statutoeuf_id_seq', COALESCE((SELECT MAX(id) FROM statutoeuf), 0) + 1, false);
+SELECT setval('statutvente_id_seq', COALESCE((SELECT MAX(id) FROM statutvente), 0) + 1, false);
+SELECT setval('traitement_id_seq', COALESCE((SELECT MAX(id) FROM traitement), 0) + 1, false);
+SELECT setval('typemvt_id_seq', COALESCE((SELECT MAX(id) FROM typemvt), 0) + 1, false);
+SELECT setval('typetraitement_id_seq', COALESCE((SELECT MAX(id) FROM typetraitement), 0) + 1, false);
+SELECT setval('useradmin_id_seq', COALESCE((SELECT MAX(id) FROM useradmin), 0) + 1, false);
+SELECT setval('vente_id_seq', COALESCE((SELECT MAX(id) FROM vente), 0) + 1, false);
+SELECT setval('versementsalaire_id_seq', COALESCE((SELECT MAX(id) FROM versementsalaire), 0) + 1, false);
