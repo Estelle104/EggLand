@@ -51,7 +51,7 @@ public class LivraisonController {
             @RequestParam(value = "dateFin", required = false) String dateFinStr,
             @RequestParam(value = "nomClient", required = false) String nomClient,
             @RequestParam(defaultValue = "0") int page, 
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "10") int size, 
             Model model) {
 
         LocalDate dateDebut = (dateDebutStr != null && !dateDebutStr.isBlank()) ? LocalDate.parse(dateDebutStr) : null;
