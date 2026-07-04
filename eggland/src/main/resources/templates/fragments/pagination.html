@@ -1,0 +1,51 @@
+<div th:fragment="pager(currentPage, totalPages, size, url)">
+    <div style="display: flex; align-items: center; gap: 20px; justify-content: center; margin-top: 20px;">
+        
+        <form th:action="@{${url}}" method="get" style="display: flex; align-items: center; gap: 8px;">
+            <label for="lignesInput">Lignes :</label>
+            
+            <input type="number" 
+                   id="lignesInput" 
+                   name="size"  
+                   th:value="${size}" 
+                   list="lignes-choix" 
+                   onchange="this.form.submit()"
+                   style="width: 70px; padding: 5px; border-radius: 5px; border: 1px solid #ccc; text-align: center;"
+                   min="1">
+            
+            <datalist id="lignes-choix">
+                <option value="5"></option>
+                <option value="10"></option>
+                <option value="20"></option>
+                <option value="50"></option>
+            </datalist>
+            
+            <input type="hidden" name="page" value="0" />
+            
+            <button type="submit" style="display: none;"></button>
+        </form>
+
+        <nav style="display: flex; gap: 10px;">
+            <a th:if="${currentPage > 0}" 
+               th:href="@{${url}(page=${currentPage - 1}, size=${size})}"
+               style="padding: 8px 12px; background: #eee; border-radius: 5px; text-decoration: none; color: black; font-weight: 500;">
+               « Précédent
+            </a>
+
+            <span style="align-self: center; font-weight: 500;">
+                Page <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
+            </span>
+
+            <!--<a th:if="${currentPage < totalPages - 1}" 
+               th:href="@{${url}(page=${currentPage + 1}, size=${size})}"
+               style="padding: 8px 12px; background: #eee; border-radius: 5px; text-decoration: none; color: black; font-weight: 500;">
+               Suivant »
+            </a>-->
+            <a th:if="${currentPage < totalPages - 1}" 
+               th:href="@{${url}(page=${currentPage + 1}, size=${size})}"
+               style="padding: 8px 12px; background: #eee; border-radius: 5px; text-decoration: none; color: black; font-weight: 500;">
+               Suivant »
+            </a>
+        </nav>
+    </div>
+</div>
