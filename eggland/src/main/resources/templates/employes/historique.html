@@ -26,7 +26,8 @@
                         <i class="fa-solid fa-arrow-left"></i> Retour
                     </a>
                 </div>
-
+                <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${url})}"></div>
+                
                 <form class="filters-bar" method="get" th:action="@{/admin/employes/historique}">
                     <select name="mois" onchange="this.form.submit()">
                         <option value="">Tous les mois</option>
@@ -74,7 +75,7 @@
                             </tr>
                         </tbody>
                     </table>
-
+                    
                     <div th:if="${#lists.isEmpty(ligne.versements)}" class="vide-message">
                         Aucun versement enregistré.
                     </div>

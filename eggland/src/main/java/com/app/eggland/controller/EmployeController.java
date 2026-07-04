@@ -15,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 
+import com.app.eggland.service.PaginationUtils;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -106,11 +108,12 @@ public class EmployeController {
     @GetMapping("/historique")
     public String historique(@RequestParam(required = false) String mois,
                               @RequestParam(required = false) String statut,
+                              @RequestParam(defaultValue="1") int page,
+                              @RequestParam(defaultValue="10") int size,
                               Model model) {
         List<PaiementSalaire> paiements = (mois != null && !mois.isBlank())
                 ? paiementSalaireService.listerParMois(LocalDate.parse(mois + "-01"))
                 : paiementSalaireService.listerHistorique();
-
         if ("paye".equals(statut)) {
             paiements = paiements.stream().filter(PaiementSalaire::getPaye).toList();
         } else if ("attente".equals(statut)) {
@@ -121,8 +124,19 @@ public class EmployeController {
         List<HistoriqueLigne> lignes = paiements.stream()
                 .map(p -> new HistoriqueLigne(p, paiementSalaireService.listerVersements(p)))
                 .toList();
+        Page<HistoriqueLigne> lignesPage = PaginationUtils.paginerListe(lignes, page, size); 
+        StringBuilder url = new StringBuilder("/admin/employes/historique?");
+        if (mois != null && !mois.isBlank()) url.append("mois=").append(mois).append("&");
+        if (statut != null && !statut.isBlank()) url.append("statut=").append(statut).append("&");     
+        url.append("page=").append(page).append("&size=").append(size);
+        String urlFinale = url.toString().replaceAll("[&?]$", "");
 
-        model.addAttribute("lignes", lignes);
+        model.addAttribute("url", urlFinale);
+        model.addAttribute("lignes", lignesPage.getContent());
+        model.addAttribute("currentPage", lignesPage.getNumber());
+        model.addAttribute("totalPages", lignesPage.getTotalPages());
+        model.addAttribute("size", size);
+
         model.addAttribute("listeMois", genererListeMois());
         model.addAttribute("moisSelectionne", mois);
         model.addAttribute("statutSelectionne", statut);

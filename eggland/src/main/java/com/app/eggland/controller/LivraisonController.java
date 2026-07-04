@@ -83,7 +83,6 @@ public class LivraisonController {
         model.addAttribute("size", size);
         model.addAttribute("baseUrl", urlFinale);
 
-        model.addAttribute("livraisons", livraisons);
         model.addAttribute("dateDebutSelectionnee", dateDebutStr);
         model.addAttribute("dateFinSelectionnee", dateFinStr);
         model.addAttribute("nomClientSelectionne", nomClient);
