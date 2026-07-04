@@ -106,8 +106,6 @@ public class EmployeController {
     @GetMapping("/historique")
     public String historique(@RequestParam(required = false) String mois,
                               @RequestParam(required = false) String statut,
-                              @RequestParam(defaultValue="1")int page,
-                              @RequestParam(defaultValue="5") int size,
                               Model model) {
         List<PaiementSalaire> paiements = (mois != null && !mois.isBlank())
                 ? paiementSalaireService.listerParMois(LocalDate.parse(mois + "-01"))
@@ -118,57 +116,25 @@ public class EmployeController {
         } else if ("attente".equals(statut)) {
             paiements = paiements.stream().filter(p -> !Boolean.TRUE.equals(p.getPaye())).toList();
         }
-        Page<PaiementSalaire> paiementsPage = PaginationUtils.paginerListe(paiements, page, size);
 
         // Pour chaque PaiementSalaire (employé + mois), on attache le détail de ses versements.
         List<HistoriqueLigne> lignes = paiements.stream()
                 .map(p -> new HistoriqueLigne(p, paiementSalaireService.listerVersements(p)))
                 .toList();
 
-            StringBuilder urlPagination = new StringBuilder("/admin/employes/historique?");
-            if (mois != null && !mois.isBlank()) {
-                urlPagination.append("mois=").append(mois).append("&");
-            }
-            if (statut != null && !statut.isBlank()) {
-                urlPagination.append("statut=").append(statut).append("&");
-            }
-            
-            String urlFinale = urlPagination.toString();
-            if (urlFinale.endsWith("&") || urlFinale.endsWith("?")) {
-                urlFinale = urlFinale.substring(0, urlFinale.length() - 1);
-            }
-
-        Page<HistoriqueLigne> lignesPage = PaginationUtils.paginerListe(lignes, page, size);
-
-        model.addAttribute("lignesPage", lignesPage.getContent());
-        model.addAttribute("currentPage", lignesPage.getNumber());
-        model.addAttribute("totalPages", lignesPage.getTotalPages());
-        model.addAttribute("size", size);
- 
-        model.addAttribute("currentPage", paiementsPage.getNumber()); 
-        model.addAttribute("totalPages", paiementsPage.getTotalPages());
-        model.addAttribute("size", size);
-        model.addAttribute("baseUrl", urlFinale);
-
+        model.addAttribute("lignes", lignes);
         model.addAttribute("listeMois", genererListeMois());
         model.addAttribute("moisSelectionne", mois);
         model.addAttribute("statutSelectionne", statut);
         return "employes/historique";
     }
 
-
-
-
-
-
     // ---------- Récap mensuel ----------
 
     @GetMapping("/recap")
     public String recap(@RequestParam(required = false) String mois,
-                        @RequestParam(required = false) String statut,
-                        @RequestParam(defaultValue="1")int page,
-                        @RequestParam(defaultValue="5") int size,
-                        Model model) {
+                         @RequestParam(required = false) String statut,
+                         Model model) {
         LocalDate moisDate = (mois != null && !mois.isBlank())
                 ? LocalDate.parse(mois + "-01")
                 : LocalDate.now().withDayOfMonth(1);
@@ -184,28 +150,7 @@ public class EmployeController {
         long nbPayes = recap.stream().filter(PaiementSalaireService.RecapLigne::paye).count();
         long nbEnAttente = recap.size() - nbPayes;
 
-        Page<PaiementSalaireService.RecapLigne> recapPage = PaginationUtils.paginerListe(recap, page, size);
-        StringBuilder urlPagination = new StringBuilder("/admin/employes/recap?");
-        if (mois != null && !mois.isBlank()) {
-            urlPagination.append("mois=").append(mois).append("&");
-        }
-        if (statut != null && !statut.isBlank()) {
-            urlPagination.append("statut=").append(statut).append("&");
-        }
-        
-        String urlFinale = urlPagination.toString();
-        if (urlFinale.endsWith("&") || urlFinale.endsWith("?")) {
-            urlFinale = urlFinale.substring(0, urlFinale.length() - 1);
-        }
-
-
-        model.addAttribute("recap", recapPage.getContent());
-        model.addAttribute("currentPage", recapPage.getNumber());
-        model.addAttribute("totalPages", recapPage.getTotalPages());
-        model.addAttribute("size", size);
-        model.addAttribute("baseUrl", urlFinale);
-
-
+        model.addAttribute("recap", recap);
         model.addAttribute("nbPayes", nbPayes);
         model.addAttribute("nbEnAttente", nbEnAttente);
         model.addAttribute("moisLabel", paiementSalaireService.formatMoisLabel(moisDate));
