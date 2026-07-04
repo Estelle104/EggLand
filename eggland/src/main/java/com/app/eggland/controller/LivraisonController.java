@@ -50,17 +50,13 @@ public class LivraisonController {
             @RequestParam(value = "dateDebut", required = false) String dateDebutStr,
             @RequestParam(value = "dateFin", required = false) String dateFinStr,
             @RequestParam(value = "nomClient", required = false) String nomClient,
-            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "0") int page, 
             @RequestParam(defaultValue = "10") int size,
             Model model) {
 
-        LocalDate dateDebut = (dateDebutStr != null && !dateDebutStr.isBlank())
-                              ? LocalDate.parse(dateDebutStr) : null;
-        LocalDate dateFin   = (dateFinStr   != null && !dateFinStr.isBlank())
-                              ? LocalDate.parse(dateFinStr)   : null;
-
+        LocalDate dateDebut = (dateDebutStr != null && !dateDebutStr.isBlank()) ? LocalDate.parse(dateDebutStr) : null;
+        LocalDate dateFin   = (dateFinStr   != null && !dateFinStr.isBlank()) ? LocalDate.parse(dateFinStr)   : null;
         boolean filtreActif = dateDebut != null || dateFin != null || (nomClient != null && !nomClient.isBlank());
-
         List<Livraison> livraisons;
         if (nomClient != null && !nomClient.isBlank()) {
             livraisons = livraisonService.filtrerLivraisonsParClient(nomClient, dateDebut, dateFin);
@@ -71,11 +67,21 @@ public class LivraisonController {
         }
 
         Page<Livraison> livraisonsPage = PaginationUtils.paginerListe(livraisons, page, size);
+        StringBuilder url = new StringBuilder("/admin/livraisons?");
+        if (nomClient != null && !nomClient.isBlank()) url.append("nomClient=").append(nomClient).append("&");
+        if (dateDebutStr != null && !dateDebutStr.isBlank()) url.append("dateDebut=").append(dateDebutStr).append("&");
+        if (dateFinStr != null && !dateFinStr.isBlank()) url.append("dateFin=").append(dateFinStr).append("&");
+        url.append("size=").append(size).append("&");
+        
+        String urlFinale = url.toString().replaceAll("[&?]$", "");
+        
+
         LocalDate today = LocalDate.now();
         model.addAttribute("livraisons", livraisonsPage.getContent());
         model.addAttribute("currentPage", livraisonsPage.getNumber());
         model.addAttribute("totalPages", livraisonsPage.getTotalPages());
         model.addAttribute("size", size);
+        model.addAttribute("baseUrl", urlFinale);
 
         model.addAttribute("livraisons", livraisons);
         model.addAttribute("dateDebutSelectionnee", dateDebutStr);

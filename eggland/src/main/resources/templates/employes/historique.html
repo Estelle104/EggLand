@@ -40,7 +40,6 @@
                     </select>
                 </form>
                 
-                <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url='/admin/employes/historique')}"></div> 
 
                 <div class="card" th:each="ligne : ${lignes}" style="margin-bottom:16px;">
                     <div class="card-header-row">
