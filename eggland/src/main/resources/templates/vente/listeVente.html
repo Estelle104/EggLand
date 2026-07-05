@@ -128,6 +128,7 @@
                 </tr>
             </tbody>
         </table>
+        <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${baseUrl}, filters=${filtres})}"></div>
     </div>
 
 </div>

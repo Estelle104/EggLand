@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,7 @@ import com.app.eggland.model.Vente;
 import com.app.eggland.service.ClientService;
 import com.app.eggland.service.DetailVenteService;
 import com.app.eggland.service.LotService;
+import com.app.eggland.service.PaginationUtils;
 import com.app.eggland.service.VenteService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,6 +52,8 @@ public class VenteController {
             @RequestParam(value = "statutId", required = false) Integer statutId,
             @RequestParam(value = "dateDebut", required = false) String dateDebutStr,
             @RequestParam(value = "dateFin", required = false) String dateFinStr,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
             Model model) {
 
         LocalDate dateDebut = (dateDebutStr != null && !dateDebutStr.isBlank())
@@ -62,8 +67,15 @@ public class VenteController {
         List<Vente> ventes = filtreActif
                 ? venteService.filtrerVentes(clientId, statutId, dateDebut, dateFin)
                 : venteService.listeVente();
+        Page<Vente> ventesPage =PaginationUtils.paginerListe(ventes, page, size);
+        Map<String, String> filtres = Map.of();
+        if (clientId != null) filtres.put("clientId", clientId.toString());
+        if (statutId != null) filtres.put("statutId", statutId.toString());
+        if (dateDebut != null) filtres.put("dateDebut", dateDebut.toString());
+        if (dateFin != null) filtres.put("dateFin", dateFin.toString());
+        
 
-        model.addAttribute("ventes", ventes);
+        String baseUrl = "/admin/ventes/listevente?";
         model.addAttribute("clients", clientService.listeClient());
         model.addAttribute("statuts", venteService.listeStatutVente());
         model.addAttribute("clientIdSelectionne", clientId);
@@ -71,6 +83,13 @@ public class VenteController {
         model.addAttribute("dateDebutSelectionnee", dateDebutStr);
         model.addAttribute("dateFinSelectionnee", dateFinStr);
         model.addAttribute("hideSearch", true);
+
+        model.addAttribute("ventes", ventesPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", ventesPage.getTotalPages());
+        model.addAttribute("size", size);
+        model.addAttribute("baseUrl", baseUrl);
+        model.addAttribute("filtres", filtres);
         return "vente/listeVente";
     }
 

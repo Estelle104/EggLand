@@ -59,6 +59,7 @@
               <button type="submit" class="btn-filter">Filtrer</button>
             </form>
           </div>
+          <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${baseUrl}, filters=${filtres})}"></div>
 
           <div
             th:if="${success}"

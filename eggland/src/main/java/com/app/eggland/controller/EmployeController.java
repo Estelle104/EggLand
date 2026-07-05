@@ -4,19 +4,25 @@ import com.app.eggland.model.Employe;
 import com.app.eggland.model.PaiementSalaire;
 import com.app.eggland.model.VersementSalaire;
 import com.app.eggland.service.EmployeService;
+import com.app.eggland.service.PaginationUtils;
 import com.app.eggland.service.PaiementSalaireService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.data.domain.Page;
+
+import com.app.eggland.service.PaginationUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/employes")
@@ -29,8 +35,17 @@ public class EmployeController {
     // ---------- Liste ----------
 
     @GetMapping
-    public String liste(Model model) {
-        model.addAttribute("employes", employeService.listerTous());
+    public String liste(
+        @RequestParam(defaultValue="1")int page,
+        @RequestParam(defaultValue="5") int size,
+        Model model) {
+        List<Employe> employes = employeService.listerTous();
+        Page<Employe> employesPage = PaginationUtils.paginerListe(employes, page, size);
+        model.addAttribute("employes", employesPage.getContent());
+        model.addAttribute("currentPage",employesPage.getNumber());
+        model.addAttribute("totalPages", employesPage.getTotalPages());
+        model.addAttribute("size", size);
+        model.addAttribute("pageTitle", "Liste des employés");
         return "employes/liste";
     }
 
@@ -85,16 +100,24 @@ public class EmployeController {
         return "redirect:/admin/employes";
     }
 
+
+
+    
     // ---------- Historique des versements ----------
 
     @GetMapping("/historique")
     public String historique(@RequestParam(required = false) String mois,
                               @RequestParam(required = false) String statut,
+                              @RequestParam(defaultValue="0") int page,
+                              @RequestParam(defaultValue="10") int size,
                               Model model) {
+        if(size <= 0) {
+            size = 1; // Valeur par défaut si la taille est invalide
+
+        }
         List<PaiementSalaire> paiements = (mois != null && !mois.isBlank())
                 ? paiementSalaireService.listerParMois(LocalDate.parse(mois + "-01"))
                 : paiementSalaireService.listerHistorique();
-
         if ("paye".equals(statut)) {
             paiements = paiements.stream().filter(PaiementSalaire::getPaye).toList();
         } else if ("attente".equals(statut)) {
@@ -105,8 +128,24 @@ public class EmployeController {
         List<HistoriqueLigne> lignes = paiements.stream()
                 .map(p -> new HistoriqueLigne(p, paiementSalaireService.listerVersements(p)))
                 .toList();
+        Page<HistoriqueLigne> lignesPage = PaginationUtils.paginerListe(lignes, page, size); 
+        StringBuilder url = new StringBuilder("/admin/employes/historique?");
+        if (mois != null && !mois.isBlank()) url.append("mois=").append(mois).append("&");
+        if (statut != null && !statut.isBlank()) url.append("statut=").append(statut).append("&");
 
-        model.addAttribute("lignes", lignes);
+        Map<String, String> filtres = new HashMap<>();
+        if (mois != null && !mois.isBlank()) filtres.put("mois", mois);
+        if (statut != null && !statut.isBlank()) filtres.put("statut", statut);
+
+        String urlFinale = url.toString().replaceAll("[&?]$", "");
+
+        model.addAttribute("url", urlFinale);
+        model.addAttribute("lignes", lignesPage.getContent());
+        model.addAttribute("filter", filtres);
+        model.addAttribute("currentPage", lignesPage.getNumber());
+        model.addAttribute("totalPages", lignesPage.getTotalPages());
+        model.addAttribute("size", size);
+
         model.addAttribute("listeMois", genererListeMois());
         model.addAttribute("moisSelectionne", mois);
         model.addAttribute("statutSelectionne", statut);
@@ -117,8 +156,13 @@ public class EmployeController {
 
     @GetMapping("/recap")
     public String recap(@RequestParam(required = false) String mois,
-                         @RequestParam(required = false) String statut,
+                        @RequestParam(required = false) String statut,
+                        @RequestParam(defaultValue="0") int page,
+                        @RequestParam(defaultValue="10") int size,
                          Model model) {
+        if(size <= 0) {
+            size = 1;
+        }
         LocalDate moisDate = (mois != null && !mois.isBlank())
                 ? LocalDate.parse(mois + "-01")
                 : LocalDate.now().withDayOfMonth(1);
@@ -132,9 +176,30 @@ public class EmployeController {
         }
 
         long nbPayes = recap.stream().filter(PaiementSalaireService.RecapLigne::paye).count();
-        long nbEnAttente = recap.size() - nbPayes;
+        long nbEnAttente = recap.size() - nbPayes; 
 
-        model.addAttribute("recap", recap);
+        Page<PaiementSalaireService.RecapLigne> recapPage = PaginationUtils.paginerListe(recap, page, size);
+
+        StringBuilder url = new StringBuilder("/admin/employes/recap?");
+        if(mois !=null && !mois.isBlank()) url.append("mois=").append(mois).append("&");
+        if (statut != null && !statut.isBlank()) url.append("statut=").append(statut).append("&");
+        String urlFinale = url.toString().replaceAll("[&?]$", "");
+
+        Map<String, String> filtres = new HashMap<>();
+        if(mois != null && !mois.isBlank()) {
+            filtres.put("mois", mois);
+        } 
+        if(statut != null && !statut.isBlank()) {
+            filtres.put("statut", statut);
+        }
+
+        model.addAttribute("recap", recapPage.getContent());
+        model.addAttribute("currentPage", recapPage.getNumber());
+        model.addAttribute("totalPages", recapPage.getTotalPages());
+        model.addAttribute("size", size);
+        model.addAttribute("baseUrl", urlFinale);
+        model.addAttribute("filtres", filtres);
+        // les noms ici sont important pour le fragment de pagination
         model.addAttribute("nbPayes", nbPayes);
         model.addAttribute("nbEnAttente", nbEnAttente);
         model.addAttribute("moisLabel", paiementSalaireService.formatMoisLabel(moisDate));
@@ -143,6 +208,8 @@ public class EmployeController {
         model.addAttribute("statutSelectionne", statut);
         return "employes/recap";
     }
+
+
 
     @PostMapping("/{id}/verser")
     public String verser(@PathVariable Integer id,

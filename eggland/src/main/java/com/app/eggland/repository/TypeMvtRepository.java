@@ -9,5 +9,5 @@ import com.app.eggland.model.TypeMvt;
 
 @Repository
 public interface TypeMvtRepository extends JpaRepository<TypeMvt, Integer> {
-    Optional<TypeMvt> findByCode(String code);
+    Optional<TypeMvt> findByCodeIgnoreCase(String code);
 }

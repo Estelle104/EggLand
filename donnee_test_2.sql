@@ -412,3 +412,36 @@ INSERT INTO notification (id, type, message, date_creation, lu) VALUES
 (6, 'WARNING', 'Stock de maïs faible (< 2000 kg)', '2025-06-10 11:00:00', false),
 (7, 'INFO', 'Paiement des salaires effectué', '2025-05-02 16:00:00', true),
 (8, 'SUCCESS', 'Vente #8 confirmée et livrée', '2025-05-07 09:00:00', true);
+
+/* mettre à jour les séquences pour chaque table */
+SELECT setval('batiment_id_seq', COALESCE((SELECT MAX(id) FROM batiment), 0) + 1, false);
+SELECT setval('client_id_seq', COALESCE((SELECT MAX(id) FROM client), 0) + 1, false);
+SELECT setval('configuration_id_seq', COALESCE((SELECT MAX(id) FROM configuration), 0) + 1, false);
+SELECT setval('detailvente_id_seq', COALESCE((SELECT MAX(id) FROM detailvente), 0) + 1, false);
+SELECT setval('employe_id_seq', COALESCE((SELECT MAX(id) FROM employe), 0) + 1, false);
+SELECT setval('livraison_id_seq', COALESCE((SELECT MAX(id) FROM livraison), 0) + 1, false);
+SELECT setval('lot_id_seq', COALESCE((SELECT MAX(id) FROM lot), 0) + 1, false);
+SELECT setval('lot_races_id_seq', COALESCE((SELECT MAX(id) FROM lot_races), 0) + 1, false);
+SELECT setval('mort_id_seq', COALESCE((SELECT MAX(id) FROM mort), 0) + 1, false);
+SELECT setval('mvtargent_id_seq', COALESCE((SELECT MAX(id) FROM mvtargent), 0) + 1, false);
+SELECT setval('mvtstock_id_seq', COALESCE((SELECT MAX(id) FROM mvtstock), 0) + 1, false);
+SELECT setval('notification_id_seq', COALESCE((SELECT MAX(id) FROM notification), 0) + 1, false);
+SELECT setval('nourriture_id_seq', COALESCE((SELECT MAX(id) FROM nourriture), 0) + 1, false);
+SELECT setval('oeufproduction_id_seq', COALESCE((SELECT MAX(id) FROM oeufproduction), 0) + 1, false);
+SELECT setval('oeufstatut_id_seq', COALESCE((SELECT MAX(id) FROM oeufstatut), 0) + 1, false);
+SELECT setval('paiementsalaire_id_seq', COALESCE((SELECT MAX(id) FROM paiementsalaire), 0) + 1, false);
+SELECT setval('produitvente_id_seq', COALESCE((SELECT MAX(id) FROM produitvente), 0) + 1, false);
+SELECT setval('race_id_seq', COALESCE((SELECT MAX(id) FROM race), 0) + 1, false);
+SELECT setval('reforme_id_seq', COALESCE((SELECT MAX(id) FROM reforme), 0) + 1, false);
+SELECT setval('roleuser_id_seq', COALESCE((SELECT MAX(id) FROM roleuser), 0) + 1, false);
+SELECT setval('statutclient_id_seq', COALESCE((SELECT MAX(id) FROM statutclient), 0) + 1, false);
+SELECT setval('statutlivraison_id_seq', COALESCE((SELECT MAX(id) FROM statutlivraison), 0) + 1, false);
+SELECT setval('statutlot_id_seq', COALESCE((SELECT MAX(id) FROM statutlot), 0) + 1, false);
+SELECT setval('statutoeuf_id_seq', COALESCE((SELECT MAX(id) FROM statutoeuf), 0) + 1, false);
+SELECT setval('statutvente_id_seq', COALESCE((SELECT MAX(id) FROM statutvente), 0) + 1, false);
+SELECT setval('traitement_id_seq', COALESCE((SELECT MAX(id) FROM traitement), 0) + 1, false);
+SELECT setval('typemvt_id_seq', COALESCE((SELECT MAX(id) FROM typemvt), 0) + 1, false);
+SELECT setval('typetraitement_id_seq', COALESCE((SELECT MAX(id) FROM typetraitement), 0) + 1, false);
+SELECT setval('useradmin_id_seq', COALESCE((SELECT MAX(id) FROM useradmin), 0) + 1, false);
+SELECT setval('vente_id_seq', COALESCE((SELECT MAX(id) FROM vente), 0) + 1, false);
+SELECT setval('versementsalaire_id_seq', COALESCE((SELECT MAX(id) FROM versementsalaire), 0) + 1, false);

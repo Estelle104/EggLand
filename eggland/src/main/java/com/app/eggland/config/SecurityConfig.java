@@ -41,7 +41,7 @@ public class SecurityConfig {
             .logoutUrl("/logout") // L'URL qui déclenche la déconnexion
             .logoutSuccessUrl("/") // Où on va après s'être déconnecté
             .invalidateHttpSession(true) // Efface la session HTTP du serveur
-            .clearAuthentication(true) // Efface le badge de sécurité de Spring
+            .clearAuthentication(true) // Efface le badge de sécurité de Spring 
             .permitAll()
         )
        .csrf(csrf -> csrf.disable());

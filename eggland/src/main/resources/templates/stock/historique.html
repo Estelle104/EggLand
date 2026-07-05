@@ -43,6 +43,7 @@
                         </div>
                         <button type="submit" class="btn-filtrer"><i class="fa-solid fa-filter"></i> Filtrer</button>
                     </form>
+                    <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${baseUrl}, filters=${filtres})}"></div>
                 </div>
 
                 <div class="card-table">
@@ -60,8 +61,8 @@
                                 <td th:text="${#temporals.format(m.date, 'dd/MM/yyyy')}"></td>
                                 <td th:text="${m.nourriture.libelle}"></td>
                                 <td>
-                                    <span class="badge-type" th:class="${m.type.code == 'entree'} ? 'badge-type badge-entree' : 'badge-type badge-sortie'"
-                                          th:text="${m.type.code == 'entree'} ? 'Entrée' : 'Sortie'"></span>
+                                    <span class="badge-type" th:class="${#strings.toLowerCase(m.type.code) == 'entree'} ? 'badge-type badge-entree' : 'badge-type badge-sortie'"
+                                          th:text="${#strings.toLowerCase(m.type.code) == 'entree'} ? 'Entrée' : 'Sortie'"></span>
                                 </td>
                                 <td th:text="${#numbers.formatDecimal(m.quantite, 1, 'WHITESPACE', 2, 'COMMA')} + ' kg'"></td>
                             </tr>
