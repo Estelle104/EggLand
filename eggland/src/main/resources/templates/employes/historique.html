@@ -1,34 +1,31 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" 
+      xmlns:th="http://www.thymeleaf.org" 
+      layout:decorate="~{fragments/layout}"> 
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historique des paiements - Eggland</title>
-    <link rel="stylesheet" th:href="@{/css/variables.css}">
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
-    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/components.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
 <body>
-    <div class="app">
-        <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    <div layout:fragment="content">
         <div class="main">
-            <div th:replace="~{fragments/header :: header}"></div>
             <div class="content">
 
                 <div class="page-header">
                     <h2>Historique des Paiements</h2>
+
                     <a th:href="@{/admin/employes}" class="btn btn-outline">
                         <i class="fa-solid fa-arrow-left"></i> Retour
                     </a>
                 </div>
                 
                 <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${url}, filters=${filtres})}"></div>
-                
+            
                 <form class="filters-bar" method="get" th:action="@{/admin/employes/historique}">
                     <select name="mois" onchange="this.form.submit()">
                         <option value="">Tous les mois</option>
@@ -40,6 +37,15 @@
                         <option value="paye" th:selected="${statutSelectionne == 'paye'}">Payé</option>
                         <option value="attente" th:selected="${statutSelectionne == 'attente'}">En attente</option>
                     </select>
+                    <select name="employeId" onchange="this.form.submit()">
+                        <option value="">Tous les employés</option>
+                        <option th:each="e : ${employes}" th:value="${e.id}"
+                                th:text="${e.prenom} + ' ' + ${e.nom}"
+                                th:selected="${e.id == employeSelectionne}">Jean Dupont</option>
+                    </select>
+                    <a th:href="@{/admin/employes/recap}" class="btn btn-outline" style="margin-left: auto;">
+                        <i class="fa-solid fa-arrow-left"></i> Retour
+                    </a>
                 </form>
                 
 

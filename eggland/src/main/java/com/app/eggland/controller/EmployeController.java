@@ -1,20 +1,5 @@
 package com.app.eggland.controller;
 
-import com.app.eggland.model.Employe;
-import com.app.eggland.model.PaiementSalaire;
-import com.app.eggland.model.VersementSalaire;
-import com.app.eggland.service.EmployeService;
-import com.app.eggland.service.PaginationUtils;
-import com.app.eggland.service.PaiementSalaireService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.data.domain.Page;
-
-import com.app.eggland.service.PaginationUtils;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -23,6 +8,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.springframework.data.domain.Page;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.app.eggland.model.Employe;
+import com.app.eggland.model.PaiementSalaire;
+import com.app.eggland.model.VersementSalaire;
+import com.app.eggland.service.EmployeService;
+import com.app.eggland.service.PaiementSalaireService;
+import com.app.eggland.service.PaginationUtils;
+
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/admin/employes")
@@ -108,6 +109,7 @@ public class EmployeController {
     @GetMapping("/historique")
     public String historique(@RequestParam(required = false) String mois,
                               @RequestParam(required = false) String statut,
+                              @RequestParam(required = false) Integer employeId,
                               @RequestParam(defaultValue="0") int page,
                               @RequestParam(defaultValue="10") int size,
                               Model model) {
@@ -122,6 +124,10 @@ public class EmployeController {
             paiements = paiements.stream().filter(PaiementSalaire::getPaye).toList();
         } else if ("attente".equals(statut)) {
             paiements = paiements.stream().filter(p -> !Boolean.TRUE.equals(p.getPaye())).toList();
+        }
+
+        if(employeId != null) {
+            paiements = paiements.stream().filter(p -> p.getEmploye().getId().equals(employeId)).toList();
         }
 
         // Pour chaque PaiementSalaire (employé + mois), on attache le détail de ses versements.
@@ -149,6 +155,8 @@ public class EmployeController {
         model.addAttribute("listeMois", genererListeMois());
         model.addAttribute("moisSelectionne", mois);
         model.addAttribute("statutSelectionne", statut);
+        model.addAttribute("employeSelectionne", employeId);
+        model.addAttribute("employes", employeService.listerTous());
         return "employes/historique";
     }
 
@@ -156,6 +164,8 @@ public class EmployeController {
 
     @GetMapping("/recap")
     public String recap(@RequestParam(required = false) String mois,
+                         @RequestParam(required = false) String statut,
+                         @RequestParam(required = false) Integer employeId,
                         @RequestParam(required = false) String statut,
                         @RequestParam(defaultValue="0") int page,
                         @RequestParam(defaultValue="10") int size,
@@ -168,11 +178,16 @@ public class EmployeController {
                 : LocalDate.now().withDayOfMonth(1);
 
         List<PaiementSalaireService.RecapLigne> recap = paiementSalaireService.recapMois(moisDate);
-
+        
+        
         if ("paye".equals(statut)) {
             recap = recap.stream().filter(PaiementSalaireService.RecapLigne::paye).toList();
         } else if ("attente".equals(statut)) {
             recap = recap.stream().filter(r -> !r.paye()).toList();
+        }
+
+        if (employeId != null) {
+            recap = recap.stream().filter(r -> r.employe().getId().equals(employeId)).toList();
         }
 
         long nbPayes = recap.stream().filter(PaiementSalaireService.RecapLigne::paye).count();
@@ -206,6 +221,8 @@ public class EmployeController {
         model.addAttribute("listeMois", genererListeMois());
         model.addAttribute("moisSelectionne", YearMonth.from(moisDate).toString());
         model.addAttribute("statutSelectionne", statut);
+        model.addAttribute("employeSelectionne", employeId);
+        model.addAttribute("employes", employeService.listerTous());
         return "employes/recap";
     }
 
