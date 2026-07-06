@@ -24,7 +24,7 @@ import java.time.YearMonth;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/finance")
+@RequestMapping("/admin/finance")
 public class FinanceController {
 
     @Autowired
@@ -35,15 +35,6 @@ public class FinanceController {
 
     @Autowired
     private ExcelExportService excelExportService;
-
-    @GetMapping("/exports")
-    public String exportsPage(Model model) {
-        LocalDate today = LocalDate.now();
-        model.addAttribute("today", today.toString());
-        model.addAttribute("todayMinus30", today.minusDays(30).toString());
-        model.addAttribute("currentMonth", today.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM")));
-        return "exports/index";
-    }
 
     @GetMapping
     public String index(Model model) {

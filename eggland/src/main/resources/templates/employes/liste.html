@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employés - Eggland</title>
     <link rel="stylesheet" th:href="@{/css/components.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
 <body>
@@ -23,6 +22,54 @@
                             </a>
                         </div>
                     </div>
+                <div class="alert-error" th:if="${erreur}" th:text="${erreur}">
+                    Message d'erreur
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-label">Total Employés</div>
+                    <div class="stat-value" th:text="${#lists.size(employes)}">5</div>
+                </div>
+
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Employé</th>
+                                <th>Téléphone</th>
+                                <th>Salaire</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="e : ${employes}">
+                                <td>
+                                    <div class="cell-avatar">
+                                        <span class="avatar" th:text="${#strings.substring(e.prenom,0,1)} + ${#strings.substring(e.nom,0,1)}">JD</span>
+                                        <span th:text="${e.prenom} + ' ' + ${e.nom}">Jean Dupont</span>
+                                    </div>
+                                </td>
+                                <td th:text="${e.tel}">+261 34 00 000 00</td>
+                                <td th:text="${#numbers.formatDecimal(e.salaire, 0, 'WHITESPACE', 0, 'COMMA')} + ' Ar'">850 000 Ar</td>
+                                <td>
+                                    <div class="actions-cell">
+                                        <button type="button" class="btn btn-sm btn-dark" th:onclick="'openVoir(' + ${e.id} + ')'">
+                                            <i class="fa-solid fa-eye"></i> Voir
+                                        </button>
+                                        <button type="button" class="btn btn-sm" th:onclick="'openModifier(' + ${e.id} + ')'">
+                                            <i class="fa-solid fa-pen"></i> Modifier
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+            <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url='/admin/employes',filters=${filtres})}"></div>
+                    <div th:if="${#lists.isEmpty(employes)}" class="vide-message">
+                        Aucun employé enregistré.
+                    </div>
+                </div>
+                
 
                     <div class="alert-error" th:if="${erreur}" th:text="${erreur}">
                         Message d'erreur
@@ -48,7 +95,6 @@
                     <span class="avatar avatar-lg" th:text="${#strings.substring(e.prenom,0,1)} + ${#strings.substring(e.nom,0,1)}">JD</span>
                     <div class="name" th:text="${e.prenom} + ' ' + ${e.nom}">Jean Dupont</div>
                 </div>
-
                 <div class="info-row">
                     <span>Téléphone</span>
                     <span th:text="${e.tel}">+261 34 00 000 00</span>
@@ -100,7 +146,6 @@
                         <label>Date d'embauche</label>
                         <input type="date" th:value="${e.dateEmbauche}" name="dateEmbauche" required>
                     </div>
-
                     <div class="modal-footer-split">
                         <button type="button" class="btn btn-danger" th:onclick="'if(confirm(\'Confirmer la suppression ?\')) document.getElementById(\'form-delete-' + ${e.id} + '\').submit();'">
                             <i class="fa-solid fa-trash"></i> Supprimer
@@ -115,7 +160,6 @@
                 <form th:id="'form-delete-' + ${e.id}" th:action="@{/admin/employes/{id}/supprimer(id=${e.id})}" method="post" style="display:none;"></form>
             </div>
         </div>
-
         <script>
             function openVoir(id) {
                 closeModals();

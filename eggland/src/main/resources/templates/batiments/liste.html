@@ -1,33 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" 
+      xmlns:th="http://www.thymeleaf.org" 
+      layout:decorate="~{fragments/layout}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste des bâtiments - Eggland</title>
 
-    <link rel="stylesheet" th:href="@{/css/variables.css}">
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
-    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/batiments.css}">
 </head>
 
 <body>
-    <div class="app">
 
-        <div th:replace="fragments/sidebar :: sidebar"></div>
-
-        <div class="main">
-
-            <div th:replace="fragments/header :: header"></div>
-
-            <div class="content">
+        <div layout:fragment="content">
 
                 <div class="page-header">
                     <h2 th:text="${pageTitle ?: 'Liste des bâtiments'}">Liste des bâtiments</h2>
-                    <a th:href="@{/batiments/nouveau}" class="btn-ajouter" style="background: var(--primary); color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
+                    <a th:href="@{/admin/batiments/nouveau}" class="btn-ajouter" style="background: var(--primary); color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
                         <i class="fa-solid fa-plus"></i> Nouveau bâtiment
                     </a>
                 </div>
@@ -58,11 +48,11 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a th:href="@{/batiments/edit/{id}(id=${b.id})}"
+                                    <a th:href="@{/admin/batiments/edit/{id}(id=${b.id})}"
                                        style="padding:6px 14px; border-radius:8px; text-decoration:none; font-size:13px; font-weight:500; display:inline-flex; align-items:center; gap:6px; background:#D8B77C; color:#33241A; margin-right:6px;">
                                         <i class="fa-solid fa-pen"></i> Modifier
                                     </a>
-                                    <a th:href="@{/batiments/delete/{id}(id=${b.id})}"
+                                    <a th:href="@{/admin/batiments/delete/{id}(id=${b.id})}"
                                        style="padding:6px 14px; border-radius:8px; text-decoration:none; font-size:13px; font-weight:500; display:inline-flex; align-items:center; gap:6px; background:#e47373; color:white;"
                                        onclick="return confirm('Supprimer ce bâtiment ?')">
                                         <i class="fa-solid fa-trash"></i> Supprimer
@@ -70,18 +60,17 @@
                                 </td>
                             </tr>
                         </tbody>
-                    </table>
 
+                        
+                    </table>
+                    
                     <div th:if="${#lists.isEmpty(batiments)}" class="vide-message">
                         Aucun bâtiment enregistré.
                     </div>
+                    <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url='/admin/batiments',filters=${filtres})}"></div>
                 </div>
-
             </div>
 
-        </div>
-
-    </div>
 </body>
 
 </html>

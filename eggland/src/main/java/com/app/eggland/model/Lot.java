@@ -48,7 +48,7 @@ public class Lot {
    
     private List<LotRace> lotRaces = new ArrayList<>();
     
-    // Getters/Setters
+  
     public List<LotRace> getLotRaces() { return lotRaces; }
     public void setLotRaces(List<LotRace> lotRaces) { this.lotRaces = lotRaces; }
 }

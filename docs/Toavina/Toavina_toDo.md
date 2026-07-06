@@ -66,37 +66,7 @@
 
 ---
 
-### Correctifs & Optimisations
 
-**Durée estimée : 3h**
-
-* [x] Corriger colonne `id_statut` inexistante dans Lot (reset_db.sql)
-* [x] Aligner `DetailVente.produit` vs `id_produit` (reset_db.sql)
-* [x] Ajouter `client_id` manquant dans DetailVente (reset_db.sql)
-* [x] Corriger collisions de séquence après réinsertion (insert_data.sql)
-* [x] Remplacer DELETE par UPDATE pour table `lot` (reset_db.sql)
-* [x] Autoriser `/finance/**` dans SecurityConfig
-* [x] Corriger bouton suppression livraison (th:onsubmit → onsubmit)
-* [x] Ajouter endpoint manquant export PDF livraison
-* [x] Corriger `race.code` → `race.nom` dans template finance
-* [x] Corriger parsing `YearMonth` pour input month
-* [x] Remplacer `#dates.createNow().minusDays()` par attributs modèle
-* [x] Corriger syntaxe `th:replace` dépréciée (ajouter `~{}`)
-
-**Fichiers :**
-
-* `scripts/reset_db.sql`
-* `scripts/insert_data.sql`
-* `config/SecurityConfig.java`
-- `templates/livraisons/liste.html`
-* `controller/LivraisonController.java`
-* `templates/finance/index.html`
-* `controller/FinanceController.java`
-* `controller/LivraisonController.java`
-* `controller/MvtStockController.java`
-* `controller/OeufController.java`
-* `templates/fragments/sidebar.html`
-* Tous les templates (syntax th:replace)
 
 ---
 
@@ -165,8 +135,6 @@
 | T9.2 - Export PDF | 1h30 |
 | T9.3 - Export Excel | 2h30 |
 | T9.4 - Interface Finance | 2h00 |
-| Correctifs & Optimisations | 3h00 |
 | Page centralisée Import/Export | 1h00 |
 | Boutons pages entités | 0h30 |
-| Scripts SQL | 2h00 |
 | **Total** | **~15h** |

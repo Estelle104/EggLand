@@ -1,0 +1,26 @@
+ :root {
+            --dark: #46220E;
+            --deep-brown: #93441A;
+            --card-brown: #B67332;
+            --cream: #EEE6D8;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--cream);
+        }
+
+        .staff-card {
+            border-top: 5px solid var(--dark);
+            border-radius: 0.5rem;
+        }
+
+        .btn-staff {
+            background-color: var(--dark);
+            color: #ffffff;
+        }
+
+        .btn-staff:hover {
+            background-color: var(--deep-brown);
+            color: var(--cream);
+        }

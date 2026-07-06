@@ -1,24 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mouvements d'argent - Eggland</title>
-    <link rel="stylesheet" th:href="@{/css/variables.css}">
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
-    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/mvtargent.css}">
 </head>
 
 <body>
-    <div class="app">
-        <div th:replace="fragments/sidebar :: sidebar"></div>
-        <div class="main">
-            <div th:replace="fragments/header :: header"></div>
-            <div class="content">
+        <div layout:fragment="content">
 
                 <div class="page-header">
                     <h2 th:text="${pageTitle}">Mouvements d'argent</h2>
@@ -39,24 +30,22 @@
                             <tr th:each="m : ${mouvements}">
                                 <td th:text="${#temporals.format(m.date, 'dd/MM/yyyy')}"></td>
                                 <td>
-                                    <span class="badge-type" th:class="${m.type.code == 'entree'} ? 'badge-type badge-entree' : 'badge-type badge-sortie'"
-                                          th:text="${m.type.code == 'entree'} ? 'Entrée' : 'Sortie'"></span>
+                                    <span class="badge-type" th:class="${#strings.toLowerCase(m.type.code) == 'entree'} ? 'badge-type badge-entree' : 'badge-type badge-sortie'"
+                                          th:text="${#strings.toLowerCase(m.type.code) == 'entree'} ? 'Entrée' : 'Sortie'"></span>
                                 </td>
                                 <td th:text="${#numbers.formatDecimal(m.montant, 0, 'WHITESPACE', 2, 'COMMA')} + ' Ar'"
-                                    th:class="${m.type.code == 'entree'} ? 'montant-positif' : 'montant-negatif'"></td>
+                                    th:class="${#strings.toLowerCase(m.type.code) == 'entree'} ? 'montant-positif' : 'montant-negatif'"></td>
                                 <td th:text="${m.categorie}"></td>
                                 <td th:text="${m.reference}"></td>
                             </tr>
                         </tbody>
                     </table>
-
+                    <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${baseUrl}, filters=${filtres})}"></div>
                     <div th:if="${#lists.isEmpty(mouvements)}" class="vide-message">
                         Aucun mouvement d'argent.
                     </div>
                 </div>
 
             </div>
-        </div>
-    </div>
 </body>
 </html>

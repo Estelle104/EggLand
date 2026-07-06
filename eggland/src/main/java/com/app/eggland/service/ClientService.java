@@ -2,7 +2,6 @@ package com.app.eggland.service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
 
+import com.app.eggland.model.Batiment;
 import com.app.eggland.model.Client;
 import com.app.eggland.model.StatutClient;
 import com.app.eggland.repository.ClientRepository;
@@ -46,6 +46,7 @@ public class ClientService {
         return saveClient;
     }
 
+
     public void authentifierClientManuellement(String email, HttpServletRequest request) {
         // 1. Création du badge
         Authentication authentication = new UsernamePasswordAuthenticationToken(
@@ -78,5 +79,26 @@ public class ClientService {
 
     public Client trouverClientParId(int id) {
         return clientRepository.findById(id).orElse(null);
+    }
+
+    public Client trouverParNomOuCreer(String nom) {
+        if (nom == null || nom.isBlank()) return null;
+
+        // Try exact name first
+        var optExact = clientRepository.findByNom(nom.trim());
+        if (optExact.isPresent()) return optExact.get();
+
+        // Try contains (ignore case)
+        var optContains = clientRepository.findByNomContainingIgnoreCase(nom.trim());
+        if (optContains.isPresent()) return optContains.get();
+
+        // Create new client with generated unique email
+        Client nouveau = new Client();
+        nouveau.setNom(nom.trim());
+        String emailSafe = nom.trim().replaceAll("\\s+", "").toLowerCase();
+        nouveau.setEmail(emailSafe + System.currentTimeMillis() + "@eggland.local");
+        nouveau.setAdresse("");
+        nouveau.setDateInscription(LocalDate.now());
+        return registerClient(nouveau);
     }
 }

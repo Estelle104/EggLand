@@ -18,8 +18,14 @@
 
                 <div class="page-header">
                     <h2>Historique des Paiements</h2>
-                </div>
 
+                    <a th:href="@{/admin/employes}" class="btn btn-outline">
+                        <i class="fa-solid fa-arrow-left"></i> Retour
+                    </a>
+                </div>
+                
+                <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${url}, filters=${filtres})}"></div>
+            
                 <form class="filters-bar" method="get" th:action="@{/admin/employes/historique}">
                     <select name="mois" onchange="this.form.submit()">
                         <option value="">Tous les mois</option>
@@ -41,6 +47,7 @@
                         <i class="fa-solid fa-arrow-left"></i> Retour
                     </a>
                 </form>
+                
 
                 <div class="card" th:each="ligne : ${lignes}" style="margin-bottom:16px;">
                     <div class="card-header-row">
@@ -75,7 +82,7 @@
                             </tr>
                         </tbody>
                     </table>
-
+                    
                     <div th:if="${#lists.isEmpty(ligne.versements)}" class="vide-message">
                         Aucun versement enregistré.
                     </div>
@@ -86,6 +93,7 @@
                 </div>
 
             </div>
+            
         </div>
     </div>
 </body>

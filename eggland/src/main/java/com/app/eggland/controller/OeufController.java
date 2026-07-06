@@ -19,8 +19,10 @@ import com.app.eggland.service.LotService;
 import com.app.eggland.service.OeufProductionService;
 import com.app.eggland.service.OeufService;
 import com.app.eggland.service.OeufStatutService;
+import com.app.eggland.service.PaginationUtils;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 
@@ -41,10 +43,22 @@ public class OeufController {
     private OeufService oeufService;
     
     @GetMapping
-    public String stats(Model model) {
+    public String stats(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        Model model
+        ) {
+        List <Map<String, Object>> stats = oeufProductionService.getTauxPonteParLot();
+        Page<Map<String, Object>> historique = PaginationUtils.paginerListe(stats, page, size);
         model.addAttribute("stock", oeufService.getStockDisponible());
-        model.addAttribute("tauxParLot", oeufProductionService.getTauxPonteParLot());
         model.addAttribute("production14Jours", oeufProductionService.getProductionDes14DerniersJours());
+
+        model.addAttribute("tauxParLot", historique.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", historique.getTotalPages());
+        model.addAttribute("size", size);
+        model.addAttribute("filtres", Map.of()); // Aucun filtre pour l'instant
+        model.addAttribute("baseUrl", "/admin/oeufs");
         return "oeufs/stats";
     }
 
@@ -109,6 +123,7 @@ public class OeufController {
             pageable = PageRequest.of(page, size);
             historique = oeufProductionService.getHistoriqueProduction(pageable);
         }
+        Map<String, String> filtres = Map.of(); // Aucun filtre pour l'instant
         
         LocalDate today = LocalDate.now();
         model.addAttribute("historique", historique);
@@ -117,6 +132,7 @@ public class OeufController {
         model.addAttribute("todayMinus30", today.minusDays(30).toString());
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", size);
+        model.addAttribute("filtres", filtres);
         model.addAttribute("totalPages", historique.getTotalPages());
         return "oeufs/historique";
     }

@@ -59,6 +59,8 @@
   - Filtrage des liens "Voir" selon le rôle : admin voit tout, gestionnaire voit seulement les pages accessibles
   - Gestion des tables sans controleur dedie (pas de bouton "Voir" pour `notification`, `configuration`, `traitement`)
 - Correction du `line-height` sur `.sidebar` et `.header` pour eviter les conflits Bootstrap (dashboard/finance/exports)
+-
+
 
 **Remarque:**
 - 

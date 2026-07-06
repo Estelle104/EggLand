@@ -29,8 +29,8 @@ public class DashboardService {
     private FinanceService financeService;
 
     public Integer getOeufsJour() {
-        Integer total = oeufProductionRepository.sumQuantiteByDate(LocalDate.now());
-        return total != null ? total : 0;
+        Long total = oeufProductionRepository.sumQuantiteByDate(LocalDate.now());
+        return total != null ? total.intValue() : 0;
     }
 
     public Integer getStockDisponible() {
@@ -40,6 +40,11 @@ public class DashboardService {
     public BigDecimal getVentesJour() {
         BigDecimal total = venteRepository.sumTotalByDate(LocalDate.now());
         return total != null ? total : BigDecimal.ZERO;
+    }
+
+    public BigDecimal getBeneficeJour() {
+        LocalDate today = LocalDate.now();
+        return financeService.getBeneficeNet(today, today);
     }
 
     public BigDecimal getBeneficeMois() {

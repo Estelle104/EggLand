@@ -1,129 +1,144 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{fragments/layout}">
+
+<html lang="fr" 
+      xmlns:th="http://www.thymeleaf.org" 
+      layout:decorate="~{fragments/layout}"> 
 
 <head>
 
-  <link rel="stylesheet" th:href="@{/css/variables.css}">
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
-    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
+ 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/detail_lot.css}">
+
+
 </head>
 
 <body>
-<div layout:fragment="content">
 
-    <div class="lot-title">
-        <h2>Lot #<span th:text="${lot[0]['lot_id']}"></span></h2>
-        <span class="badge" th:text="${lot[0]['statut_code']}"></span>
-    </div>
+    <div layout:fragment="content">
 
- <div class="grid">
+        <div class="main">
 
-    <!-- IDENTITE -->
-    <div class="card">
+            <div class="content">
 
-        <!-- RACES (liste) -->
-        <div th:each="r : ${lot}">
-            
-            <div class="info">
-                <span>Race</span>
-                <b th:text="${r['race_nom']}"></b>
-            </div>
+                <div class="lot-detail">
 
-            <div class="info">
-                <span>Nombre</span>
-                <b th:text="${r['nombre']}"></b>
-            </div>
+                    <div class="lot-title">
+                        <h2>Lot #<span th:text="${lot[0]['lot_id']}"></span></h2>
+                        <span class="badge" th:text="${lot[0]['statut_code']}"></span>
+                    </div>
 
-        </div>
+                    <div class="grid">
 
-        <!-- INFOS LOT (communes → première ligne) -->
-        <div th:if="${not #lists.isEmpty(lot)}">
+                        <!-- IDENTITE -->
+                        <div class="card">
 
-            <div class="info">
-                <span>Bâtiment</span>
-                <b th:text="${lot[0]['batiment_nom']}"></b>
-            </div>
+                            <div th:each="r : ${lot}">
 
-            <div class="info">
-                <span>Date arrivée</span>
-                <b th:text="${lot[0]['date_arrivee']}"></b>
-            </div>
+                                <div class="info">
+                                    <span>Race</span>
+                                    <b th:text="${r['race_nom']}"></b>
+                                </div>
 
-        </div>
+                                <div class="info">
+                                    <span>Nombre</span>
+                                    <b th:text="${r['nombre']}"></b>
+                                </div>
 
-    </div>
+                            </div>
 
-    <!-- PRODUCTION -->
-    <div class="card">
+                            <div th:if="${not #lists.isEmpty(lot)}">
 
-        <h3>Production</h3>
+                                <div class="info">
+                                    <span>Bâtiment</span>
+                                    <b th:text="${lot[0]['batiment_nom']}"></b>
+                                </div>
 
-        <div class="stat primary">
-            <span>Total œufs</span>
-            <strong th:text="${lot[0]['total_oeufs_produits']}"></strong>
-        </div>
+                                <div class="info">
+                                    <span>Date arrivée</span>
+                                    <b th:text="${lot[0]['date_arrivee']}"></b>
+                                </div>
 
-    </div>
+                            </div>
 
-    <!-- MORTALITE -->
-    <div class="card">
+                        </div>
 
-        <h3>Mortalité</h3>
+                        <!-- PRODUCTION -->
+                        <div class="card">
 
-        <div class="stat danger">
-            <span>Total morts</span>
-            <strong th:text="${lot[0]['total_morts']}"></strong>
-        </div>
+                            <h3>Production</h3>
 
-    </div>
+                            <div class="stat primary">
+                                <span>Total œufs</span>
+                                <strong th:text="${lot[0]['total_oeufs_produits']}"></strong>
+                            </div>
 
-    <!-- EFFECTIF -->
-    <div class="card">
+                        </div>
 
-        <h3>Effectif</h3>
+                        <!-- MORTALITE -->
+                        <div class="card">
 
-        <div class="stat success">
-            <span>Restant</span>
-            <strong th:text="${lot[0]['effectif_restant']}"></strong>
-        </div>
+                            <h3>Mortalité</h3>
 
-    </div>
+                            <div class="stat danger">
+                                <span>Total morts</span>
+                                <strong th:text="${lot[0]['total_morts']}"></strong>
+                            </div>
 
-</div>
+                        </div>
 
-    <!-- TRAITEMENT -->
-    <div class="card full">
+                        <!-- EFFECTIF -->
+                        <div class="card">
 
-        <h3>Dernier traitement</h3>
+                            <h3>Effectif</h3>
 
-        <div class="info">
-            <span>Date</span>
-            <b th:text="${lot[0]['date_traitement'] != null ? lot[0]['date_traitement'] : 'Aucun'}"></b>
-        </div>
+                            <div class="stat success">
+                                <span>Restant</span>
+                                <strong th:text="${lot[0]['effectif_restant']}"></strong>
+                            </div>
 
-        <div class="info">
-            <span>Type</span>
-            <b th:text="${lot[0]['type_dernier_traitement'] != null ? lot[0]['type_dernier_traitement'] : '-'}"></b>
-        </div>
+                        </div>
 
-    </div>
-<button type="button"class="btn-reformer"th:data-id="${lot[0]['lot_id']}">
+                    </div>
+
+                    <!-- TRAITEMENT -->
+                    <div class="card full">
+
+                        <h3>Dernier traitement</h3>
+
+                        <div class="info">
+                            <span>Date</span>
+                            <b th:text="${lot[0]['date_traitement'] != null ? lot[0]['date_traitement'] : 'Aucun'}"></b>
+                        </div>
+
+                        <div class="info">
+                            <span>Type</span>
+                            <b th:text="${lot[0]['type_dernier_traitement'] != null ? lot[0]['type_dernier_traitement'] : '-'}"></b>
+                        </div>
+
+                    </div>
+
+                    <button type="button"
+                            class="btn-reformer"
+                            th:data-id="${lot[0]['lot_id']}">
                         Réformer
                     </button>
-</div>
-</div>
 
+                </div> <!-- .lot-detail -->
+
+            </div> <!-- .content -->
+
+        </div> <!-- .main -->
+
+        
+        <div id="reform-overlay">
+            <div id="reform-container"></div>
         </div>
-    
+        
+        <script th:src="@{/js/reformer.js}"></script>
+    </div> <!-- layout:fragment -->
 
-   <div id="reform-overlay">
-    <div id="reform-container"></div>
-</div>
-<script th:src="@{/js/reformer.js}"></script>
-</div>
+</body>
+
 </html>
+

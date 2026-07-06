@@ -22,7 +22,7 @@ public class MvtArgentService {
     //creer un mouvement d'argent de type "sortie" pour un achat de nourriture
     public MvtArgent creerSortie(BigDecimal montant, LocalDate date, String categorie) {
 
-        TypeMvt sortie = typeMvtRepository.findByCode("sortie")
+        TypeMvt sortie = typeMvtRepository.findByCodeIgnoreCase("sortie")
                 .orElseThrow(() -> new RuntimeException("Type 'sortie' introuvable"));
 
         MvtArgent mvt = MvtArgent.builder()
@@ -36,7 +36,7 @@ public class MvtArgentService {
 
     public MvtArgent creerEntree(BigDecimal montant, LocalDate date, String categorie) {
 
-        TypeMvt entree = typeMvtRepository.findByCode("entree")
+        TypeMvt entree = typeMvtRepository.findByCodeIgnoreCase("entree")
                 .orElseThrow(() -> new RuntimeException("Type 'entree' introuvable"));
 
         MvtArgent mvt = MvtArgent.builder()
