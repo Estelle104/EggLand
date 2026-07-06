@@ -11,6 +11,11 @@
     gap: 24px;
 }
 
+.stats-page .page-header > div:first-child {
+    flex: 1;
+    min-width: 0;
+}
+
 .stats-page .page-header h2 {
     margin-bottom: 6px;
 }
@@ -274,6 +279,14 @@
     align-items: center;
     gap: 12px;
     flex-shrink: 0;
+    justify-content: flex-end;
+}
+
+.page-actions .btn {
+    white-space: nowrap;
+    min-width: 156px;
+    min-height: 44px;
+    justify-content: center;
 }
 
 .stats-page .btn-secondary {
@@ -468,6 +481,7 @@
     }
 
     .stats-page .btn-primary,
+    .stats-page .btn-simulation-ca,
     .stats-page .btn-secondary {
         width: 100%;
     }

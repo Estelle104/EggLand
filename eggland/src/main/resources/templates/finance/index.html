@@ -3,38 +3,23 @@
 <head>
     <title>Finance - Eggland</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <style>
-        .card { transition: transform 0.2s; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid var(--border); }
-        .card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
-        .card-title { font-size: 0.875rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .card-value { font-size: 1.75rem; font-weight: 700; color: var(--text-dark); }
-        .text-success { color: var(--success) !important; }
-        .text-danger { color: var(--danger) !important; }
-        .text-primary { color: var(--primary) !important; }
-        .chart-container { height: 350px; position: relative; }
-        .table th { font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
-        .table td { font-size: 0.9rem; vertical-align: middle; }
-        .btn-export { min-width: 180px; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem; }
-        .lot-row:hover { background-color: var(--bg-light); }
-        .alert-import { margin-top: 1rem; }
-        .import-error { color: var(--danger); font-size: 0.85rem; }
-        .import-success { color: var(--success); font-size: 0.85rem; }
-        .import-instruction { font-size: 0.8rem; color: var(--text-light); margin-bottom: 0.5rem; line-height: 1.4; }
-        .card-header.bg-white { border-bottom: 1px solid var(--border) !important; }
-        .card-header h5 { font-weight: 700; color: var(--text); }
-        .form-control-sm { border-radius: 8px; border-color: var(--border); }
-        .form-control-sm:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(184,122,42,0.15); }
-        h6.text-muted { color: var(--primary) !important; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
-    </style>
-</head>
-<body>
-<div layout:fragment="content">
-    <div class="container-fluid py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Tableau de Bord Financier</h1>
-        <a sec:authorize="hasAuthority('admin')" th:href="@{/admin/mvtargent}" class="btn btn-primary">
-            <i class="fas fa-exchange-alt me-1"></i> Mouvements d'argent
-        </a>
+    <link rel="stylesheet" th:href="@{/css/finance.css}" />
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
+    <link rel="stylesheet" th:href="@{/css/simulation.css}" />
+    
+  </head>
+  <body>
+    <div layout:fragment="content" class="finance-page">
+        <div class="page-header finance-header">
+          <h2>Tableau de Bord Financier</h2>
+          <div class="finance-actions">
+            <a sec:authorize="hasAuthority('admin')" th:href="@{/admin/simulation/chiffre-affaire}" class="btn btn-simulation-ca">
+                <i class="fas fa-chart-line me-1"></i> Simulation CA
+            </a>
+            <a sec:authorize="hasAuthority('admin')" th:href="@{/admin/mvtargent}" class="btn btn-mvt-argent">
+                <i class="fas fa-exchange-alt me-1"></i> Mouvements d'argent
+            </a>
+          </div>
         </div>
 
         <div class="row g-4 mb-4">
@@ -127,7 +112,7 @@
         </div>
 
         <div class="row g-4 mb-4">
-            <div class="col-lg-6">
+            <div class="col-lg-12">
                 <div class="card h-100 border-0">
                     <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Coût de Revient par Lot</h5>
@@ -159,144 +144,13 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <div class="card h-100 border-0">
-                    <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Export & Import</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <h6 class="text-muted">Export PDF</h6>
-                                <div class="d-grid gap-2">
-
-                                    <form th:action="@{/finance/export/pdf/bon-livraison}" method="get" target="_blank" class="d-inline">
-                                        <input type="date" name="date" th:value="${today}" class="form-control form-control-sm mb-2">
-                                        <button type="submit" class="btn btn-outline-danger btn-export w-100">
-                                            <i class="fas fa-file-pdf me-2"></i>Bon de Livraison
-                                        </button>
-                                    </form>
-
-                                    <form th:action="@{/finance/export/pdf/paiement-salaire}" method="get" target="_blank" class="d-inline">
-                                        <input type="month" name="mois" th:value="${currentMonth}" class="form-control form-control-sm mb-2">
-                                        <button type="submit" class="btn btn-outline-danger btn-export w-100">
-                                            <i class="fas fa-file-pdf me-2"></i>Paiement Salaires
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <h6 class="text-muted">Export Excel</h6>
-                                <div class="d-grid gap-2">
-
-                                    <form th:action="@{/finance/export/excel/production-oeufs}" method="get" target="_blank" class="d-inline">
-                                        <div class="row g-2 mb-2">
-                                            <div class="col-6"><input type="date" name="debut" th:value="${todayMinus30}" class="form-control form-control-sm" placeholder="Date début"></div>
-                                            <div class="col-6"><input type="date" name="fin" th:value="${today}" class="form-control form-control-sm" placeholder="Date fin"></div>
-                                        </div>
-                                        <button type="submit" class="btn btn-outline-success btn-export w-100">
-                                            <i class="fas fa-file-excel me-2"></i>Production Œufs
-                                        </button>
-                                    </form>
-
-                                    <form th:action="@{/finance/export/excel/mouvement-stock}" method="get" target="_blank" class="d-inline">
-                                        <div class="row g-2 mb-2">
-                                            <div class="col-6"><input type="date" name="debut" th:value="${todayMinus30}" class="form-control form-control-sm" placeholder="Date début"></div>
-                                            <div class="col-6"><input type="date" name="fin" th:value="${today}" class="form-control form-control-sm" placeholder="Date fin"></div>
-                                        </div>
-                                        <button type="submit" class="btn btn-outline-success btn-export w-100">
-                                            <i class="fas fa-file-excel me-2"></i>Mouvement Stock
-                                        </button>
-                                    </form>
-
-                                    <form th:action="@{/finance/export/excel/paiements-salaires}" method="get" target="_blank" class="d-inline">
-                                        <input type="month" name="mois" th:value="${currentMonth}" class="form-control form-control-sm mb-2">
-                                        <button type="submit" class="btn btn-outline-success btn-export w-100">
-                                            <i class="fas fa-file-excel me-2"></i>Paiements Salaires
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <hr class="my-3">
-                        <h6 class="text-muted">Import Excel - Liste des Ventes</h6>
-                      
-                        <form th:action="@{/finance/import/liste-ventes}" method="post" enctype="multipart/form-data" class="d-flex gap-2 align-items-end">
-                            <input type="file" name="file" accept=".xlsx,.xls" class="form-control form-control-sm" required>
-                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-upload me-1"></i>Importer</button>
-                        </form>
-                        <div th:if="${importErrors != null and not importErrors.isEmpty()}" class="alert alert-danger alert-import mt-3">
-                            <h6>Erreurs d'import (${importErrorCount}) :</h6>
-                            <ul class="mb-0">
-                                <li th:each="err : ${importErrors}" class="import-error" th:text="${err}"></li>
-                            </ul>
-                        </div>
-                        <div th:if="${importSuccesses != null and not importSuccesses.isEmpty()}" class="alert alert-success alert-import mt-3">
-                            <h6>Importés avec succès (${importSuccessCount}) :</h6>
-                            <ul class="mb-0">
-                                <li th:each="s : ${importSuccesses}" class="import-success" th:text="${s}"></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
-    </div>
 
     <script th:inline="javascript">
         const recettesMensuelles = /*[[${recettesMensuelles}]]*/ {};
         const depensesMensuelles = /*[[${depensesMensuelles}]]*/ {};
-
-        const labels = Object.keys(recettesMensuelles);
-        const recettesData = Object.values(recettesMensuelles).map(v => parseFloat(v));
-        const depensesData = Object.values(depensesMensuelles).map(v => parseFloat(v));
-
-        const ctx = document.getElementById('chartMensuel').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'Recettes',
-                        data: recettesData,
-                        backgroundColor: 'rgba(25, 135, 84, 0.7)',
-                        borderColor: 'rgb(25, 135, 84)',
-                        borderWidth: 1,
-                        borderRadius: 4
-                    },
-                    {
-                        label: 'Dépenses',
-                        data: depensesData,
-                        backgroundColor: 'rgba(220, 53, 69, 0.7)',
-                        borderColor: 'rgb(220, 53, 69)',
-                        borderWidth: 1,
-                        borderRadius: 4
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'top' },
-                    tooltip: {
-                        callbacks: {
-                            label: ctx => `${ctx.dataset.label}: ${ctx.raw.toLocaleString('fr-MG')} Ar`
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: value => value.toLocaleString('fr-MG') + ' Ar'
-                        }
-                    }
-                }
-            }
-        });
     </script>
+    <script th:src="@{/js/finance.js}"></script>
 </div>
 </body>
 </html>

@@ -502,6 +502,10 @@
     flex-direction: column;
     gap: 4px;
 }
+.detail-info-item .badge {
+    align-self: flex-start;
+    width: fit-content;
+}
 .detail-info-label {
     font-size: 12px;
     color: var(--text-light);
@@ -558,9 +562,6 @@
     justify-content: flex-end;
 }
 
-/* =============================================
-   Filtres liste vente
-   ============================================= */
 .filtre-card {
     background: var(--card);
     border-radius: var(--radius);

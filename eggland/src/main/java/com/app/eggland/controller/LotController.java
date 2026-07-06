@@ -8,6 +8,7 @@ import java.util.Map;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,6 +32,7 @@ import com.app.eggland.repository.RaceRepository;
 import com.app.eggland.repository.StatutLotRepository;
 
 import com.app.eggland.service.LotService;
+import com.app.eggland.service.PaginationUtils;
 
 import jakarta.transaction.Transactional;
 
@@ -48,28 +50,35 @@ public class LotController {
     @Autowired
     private StatutLotRepository statutLotRepository;
 
-@Autowired
-LotRaceRepository lotRaceRepository;
+    @Autowired
+    LotRaceRepository lotRaceRepository;
 
      @GetMapping("/data/races")
-public List<Race> getRaces() {
-    return raceRepository.findAll();
-}
-    @GetMapping("/data/batiments")
-    public List<Batiment> getBatiments() {
-        return batimentRepository.findAll();
+    public List<Race> getRaces() {
+        return raceRepository.findAll();
     }
-
-   
 
      @GetMapping("/create")
     public ModelAndView showLotForm(){
         ModelAndView mav = new ModelAndView("lots/form");
-        mav.addObject("lot", new Lot());
-        mav.addObject("races", raceRepository.findAll());
-        mav.addObject("batiments", batimentRepository.findAll());
-        return mav;
-    }
+        List<Batiment> listBatment = new ArrayList<>();
+
+        for(Batiment batiment : batimentRepository.findAll()){
+
+            if(!lotService.existedLot(batiment)){
+
+                listBatment.add(batiment);
+            }
+
+
+
+            }
+                mav.addObject("lot", new Lot());
+                mav.addObject("races", raceRepository.findAll());
+
+                mav.addObject("batiments", listBatment);
+                return mav;
+        }
 @PostMapping("/create")
 public ModelAndView createLot(@ModelAttribute Lot lot,
     @RequestParam(required = false) List<Integer> listeRace,
@@ -113,11 +122,14 @@ public ModelAndView createLot(@ModelAttribute Lot lot,
         if (listeRace != null && !listeRace.isEmpty()) {
             for (int i = 0; i < listeRace.size(); i++) {
                 Integer raceId = listeRace.get(i);
-                Integer nombre = (i < nbrPoule.size()) ? nbrPoule.get(i) : 0;
+                Integer nombre = (nbrPoule != null && i < nbrPoule.size()) ? nbrPoule.get(i) : 0;
                 
-                if (nombre != null && nombre > 0) {
+                if (raceId != null && nombre != null && nombre > 0) {
                     Race race = raceRepository.findById(raceId).orElse(null);
                     if (race != null) {
+                        if (lot.getRace() == null) {
+                            lot.setRace(race);
+                        }
                         LotRace lotRace = new LotRace();
                         lotRace.setLot(lot);
                         lotRace.setRace(race);
@@ -126,6 +138,10 @@ public ModelAndView createLot(@ModelAttribute Lot lot,
                     }
                 }
             }
+        }
+
+        if (lot.getRace() == null) {
+            throw new IllegalArgumentException("Veuillez selectionner une race valide");
         }
         
         lotService.createLot(lot);
@@ -147,30 +163,31 @@ public ModelAndView createLot(@ModelAttribute Lot lot,
 @GetMapping
 public ModelAndView showAllLot(
         @RequestParam(required = false) Integer batiment,
-        @RequestParam(required = false) Integer statut) {
-
+        @RequestParam(required = false) Integer statut,
+        @RequestParam(required = false, defaultValue = "0") Integer page,
+        @RequestParam(required = false, defaultValue = "10") Integer size) {
     ModelAndView mav = new ModelAndView("lots/liste");
 
     List<Lot> lots;
-
     if (batiment != null && statut != null) {
         Batiment b = batimentRepository.findById(batiment).orElse(null);
         StatutLot s = statutLotRepository.findById(statut).orElse(null);
         lots = lotService.findByBatimentAndStatut(b, s);
-
     } else if (batiment != null && statut == null) {
         Batiment b = batimentRepository.findById(batiment).orElse(null);
         lots = lotService.findByBatimentOrStatut(b, null);
-
     } else if (statut != null && batiment == null) {
         StatutLot s = statutLotRepository.findById(statut).orElse(null);
         lots = lotService.findByBatimentOrStatut(null, s);
-
     } else {
         lots = lotService.getAllLots();
     }
 
-  
+    Page<Lot> lotsPage = PaginationUtils.paginerListe(lots, page, size);
+    String baseUrl = "/admin/lots?"; // Ajuste selon ton chemin réel
+    if (batiment != null) baseUrl += "batiment=" + batiment + "&";
+    if (statut != null) baseUrl += "statut=" + statut + "&";
+
     Map<Integer, Integer> agesActuels = new HashMap<>();
     LocalDate aujourd = LocalDate.now();
     
@@ -178,7 +195,17 @@ public ModelAndView showAllLot(
         agesActuels.put(lot.getId(), lotService.getAgeActuel(lot, aujourd));
     }
 
-    mav.addObject("lots", lots);
+    Map<String, String> filtres = new HashMap<>();
+    if (batiment != null) filtres.put("batiment", batiment.toString());
+    if (statut != null) filtres.put("statut", statut.toString());
+
+    mav.addObject("lots", lotsPage.getContent()); // On envoie uniquement la tranche actuelle
+    mav.addObject("currentPage", lotsPage.getNumber());
+    mav.addObject("totalPages", lotsPage.getTotalPages());
+    mav.addObject("size", size);
+    mav.addObject("filtres", filtres);
+    mav.addObject("baseUrl", baseUrl);
+    
     mav.addObject("agesActuels", agesActuels); 
     mav.addObject("batiments", batimentRepository.findAll());
     mav.addObject("statuts", statutLotRepository.findAll());
@@ -262,7 +289,6 @@ public Lot getLotWithRaces(@PathVariable("id") Integer id) {
 public ModelAndView modifierLots(@PathVariable("id") Integer id,
                                   @RequestParam(required = false) List<Integer> listeRace,
                                   @RequestParam(required = false) List<Integer> nbrPoule,
-                                  @RequestParam Integer batimentId,
                                   RedirectAttributes redirectAttributes) {
     
     try {
@@ -272,11 +298,7 @@ public ModelAndView modifierLots(@PathVariable("id") Integer id,
             throw new IllegalArgumentException("Lot inexistant");
         }
            
-        if (batimentId != null) {
-            Batiment newBatiment = batimentRepository.findById(batimentId)
-                .orElseThrow(() -> new IllegalArgumentException("Bâtiment non trouvé"));
-            lot.setBatiment(newBatiment);
-        }
+       
         lot.getLotRaces().clear();
         
  
@@ -297,13 +319,17 @@ public ModelAndView modifierLots(@PathVariable("id") Integer id,
         
    
         if (listeRace != null && !listeRace.isEmpty()) {
+            lot.setRace(null);
             for (int i = 0; i < listeRace.size(); i++) {
                 Integer raceId = listeRace.get(i);
-                Integer nombre = (i < nbrPoule.size()) ? nbrPoule.get(i) : 0;
+                Integer nombre = (nbrPoule != null && i < nbrPoule.size()) ? nbrPoule.get(i) : 0;
                 
-                if (nombre != null && nombre > 0) {
+                if (raceId != null && nombre != null && nombre > 0) {
                     Race race = raceRepository.findById(raceId).orElse(null);
                     if (race != null) {
+                        if (lot.getRace() == null) {
+                            lot.setRace(race);
+                        }
                         LotRace lotRace = new LotRace();
                         lotRace.setLot(lot);
                         lotRace.setRace(race);
@@ -312,6 +338,10 @@ public ModelAndView modifierLots(@PathVariable("id") Integer id,
                     }
                 }
             }
+        }
+
+        if (lot.getRace() == null) {
+            throw new IllegalArgumentException("Veuillez selectionner une race valide");
         }
         
        System.out.println("Batiment "+ lot.getBatiment());

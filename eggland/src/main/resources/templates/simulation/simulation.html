@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulation - Eggland</title>
+    <link rel="stylesheet" th:href="@{/css/simulation.css}">
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="page-header">
+            <h2>Simulation</h2>
+        </div>
+
+        <div class="simulation-card">
+            <h3>Simulation de production</h3>
+            <form th:action="@{/admin/simulation}" method="post" class="simulation-form">
+                <div class="form-group">
+                    <label for="date">Date :</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="prixUnitaire">Prix unitaire :</label>
+                    <input type="number" id="prixUnitaire" name="prixUnitaire" min="0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="nbOeufs">Nombre d'oeufs :</label>
+                    <input type="number" id="nbOeufs" name="nbOeufs" min="0" required>
+                </div>
+                <button type="submit" class="btn-simuler">Simuler</button>
+            </form>
+
+            <div th:if="${resultat != null}" class="simulation-result">
+                <h3>Résultat de la simulation :</h3>
+                <p th:text="'Chiffre d affaires : ' + ${#numbers.formatDecimal(resultat, 0, 'COMMA', 2, 'POINT')} + ' Ar'"></p>
+            </div>
+        </div>
+
+        <div class="simulation-card" style="margin-top: 30px;">
+            <h3>Simulation de mortalité</h3>
+
+            <div th:if="${erreur != null}" class="alert alert-danger">
+                <p th:text="${erreur}"></p>
+            </div>
+
+            <form th:action="@{/admin/simulation/mortalite}" method="post" class="simulation-form">
+                <div class="form-group">
+                    <label for="lotId">Lot :</label>
+                    <select id="lotId" name="lotId" required>
+                        <option value="">Sélectionner un lot</option>
+                        <option th:if="${#lists.isEmpty(lots)}" value="" disabled>Aucun lot actif disponible</option>
+                        <option th:each="lot : ${lots}"
+                                th:value="${lot.id}"
+                                th:text="${lot.race.nom} + ' - ' + ${lot.nombreInitial} + ' poules'">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="mortsParJour">Nombre de morts par jour :</label>
+                    <input type="number" id="mortsParJour" name="mortsParJour" min="0" step="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="raceId">Race concernée :</label>
+                    <select id="raceId" name="raceId" required>
+                        <option value="">Sélectionner une race</option>
+                        <option th:each="race : ${races}"
+                                th:value="${race.id}"
+                                th:text="${race.nom} + ' - Rendement: ' + ${race.rendementMoyenMois} + ' oeufs/mois'">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="mortsParRace">Nombre de morts pour cette race :</label>
+                    <input type="number" id="mortsParRace" name="mortsParRace" min="0" step="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="dateSimulation">Date de simulation :</label>
+                    <input type="date" id="dateSimulation" name="dateSimulation" th:value="${dateDebut}" required>
+                </div>
+
+                <button type="submit" class="btn-simuler">Simuler</button>
+            </form>
+
+            <div th:if="${resultatMortalite != null}" class="simulation-result">
+                <h3>Résultats de la simulation de mortalité</h3>
+                <div style="border: 1px solid #ddd; padding: 15px; border-radius: 5px; margin-top: 10px;">
+                    <p>
+                        <strong>Chiffre d'affaires après mortalité :</strong>
+                        <span th:text="${#numbers.formatDecimal(resultatMortalite.chiffreAffaire, 0, 'COMMA', 2, 'POINT')} + ' Ar'"></span>
+                    </p>
+                    <p>
+                        <strong>Nombre d'oeufs estimés après mortalité :</strong>
+                        <span th:text="${resultatMortalite.nbOeufsRestants}"></span>
+                    </p>
+                    <p>
+                        <strong>Nombre de morts total :</strong>
+                        <span th:text="${resultatMortalite.totalMorts}"></span>
+                    </p>
+                    <p>
+                        <strong>Race concernée :</strong>
+                        <span th:text="${resultatMortalite.nomRace}"></span>
+                    </p>
+                    <p th:if="${resultatMortalite.message != null}"
+                       style="color: orange; font-style: italic;"
+                       th:text="${resultatMortalite.message}">
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

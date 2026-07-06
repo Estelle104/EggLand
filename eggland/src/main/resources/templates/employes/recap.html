@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Récap mensuel - Eggland</title>
     <link rel="stylesheet" th:href="@{/css/components.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
 <body>
@@ -26,6 +25,10 @@
                             <input type="month" name="mois" th:value="${moisSelectionne}" class="form-control form-control-sm" style="width:140px;">
                             <button type="submit" class="btn btn-outline" style="padding:6px 10px; font-size:12px;"><i class="fa-solid fa-file-excel"></i> XLSX</button>
                         </form>
+                      
+                        <a th:href="@{/admin/employes/historique}" class="btn btn-outline">
+                            <i class="fa-solid fa-clock-rotate-left"></i> Historique
+                        </a>
                     </div>
                 </div>
 
@@ -120,10 +123,10 @@
                             </tr>
                         </tbody>
                     </table>
-
                     <div th:if="${#lists.isEmpty(recap)}" class="vide-message">
                         Aucune donnée pour cette période.
                     </div>
+                    <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${baseUrl}, filters=${filtres})}"></div>
                 </div>
 
             </div>
@@ -136,7 +139,7 @@
                     <h3 th:text="'Verser le salaire — ' + ${r.employe.prenom} + ' ' + ${r.employe.nom}">Verser le salaire — Jean Dupont</h3>
                     <button type="button" class="modal-close" onclick="closeModals()">&times;</button>
                 </div>
-
+                
                 <div class="info-row">
                     <span>Salaire dû</span>
                     <span th:text="${#numbers.formatDecimal(r.employe.salaire, 0, 'WHITESPACE', 0, 'COMMA')} + ' Ar'">850 000 Ar</span>
@@ -167,21 +170,21 @@
                 </form>
             </div>
         </div>
-
-        <script>
-            function openPayer(id) {
-                closeModals();
-                document.getElementById('modalPayer').classList.add('active');
-                document.getElementById('payer-' + id).style.display = 'block';
-            }
-            function closeModals() {
-                document.getElementById('modalPayer').classList.remove('active');
-                document.querySelectorAll('.modal-box').forEach(function (box) { box.style.display = 'none'; });
-            }
-            document.querySelectorAll('.modal-overlay').forEach(function (overlay) {
-                overlay.addEventListener('click', function (ev) { if (ev.target === overlay) closeModals(); });
-            });
-        </script>
+      
+    <script>
+        function openPayer(id) {
+            closeModals();
+            document.getElementById('modalPayer').classList.add('active');
+            document.getElementById('payer-' + id).style.display = 'block';
+        }
+        function closeModals() {
+            document.getElementById('modalPayer').classList.remove('active');
+            document.querySelectorAll('.modal-box').forEach(function (box) { box.style.display = 'none'; });
+        }
+        document.querySelectorAll('.modal-overlay').forEach(function (overlay) {
+            overlay.addEventListener('click', function (ev) { if (ev.target === overlay) closeModals(); });
+        });
+    </script>
     </div>
 </body>
 

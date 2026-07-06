@@ -46,7 +46,7 @@ public class MvtStockService {
     public MvtStock save(MvtStock mvtStock) {
         MvtStock saved = mvtStockRepository.save(mvtStock);
         //si c'est une entrée de stock, créer un mouvement d'argent correspondant à l'achat
-        if (saved.getType().getCode().equals("entree")) {
+        if (saved.getType().getCode().equalsIgnoreCase("entree")) {
             creerMvtArgentPourAchat(saved);
         }
         //après chaque mouvement de stock, vérifier le seuil d'alerte
@@ -78,12 +78,12 @@ public class MvtStockService {
     }
 
     public TypeMvt getTypeEntree() {
-        return typeMvtRepository.findByCode("entree")
+        return typeMvtRepository.findByCodeIgnoreCase("entree")
                 .orElseThrow(() -> new RuntimeException("Type de mouvement 'entree' introuvable"));
     }
 
     public TypeMvt getTypeSortie() {
-        return typeMvtRepository.findByCode("sortie")
+        return typeMvtRepository.findByCodeIgnoreCase("sortie")
                 .orElseThrow(() -> new RuntimeException("Type de mouvement 'sortie' introuvable"));
     }
 
@@ -91,6 +91,8 @@ public class MvtStockService {
     public BigDecimal calculerStockActuel(Integer nourritureId) {
         BigDecimal entrees = mvtStockRepository.sumQuantiteByNourritureAndType(nourritureId, getTypeEntree());
         BigDecimal sorties = mvtStockRepository.sumQuantiteByNourritureAndType(nourritureId, getTypeSortie());
-        return entrees.subtract(sorties);
+        BigDecimal e = entrees != null ? entrees : BigDecimal.ZERO;
+        BigDecimal s = sorties != null ? sorties : BigDecimal.ZERO;
+        return e.subtract(s);
     }
 }

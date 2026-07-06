@@ -1,95 +1,74 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Détail de la vente</title>
-    <link rel="stylesheet" th:href="@{/css/variables.css}">
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
-    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/vente.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 <body>
-<div class="app">
-    <div th:replace="fragments/sidebar :: sidebar"></div>
-    <div class="main">
-        <div th:replace="fragments/header :: header"></div>
-        <div class="content">
-
+<div layout:fragment="content">
             <div class="page-header">
-                <h2>Détail de la vente <span th:text="'#' + ${vente.id}"></span></h2>
-                <a th:href="@{/ventes/listevente}" class="btn-annuler">
-                    <i class="fa-solid fa-arrow-left"></i> Retour
-                </a>
+                <h2><i class="fa-solid fa-receipt"></i> Détail de la vente <span th:text="'#' + ${vente.id}"></span></h2>
             </div>
-
-            <div class="detail-overlay active">
-                <div class="detail-popup">
-                    <div class="detail-popup-header">
-                        <h3><i class="fa-solid fa-receipt"></i> Vente <span th:text="'#' + ${vente.id}"></span></h3>
-                        <a th:href="@{/ventes/listevente}" class="detail-close" title="Fermer">
-                            <i class="fa-solid fa-xmark"></i>
-                        </a>
+            <div class="card detail-page">
+                <div class="detail-info-grid">
+                    <div class="detail-info-item">
+                        <span class="detail-info-label">Client</span>
+                        <span class="detail-info-value" th:text="${vente.client != null ? vente.client.nom : '-'}"></span>
                     </div>
-
-                    <div class="detail-popup-body">
-                        <div class="detail-info-grid">
-                            <div class="detail-info-item">
-                                <span class="detail-info-label">Client</span>
-                                <span class="detail-info-value" th:text="${vente.client != null ? vente.client.nom : '-'}"></span>
-                            </div>
-                            <div class="detail-info-item">
-                                <span class="detail-info-label">Date</span>
-                                <span class="detail-info-value" th:text="${vente.date != null ? #temporals.format(vente.date,'dd/MM/yyyy') : '-'}"></span>
-                            </div>
-                            <div class="detail-info-item">
-                                <span class="detail-info-label">Statut</span>
-                                <span class="badge badge-green" th:if="${vente.statut != null}" th:text="${vente.statut.code}"></span>
-                                <span class="badge badge-gray"  th:if="${vente.statut == null}">N/A</span>
-                            </div>
-                            <div class="detail-info-item">
-                                <span class="detail-info-label">Total</span>
-                                <span class="detail-info-value detail-total" th:text="${vente.total != null ? vente.total + ' Ar' : '-'}"></span>
-                            </div>
-                        </div>
-
-                        <!-- Lignes de détail -->
-                        <h4 class="detail-section-title">Lignes de vente</h4>
-                        <table class="detail-table">
-                            <thead>
-                                <tr>
-                                    <th>Produit</th>
-                                    <th>Quantité</th>
-                                    <th>Prix unitaire</th>
-                                    <th>Sous-total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:if="${#lists.isEmpty(details)}">
-                                    <td colspan="4" style="text-align:center; color: var(--text-light);">Aucun détail disponible</td>
-                                </tr>
-                                <tr th:each="d : ${details}">
-                                    <td th:text="${d.produit != null ? d.produit.code : '-'}"></td>
-                                    <td th:text="${d.quantite}"></td>
-                                    <td th:text="${d.prixUnitaire + ' Ar'}"></td>
-                                    <td th:text="${d.quantite.multiply(d.prixUnitaire) + ' Ar'}"></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="detail-info-item">
+                        <span class="detail-info-label">Date</span>
+                        <span class="detail-info-value" th:text="${vente.date != null ? #temporals.format(vente.date,'dd/MM/yyyy') : '-'}"></span>
                     </div>
-
-                    <div class="detail-popup-footer">
-                        <a th:href="@{/ventes/listevente}" class="btn-annuler">
-                            <i class="fa-solid fa-xmark"></i> Fermer
-                        </a>
+                    <div class="detail-info-item">
+                        <span class="detail-info-label">Statut</span>
+                        <span class="badge"
+                              th:if="${vente.statut != null}"
+                              th:classappend="${vente.statut.code == 'en_attente'} ? ' badge-yellow' : ' badge-green'"
+                              th:text="${vente.statut.code}"></span>
+                        <span class="badge badge-gray"  th:if="${vente.statut == null}">N/A</span>
                     </div>
+                    <div class="detail-info-item">
+                        <span class="detail-info-label">Total</span>
+                        <span class="detail-info-value detail-total"
+                              th:text="${vente.total != null ? #numbers.formatDecimal(vente.total, 0, 'COMMA', 2, 'POINT') + ' Ar' : '-'}"></span>
+                    </div>
+                </div>
+
+                <!-- Lignes de détail -->
+                <h4 class="detail-section-title">Lignes de vente</h4>
+                <table class="detail-table">
+                    <thead>
+                        <tr>
+                            <th>Produit</th>
+                            <th>Quantité</th>
+                            <th>Prix unitaire</th>
+                            <th>Sous-total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(details)}">
+                            <td colspan="4" style="text-align:center; color: var(--text-light);">Aucun détail disponible</td>
+                        </tr>
+                        <tr th:each="d : ${details}">
+                            <td th:text="${d.produit != null ? d.produit.code : '-'}"></td>
+                            <td th:text="${#numbers.formatDecimal(d.quantite, 0, 'COMMA', 2, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(d.prixUnitaire, 0, 'COMMA', 2, 'POINT')} + ' Ar'"></td>
+                            <td th:text="${#numbers.formatDecimal(d.quantite.multiply(d.prixUnitaire), 0, 'COMMA', 2, 'POINT')} + ' Ar'"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="form-actions">
+                    <a th:href="@{/admin/ventes/listevente}" class="btn-annuler">
+                        <i class="fa-solid fa-arrow-left"></i> Retour à la liste
+                    </a>
                 </div>
             </div>
 
-        </div>
-    </div>
 </div>
 </body>
 </html>

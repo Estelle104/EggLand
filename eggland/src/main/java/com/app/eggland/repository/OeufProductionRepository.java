@@ -26,11 +26,11 @@ public interface OeufProductionRepository extends JpaRepository<OeufProduction, 
 
     List<OeufProduction> findAllByOrderByDateDescIdDesc();
 
-    @Query("SELECT COALESCE(SUM(o.quantite), 0) FROM OeufProduction o")
-    Integer sumQuantiteTotale();
+    @Query("SELECT SUM(o.quantite) FROM OeufProduction o")
+    Long sumQuantiteTotale();
 
-    @Query("SELECT COALESCE(SUM(o.quantite), 0) FROM OeufProduction o WHERE o.date = :date")
-    Integer sumQuantiteByDate(@Param("date") LocalDate date);
+    @Query("SELECT SUM(o.quantite) FROM OeufProduction o WHERE o.date = :date")
+    Long sumQuantiteByDate(@Param("date") LocalDate date);
 
     @Query("""
             SELECT o.date, SUM(o.quantite)
