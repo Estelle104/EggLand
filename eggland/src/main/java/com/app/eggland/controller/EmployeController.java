@@ -166,10 +166,6 @@ public class EmployeController {
     public String recap(@RequestParam(required = false) String mois,
                          @RequestParam(required = false) String statut,
                          @RequestParam(required = false) Integer employeId,
-<<<<<<< HEAD
-=======
-                        @RequestParam(required = false) String statut,
->>>>>>> f840d6eb5cc0fc8e20ce1f9d6fd0354288336bdc
                         @RequestParam(defaultValue="0") int page,
                         @RequestParam(defaultValue="10") int size,
                          Model model) {
