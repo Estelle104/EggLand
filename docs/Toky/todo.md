@@ -1,5 +1,3 @@
-# Toky | Authentification & Sécurité
-
 ## Tâche
 
 | Code | Tâche | Fichiers à utiliser | Durée |
@@ -29,21 +27,6 @@
 |------|-------|---------------------|
 | T1.8 | `pagination`: effectuer la pagination de toute les listes | `*.java`: qui contient toute les affichages de liste bien sur + `*.html`: qui ont pour fonction,l'affichage des listes | 
 ---
-
-
-## Critêre de validité :
-| # | Fonctionnalité |  Critère de validation |
-|---|----------------|------------------------|
-|V1 |l'utilisateur entre dans le site vitrine ne possèdant aucune session : un futur client peut-être | la vue du site vitrine |
-| V2| l'utilisateur vas soit dans connexion et doit entrer ces identifiants ou bien `S'inscrire` dans le cas ou il n'en a pas, ce sera le même s'il a parcouru le site vitrine il y a le même bouton s'inscrire | la vue du formulaire d'inscription en tant que client |
-|V3 | un utilisateur peut s'inscrire dans le formulaire déstiné au client et se connecter automatiquement | la table `client` enregistre + page layout pour client avec son mail + deconnexion apparait si on veut se déconnecter + bouton Mon Espace |
-| V4| administateur + gestionnaire : on peut se connecter dans le bouton de connexion du site vitrine via `acces administrateur et gestionnaire` | le formulaire s'affiche + verification des identifiant dans `useradmin` + affichage de la page dans `admin/dashboard` |
-| V5| l'email des gérants sont afficher dans les pages qui leurs sont attribué | le sidebar affiche l'email de l'administrateur ou du gestionnaire avec le bouton déconnecter à côté |
-
-## Rêgle de gestion :
-* un client ne possède que son email pour vérifier son identité 
-* une session se créer lorsque le client s'inscrit pour la première fois  et dans les prochaines visite du site
-* les gérant ont un mot de passe qui leur donne accès au backoffice du site 
 
 ## Rêgle d'organisation :
 <br>
@@ -145,3 +128,8 @@ Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 * `client/inscription.html` : formulaire d'inscription des futurs client 
 * `login.html` : page de connexion client 
 * `stafflogin.html` : page de connexion pour le backoffice 
+
+***T1.8***
+* ``Pagination.html`` : refactorisation de pagination de sorte que toute les classes puisse bénéficié des pagination
+* ``PaginationUtils.java`` : généralisation de la pagination 
+* 

@@ -34,7 +34,6 @@ public class BatimentController {
         Model model) {
         if(size <= 0) {
             size = 1; // Valeur par défaut si la taille est invalide
-
         }
         List<Batiment> batiments = batimentService.findAll();
         Page<Batiment> batimentsPage = PaginationUtils.paginerListe(batiments, page, size);

@@ -42,6 +42,9 @@ public class EmployeController {
         Model model) {
         List<Employe> employes = employeService.listerTous();
         Page<Employe> employesPage = PaginationUtils.paginerListe(employes, page, size);
+        if(size <= 0) {
+            size = 1; // Valeur par défaut si la taille est invalide
+        }
         model.addAttribute("employes", employesPage.getContent());
         model.addAttribute("currentPage",employesPage.getNumber());
         model.addAttribute("totalPages", employesPage.getTotalPages());
