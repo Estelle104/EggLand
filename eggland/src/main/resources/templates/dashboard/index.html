@@ -89,7 +89,7 @@
                     <h5 class="mb-0"><i class="fa-solid fa-skull me-2"></i>Mortalité</h5>
             </div>
             <div class="card-body">
-                <form class="row g-3 align-items-end mb-4" th:action="@{/dashboard}" method="get">
+                <form class="row g-3 align-items-end mb-4" th:action="@{/admin/dashboard}" method="get">
                     <div class="col-md-3">
                         <label class="form-label small text-muted">Lot</label>
                         <select name="lotId" class="form-select form-select-sm">
@@ -128,9 +128,12 @@
                             </div>
                             <div class="text-center p-3 rounded" style="background: #f0f0f0; flex: 1;">
                                 <div class="small text-muted">Total initial</div>
-                                <div class="fw-bold fs-4" th:text="${#numbers.formatInteger(totalMorts + totalVivants, 1, 'COMMA')}">0</div>
+                                <div class="fw-bold fs-4" th:text="${#numbers.formatInteger(totalInitial, 1, 'COMMA')}">0</div>
                             </div>
                         </div>
+                        <p class="small text-muted mb-0">
+                            Le reste du total initial correspond aux poules reformees.
+                        </p>
                     </div>
                 </div>
             </div>

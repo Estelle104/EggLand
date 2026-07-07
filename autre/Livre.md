@@ -3,12 +3,12 @@
 ### Table de matiere
 - ne pas y mettre le titre de tableau et les titres des images
 
-### Liste des tables
+### Liste des tables 
 
 ### Liste des figures
 
 
-## Presentation du projet
+## Presentation du projet [ok]
 ### Contexte
 - Que consiste ce projet
 
@@ -22,7 +22,7 @@
 
 
 ***EDT: Emploie du temps***
-## Cahier des charges fonctionnelles (CDCF)
+## Cahier des charges fonctionnelles (CDCF) 
 - UNE PARTIE DE CDC
 - Les parties fonctionnelles
     - gestion de stock
@@ -33,7 +33,7 @@
 
 
 ***Dans les hackaton: le pitch...***
-## Choix technologique
+## Choix technologique [ok]
 - Argument 
     - A EVITER: citer des arguments qui nous beneficient (populaire, facile, beaucoup de communaute)
     - CHoix:
@@ -55,7 +55,7 @@
 - Chaque image doit avoir une legende
 - Eviter de dire : "C'est le choix de l'entreprise et j'y peux rien"
 
-## Planning
+## Planning 
 - Utiliser Gant
     - y mettre les etapes avec une date et une duree
 - ON doit mettre Gant dans le livre : pas le graphe

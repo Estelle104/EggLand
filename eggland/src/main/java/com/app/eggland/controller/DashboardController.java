@@ -1,6 +1,7 @@
 package com.app.eggland.controller;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,12 +10,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.app.eggland.model.Lot;
 import com.app.eggland.service.DashboardService;
 import com.app.eggland.service.MortService;
 import com.app.eggland.service.OeufProductionService;
 
 @Controller
-@RequestMapping("/dashboard")
+@RequestMapping("/admin/dashboard")
 public class DashboardController {
 
     @Autowired
@@ -33,14 +35,19 @@ public class DashboardController {
             @RequestParam(value = "dateFin", required = false) LocalDate dateFin,
             Model model) {
 
-        if (dateDebut == null) dateDebut = LocalDate.now().minusDays(30);
-        if (dateFin == null) dateFin = LocalDate.now();
-
         Integer totalMorts = mortService.getTotalMorts(lotId, dateDebut, dateFin);
         Integer totalVivants = mortService.getVivants(lotId);
+        Integer totalInitial = mortService.getTotalInitial(lotId);
 
         if (lotId != null && lotId > 0) {
-            mortService.verifierSeuil(lotId, totalMorts);
+            Integer totalMortsLot = mortService.getTotalMortsParLot(lotId);
+            mortService.verifierSeuil(lotId, totalMortsLot);
+        } else {
+            List<Lot> lots = mortService.getAllLots();
+            for (Lot lot : lots) {
+                Integer totalMortsLot = mortService.getTotalMortsParLot(lot.getId());
+                mortService.verifierSeuil(lot.getId(), totalMortsLot);
+            }
         }
 
         model.addAttribute("oeufsJour", dashboardService.getOeufsJour());
@@ -51,10 +58,11 @@ public class DashboardController {
         model.addAttribute("production14Jours", oeufProductionService.getProductionDes14DerniersJours());
         model.addAttribute("totalMorts", totalMorts);
         model.addAttribute("totalVivants", totalVivants);
+        model.addAttribute("totalInitial", totalInitial);
         model.addAttribute("lots", mortService.getAllLots());
         model.addAttribute("lotIdSelectionne", lotId);
-        model.addAttribute("dateDebutSelectionnee", dateDebut.toString());
-        model.addAttribute("dateFinSelectionnee", dateFin.toString());
+        model.addAttribute("dateDebutSelectionnee", dateDebut != null ? dateDebut.toString() : "");
+        model.addAttribute("dateFinSelectionnee", dateFin != null ? dateFin.toString() : "");
         model.addAttribute("pageTitle", "Dashboard");
         return "dashboard/index";
     }

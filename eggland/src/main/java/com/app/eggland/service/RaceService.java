@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.app.eggland.model.Batiment;
 import com.app.eggland.model.Race;
 import com.app.eggland.repository.RaceRepository;
 
@@ -30,4 +31,6 @@ public class RaceService {
     public void deleteById(Integer id) {
         raceRepository.deleteById(id);
     }
+
+    
 }

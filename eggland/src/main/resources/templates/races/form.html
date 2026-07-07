@@ -19,7 +19,7 @@
                 </div>
 
                 <div class="card-form">
-                    <form th:action="@{/races/save}" th:object="${race}" method="post">
+                    <form th:action="@{/admin/races/save}" th:object="${race}" method="post">
 
                         <input type="hidden" th:field="*{id}" />
 
@@ -44,7 +44,7 @@
                             <button type="submit" class="btn-enregistrer">
                                 <i class="fa-solid fa-save"></i> Enregistrer
                             </button>
-                            <a th:href="@{/races}" class="btn-annuler">
+                            <a th:href="@{/admin/races}" class="btn-annuler">
                                 <i class="fa-solid fa-xmark"></i> Annuler
                             </a>
                         </div>

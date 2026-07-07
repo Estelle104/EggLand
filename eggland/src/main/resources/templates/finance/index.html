@@ -9,12 +9,11 @@
     
   </head>
   <body>
-    <div layout:fragment="content">
-      <div class="container-fluid py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-          <h1 class="h3 mb-0">Tableau de Bord Financier</h1>
-          <div class="d-flex gap-2">
-            <a sec:authorize="hasAuthority('admin')" th:href="@{/simulation/chiffre-affaire}" class="btn btn-simulation-ca">
+    <div layout:fragment="content" class="finance-page">
+        <div class="page-header finance-header">
+          <h2>Tableau de Bord Financier</h2>
+          <div class="finance-actions">
+            <a sec:authorize="hasAuthority('admin')" th:href="@{/admin/simulation/chiffre-affaire}" class="btn btn-simulation-ca">
                 <i class="fas fa-chart-line me-1"></i> Simulation CA
             </a>
             <a sec:authorize="hasAuthority('admin')" th:href="@{/admin/mvtargent}" class="btn btn-mvt-argent">
@@ -146,7 +145,6 @@
                 </div>
             </div>
         </div>
-    </div>
 
     <script th:inline="javascript">
         const recettesMensuelles = /*[[${recettesMensuelles}]]*/ {};

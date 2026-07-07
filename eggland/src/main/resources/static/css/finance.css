@@ -1,3 +1,19 @@
+.finance-page {
+  width: 100%;
+}
+
+.finance-header {
+  margin-bottom: 24px;
+}
+
+.finance-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .card {
   transition: transform 0.2s;
   border-radius: 12px;
@@ -101,4 +117,20 @@ h6.text-muted {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(184, 122, 42, 0.12);
   background: white;
+}
+
+@media (max-width: 700px) {
+  .finance-header {
+    align-items: stretch;
+  }
+
+  .finance-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .finance-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
 }

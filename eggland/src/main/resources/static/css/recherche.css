@@ -1,0 +1,107 @@
+.page-header {
+    margin-bottom: 24px;
+}
+
+.page-header h2 {
+    color: var(--text);
+    font-size: 22px;
+}
+
+.page-header .nb-resultats {
+    color: var(--text-light);
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.card-section {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.card-section h3 {
+    color: var(--primary);
+    font-size: 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-section h3 .count {
+    background: var(--bg);
+    color: var(--text-light);
+    font-size: 12px;
+    padding: 2px 10px;
+    border-radius: 10px;
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+
+.result-item:hover {
+    background: rgba(184, 122, 42, 0.06);
+}
+
+.result-item .valeur {
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.result-item .colonne {
+    color: var(--text-light);
+    font-size: 12px;
+    margin-left: 8px;
+}
+
+.result-item .btn-voir {
+    background: var(--primary);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.result-item .btn-voir:hover {
+    background: var(--hover);
+}
+
+.result-item + .separator {
+    border-top: 1px solid var(--border);
+    margin: 0 8px;
+}
+
+.vide-message {
+    text-align: center;
+    padding: 60px;
+    color: var(--text-light);
+}
+
+.vide-message i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    color: var(--border);
+}
+
+.vide-message p {
+    font-size: 16px;
+}
+
+.icone-table {
+    width: 20px;
+    text-align: center;
+    margin-right: 8px;
+    color: var(--primary);
+}

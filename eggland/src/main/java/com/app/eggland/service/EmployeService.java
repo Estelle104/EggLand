@@ -1,5 +1,6 @@
 package com.app.eggland.service;
 
+import com.app.eggland.model.Batiment;
 import com.app.eggland.model.Employe;
 import com.app.eggland.repository.EmployeRepository;
 import lombok.RequiredArgsConstructor;
@@ -54,4 +55,6 @@ public class EmployeService {
             throw new IllegalArgumentException("La date d'embauche ne peut pas être dans le futur.");
         }
     }
+
+    
 }

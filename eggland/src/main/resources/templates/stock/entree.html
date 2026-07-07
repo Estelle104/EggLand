@@ -20,7 +20,7 @@
                 </div>
 
                 <div class="card-form">
-                    <form th:action="@{/stock/entree}" method="post">
+                    <form th:action="@{/admin/stock/entree}" method="post">
 
                         <div class="form-group">
                             <label for="nourriture">Nourriture</label>
@@ -42,7 +42,7 @@
 
                         <div class="form-actions">
                             <button type="submit" class="btn-submit"><i class="fa-solid fa-check"></i> Valider l'entrée</button>
-                            <a th:href="@{/stock}" class="btn-annuler"><i class="fa-solid fa-xmark"></i> Annuler</a>
+                            <a th:href="@{/admin/stock}" class="btn-annuler"><i class="fa-solid fa-xmark"></i> Annuler</a>
                         </div>
                     </form>
                 </div>

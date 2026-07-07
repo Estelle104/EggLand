@@ -21,15 +21,15 @@ public class SecurityConfig {
             .requestMatchers("/client/connexion","/login","/redirection","/admin/login").permitAll()
             .requestMatchers("/admin/finance/**").hasAnyAuthority("gestionnaire", "admin")
             .requestMatchers("/admin/exports").hasAnyAuthority("gestionnaire", "admin")
+            .requestMatchers("/admin/races", "/admin/races/**").hasAnyAuthority("gestionnaire", "admin")
+            .requestMatchers("/admin/batiments", "/admin/batiments/**").hasAnyAuthority("gestionnaire", "admin")
+            .requestMatchers("/admin/stock", "/admin/stock/**").hasAnyAuthority("gestionnaire", "admin")
+            .requestMatchers("/admin/nourritures", "/admin/nourritures/**").hasAnyAuthority("gestionnaire", "admin")
+            .requestMatchers("/admin/dashboard", "/admin/dashboard/**").hasAnyAuthority("admin", "gestionnaire")
             .requestMatchers("/admin/**").hasAuthority("admin")// l'admin a acces a ses fonctionnalités et toute url contenant layout et liste
-            .requestMatchers("/lots/**","/gestionnaire/**").hasAnyAuthority("gestionnaire","admin")// gestionnaire a acces aux url de lots et gestionnaire définissez en fonction de vos besoin
+            .requestMatchers("/gestionnaire/**").hasAnyAuthority("gestionnaire","admin")// gestionnaire a acces aux url de lots et gestionnaire définissez en fonction de vos besoin
             .requestMatchers("/client/**").hasAnyAuthority("client","admin")// le client a acces aux fonctionnalité de l'url /client
-            .requestMatchers("/races/**").hasAnyAuthority("gestionnaire", "admin")
-            .requestMatchers("/batiments/**").hasAnyAuthority("gestionnaire", "admin")
-            .requestMatchers("/stock/**").hasAnyAuthority("gestionnaire", "admin")
-            .requestMatchers("/nourritures/**").hasAnyAuthority("gestionnaire", "admin")
             .requestMatchers("/mvtargent/**").hasAnyAuthority("gestionnaire", "admin")
-            .requestMatchers("/dashboard/**").hasAnyAuthority("admin", "gestionnaire")
         .anyRequest().authenticated()
        )
        .formLogin(form -> form
@@ -41,7 +41,7 @@ public class SecurityConfig {
             .logoutUrl("/logout") // L'URL qui déclenche la déconnexion
             .logoutSuccessUrl("/") // Où on va après s'être déconnecté
             .invalidateHttpSession(true) // Efface la session HTTP du serveur
-            .clearAuthentication(true) // Efface le badge de sécurité de Spring
+            .clearAuthentication(true) // Efface le badge de sécurité de Spring 
             .permitAll()
         )
        .csrf(csrf -> csrf.disable());
