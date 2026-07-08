@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="fr" 
-      xmlns:th="http://www.thymeleaf.org" 
-      layout:decorate="~{fragments/layout}">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulation - Chiffre d'Affaires</title>
     <link rel="stylesheet" th:href="@{/css/simulation.css}">
 </head>
+
 <body>
     <div layout:fragment="content">
 
@@ -34,18 +34,22 @@
         <div th:if="${chiffreAffaires != null}" class="resultats">
             <div class="result-card ca">
                 <div class="label">Chiffre d'Affaires</div>
-                <div class="value" th:text="${#numbers.formatDecimal(chiffreAffaires, 0, 'COMMA', 2, 'POINT')} + ' Ar'"></div>
+                <div class="value" th:text="${#numbers.formatDecimal(chiffreAffaires, 0, 'COMMA', 2, 'POINT')} + ' Ar'">
+                </div>
             </div>
             <div class="result-card depense">
                 <div class="label">Dépense Nourriture</div>
-                <div class="value" th:text="${#numbers.formatDecimal(depenseNourriture, 0, 'COMMA', 2, 'POINT')} + ' Ar'"></div>
+                <div class="value"
+                    th:text="${#numbers.formatDecimal(depenseNourriture, 0, 'COMMA', 2, 'POINT')} + ' Ar'"></div>
             </div>
             <div class="result-card benefice">
                 <div class="label">Bénéfice Net</div>
-                <div class="value" th:text="${#numbers.formatDecimal(beneficeNet, 0, 'COMMA', 2, 'POINT')} + ' Ar'"></div>
+                <div class="value" th:text="${#numbers.formatDecimal(beneficeNet, 0, 'COMMA', 2, 'POINT')} + ' Ar'">
+                </div>
             </div>
         </div>
 
     </div>
 </body>
+
 </html>

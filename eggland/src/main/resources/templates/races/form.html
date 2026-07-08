@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" 
-      xmlns:th="http://www.thymeleaf.org" 
-      layout:decorate="~{fragments/layout}">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
 
 <head>
     <meta charset="UTF-8">
@@ -14,45 +12,45 @@
 <body>
     <div layout:fragment="content">
 
-                <div class="page-header">
-                    <h2 th:text="${race.id == null} ? 'Nouvelle race' : 'Modifier la race'"></h2>
+        <div class="page-header">
+            <h2 th:text="${race.id == null} ? 'Nouvelle race' : 'Modifier la race'"></h2>
+        </div>
+
+        <div class="card-form">
+            <form th:action="@{/admin/races/save}" th:object="${race}" method="post">
+
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="form-group">
+                    <label for="nom">Nom</label>
+                    <input type="text" id="nom" th:field="*{nom}" placeholder="Ex: Plymouth Rock" required />
                 </div>
 
-                <div class="card-form">
-                    <form th:action="@{/admin/races/save}" th:object="${race}" method="post">
-
-                        <input type="hidden" th:field="*{id}" />
-
-                        <div class="form-group">
-                            <label for="nom">Nom</label>
-                            <input type="text" id="nom" th:field="*{nom}" placeholder="Ex: Plymouth Rock" required />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="prixUnitaire">Prix unitaire (Ar)</label>
-                            <input type="number" id="prixUnitaire" th:field="*{prixUnitaire}"
-                                   step="0.01" placeholder="Ex: 5000" required />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="rendementMoyenMois">Rendement moyen / mois</label>
-                            <input type="number" id="rendementMoyenMois" th:field="*{rendementMoyenMois}"
-                                   placeholder="Ex: 25" required />
-                        </div>
-
-                        <div class="form-actions">
-                            <button type="submit" class="btn-enregistrer">
-                                <i class="fa-solid fa-save"></i> Enregistrer
-                            </button>
-                            <a th:href="@{/admin/races}" class="btn-annuler">
-                                <i class="fa-solid fa-xmark"></i> Annuler
-                            </a>
-                        </div>
-
-                    </form>
+                <div class="form-group">
+                    <label for="prixUnitaire">Prix unitaire (Ar)</label>
+                    <input type="number" id="prixUnitaire" th:field="*{prixUnitaire}" step="0.01" placeholder="Ex: 5000"
+                        required />
                 </div>
 
-            </div>
+                <div class="form-group">
+                    <label for="rendementMoyenMois">Rendement moyen / mois</label>
+                    <input type="number" id="rendementMoyenMois" th:field="*{rendementMoyenMois}" placeholder="Ex: 25"
+                        required />
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-enregistrer">
+                        <i class="fa-solid fa-save"></i> Enregistrer
+                    </button>
+                    <a th:href="@{/admin/races}" class="btn-annuler">
+                        <i class="fa-solid fa-xmark"></i> Annuler
+                    </a>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
 </body>
 
 </html>

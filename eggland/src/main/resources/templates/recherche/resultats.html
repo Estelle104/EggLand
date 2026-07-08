@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" 
-      xmlns:th="http://www.thymeleaf.org" 
-      layout:decorate="~{fragments/layout}">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
 
 <head>
     <meta charset="UTF-8">
@@ -13,40 +11,42 @@
 <body>
     <div layout:fragment="content">
 
-                <div class="page-header">
-                    <h2>Résultats pour "<span th:text="${query}"></span>"</h2>
-                    <div class="nb-resultats" th:text="${totalResultats} + ' résultat(s) dans ' + ${nbCategories} + ' catégorie(s)'"></div>
-                </div>
-
-                <div th:if="${totalResultats == 0}">
-                    <div class="card-section">
-                        <div class="vide-message">
-                            <i class="fa-solid fa-search"></i>
-                            <p>Aucun résultat trouvé pour "<span th:text="${query}"></span>".</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div th:each="entry : ${grouped}">
-                    <div class="card-section">
-                        <h3>
-                            <span th:text="${#strings.capitalize(#strings.replace(entry.key, '_', ' '))}"></span>
-                            <span class="count" th:text="${#lists.size(entry.value)} + ' résultat(s)'"></span>
-                        </h3>
-
-                        <div th:each="r : ${entry.value}" class="result-item">
-                            <div>
-                                <span class="valeur" th:text="${r.valeur()}"></span>
-                                <span class="colonne" th:text="'(' + ${r.column()} + ')'"></span>
-                            </div>
-                            <!-- si r.url() n'est pas null le bouton "Voir" est affiché sinon le bouton n'est pas affiché -->
-                            <a class="btn-voir" th:if="${r.url() != null}" th:href="@{${r.url()}}">
-                                <i class="fa-solid fa-eye"></i> Voir
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
+        <div class="page-header">
+            <h2>Résultats pour "<span th:text="${query}"></span>"</h2>
+            <div class="nb-resultats"
+                th:text="${totalResultats} + ' résultat(s) dans ' + ${nbCategories} + ' catégorie(s)'"></div>
         </div>
+
+        <div th:if="${totalResultats == 0}">
+            <div class="card-section">
+                <div class="vide-message">
+                    <i class="fa-solid fa-search"></i>
+                    <p>Aucun résultat trouvé pour "<span th:text="${query}"></span>".</p>
+                </div>
+            </div>
+        </div>
+
+        <div th:each="entry : ${grouped}">
+            <div class="card-section">
+                <h3>
+                    <span th:text="${#strings.capitalize(#strings.replace(entry.key, '_', ' '))}"></span>
+                    <span class="count" th:text="${#lists.size(entry.value)} + ' résultat(s)'"></span>
+                </h3>
+
+                <div th:each="r : ${entry.value}" class="result-item">
+                    <div>
+                        <span class="valeur" th:text="${r.valeur()}"></span>
+                        <span class="colonne" th:text="'(' + ${r.column()} + ')'"></span>
+                    </div>
+                    <!-- si r.url() n'est pas null le bouton "Voir" est affiché sinon le bouton n'est pas affiché -->
+                    <a class="btn-voir" th:if="${r.url() != null}" th:href="@{${r.url()}}">
+                        <i class="fa-solid fa-eye"></i> Voir
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </body>
+
 </html>
