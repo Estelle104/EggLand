@@ -88,6 +88,18 @@
                             <div class="chart-container">
                                 <canvas id="chartProduction"></canvas>
                             </div>
+
+        </div>
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <div class="card h-100 border-0">
+                    <div class="card-header bg-white border-0 pb-0">
+                        <h5 class="mb-0">Production d'œufs <span th:text="'(' + ${dateDebutSelectionnee} + ' - ' + ${dateFinSelectionnee} + ')'"></span></h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="chartProduction"></canvas>
+
                         </div>
                     </div>
                 </div>

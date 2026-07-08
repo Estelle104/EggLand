@@ -215,11 +215,28 @@ public class OeufProductionService {
     }
 
     public Map<String, Object> getProductionDes14DerniersJours() {
-        LocalDate dateFin = LocalDate.now();
-        LocalDate dateDebut = dateFin.minusDays(13);
+        return getProductionFiltree(null, LocalDate.now().minusDays(13), LocalDate.now());
+    }
+
+    public Map<String, Object> getProductionFiltree(Integer lotId, LocalDate dateDebut, LocalDate dateFin) {
+        if (dateDebut == null) dateDebut = LocalDate.now().minusDays(13);
+        if (dateFin == null) dateFin = LocalDate.now();
+        if (dateDebut.isAfter(dateFin)) {
+            LocalDate tmp = dateDebut;
+            dateDebut = dateFin;
+            dateFin = tmp;
+        }
+
         Map<LocalDate, Integer> quantitesParDate = new HashMap<>();
 
-        for (Object[] ligne : oeufProductionRepository.sumQuantiteParDate(dateDebut, dateFin)) {
+        List<Object[]> resultats;
+        if (lotId != null && lotId > 0) {
+            resultats = oeufProductionRepository.sumQuantiteParDatePourLot(dateDebut, dateFin, lotId);
+        } else {
+            resultats = oeufProductionRepository.sumQuantiteParDate(dateDebut, dateFin);
+        }
+
+        for (Object[] ligne : resultats) {
             LocalDate date = (LocalDate) ligne[0];
             int quantite = ((Number) ligne[1]).intValue();
             quantitesParDate.put(date, quantite);
