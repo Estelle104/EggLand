@@ -99,8 +99,7 @@ public class MortService {
         int seuil = lot.getNombreInitial() / 2;
         if (totalMorts >= seuil) {
             notificationService.creer("MORTALITE",
-                    "50% de mortalité atteint : " + totalMorts + " morts sur " + lot.getNombreInitial()
-                            + " dans le lot " + lotId);
+                    "Seuil atteint : " + totalMorts + " morts dans le lot " + lotId);
         }
     }
 
