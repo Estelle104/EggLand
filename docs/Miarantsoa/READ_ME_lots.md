@@ -5,6 +5,8 @@
         - Voir la page function.sql et inserer les vues dans le function:
                 ce sont des vues qui va permettre de faire le lien entre le lots et les autres tables qui ont un liens avec lotsz'"q
         - Voir la page ajout.sql et inserer les commandes dans cette page 
+
+        
 ## 1. Gestion de Lots 
 
 | # | Fonctionnalité | Critère de validation |
