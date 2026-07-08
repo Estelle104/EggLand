@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 
-<html lang="fr" 
-      xmlns:th="http://www.thymeleaf.org" 
-      layout:decorate="~{fragments/layout}"> 
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
 
 <head>
 
- 
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/detail_lot.css}">
 
@@ -113,14 +111,13 @@
 
                         <div class="info">
                             <span>Type</span>
-                            <b th:text="${lot[0]['type_dernier_traitement'] != null ? lot[0]['type_dernier_traitement'] : '-'}"></b>
+                            <b
+                                th:text="${lot[0]['type_dernier_traitement'] != null ? lot[0]['type_dernier_traitement'] : '-'}"></b>
                         </div>
 
                     </div>
 
-                    <button type="button"
-                            class="btn-reformer"
-                            th:data-id="${lot[0]['lot_id']}">
+                    <button type="button" class="btn-reformer" th:data-id="${lot[0]['lot_id']}">
                         Réformer
                     </button>
 
@@ -130,15 +127,14 @@
 
         </div> <!-- .main -->
 
-        
+
         <div id="reform-overlay">
             <div id="reform-container"></div>
         </div>
-        
+
         <script th:src="@{/js/reformer.js}"></script>
     </div> <!-- layout:fragment -->
 
 </body>
 
 </html>
-

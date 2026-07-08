@@ -276,4 +276,5 @@ public class VenteController {
 
         return "redirect:/admin/ventes/listevente";
     }
+
 }
