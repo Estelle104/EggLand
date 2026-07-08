@@ -98,7 +98,8 @@
                     <tr th:each="vente : ${ventes}">
                         <td th:text="${vente.id}"></td>
                         <td th:text="${vente.client != null ? vente.client.nom : '-'}"></td>
-                        <td th:text="${vente.date != null ? #temporals.format(vente.date,'dd/MM/yyyy') : '-'}"></td>
+                        <td th:text="${vente.date != null ? #temporals.format(vente.date,'dd/MM/yyyy') : '-'}">
+                        </td>
                         <td
                             th:text="${vente.total != null ? #numbers.formatDecimal(vente.total,1,'COMMA',2,'POINT') + ' Ar' : '-'}">
                         </td>
