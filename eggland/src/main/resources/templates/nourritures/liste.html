@@ -22,6 +22,15 @@
                     <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${error}"></span>
                 </div>
 
+                <div style="margin-bottom:16px;">
+                    <form th:action="@{/admin/nourritures}" method="get" style="display:flex; gap:8px; align-items:center;">
+                        <input type="text" name="keyword" th:value="${keyword}" placeholder="Rechercher de nourriture..." style="width:250px; padding:8px 12px; border:1px solid var(--border); border-radius:8px; font-size:14px;">
+                        <button type="submit" style="padding:8px 16px; background:var(--primary); color:#fff; border:none; border-radius:8px; cursor:pointer;">
+                            <i class="fa-solid fa-search"></i> Rechercher
+                        </button>
+                    </form>
+                </div>
+
                 <div class="card">
                     <table>
                         <thead>
