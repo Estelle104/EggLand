@@ -24,4 +24,11 @@ public interface MvtStockRepository extends JpaRepository<MvtStock, Integer> {
     BigDecimal sumQuantiteByNourritureAndType(@Param("nourritureId") Integer nourritureId, @Param("type") TypeMvt type);
 
     List<MvtStock> findByDateBetweenOrderByDateDesc(LocalDate debut, LocalDate fin);
+
+    //pour calculer la somme des quantites pour une nourriture et un type de mouvement donné avant une date spécifique
+    @Query("SELECT SUM(m.quantite) FROM MvtStock m WHERE m.nourriture.id = :nourritureId AND m.type = :type AND m.date <= :date")
+    BigDecimal sumQuantiteByNourritureAndTypeBeforeDate(
+    @Param("nourritureId") Integer nourritureId,
+    @Param("type") TypeMvt type,
+    @Param("date") LocalDate date);
 }
