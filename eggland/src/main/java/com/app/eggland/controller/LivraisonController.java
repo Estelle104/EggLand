@@ -143,14 +143,20 @@ public class LivraisonController {
 
             Integer venteId = Integer.parseInt(venteIdStr);
 
+            
+            Vente vente = venteService.trouverVenteParId(venteId);
+            if (vente == null) {
+                throw new RuntimeException("Vente introuvable avec l'ID : " + venteId);
+            }
+
+          
+            if (livraisonService.existeDejaPourVente(venteId)) {
+                throw new RuntimeException("Une livraison existe déjà pour cette vente");
+            }
+
             Client client = clientService.trouverParNomOuCreer(clientNom.trim());
             if (client == null) {
                 throw new RuntimeException("Impossible de créer ou retrouver le client : " + clientNom);
-            }
-
-            Vente vente = venteService.trouverVenteParId(Math.toIntExact(venteId));
-            if (vente == null) {
-                throw new RuntimeException("Vente introuvable avec l'ID : " + venteId);
             }
 
             livraisonService.creerLivraison(vente, client, dateLivraison, adresseLivraison, fraisLivraison, statutCode);
@@ -171,6 +177,17 @@ public class LivraisonController {
                                 @RequestParam("statutCode") String statutCode,
                                 RedirectAttributes ra) {
         try {
+            
+            Livraison livraison = livraisonService.trouverLivraisonParId(id);
+            if (livraison == null) {
+                throw new RuntimeException("Livraison introuvable");
+            }
+            
+           
+            if ("livre".equalsIgnoreCase(livraison.getStatut().getCode())) {
+                throw new RuntimeException("Impossible de modifier une livraison déjà livrée");
+            }
+            
             livraisonService.changerStatutLivraison(id, statutCode);
             ra.addFlashAttribute("success", "Statut de livraison mis à jour.");
         } catch (RuntimeException e) {
