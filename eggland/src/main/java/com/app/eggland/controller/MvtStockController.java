@@ -118,9 +118,10 @@ public class MvtStockController {
             throw new StockException("La quantité doit être supérieure à 0", "/admin/stock/sortie");
         Nourriture n = nourritureService.findById(nourriture)
                 .orElseThrow(() -> new StockException("Nourriture non trouvée", "/admin/stock/sortie"));
-        BigDecimal stockActuel = mvtStockService.calculerStockActuel(nourriture);
-        if (quantite.compareTo(stockActuel) > 0)
-            throw new StockException("Stock insuffisant. Stock actuel : " + stockActuel + " kg", "/admin/stock/sortie");
+        //verifier si le stock à la date spécifiée est suffisant pour la sortie
+        BigDecimal stockALaDate = mvtStockService.calculerStockALaDate(nourriture, date);
+        if (quantite.compareTo(stockALaDate) > 0)
+        throw new StockException("Impossible : stock insuffisant à cette date (" + date + "). Stock disponible de la date " + date + " : " + stockALaDate + " kg", "/admin/stock/sortie");
         MvtStock mvtStock = MvtStock.builder()
                 .nourriture(n)
                 .type(mvtStockService.getTypeSortie())
@@ -183,8 +184,11 @@ public class MvtStockController {
         if (dateFin != null) filtres.put("dateFin", dateFin.toString());
         
 
+        LocalDate today = LocalDate.now();
         model.addAttribute("nourritures", nourritureService.findAll());
         model.addAttribute("pageTitle", "Historique des mouvements");
+        model.addAttribute("exportDebut", dateDebut != null ? dateDebut.toString() : today.minusDays(30).toString());
+        model.addAttribute("exportFin", dateFin != null ? dateFin.toString() : today.toString());
 
         model.addAttribute("mouvements", mouvementsPage.getContent());
         model.addAttribute("currentPage", mouvementsPage.getNumber());

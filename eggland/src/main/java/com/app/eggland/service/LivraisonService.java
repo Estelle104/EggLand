@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.app.eggland.model.Batiment;
 import com.app.eggland.model.Client;
 import com.app.eggland.model.Livraison;
 import com.app.eggland.model.StatutLivraison;
@@ -89,6 +88,11 @@ public class LivraisonService {
         Livraison livraison = livraisonRepository.findById(livraisonId)
                 .orElseThrow(() -> new RuntimeException("Livraison introuvable"));
 
+        
+        if ("livre".equalsIgnoreCase(livraison.getStatut().getCode())) {
+            throw new RuntimeException("Impossible de modifier une livraison déjà livrée");
+        }
+
         StatutLivraison statut = statutLivraisonRepository.findByCode(statutCode)
                 .orElseThrow(() -> new RuntimeException("Statut de livraison introuvable : " + statutCode));
 
@@ -117,9 +121,6 @@ public class LivraisonService {
         Livraison livraison = livraisonRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Livraison introuvable avec l'ID : " + id));
 
-        if ("livre".equals(livraison.getStatut().getCode())) {
-            // même si livré, on peut supprimer
-        }
         livraisonRepository.delete(livraison);
     }
 
@@ -136,7 +137,9 @@ public class LivraisonService {
     }
 
     @Transactional
-    public Livraison creerLivraison(Vente vente, Client client, LocalDate dateLivraison, String adresseLivraison, BigDecimal fraisLivraison, String statutCode) {
+    public Livraison creerLivraison(Vente vente, Client client, LocalDate dateLivraison, 
+                                     String adresseLivraison, BigDecimal fraisLivraison, 
+                                     String statutCode) {
         if (dateLivraison == null) {
             dateLivraison = LocalDate.now();
         }
@@ -182,4 +185,7 @@ public class LivraisonService {
         return livraisons;
     }
 
+    public boolean existeDejaPourVente(Integer venteId) {
+        return livraisonRepository.existsByVenteId(venteId);
+    }
 }
