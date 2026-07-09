@@ -1,7 +1,9 @@
 package com.app.eggland.controller;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.app.eggland.model.Lot;
 import com.app.eggland.service.DashboardService;
@@ -65,5 +68,27 @@ public class DashboardController {
         model.addAttribute("dateFinSelectionnee", dateFin != null ? dateFin.toString() : "");
         model.addAttribute("pageTitle", "Dashboard");
         return "dashboard/index";
+    }
+
+    @GetMapping("/filter")
+    @ResponseBody
+    public Map<String, Object> filter(
+            @RequestParam(value = "lotId", required = false) Integer lotId,
+            @RequestParam(value = "dateDebut", required = false) LocalDate dateDebut,
+            @RequestParam(value = "dateFin", required = false) LocalDate dateFin) {
+
+        Integer totalMorts = mortService.getTotalMorts(lotId, dateDebut, dateFin);
+        Integer totalVivants = mortService.getVivants(lotId);
+        Integer totalInitial = mortService.getTotalInitial(lotId);
+        Map<String, Object> production = oeufProductionService.getProductionFiltree(lotId, dateDebut, dateFin);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("totalMorts", totalMorts);
+        result.put("totalVivants", totalVivants);
+        result.put("totalInitial", totalInitial);
+        result.put("production", production);
+        result.put("dateDebut", dateDebut != null ? dateDebut.toString() : "");
+        result.put("dateFin", dateFin != null ? dateFin.toString() : "");
+        return result;
     }
 }
