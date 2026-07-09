@@ -1,94 +1,73 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
-
 <head>
     <title>Dashboard - Eggland</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+          <link rel="stylesheet" th:href="@{/css/dashboard.css}">
 </head>
-
 <body>
-    <div layout:fragment="content">
-        <div class="container-fluid py-4">
-            <div class="page-header">
-                <h1 class="mb-0">Tableau de Bord</h1>
-            </div>
+<div layout:fragment="content">
+    <div class="container-fluid py-4">
+        <div class="page-header">
+            <h1 class="mb-0">Tableau de Bord</h1>
+        </div>
 
-            <div class="row g-4 mb-4">
-                <div class="col">
-                    <div class="card h-100 border-0">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <div>
-                                <div class="card-title">Œufs du jour</div>
-                                <div class="card-value text-warning"
-                                    th:text="${#numbers.formatInteger(oeufsJour, 1, 'COMMA')}">0</div>
-                            </div>
-                            <i class="fa-solid fa-egg card-icon text-warning"></i>
+        <div class="row g-4 mb-4">
+            <div class="col">
+                <div class="card h-100 border-0">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="card-title">Œufs du jour</div>
+                            <div class="card-value text-warning" th:text="${#numbers.formatInteger(oeufsJour, 1, 'COMMA')}">0</div>
                         </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100 border-0">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <div>
-                                <div class="card-title">Stock disponible</div>
-                                <div class="card-value text-primary"
-                                    th:text="${#numbers.formatInteger(stockDisponible, 1, 'COMMA')}">0</div>
-                            </div>
-                            <i class="fa-solid fa-box card-icon text-primary"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100 border-0">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <div>
-                                <div class="card-title">Ventes du jour</div>
-                                <div class="card-value text-success"
-                                    th:text="${#numbers.formatDecimal(ventesJour, 1, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar
-                                </div>
-                            </div>
-                            <i class="fa-solid fa-cart-shopping card-icon text-success"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100 border-0">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <div>
-                                <div class="card-title">Bénéfices du jour</div>
-                                <div class="card-value"
-                                    th:text="${#numbers.formatDecimal(beneficeJour, 1, 'COMMA', 2, 'POINT')} + ' Ar'"
-                                    th:classappend="${beneficeJour < 0} ? 'text-danger' : 'text-success'">0 Ar</div>
-                            </div>
-                            <i class="fa-solid fa-chart-line card-icon"
-                                th:classappend="${beneficeJour < 0} ? 'text-danger' : 'text-success'"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100 border-0">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <div>
-                                <div class="card-title">Livraisons en cours</div>
-                                <div class="card-value text-info" th:text="${livraisonsEnCours}">0</div>
-                            </div>
-                            <i class="fa-solid fa-truck card-icon text-info"></i>
-                        </div>
+                        <i class="fa-solid fa-egg card-icon text-warning"></i>
                     </div>
                 </div>
             </div>
-            <div class="row g-4 mb-4">
-                <div class="col-12">
-                    <div class="card h-100 border-0">
-                        <div class="card-header bg-white border-0 pb-0">
-                            <h5 class="mb-0">Production d'œufs — 14 derniers jours</h5>
+            <div class="col">
+                <div class="card h-100 border-0">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="card-title">Stock disponible</div>
+                            <div class="card-value text-primary" th:text="${#numbers.formatInteger(stockDisponible, 1, 'COMMA')}">0</div>
                         </div>
-                        <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="chartProduction"></canvas>
-                            </div>
-
+                        <i class="fa-solid fa-box card-icon text-primary"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 border-0">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="card-title">Ventes du jour</div>
+                            <div class="card-value text-success" th:text="${#numbers.formatDecimal(ventesJour, 1, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</div>
+                        </div>
+                        <i class="fa-solid fa-cart-shopping card-icon text-success"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 border-0">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="card-title">Bénéfices du jour</div>
+                            <div class="card-value" th:text="${#numbers.formatDecimal(beneficeJour, 1, 'COMMA', 2, 'POINT')} + ' Ar'" th:classappend="${beneficeJour < 0} ? 'text-danger' : 'text-success'">0 Ar</div>
+                        </div>
+                        <i class="fa-solid fa-chart-line card-icon" th:classappend="${beneficeJour < 0} ? 'text-danger' : 'text-success'"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 border-0">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="card-title">Livraisons en cours</div>
+                            <div class="card-value text-info" th:text="${livraisonsEnCours}">0</div>
+                        </div>
+                        <i class="fa-solid fa-truck card-icon text-info"></i>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="row g-4 mb-4">
             <div class="col-12">
@@ -99,81 +78,77 @@
                     <div class="card-body">
                         <div class="chart-container">
                             <canvas id="chartProduction"></canvas>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card border-0 mb-4">
-                <div class="card-header bg-danger text-white">
-                    <h5 class="mb-0"><i class="fa-solid fa-skull me-2"></i>Mortalité</h5>
-                </div>
-                <div class="card-body">
-                    <form class="row g-3 align-items-end mb-4" th:action="@{/admin/dashboard}" method="get">
-                        <div class="col-md-3">
-                            <label class="form-label small text-muted">Lot</label>
-                            <select name="lotId" class="form-select form-select-sm">
-                                <option value="">Tous les lots</option>
-                                <option th:each="lot : ${lots}" th:value="${lot.id}"
-                                    th:text="${'Lot ' + lot.id + ' - ' + (lot.race?.nom ?: '')}"
-                                    th:selected="${lotIdSelectionne == lot.id}"></option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label small text-muted">Date début</label>
-                            <input type="date" name="dateDebut" class="form-control form-control-sm"
-                                th:value="${dateDebutSelectionnee}">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label small text-muted">Date fin</label>
-                            <input type="date" name="dateFin" class="form-control form-control-sm"
-                                th:value="${dateFinSelectionnee}">
-                        </div>
-                        <div class="col-md-3">
-                            <button type="submit" class="btn btn-dark btn-sm w-100">Appliquer</button>
-                        </div>
-                    </form>
-
-                    <div class="row g-4">
-                        <div class="col-md-5">
-                            <div class="chart-container" style="height: 280px;">
-                                <canvas id="chartMortalite"></canvas>
-                            </div>
-                        </div>
-                        <div class="col-md-7 d-flex flex-column justify-content-center">
-                            <div class="d-flex gap-4 mb-3">
-                                <div class="text-center p-3 rounded" style="background: #fce4e4; flex: 1;">
-                                    <div class="small text-muted">Morts</div>
-                                    <div class="fw-bold fs-4 text-danger"
-                                        th:text="${#numbers.formatInteger(totalMorts, 1, 'COMMA')}">0</div>
-                                </div>
-                                <div class="text-center p-3 rounded" style="background: #e4fce4; flex: 1;">
-                                    <div class="small text-muted">Vivants</div>
-                                    <div class="fw-bold fs-4 text-success"
-                                        th:text="${#numbers.formatInteger(totalVivants, 1, 'COMMA')}">0</div>
-                                </div>
-                                <div class="text-center p-3 rounded" style="background: #f0f0f0; flex: 1;">
-                                    <div class="small text-muted">Total initial</div>
-                                    <div class="fw-bold fs-4"
-                                        th:text="${#numbers.formatInteger(totalInitial, 1, 'COMMA')}">0</div>
-                                </div>
-                            </div>
-                            <p class="small text-muted mb-0">
-                                Le reste du total initial correspond aux poules reformees.
-                            </p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <script th:inline="javascript">
-            const labels = /*[[${production14Jours.labels}]]*/[];
-            const quantites = /*[[${production14Jours.quantites}]]*/[];
+        <div class="card border-0 mb-4">
+            <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="fa-solid fa-skull me-2"></i>Mortalité</h5>
+            </div>
+            <div class="card-body">
+                <form class="row g-3 align-items-end mb-4" id="filterForm">
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted">Lot</label>
+                        <select name="lotId" class="form-select form-select-sm">
+                            <option value="">Tous les lots</option>
+                            <option th:each="lot : ${lots}" th:value="${lot.id}" th:text="${'Lot ' + lot.id + ' - ' + (lot.race?.nom ?: '')}" th:selected="${lotIdSelectionne == lot.id}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted">Date début</label>
+                        <input type="date" name="dateDebut" class="form-control form-control-sm" th:value="${dateDebutSelectionnee}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted">Date fin</label>
+                        <input type="date" name="dateFin" class="form-control form-control-sm" th:value="${dateFinSelectionnee}">
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" id="btnAppliquer" class="btn btn-dark btn-sm w-100">Appliquer</button>
+                    </div>
+                </form>
+
+                <div class="row g-4">
+                    <div class="col-md-5">
+                        <div class="chart-container" style="height: 280px;">
+                            <canvas id="chartMortalite"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-7 d-flex flex-column justify-content-center">
+                        <div class="d-flex gap-4 mb-3">
+                            <div class="text-center p-3 rounded" style="background: #fce4e4; flex: 1;">
+                                <div class="small text-muted">Morts</div>
+                                <div class="fw-bold fs-4 text-danger" th:text="${#numbers.formatInteger(totalMorts, 1, 'COMMA')}">0</div>
+                            </div>
+                            <div class="text-center p-3 rounded" style="background: #e4fce4; flex: 1;">
+                                <div class="small text-muted">Vivants</div>
+                                <div class="fw-bold fs-4 text-success" th:text="${#numbers.formatInteger(totalVivants, 1, 'COMMA')}">0</div>
+                            </div>
+                            <div class="text-center p-3 rounded" style="background: #f0f0f0; flex: 1;">
+                                <div class="small text-muted">Total initial</div>
+                                <div class="fw-bold fs-4" th:text="${#numbers.formatInteger(totalInitial, 1, 'COMMA')}">0</div>
+                            </div>
+                        </div>
+                        <p class="small text-muted mb-0">
+                            Le reste du total initial correspond aux poules reformees.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        var chartProduction, chartMortalite;
+
+        function initCharts() {
+            const labels = /*[[${production14Jours.labels}]]*/ [];
+            const quantites = /*[[${production14Jours.quantites}]]*/ [];
 
             const ctx = document.getElementById('chartProduction').getContext('2d');
-            new Chart(ctx, {
+            chartProduction = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: labels,
@@ -196,24 +171,24 @@
                         legend: { display: false },
                         tooltip: {
                             callbacks: {
-                                label: ctx => ctx.parsed.y + ' œufs'
+                                label: function(context) { return context.parsed.y + ' œufs'; }
                             }
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            ticks: { callback: value => Number.isInteger(value) ? value : '' }
+                            ticks: { callback: function(value) { return Number.isInteger(value) ? value : ''; } }
                         }
                     }
                 }
             });
 
-            const totalMorts = /*[[${totalMorts}]]*/ 0;
-            const totalVivants = /*[[${totalVivants}]]*/ 0;
+            var totalMorts = /*[[${totalMorts}]]*/ 0;
+            var totalVivants = /*[[${totalVivants}]]*/ 0;
 
-            const ctx2 = document.getElementById('chartMortalite').getContext('2d');
-            new Chart(ctx2, {
+            var ctx2 = document.getElementById('chartMortalite').getContext('2d');
+            chartMortalite = new Chart(ctx2, {
                 type: 'pie',
                 data: {
                     labels: ['Morts', 'Vivants'],
@@ -234,16 +209,56 @@
                         },
                         tooltip: {
                             callbacks: {
-                                label: ctx => {
-                                    const total = totalMorts + totalVivants;
-                                    const pct = total > 0 ? ((ctx.parsed / total) * 100).toFixed(1) : 0;
-                                    return ctx.label + ': ' + ctx.parsed + ' (' + pct + '%)';
+                                label: function(context) {
+                                    var total = chartMortalite.data.datasets[0].data[0] + chartMortalite.data.datasets[0].data[1];
+                                    var pct = total > 0 ? ((context.parsed / total) * 100).toFixed(1) : 0;
+                                    return context.label + ': ' + context.parsed + ' (' + pct + '%)';
                                 }
                             }
                         }
                     }
                 }
+            });
+        }
 
+        function appliquerFiltre() {
+            var lotId = document.querySelector('select[name="lotId"]').value;
+            var dateDebut = document.querySelector('input[name="dateDebut"]').value;
+            var dateFin = document.querySelector('input[name="dateFin"]').value;
+
+            var params = new URLSearchParams();
+            if (lotId) params.append('lotId', lotId);
+            if (dateDebut) params.append('dateDebut', dateDebut);
+            if (dateFin) params.append('dateFin', dateFin);
+
+            fetch('/admin/dashboard/filter?' + params.toString())
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    document.querySelector('#chartMortalite').closest('.card-body')
+                        .querySelector('.text-danger.fw-bold').textContent = data.totalMorts.toLocaleString('fr-FR');
+                    document.querySelector('#chartMortalite').closest('.card-body')
+                        .querySelector('.text-success.fw-bold').textContent = data.totalVivants.toLocaleString('fr-FR');
+                    var totalInitialEl = document.querySelector('#chartMortalite').closest('.card-body')
+                        .querySelectorAll('.fw-bold')[2];
+                    if (totalInitialEl) totalInitialEl.textContent = data.totalInitial.toLocaleString('fr-FR');
+
+                    chartMortalite.data.datasets[0].data = [data.totalMorts, data.totalVivants];
+                    chartMortalite.update();
+
+                    chartProduction.data.labels = data.production.labels;
+                    chartProduction.data.datasets[0].data = data.production.quantites;
+                    chartProduction.update();
+
+                    var titreSpan = document.querySelector('.card-header h5 span');
+                    if (titreSpan) titreSpan.textContent = '(' + data.dateDebut + ' - ' + data.dateFin + ')';
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            document.getElementById('btnAppliquer').addEventListener('click', appliquerFiltre);
+        });
+    </script>
+</div>
 </body>
-
 </html>
