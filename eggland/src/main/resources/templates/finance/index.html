@@ -51,7 +51,7 @@
                 <div class="card h-100 border-0">
                     <div class="card-body">
                         <div class="card-title">Marge</div>
-                        <div class="card-value text-primary" th:with="marge=${resume.totalRecettes != 0 ? (resume.beneficeNet / resume.totalRecettes * 100) : 0}" th:text="${#numbers.formatDecimal(marge, 1, 'COMMA', 2, 'POINT')} + '%'">0%</div>
+                        <div class="card-value text-primary" th:text="${#numbers.formatDecimal(marge, 1, 'COMMA', 2, 'POINT')} + '%'">0%</div>
                     </div>
                 </div>
             </div>
@@ -60,8 +60,9 @@
         <div class="row g-4 mb-4">
             <div class="col-lg-6">
                 <div class="card h-100 border-0">
-                    <div class="card-header bg-white border-0 pb-0">
+                    <div class="card-header bg-white border-0 pb-0 d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Évolution 12 Mois (Recettes vs Dépenses)</h5>
+                        <span class="chart-unit">En million d'ariary</span>
                     </div>
                     <div class="card-body">
                         <div class="chart-container">

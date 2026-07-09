@@ -17,7 +17,7 @@
                         <p>Consultez les collectes enregistrées par lot, date et statut.</p>
                     </div>
                     <div class="page-actions">
-                        <form th:action="@{/finance/export/excel/production-oeufs}" method="get" target="_blank" style="margin:0; display:flex; gap:6px; align-items:center;">
+                        <form th:action="@{/admin/finance/export/excel/production-oeufs}" method="get" target="_blank" style="margin:0; display:flex; gap:6px; align-items:center;">
                             <input type="date" name="debut" th:value="${todayMinus30}" class="form-control form-control-sm" style="width:130px;" placeholder="Début">
                             <input type="date" name="fin" th:value="${today}" class="form-control form-control-sm" style="width:130px;" placeholder="Fin">
                             <button type="submit" class="btn btn-success" style="padding:6px 12px; font-size:13px;"><i class="fa-solid fa-file-excel"></i> XLSX</button>

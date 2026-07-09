@@ -38,11 +38,10 @@ public class FinanceController {
 
     @GetMapping
     public String index(Model model) {
-        LocalDate fin = LocalDate.now().withDayOfMonth(1);
-        LocalDate debut = fin.minusMonths(11);
         LocalDate today = LocalDate.now();
 
         model.addAttribute("resume", financeService.getResumeFinancier());
+        model.addAttribute("marge", financeService.getMarge());
         model.addAttribute("recettesParCategorie", financeService.getRecettesParCategorie());
         model.addAttribute("depensesParCategorie", financeService.getDepensesParCategorie());
         model.addAttribute("coutRevientParLot", financeService.getCoutRevientParLot());

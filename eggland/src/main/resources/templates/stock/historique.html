@@ -11,9 +11,18 @@
 <body>
         <div layout:fragment="content">
 
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:24px;">
                     <h2 style="color:var(--text); font-size:22px; margin:0;">Historique des mouvements</h2>
-                    <a th:href="@{/admin/stock}" class="btn-retour"><i class="fa-solid fa-arrow-left"></i> Retour au stock</a>
+                    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                        <form th:action="@{/admin/finance/export/excel/mouvement-stock}" method="get" target="_blank" style="margin:0; display:flex; gap:6px; align-items:center;">
+                            <input type="date" name="debut" th:value="${exportDebut}" class="form-control form-control-sm" style="width:140px;" placeholder="Début">
+                            <input type="date" name="fin" th:value="${exportFin}" class="form-control form-control-sm" style="width:140px;" placeholder="Fin">
+                            <button type="submit" class="btn-action-header" style="background:#28a745; padding:8px 14px; font-size:13px; margin:0;">
+                                <i class="fa-solid fa-file-excel"></i> XLSX
+                            </button>
+                        </form>
+                        <a th:href="@{/admin/stock}" class="btn-retour"><i class="fa-solid fa-arrow-left"></i> Retour au stock</a>
+                    </div>
                 </div>
 
                 <div class="card-filtres">

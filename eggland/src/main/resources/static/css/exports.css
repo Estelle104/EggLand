@@ -1,5 +1,8 @@
 .exports-page {
   width: 100%;
+  padding-left: 10px;
+  box-sizing: border-box;
+ padding-right: 10px;
 }
 
 .exports-page .page-header {
@@ -86,6 +89,7 @@
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 10px;
   align-items: center;
+
 }
 
 .export-form-row-wide {
@@ -177,6 +181,8 @@
   border: 1px solid #a9dfbf;
 }
 
+
+
 @media (max-width: 1200px) {
   .exports-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -184,6 +190,10 @@
 }
 
 @media (max-width: 760px) {
+  .exports-page {
+    padding-left: 0;
+  }
+
   .exports-grid {
     grid-template-columns: 1fr;
   }
