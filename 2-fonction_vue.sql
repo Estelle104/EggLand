@@ -121,3 +121,87 @@ LEFT JOIN v_total_mort_lot m
 LEFT JOIN v_get_dernier_traitement_lot t
        ON t.lot_id = l.id;
 
+
+CREATE OR REPLACE VIEW historique_vente_poule AS
+WITH ventes_poule AS (
+    SELECT dv.*
+    FROM DetailVente dv
+    JOIN ProduitVente pv ON pv.id = dv.id_produit
+    WHERE pv.code = 'poule'
+),
+totaux_vendus AS (
+    SELECT lot_id, race_id, SUM(quantite) AS total_vendu
+    FROM ventes_poule
+    GROUP BY lot_id, race_id
+)
+SELECT
+    vp.id                       AS detailvente_id,
+    vp.vente_id                 AS vente_id,
+    v.date                      AS date_vente,
+    vp.lot_id                   AS lot_id,
+    vp.race_id                  AS race_id,
+    r.nom                       AS race_nom,
+    sl.code                     AS statut_lot,      -- statut du lot, non modifié
+    vp.quantite                 AS nombre_vendu,
+    (lr.nombre + t.total_vendu) AS nombre_avant_ventes,
+    (lr.nombre + t.total_vendu) - SUM(vp.quantite) OVER (
+        PARTITION BY vp.lot_id, vp.race_id
+        ORDER BY v.date, vp.id
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) AS nombre_restant_apres_vente
+FROM ventes_poule vp
+JOIN Vente v         ON v.id = vp.vente_id
+JOIN Lot l           ON l.id = vp.lot_id
+JOIN Race r          ON r.id = vp.race_id
+JOIN StatutLot sl    ON sl.id = l.statut
+JOIN lot_races lr    ON lr.lot_id = vp.lot_id AND lr.race_id = vp.race_id
+JOIN totaux_vendus t ON t.lot_id = vp.lot_id AND t.race_id = vp.race_id
+ORDER BY vp.lot_id, vp.race_id, v.date, vp.id;
+
+CREATE OR REPLACE FUNCTION fn_maj_nombre_poule_vente()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_code_produit   VARCHAR(30);
+    v_nombre_actuel  INT;
+BEGIN
+    SELECT code INTO v_code_produit
+    FROM ProduitVente
+    WHERE id = NEW.id_produit;
+
+    IF v_code_produit IS DISTINCT FROM 'poule' THEN
+        RETURN NEW;
+    END IF;
+
+    IF NEW.lot_id IS NULL OR NEW.race_id IS NULL THEN
+        RAISE EXCEPTION 'lot_id et race_id sont obligatoires pour une vente de poule';
+    END IF;
+
+    SELECT nombre INTO v_nombre_actuel
+    FROM lot_races
+    WHERE lot_id = NEW.lot_id
+      AND race_id = NEW.race_id;
+
+    IF v_nombre_actuel IS NULL THEN
+        RAISE EXCEPTION 'Aucune ligne lot_races trouvée pour le lot % / race %', NEW.lot_id, NEW.race_id;
+    END IF;
+
+    IF v_nombre_actuel - NEW.quantite < 0 THEN
+        RAISE EXCEPTION 'Stock de poules insuffisant pour le lot % / race % (restant: %, demandé: %)',
+            NEW.lot_id, NEW.race_id, v_nombre_actuel, NEW.quantite;
+    END IF;
+
+    UPDATE lot_races
+    SET nombre = nombre - NEW.quantite
+    WHERE lot_id = NEW.lot_id
+      AND race_id = NEW.race_id;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_maj_nombre_poule_vente ON DetailVente;
+
+CREATE TRIGGER trg_maj_nombre_poule_vente
+AFTER INSERT ON DetailVente
+FOR EACH ROW
+EXECUTE FUNCTION fn_maj_nombre_poule_vente();

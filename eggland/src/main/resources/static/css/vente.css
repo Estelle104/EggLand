@@ -252,6 +252,10 @@
     opacity: 0.5;
     pointer-events: none;
 }
+.race-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
 /* --- Liste de produits cliquables (remplace le select) --- */
 .produit-list {
     list-style: none;
