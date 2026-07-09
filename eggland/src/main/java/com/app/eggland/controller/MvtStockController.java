@@ -118,9 +118,10 @@ public class MvtStockController {
             throw new StockException("La quantité doit être supérieure à 0", "/admin/stock/sortie");
         Nourriture n = nourritureService.findById(nourriture)
                 .orElseThrow(() -> new StockException("Nourriture non trouvée", "/admin/stock/sortie"));
-        BigDecimal stockActuel = mvtStockService.calculerStockActuel(nourriture);
-        if (quantite.compareTo(stockActuel) > 0)
-            throw new StockException("Stock insuffisant. Stock actuel : " + stockActuel + " kg", "/admin/stock/sortie");
+        //verifier si le stock à la date spécifiée est suffisant pour la sortie
+        BigDecimal stockALaDate = mvtStockService.calculerStockALaDate(nourriture, date);
+        if (quantite.compareTo(stockALaDate) > 0)
+        throw new StockException("Impossible : stock insuffisant à cette date (" + date + "). Stock disponible de la date " + date + " : " + stockALaDate + " kg", "/admin/stock/sortie");
         MvtStock mvtStock = MvtStock.builder()
                 .nourriture(n)
                 .type(mvtStockService.getTypeSortie())
