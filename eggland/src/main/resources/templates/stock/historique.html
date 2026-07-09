@@ -9,71 +9,78 @@
 </head>
 
 <body>
-        <div layout:fragment="content">
+    <div layout:fragment="content">
 
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-                    <h2 style="color:var(--text); font-size:22px; margin:0;">Historique des mouvements</h2>
-                    <a th:href="@{/admin/stock}" class="btn-retour"><i class="fa-solid fa-arrow-left"></i> Retour au stock</a>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+            <h2 style="color:var(--text); font-size:22px; margin:0;">Historique des mouvements</h2>
+            <a th:href="@{/admin/stock}" class="btn-retour"><i class="fa-solid fa-arrow-left"></i> Retour au stock</a>
+        </div>
+
+        <div class="card-filtres">
+            <form class="filtres-form" th:action="@{/admin/stock/historique}" method="get">
+                <div class="filtre-group">
+                    <label>Nourriture</label>
+                    <select name="nourritureId">
+                        <option value="">Toutes</option>
+                        <option th:each="n : ${nourritures}" th:value="${n.id}" th:text="${n.libelle}"
+                            th:selected="${param.nourritureId != null && param.nourritureId[0] == n.id}"></option>
+                    </select>
                 </div>
-
-                <div class="card-filtres">
-                    <form class="filtres-form" th:action="@{/admin/stock/historique}" method="get">
-                        <div class="filtre-group">
-                            <label>Nourriture</label>
-                            <select name="nourritureId">
-                                <option value="">Toutes</option>
-                                <option th:each="n : ${nourritures}" th:value="${n.id}" th:text="${n.libelle}" th:selected="${param.nourritureId != null && param.nourritureId[0] == n.id}"></option>
-                            </select>
-                        </div>
-                        <div class="filtre-group">
-                            <label>Type</label>
-                            <select name="typeCode">
-                                <option value="">Tous</option>
-                                <option value="entree" th:selected="${param.typeCode != null && param.typeCode[0] == 'entree'}">Entrée</option>
-                                <option value="sortie" th:selected="${param.typeCode != null && param.typeCode[0] == 'sortie'}">Sortie</option>
-                            </select>
-                        </div>
-                        <div class="filtre-group">
-                            <label>Date début</label>
-                            <input type="date" name="dateDebut" th:value="${param.dateDebut}" />
-                        </div>
-                        <div class="filtre-group">
-                            <label>Date fin</label>
-                            <input type="date" name="dateFin" th:value="${param.dateFin}" />
-                        </div>
-                        <button type="submit" class="btn-filtrer"><i class="fa-solid fa-filter"></i> Filtrer</button>
-                    </form>
-                    <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${baseUrl}, filters=${filtres})}"></div>
+                <div class="filtre-group">
+                    <label>Type</label>
+                    <select name="typeCode">
+                        <option value="">Tous</option>
+                        <option value="entree" th:selected="${param.typeCode != null && param.typeCode[0] == 'entree'}">
+                            Entrée</option>
+                        <option value="sortie" th:selected="${param.typeCode != null && param.typeCode[0] == 'sortie'}">
+                            Sortie</option>
+                    </select>
                 </div>
-
-                <div class="card-table">
-                    <table class="table-historique">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Nourriture</th>
-                                <th>Type</th>
-                                <th>Quantité</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="m : ${mouvements}">
-                                <td th:text="${#temporals.format(m.date, 'dd/MM/yyyy')}"></td>
-                                <td th:text="${m.nourriture.libelle}"></td>
-                                <td>
-                                    <span class="badge-type" th:class="${#strings.toLowerCase(m.type.code) == 'entree'} ? 'badge-type badge-entree' : 'badge-type badge-sortie'"
-                                          th:text="${#strings.toLowerCase(m.type.code) == 'entree'} ? 'Entrée' : 'Sortie'"></span>
-                                </td>
-                                <td th:text="${#numbers.formatDecimal(m.quantite, 1, 'WHITESPACE', 2, 'COMMA')} + ' kg'"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div th:if="${#lists.isEmpty(mouvements)}" class="vide-message">
-                        Aucun mouvement trouvé.
-                    </div>
+                <div class="filtre-group">
+                    <label>Date début</label>
+                    <input type="date" name="dateDebut" th:value="${param.dateDebut}" />
                 </div>
-
+                <div class="filtre-group">
+                    <label>Date fin</label>
+                    <input type="date" name="dateFin" th:value="${param.dateFin}" />
+                </div>
+                <button type="submit" class="btn-filtrer"><i class="fa-solid fa-filter"></i> Filtrer</button>
+            </form>
+            <div
+                th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${baseUrl}, filters=${filtres})}">
             </div>
+        </div>
+
+        <div class="card-table">
+            <table class="table-historique">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Nourriture</th>
+                        <th>Type</th>
+                        <th>Quantité</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="m : ${mouvements}">
+                        <td th:text="${#temporals.format(m.date, 'dd/MM/yyyy')}"></td>
+                        <td th:text="${m.nourriture.libelle}"></td>
+                        <td>
+                            <span class="badge-type"
+                                th:class="${#strings.toLowerCase(m.type.code) == 'entree'} ? 'badge-type badge-entree' : 'badge-type badge-sortie'"
+                                th:text="${#strings.toLowerCase(m.type.code) == 'entree'} ? 'Entrée' : 'Sortie'"></span>
+                        </td>
+                        <td th:text="${#numbers.formatDecimal(m.quantite, 1, 'WHITESPACE', 2, 'COMMA')} + ' kg'"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div th:if="${#lists.isEmpty(mouvements)}" class="vide-message">
+                Aucun mouvement trouvé.
+            </div>
+        </div>
+
+    </div>
 </body>
+
 </html>

@@ -41,6 +41,16 @@ public interface OeufProductionRepository extends JpaRepository<OeufProduction, 
             """)
     List<Object[]> sumQuantiteParDate(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
 
+    @Query("""
+            SELECT o.date, SUM(o.quantite)
+            FROM OeufProduction o
+            WHERE o.date BETWEEN :dateDebut AND :dateFin
+            AND (:lotId IS NULL OR o.lot.id = :lotId)
+            GROUP BY o.date
+            ORDER BY o.date
+            """)
+    List<Object[]> sumQuantiteParDatePourLot(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin, @Param("lotId") Integer lotId);
+
     @Query(value = "SELECT * FROM v_historique_production", nativeQuery = true)
     List<Map<String, Object>> findHistoriqueProduction();
 

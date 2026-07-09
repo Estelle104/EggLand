@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" 
-      xmlns:th="http://www.thymeleaf.org" 
-      layout:decorate="~{fragments/layout}">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
 
 <head>
     <meta charset="UTF-8">
@@ -13,63 +11,66 @@
 
 <body>
 
-        <div layout:fragment="content">
+    <div layout:fragment="content">
 
-                <div class="page-header">
-                    <h2 th:text="${pageTitle ?: 'Liste des bâtiments'}">Liste des bâtiments</h2>
-                    <a th:href="@{/admin/batiments/nouveau}" class="btn-ajouter" style="background: var(--primary); color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-plus"></i> Nouveau bâtiment
-                    </a>
-                </div>
+        <div class="page-header">
+            <h2 th:text="${pageTitle ?: 'Liste des bâtiments'}">Liste des bâtiments</h2>
+            <a th:href="@{/admin/batiments/nouveau}" class="btn-ajouter"
+                style="background: var(--primary); color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-plus"></i> Nouveau bâtiment
+            </a>
+        </div>
 
-                <div th:if="${error}" style="background:#f8d7da; color:#721c24; padding:12px 16px; border-radius:10px; margin-bottom:16px; font-size:14px;">
-                    <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${error}"></span>
-                </div>
+        <div th:if="${error}"
+            style="background:#f8d7da; color:#721c24; padding:12px 16px; border-radius:10px; margin-bottom:16px; font-size:14px;">
+            <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${error}"></span>
+        </div>
 
-                <div class="card-batiment">
-                    <table class="table-batiment">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nom</th>
-                                <th>Capacité</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="b : ${batiments}">
-                                <td th:text="${b.id}"></td>
-                                <td th:text="${b.nom}"></td>
-                                <!-- Badge de capacité -->
-                                <td>
-                                    <span class="badge-capacite"
-                                          th:text="${b.capacite}"
-                                          th:class="${b.capacite >= 1000} ? 'badge-capacite badge-elevee' : (${b.capacite >= 500} ? 'badge-capacite badge-moyenne' : 'badge-capacite badge-faible')">
-                                    </span>
-                                </td>
-                                <td>
-                                    <a th:href="@{/admin/batiments/edit/{id}(id=${b.id})}"
-                                       style="padding:6px 14px; border-radius:8px; text-decoration:none; font-size:13px; font-weight:500; display:inline-flex; align-items:center; gap:6px; background:#D8B77C; color:#33241A; margin-right:6px;">
-                                        <i class="fa-solid fa-pen"></i> Modifier
-                                    </a>
-                                    <a th:href="@{/admin/batiments/delete/{id}(id=${b.id})}"
-                                       style="padding:6px 14px; border-radius:8px; text-decoration:none; font-size:13px; font-weight:500; display:inline-flex; align-items:center; gap:6px; background:#e47373; color:white;"
-                                       onclick="return confirm('Supprimer ce bâtiment ?')">
-                                        <i class="fa-solid fa-trash"></i> Supprimer
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
+        <div class="card-batiment">
+            <table class="table-batiment">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Capacité</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="b : ${batiments}">
+                        <td th:text="${b.id}"></td>
+                        <td th:text="${b.nom}"></td>
+                        <!-- Badge de capacité -->
+                        <td>
+                            <span class="badge-capacite" th:text="${b.capacite}"
+                                th:class="${b.capacite >= 1000} ? 'badge-capacite badge-elevee' : (${b.capacite >= 500} ? 'badge-capacite badge-moyenne' : 'badge-capacite badge-faible')">
+                            </span>
+                        </td>
+                        <td>
+                            <a th:href="@{/admin/batiments/edit/{id}(id=${b.id})}"
+                                style="padding:6px 14px; border-radius:8px; text-decoration:none; font-size:13px; font-weight:500; display:inline-flex; align-items:center; gap:6px; background:#D8B77C; color:#33241A; margin-right:6px;">
+                                <i class="fa-solid fa-pen"></i> Modifier
+                            </a>
+                            <a th:href="@{/admin/batiments/delete/{id}(id=${b.id})}"
+                                style="padding:6px 14px; border-radius:8px; text-decoration:none; font-size:13px; font-weight:500; display:inline-flex; align-items:center; gap:6px; background:#e47373; color:white;"
+                                onclick="return confirm('Supprimer ce bâtiment ?')">
+                                <i class="fa-solid fa-trash"></i> Supprimer
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
 
-                        
-                    </table>
-                    
-                    <div th:if="${#lists.isEmpty(batiments)}" class="vide-message">
-                        Aucun bâtiment enregistré.
-                    </div>
-                    <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url='/admin/batiments',filters=${filtres})}"></div>
-                </div>
+
+            </table>
+
+            <div th:if="${#lists.isEmpty(batiments)}" class="vide-message">
+                Aucun bâtiment enregistré.
             </div>
+            <div
+                th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url='/admin/batiments',filters=${filtres})}">
+            </div>
+        </div>
+    </div>
 
 </body>
 

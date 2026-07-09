@@ -1,46 +1,47 @@
 <!DOCTYPE html>
-<html lang="fr"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{client/espace/layout}">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{client/espace/layout}">
+
 <head>
     <title>Mes commandes</title>
 </head>
+
 <body>
-<div layout:fragment="content">
-    <div class="card-client">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="mb-0"><i class="fa-solid fa-receipt me-2"></i>Mes commandes</h5>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-hover table-client mb-0">
-                <thead>
-                    <tr>
-                        <th>N°</th>
-                        <th>Date</th>
-                        <th>Total</th>
-                        <th>Statut</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="cmd : ${commandes}">
-                        <td th:text="${cmd.id}">1</td>
-                        <td th:text="${cmd.date}">01/01/2026</td>
-                        <td th:text="${#numbers.formatDecimal(cmd.total, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</td>
-                        <td>
-                            <span class="badge-statut" th:text="${cmd.statut.code}"
-                                  th:classappend="${cmd.statut.code == 'paye'} ? 'bg-success text-white' : 
+    <div layout:fragment="content">
+        <div class="card-client">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0"><i class="fa-solid fa-receipt me-2"></i>Mes commandes</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover table-client mb-0">
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="cmd : ${commandes}">
+                            <td th:text="${cmd.id}">1</td>
+                            <td th:text="${cmd.date}">01/01/2026</td>
+                            <td th:text="${#numbers.formatDecimal(cmd.total, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</td>
+                            <td>
+                                <span class="badge-statut" th:text="${cmd.statut.code}"
+                                    th:classappend="${cmd.statut.code == 'paye'} ? 'bg-success text-white' : 
                                                   (${cmd.statut.code == 'en_attente'} ? 'bg-warning text-dark' : 'bg-secondary text-white')">
-                                en_attente
-                            </span>
-                        </td>
-                    </tr>
-                    <tr th:if="${commandes.isEmpty()}">
-                        <td colspan="4" class="text-center text-muted py-4">Aucune commande pour le moment</td>
-                    </tr>
-                </tbody>
-            </table>
+                                    en_attente
+                                </span>
+                            </td>
+                        </tr>
+                        <tr th:if="${commandes.isEmpty()}">
+                            <td colspan="4" class="text-center text-muted py-4">Aucune commande pour le moment</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 </body>
+
 </html>
