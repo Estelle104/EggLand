@@ -11,6 +11,7 @@ SET session_replication_role = 'replica';
 -- 1. VIDER TOUTES LES TABLES
 -- ============================================================
 TRUNCATE TABLE versementsalaire CASCADE;
+
 TRUNCATE TABLE paiementsalaire CASCADE;
 TRUNCATE TABLE detailvente CASCADE;
 TRUNCATE TABLE livraison CASCADE;

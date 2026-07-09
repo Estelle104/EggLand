@@ -184,8 +184,11 @@ public class MvtStockController {
         if (dateFin != null) filtres.put("dateFin", dateFin.toString());
         
 
+        LocalDate today = LocalDate.now();
         model.addAttribute("nourritures", nourritureService.findAll());
         model.addAttribute("pageTitle", "Historique des mouvements");
+        model.addAttribute("exportDebut", dateDebut != null ? dateDebut.toString() : today.minusDays(30).toString());
+        model.addAttribute("exportFin", dateFin != null ? dateFin.toString() : today.toString());
 
         model.addAttribute("mouvements", mouvementsPage.getContent());
         model.addAttribute("currentPage", mouvementsPage.getNumber());

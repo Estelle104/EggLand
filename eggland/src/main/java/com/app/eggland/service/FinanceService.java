@@ -1,6 +1,7 @@
 package com.app.eggland.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -51,6 +52,16 @@ public class FinanceService {
         return getTotalRecettes(debut, fin).subtract(getTotalDepenses(debut, fin));
     }
 
+    public BigDecimal getMarge() {
+        BigDecimal totalRecettes = getTotalRecettes();
+        if (totalRecettes.compareTo(BigDecimal.ZERO) == 0) {
+            return BigDecimal.ZERO;
+        }
+        return getBeneficeNet()
+                .multiply(BigDecimal.valueOf(100))
+                .divide(totalRecettes, 2, RoundingMode.HALF_UP);
+    }
+
     public Map<String, BigDecimal> getResumeFinancier() {
         Map<String, BigDecimal> resume = new LinkedHashMap<>();
         resume.put("totalRecettes", getTotalRecettes());
@@ -71,7 +82,7 @@ public class FinanceService {
         List<Object[]> results = mvtArgentRepository.sumMontantByCategorie("entree");
         return results.stream()
                 .collect(Collectors.toMap(
-                        row -> (String) row[0],
+                        row -> row[0] != null ? (String) row[0] : "Non classé",
                         row -> (BigDecimal) row[1],
                         (a, b) -> a,
                         LinkedHashMap::new
@@ -82,7 +93,7 @@ public class FinanceService {
         List<Object[]> results = mvtArgentRepository.sumMontantByCategorieBetweenDates("entree", debut, fin);
         return results.stream()
                 .collect(Collectors.toMap(
-                        row -> (String) row[0],
+                        row -> row[0] != null ? (String) row[0] : "Non classé",
                         row -> (BigDecimal) row[1],
                         (a, b) -> a,
                         LinkedHashMap::new
@@ -93,7 +104,7 @@ public class FinanceService {
         List<Object[]> results = mvtArgentRepository.sumMontantByCategorie("sortie");
         return results.stream()
                 .collect(Collectors.toMap(
-                        row -> (String) row[0],
+                        row -> row[0] != null ? (String) row[0] : "Non classé",
                         row -> (BigDecimal) row[1],
                         (a, b) -> a,
                         LinkedHashMap::new
@@ -104,7 +115,7 @@ public class FinanceService {
         List<Object[]> results = mvtArgentRepository.sumMontantByCategorieBetweenDates("sortie", debut, fin);
         return results.stream()
                 .collect(Collectors.toMap(
-                        row -> (String) row[0],
+                        row -> row[0] != null ? (String) row[0] : "Non classé",
                         row -> (BigDecimal) row[1],
                         (a, b) -> a,
                         LinkedHashMap::new
@@ -124,8 +135,9 @@ public class FinanceService {
     }
 
     public Map<String, BigDecimal> getRecettesMensuelles12Mois() {
-        LocalDate fin = LocalDate.now().withDayOfMonth(1);
-        LocalDate debut = fin.minusMonths(11);
+        LocalDate moisCourant = LocalDate.now().withDayOfMonth(1);
+        LocalDate debut = moisCourant.minusMonths(11);
+        LocalDate fin = LocalDate.now();
         List<Object[]> results = mvtArgentRepository.sumMontantByMoisBetweenDates("entree", debut, fin);
         Map<String, BigDecimal> map = new LinkedHashMap<>();
         for (int i = 0; i < 12; i++) {
@@ -138,8 +150,9 @@ public class FinanceService {
     }
 
     public Map<String, BigDecimal> getDepensesMensuelles12Mois() {
-        LocalDate fin = LocalDate.now().withDayOfMonth(1);
-        LocalDate debut = fin.minusMonths(11);
+        LocalDate moisCourant = LocalDate.now().withDayOfMonth(1);
+        LocalDate debut = moisCourant.minusMonths(11);
+        LocalDate fin = LocalDate.now();
         List<Object[]> results = mvtArgentRepository.sumMontantByMoisBetweenDates("sortie", debut, fin);
         Map<String, BigDecimal> map = new LinkedHashMap<>();
         for (int i = 0; i < 12; i++) {
