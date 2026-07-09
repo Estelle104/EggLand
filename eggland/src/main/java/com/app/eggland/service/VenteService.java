@@ -10,10 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.app.eggland.model.Client;
 import com.app.eggland.model.DetailVente;
+import com.app.eggland.model.Lot;
+import com.app.eggland.model.LotRace;
 import com.app.eggland.model.ProduitVente;
+import com.app.eggland.model.Race;
 import com.app.eggland.model.StatutVente;
 import com.app.eggland.model.Vente;
 import com.app.eggland.repository.DetailVenteRepository;
+import com.app.eggland.repository.LotRaceRepository;
 import com.app.eggland.repository.ProduitVenteRepository;
 import com.app.eggland.repository.StatutVenteRepository;
 import com.app.eggland.repository.VenteRepository;
@@ -21,10 +25,13 @@ import com.app.eggland.repository.VenteRepository;
 @Service
 public class VenteService {
 
+    public static final String CODE_PRODUIT_POULE = "poule";
+
     @Autowired private VenteRepository        venteRepository;
     @Autowired private DetailVenteRepository  detailVenteRepository;
     @Autowired private ProduitVenteRepository produitVenteRepository;
     @Autowired private StatutVenteRepository  statutVenteRepository;
+    @Autowired private LotRaceRepository      lotRaceRepository;
     @Autowired private MvtArgentService       mvtArgentService;
     @Autowired private OeufService            oeufService;
     @Autowired private LotService             lotService;
@@ -62,6 +69,10 @@ public class VenteService {
 
     public void supprimerVente(int id) {
         List<DetailVente> details = detailVenteRepository.findByVenteId(id);
+        // On restitue les poules au(x) lot(s) concernés avant de supprimer la vente
+        for (DetailVente d : details) {
+            restituerPouleSiApplicable(d);
+        }
         detailVenteRepository.deleteAll(details);
         venteRepository.deleteById(id);
     }
@@ -88,11 +99,53 @@ public class VenteService {
         return detailVenteRepository.findByVenteId(idVente);
     }
 
-  
+    private boolean estPoule(ProduitVente produit) {
+        return produit != null && CODE_PRODUIT_POULE.equalsIgnoreCase(produit.getCode());
+    }
+
+    /**
+     * Vérifie le stock disponible et diminue lot_races.nombre pour le
+     * couple (lot, race) concerné. Ne modifie JAMAIS le statut du lot.
+     */
+    private void decrementerNombrePoule(Integer lotId, Integer raceId, BigDecimal quantite) {
+        if (lotId == null || raceId == null) {
+            throw new RuntimeException("Le lot et la race sont obligatoires pour une vente de poule.");
+        }
+        LotRace lotRace = lotRaceRepository.findByLotIdAndRaceId(lotId, raceId);
+        if (lotRace == null) {
+            throw new RuntimeException(
+                "Aucune race id=" + raceId + " trouvée pour le lot id=" + lotId);
+        }
+        int nombreActuel = lotRace.getNombre() != null ? lotRace.getNombre() : 0;
+        int demande = quantite.intValue();
+        if (demande > nombreActuel) {
+            throw new RuntimeException(
+                "Stock de poules insuffisant pour le lot " + lotId
+                + " / race " + raceId + ". Disponible : " + nombreActuel
+                + " | Demandé : " + demande);
+        }
+        lotRace.setNombre(nombreActuel - demande);
+        lotRaceRepository.save(lotRace);
+    }
+
+    /** Remet dans lot_races.nombre la quantité d'une ligne de vente "poule" (ex: suppression/modification). */
+    private void restituerPouleSiApplicable(DetailVente d) {
+        if (!estPoule(d.getProduit())) return;
+        if (d.getLot() == null || d.getRace() == null) return;
+
+        LotRace lotRace = lotRaceRepository.findByLotIdAndRaceId(d.getLot().getId(), d.getRace().getId());
+        if (lotRace == null) return; // rien à restituer si la ligne n'a plus de correspondance
+
+        int nombreActuel = lotRace.getNombre() != null ? lotRace.getNombre() : 0;
+        lotRace.setNombre(nombreActuel + d.getQuantite().intValue());
+        lotRaceRepository.save(lotRace);
+    }
+
     @Transactional
     public void enregistrerVente(int clientId,
                                   List<Integer> produitIds,
                                   List<Integer> lotIds,
+                                  List<Integer> raceIds,
                                   List<BigDecimal> quantites,
                                   List<BigDecimal> prixUnitaires,
                                   Client client) {
@@ -115,6 +168,13 @@ public class VenteService {
                 }
                 oeufService.retirerDuStock(qte.intValue());
             }
+
+            if (estPoule(produit)) {
+                Integer lotId  = (lotIds  != null && i < lotIds.size())  ? lotIds.get(i)  : null;
+                Integer raceId = (raceIds != null && i < raceIds.size()) ? raceIds.get(i) : null;
+                // On vérifie le stock dès maintenant pour échouer tôt si besoin.
+                decrementerNombrePoule(lotId, raceId, qte);
+            }
         }
 
         StatutVente statut = statutVenteRepository.findByCode("paye")
@@ -128,15 +188,20 @@ public class VenteService {
             ProduitVente produit = trouverProduitVenteParId(produitIds.get(i));
             if (produit == null) continue;
 
-            DetailVente detail = DetailVente.builder()
+            DetailVente.DetailVenteBuilder builder = DetailVente.builder()
                 .vente(vente).client(client).produit(produit)
-                .quantite(quantites.get(i)).prixUnitaire(prixUnitaires.get(i)).build();
-            detailVenteRepository.save(detail);
+                .quantite(quantites.get(i)).prixUnitaire(prixUnitaires.get(i));
 
-            if ("poule".equalsIgnoreCase(produit.getCode())) {
-                Integer lotId = (lotIds != null && i < lotIds.size()) ? lotIds.get(i) : null;
-                if (lotId != null) lotService.reformerUnLot(lotId, LocalDate.now());
+            if (estPoule(produit)) {
+                Integer lotId  = (lotIds  != null && i < lotIds.size())  ? lotIds.get(i)  : null;
+                Integer raceId = (raceIds != null && i < raceIds.size()) ? raceIds.get(i) : null;
+                if (lotId != null) builder.lot(Lot.builder().id(lotId).build());
+                if (raceId != null) builder.race(Race.builder().id(raceId).build());
             }
+
+            detailVenteRepository.save(builder.build());
+            // NOTE : on ne réforme plus le lot ici (le statut du lot reste inchangé).
+            // Seul lot_races.nombre est diminué, via decrementerNombrePoule ci-dessus.
         }
 
         mvtArgentService.creerEntree(total, LocalDate.now(), "vente");
@@ -146,6 +211,7 @@ public class VenteService {
     public void enregistrerModificationVente(int venteId,
                                               List<Integer> produitIds,
                                               List<Integer> lotIds,
+                                              List<Integer> raceIds,
                                               List<BigDecimal> quantites,
                                               List<BigDecimal> prixUnitaires,
                                               Client client) {
@@ -181,19 +247,41 @@ public class VenteService {
             oeufService.ajouterAuStock(Math.abs(diff));
         }
 
+        // 1) On restitue les poules des anciennes lignes (remet le stock lot_races à jour)
+        for (DetailVente d : anciensDetails) {
+            restituerPouleSiApplicable(d);
+        }
+
         detailVenteRepository.deleteAll(anciensDetails);
 
+        // 2) On vérifie et décrémente le stock pour les nouvelles lignes "poule"
         for (int i = 0; i < produitIds.size(); i++) {
             ProduitVente produit = trouverProduitVenteParId(produitIds.get(i));
             if (produit == null) continue;
-            DetailVente detail = DetailVente.builder()
-                .vente(vente).client(client).produit(produit)
-                .quantite(quantites.get(i)).prixUnitaire(prixUnitaires.get(i)).build();
-            detailVenteRepository.save(detail);
-            if ("poule".equalsIgnoreCase(produit.getCode())) {
-                Integer lotId = (lotIds != null && i < lotIds.size()) ? lotIds.get(i) : null;
-                if (lotId != null) lotService.reformerUnLot(lotId, LocalDate.now());
+            if (estPoule(produit)) {
+                Integer lotId  = (lotIds  != null && i < lotIds.size())  ? lotIds.get(i)  : null;
+                Integer raceId = (raceIds != null && i < raceIds.size()) ? raceIds.get(i) : null;
+                decrementerNombrePoule(lotId, raceId, quantites.get(i));
             }
+        }
+
+        // 3) On recrée les lignes de détail
+        for (int i = 0; i < produitIds.size(); i++) {
+            ProduitVente produit = trouverProduitVenteParId(produitIds.get(i));
+            if (produit == null) continue;
+
+            DetailVente.DetailVenteBuilder builder = DetailVente.builder()
+                .vente(vente).client(client).produit(produit)
+                .quantite(quantites.get(i)).prixUnitaire(prixUnitaires.get(i));
+
+            if (estPoule(produit)) {
+                Integer lotId  = (lotIds  != null && i < lotIds.size())  ? lotIds.get(i)  : null;
+                Integer raceId = (raceIds != null && i < raceIds.size()) ? raceIds.get(i) : null;
+                if (lotId != null) builder.lot(Lot.builder().id(lotId).build());
+                if (raceId != null) builder.race(Race.builder().id(raceId).build());
+            }
+
+            detailVenteRepository.save(builder.build());
         }
 
         vente.setClient(client);

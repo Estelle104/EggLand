@@ -52,6 +52,7 @@
                         <tr>
                             <th>Produit</th>
                             <th>Lot</th>
+                            <th>Race</th>
                             <th>Quantité</th>
                             <th>Prix unitaire</th>
                             <th></th>
@@ -74,6 +75,14 @@
                                     <option value="">-- Lot (si poulet) --</option>
                                     <th:block th:each="l : ${lots}">
                                         <option th:value="${l.id}" th:text="'Lot ' + ${l.id}"></option>
+                                    </th:block>
+                                </select>
+                            </td>
+                            <td>
+                                <select th:name="'raceId'">
+                                    <option value="">-- Race --</option>
+                                    <th:block th:each="r : ${races}">
+                                        <option th:value="${r.id}" th:text="${r.nom}"></option>
                                     </th:block>
                                 </select>
                             </td>

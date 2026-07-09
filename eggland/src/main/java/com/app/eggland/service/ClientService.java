@@ -36,7 +36,7 @@ public class ClientService {
         if(clientRepository.existsByEmail(client.getEmail()) || userAdminRepository.existsByEmail(client.getEmail())){
             throw new RuntimeException("Cet email est déjà utilisé par un autre compte.");
         }
-        StatutClient statutActif = statutClientRepository.findByCode("ACTIF")
+        StatutClient statutActif = statutClientRepository.findByCode("actif")
                                                         .orElseThrow(() -> new RuntimeException("status actif introuvable"));
         client.setStatut(statutActif);
         client.setDateInscription(LocalDate.now());
