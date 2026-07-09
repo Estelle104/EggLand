@@ -121,6 +121,14 @@ public class FinanceController {
         } catch (IOException e) {
             model.addAttribute("importErrors", java.util.List.of("Erreur lecture fichier: " + e.getMessage()));
         }
-        return index(model);
+        addExportPageDefaults(model);
+        return "exports/index";
+    }
+
+    private void addExportPageDefaults(Model model) {
+        LocalDate today = LocalDate.now();
+        model.addAttribute("today", today.toString());
+        model.addAttribute("todayMinus30", today.minusDays(30).toString());
+        model.addAttribute("currentMonth", today.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM")));
     }
 }

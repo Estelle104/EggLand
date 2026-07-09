@@ -17,15 +17,17 @@
   gap: 24px;
   flex-wrap: wrap;
   margin-bottom: 24px;
+  
 }
 
 .finance-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+  /* display: flex; */
+  /* align-items: center; */
+  /* justify-content: flex-start; */
   gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 4px;
+  /* flex-wrap: wrap; */
+  margin-top: 10px;
+  /* padding-right : 20px; */
 }
 
 .card {
