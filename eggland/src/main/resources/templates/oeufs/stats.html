@@ -93,15 +93,13 @@
                                 th:text="${#numbers.formatDecimal(item.taux, 1, 'COMMA', 2, 'POINT')} + '%'"
                                 th:classappend="${item.taux >= 90} ? ' text-success' :
                                                         (${item.taux >= 70} ? ' text-warning' : ' text-danger')">
-                            </span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <div
-                th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${baseUrl}, filtres=${filtres})}">
-            </div>
-        </div>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${baseUrl}, filters=${filtres})}"></div>
+                </div>
 
         <script th:inline="javascript">
             window.productionChartData = {
