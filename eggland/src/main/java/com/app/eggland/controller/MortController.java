@@ -53,7 +53,7 @@ public class MortController {
     @PostMapping("/save")
     public String save(@ModelAttribute Mort mort) {
         mortService.save(mort);
-        return "redirect:/morts";
+        return "redirect:/morts/liste";
     }
 
     @GetMapping("/historique")
@@ -104,7 +104,7 @@ public class MortController {
         } catch (DataIntegrityViolationException e) {
             ra.addFlashAttribute("error", "Impossible de supprimer : cette mort est liée à d'autres données.");
         }
-        return "redirect:/morts";
+        return "redirect:/morts/liste";
     }
 }
 
