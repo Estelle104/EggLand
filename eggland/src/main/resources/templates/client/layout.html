@@ -1,16 +1,19 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EggLand - Accueil</title>
-    
+
     <!-- Bootstrap 5 -->
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/client-layout.css}">
     <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 
 </head>
+
 <body>
 
     <!-- Navbar Transparente -->
@@ -18,40 +21,43 @@
     <nav class="navbar navbar-expand-lg fixed-top" id="mainNavbar">
         <div class="container">
             <a class="navbar-brand fw-bold fs-3" th:href="@{/}">EGGLAND</a>
-            
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto gap-4">
                     <li class="nav-item"><a class="nav-link" th:href="@{/}">Accueil</a></li>
                     <li class="nav-item"><a class="nav-link" th:href="@{/#produits}">Nos Produits</a></li>
 
-                    <li class="nav-item" sec:authorize="isAuthenticated()"><a class="nav-link" th:href="@{/client/livraison}">Livraisons</a></li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()"><a class="nav-link"
+                            th:href="@{/client/livraison}">Livraisons</a></li>
                     <li class="nav-item"><a class="nav-link" th:href="@{/#partenaire}">Devenir Partenaire</a></li>
                     <li class="nav-item"><a class="nav-link" th:href="@{/#contact}">Contact</a></li>
 
                     <li class="nav-item" th:if="${userEmail == null}">
-                        <a class="btn btn-sm px-4 py-2 text-white fw-bold" 
-                        style="background: var(--card-brown); border-radius: 8px;" 
-                        th:href="@{/login}">Connexion</a>
+                        <a class="btn btn-sm px-4 py-2 text-white fw-bold"
+                            style="background: var(--card-brown); border-radius: 8px;" th:href="@{/login}">Connexion</a>
                     </li>
 
                     <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 fw-bold" 
-                        href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span th:text="${userEmail}">Email</span>
+                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 fw-bold" href="#"
+                            id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span th:text="${userEmail}">Email</span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2" 
-                            aria-labelledby="userDropdown" 
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2" aria-labelledby="userDropdown"
                             style="background-color: var(--cream); border-radius: 12px;">
-                            
-                            <li><a class="dropdown-item rounded py-2 fw-semibold text-dark" th:href="@{/redirection}">Mon Espace</a></li>
-                            <li><hr class="dropdown-divider"></li>
+
+                            <li><a class="dropdown-item rounded py-2 fw-semibold text-dark"
+                                    th:href="@{/redirection}">Mon Espace</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             <li>
                                 <form th:action="@{/logout}" method="post" class="m-0 p-0">
-                                    <button type="submit" class="dropdown-item rounded py-2 fw-semibold text-danger" style="background: none; border: none; width: 100%; text-align: left;">Déconnexion</button>
+                                    <button type="submit" class="dropdown-item rounded py-2 fw-semibold text-danger"
+                                        style="background: none; border: none; width: 100%; text-align: left;">Déconnexion</button>
                                 </form>
                             </li>
                         </ul>
@@ -68,23 +74,23 @@
         <div class="container">
 
             <div class="d-flex flex-column align-items-center justify-content-center text-center mb-5">
-    
-                <img th:src="@{/images/eggland-logo.png}" 
-                    class="rounded-circle mb-3" 
-                    style="width: 180px; border: 8px solid rgba(255,255,255,0.3);" 
-                    alt="Logo">
-                
-                <div class="badge px-5 py-3" 
+
+                <img th:src="@{/images/eggland-logo.png}" class="rounded-circle mb-3"
+                    style="width: 180px; border: 8px solid rgba(255,255,255,0.3);" alt="Logo">
+
+                <div class="badge px-5 py-3"
                     style="background: var(--deep-brown); font-size:1.05rem; border-radius:50px;">
                     QUALITÉ • ENGAGEMENT • DURABILITÉ
                 </div>
 
             </div>
-            
-            <p class="lead mb-5 fs-4 fw-bold" style="color: var(--dark);">Des œufs de qualité supérieure livrés à votre porte à prix unique</p>
+
+            <p class="lead mb-5 fs-4 fw-bold" style="color: var(--dark);">Des œufs de qualité supérieure livrés à votre
+                porte à prix unique</p>
             <h1 class="display-1 fw-bold mb-3 eggland-title">EGGLAND</h1>
             <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
-                <a href="#produits" class="btn btn-lg px-5 py-3" style="background:var(--card-brown); color:white;">Découvrir nos produits</a>
+                <a href="#produits" class="btn btn-lg px-5 py-3"
+                    style="background:var(--card-brown); color:white;">Découvrir nos produits</a>
                 <a href="#partenaire" class="btn btn-lg px-5 py-3 btn-outline-light">Devenir partenaire</a>
             </div>
         </div>
@@ -97,7 +103,8 @@
                 <p class="section-subtitle mb-2">— CE QUE NOUS OFFRONS</p>
                 <h2 class="display-5 fw-bold">Nos Produits</h2>
                 <p class="mx-auto" style="max-width: 720px; opacity: 0.9;">
-                    Des produits issus de notre élevage moderne, suivis avec rigueur pour garantir une qualité irréprochable à chaque livraison.
+                    Des produits issus de notre élevage moderne, suivis avec rigueur pour garantir une qualité
+                    irréprochable à chaque livraison.
                 </p>
             </div>
 
@@ -106,7 +113,8 @@
                     <div class="product-card text-center">
                         <div class="product-icon">🥚</div>
                         <h4 class="fw-bold mb-3">Œufs Frais</h4>
-                        <p>Récoltés chaque matin depuis notre grande ferme moderne. Frais, sains et de calibre constant, livrés directement chez vous avec les frais de livraison inclus.</p>
+                        <p>Récoltés chaque matin depuis notre grande ferme moderne. Frais, sains et de calibre constant,
+                            livrés directement chez vous avec les frais de livraison inclus.</p>
                         <div class="product-badge mt-4">PRODUIT PHARE</div>
                     </div>
                 </div>
@@ -114,7 +122,8 @@
                     <div class="product-card text-center">
                         <div class="product-icon">🍗</div>
                         <h4 class="fw-bold mb-3">Poulet de Chair</h4>
-                        <p>Nos poules pondeuses en fin de cycle sont valorisées en poulets de chair de qualité. Une diversification qui garantit zéro gaspillage et plus de valeur pour nos partenaires.</p>
+                        <p>Nos poules pondeuses en fin de cycle sont valorisées en poulets de chair de qualité. Une
+                            diversification qui garantit zéro gaspillage et plus de valeur pour nos partenaires.</p>
                         <div class="product-badge mt-4">DISPONIBLE</div>
                     </div>
                 </div>
@@ -122,7 +131,8 @@
                     <div class="product-card text-center">
                         <div class="product-icon">🌿</div>
                         <h4 class="fw-bold mb-3">Fumier Naturel</h4>
-                        <p>Sous-produit de notre élevage, notre fumier est un excellent fertilisant naturel pour les cultures. Un choix durable pour les agriculteurs et maraîchers.</p>
+                        <p>Sous-produit de notre élevage, notre fumier est un excellent fertilisant naturel pour les
+                            cultures. Un choix durable pour les agriculteurs et maraîchers.</p>
                         <div class="product-badge mt-4">DURABLE</div>
                     </div>
                 </div>
@@ -137,8 +147,9 @@
                 <div class="col-lg-6">
                     <p class="section-subtitle">— Rejoignez-nous</p>
                     <h2 class="display-5 fw-bold mt-2">Devenir Partenaire</h2>
-                    <p class="lead">Nous travaillons avec les grands hôtels, restaurants, pâtisseries et marchés de viennoiseries. Rejoignez notre réseau et bénéficiez d'une livraison régulière et fiable.</p>
-                    
+                    <p class="lead">Nous travaillons avec les grands hôtels, restaurants, pâtisseries et marchés de
+                        viennoiseries. Rejoignez notre réseau et bénéficiez d'une livraison régulière et fiable.</p>
+
                     <ul class="list-unstyled mt-4">
                         <li class="mb-3">• Livraison incluse, régulière et stable</li>
                         <li class="mb-3">• Prix unique et transparent</li>
@@ -146,8 +157,9 @@
                         <li class="mb-3">• Partenariat à long terme</li>
                         <li>• Service dédié et réactif</li>
                     </ul>
-                    
-                    <a th:href="@{/inscription}" class="btn btn-lg px-5 py-3 mt-3" style="background: var(--card-brown); color: white;">S'inscrire maintenant →</a>
+
+                    <a th:href="@{/inscription}" class="btn btn-lg px-5 py-3 mt-3"
+                        style="background: var(--card-brown); color: white;">S'inscrire maintenant →</a>
                 </div>
 
                 <div class="col-lg-6">
@@ -188,7 +200,7 @@
                 <p class="section-subtitle">— ON EST LÀ</p>
                 <h2 class="display-5 fw-bold">Contactez-nous</h2>
             </div>
-            
+
             <div class="row g-4 text-center">
                 <div class="col-md-6 col-lg-3">
                     <div class="contact-box">📍<br><strong>Adresse</strong><br>Antananarivo, Madagascar</div>
@@ -229,8 +241,8 @@
 
         function handleScroll() {
             const scrollPosition = window.scrollY;
-            const heroHeight = document.querySelector('.hero-section') ? 
-                            document.querySelector('.hero-section').offsetHeight : 700;
+            const heroHeight = document.querySelector('.hero-section') ?
+                document.querySelector('.hero-section').offsetHeight : 700;
 
             if (scrollPosition > heroHeight - 100) {
                 navbar.classList.add('dark');
@@ -244,4 +256,5 @@
         window.addEventListener('load', handleScroll);
     </script>
 </body>
+
 </html>

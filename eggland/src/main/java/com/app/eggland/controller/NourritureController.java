@@ -31,10 +31,16 @@ public class NourritureController {
     public String liste(
         @RequestParam(value = "page", defaultValue = "0") int page,
         @RequestParam(value = "size", defaultValue = "10") int size,
+        @RequestParam(required = false) String keyword,
         Model model) {
-        List<Nourriture> nourritures = nourritureService.findAll();
+        List<Nourriture> nourritures;
+        if (keyword != null && !keyword.isEmpty()) {
+            nourritures = nourritureService.findByLibelleContaining(keyword);
+        } else {
+            nourritures = nourritureService.findAll();
+        }
         Page<Nourriture> nourriturePage = PaginationUtils.paginerListe(nourritures, page, size);
-        Map<String, String> filtres = Map.of(); // Aucun filtre pour l'instant
+        Map<String, String> filtres = keyword != null ? Map.of("keyword", keyword) : Map.of();
         model.addAttribute("nourritures", nourriturePage.getContent());
         model.addAttribute("pageTitle", "Liste des nourritures");
         model.addAttribute("currentPage", nourriturePage.getNumber());
@@ -42,6 +48,7 @@ public class NourritureController {
         model.addAttribute("size", size);
         model.addAttribute("filtres", filtres);
         model.addAttribute("baseUrl", "/admin/nourritures");
+        model.addAttribute("keyword", keyword);
         return "nourritures/liste";
     }
 

@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    var ID_POULE = 2;
+    var ID_POULE = 3;
     var ligneIndex = 0;
 
     function calculerTotalVente() {

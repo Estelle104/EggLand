@@ -1,131 +1,145 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
+
 <head>
     <title>Export &amp; Import - Eggland</title>
     <link rel="stylesheet" th:href="@{/css/exports.css}">
 </head>
+
 <body>
-<div layout:fragment="content" class="exports-page">
-    <div class="page-header">
-        <h2>Export &amp; Import</h2>
+    <div layout:fragment="content" class="exports-page">
+        <div class="page-header">
+            <h2>Export &amp; Import</h2>
+        </div>
+
+        <div class="exports-grid">
+            <section class="export-card">
+                <div class="export-card-header">
+                    <span class="export-icon export-icon-pdf"><i class="fas fa-file-pdf"></i></span>
+                    <h3>Export PDF</h3>
+                </div>
+
+                <div class="export-section">
+                    <div class="export-section-title">Bon de Livraison</div>
+                    <form th:action="@{/admin/finance/export/pdf/bon-livraison}" method="get" target="_blank"
+                        class="export-form">
+                        <div class="export-form-row">
+                            <input type="date" name="date" th:value="${today}" class="export-input">
+                            <button type="submit" class="btn export-btn export-btn-pdf">
+                                <i class="fas fa-download"></i>
+                                <span>PDF</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="export-section">
+                    <div class="export-section-title">Paiement de Salaire</div>
+                    <form th:action="@{/admin/finance/export/pdf/paiement-salaire}" method="get" target="_blank"
+                        class="export-form">
+                        <div class="export-form-row">
+                            <input type="month" name="mois" th:value="${currentMonth}" class="export-input">
+                            <button type="submit" class="btn export-btn export-btn-pdf">
+                                <i class="fas fa-download"></i>
+                                <span>PDF</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <section class="export-card">
+                <div class="export-card-header">
+                    <span class="export-icon export-icon-excel"><i class="fas fa-file-excel"></i></span>
+                    <h3>Export Excel</h3>
+                </div>
+
+                <div class="export-section">
+                    <div class="export-section-title">Production Oeufs</div>
+                    <form th:action="@{/admin/finance/export/excel/production-oeufs}" method="get" target="_blank"
+                        class="export-form">
+                        <div class="export-form-row export-form-row-wide">
+                            <input type="date" name="debut" th:value="${todayMinus30}" class="export-input"
+                                placeholder="Debut">
+                            <input type="date" name="fin" th:value="${today}" class="export-input" placeholder="Fin">
+                            <button type="submit" class="btn export-btn export-btn-excel">
+                                <i class="fas fa-download"></i>
+                                <span>XLSX</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="export-section">
+                    <div class="export-section-title">Mouvement de Stock</div>
+                    <form th:action="@{/admin/finance/export/excel/mouvement-stock}" method="get" target="_blank"
+                        class="export-form">
+                        <div class="export-form-row export-form-row-wide">
+                            <input type="date" name="debut" th:value="${todayMinus30}" class="export-input"
+                                placeholder="Debut">
+                            <input type="date" name="fin" th:value="${today}" class="export-input" placeholder="Fin">
+                            <button type="submit" class="btn export-btn export-btn-excel">
+                                <i class="fas fa-download"></i>
+                                <span>XLSX</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="export-section">
+                    <div class="export-section-title">Paiements Salaires</div>
+                    <form th:action="@{/admin/finance/export/excel/paiements-salaires}" method="get" target="_blank"
+                        class="export-form">
+                        <div class="export-form-row">
+                            <input type="month" name="mois" th:value="${currentMonth}" class="export-input">
+                            <button type="submit" class="btn export-btn export-btn-excel">
+                                <i class="fas fa-download"></i>
+                                <span>XLSX</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <section class="export-card">
+                <div class="export-card-header">
+                    <span class="export-icon export-icon-import"><i class="fas fa-upload"></i></span>
+                    <h3>Import Excel</h3>
+                </div>
+
+                <div class="export-section">
+                    <div class="export-section-title">Liste des Ventes</div>
+                    <form th:action="@{/admin/finance/import/liste-ventes}" method="post" enctype="multipart/form-data"
+                        class="export-form">
+                        <div class="export-form-row">
+                            <input type="file" name="file" accept=".xlsx,.xls" class="export-input export-file"
+                                required>
+                            <button type="submit" class="btn btn-primary export-btn">
+                                <i class="fas fa-upload"></i>
+                                <span>Importer</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div th:if="${importErrors != null and not importErrors.isEmpty()}"
+                    class="export-alert export-alert-danger">
+                    <h4>Erreurs (<span th:text="${importErrorCount}">0</span>)</h4>
+                    <ul>
+                        <li th:each="err : ${importErrors}" th:text="${err}"></li>
+                    </ul>
+                </div>
+
+                <div th:if="${importSuccesses != null and not importSuccesses.isEmpty()}"
+                    class="export-alert export-alert-success">
+                    <h4>Importes (<span th:text="${importSuccessCount}">0</span>)</h4>
+                    <ul>
+                        <li th:each="s : ${importSuccesses}" th:text="${s}"></li>
+                    </ul>
+                </div>
+            </section>
+        </div>
     </div>
-
-    <div class="exports-grid">
-        <section class="export-card">
-            <div class="export-card-header">
-                <span class="export-icon export-icon-pdf"><i class="fas fa-file-pdf"></i></span>
-                <h3>Export PDF</h3>
-            </div>
-
-            <div class="export-section">
-                <div class="export-section-title">Bon de Livraison</div>
-                <form th:action="@{/admin/finance/export/pdf/bon-livraison}" method="get" target="_blank" class="export-form">
-                    <div class="export-form-row">
-                        <input type="date" name="date" th:value="${today}" class="export-input">
-                        <button type="submit" class="btn export-btn export-btn-pdf">
-                            <i class="fas fa-download"></i>
-                            <span>PDF</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <div class="export-section">
-                <div class="export-section-title">Paiement de Salaire</div>
-                <form th:action="@{/admin/finance/export/pdf/paiement-salaire}" method="get" target="_blank" class="export-form">
-                    <div class="export-form-row">
-                        <input type="month" name="mois" th:value="${currentMonth}" class="export-input">
-                        <button type="submit" class="btn export-btn export-btn-pdf">
-                            <i class="fas fa-download"></i>
-                            <span>PDF</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </section>
-
-        <section class="export-card">
-            <div class="export-card-header">
-                <span class="export-icon export-icon-excel"><i class="fas fa-file-excel"></i></span>
-                <h3>Export Excel</h3>
-            </div>
-
-            <div class="export-section">
-                <div class="export-section-title">Production Oeufs</div>
-                <form th:action="@{/admin/finance/export/excel/production-oeufs}" method="get" target="_blank" class="export-form">
-                    <div class="export-form-row export-form-row-wide">
-                        <input type="date" name="debut" th:value="${todayMinus30}" class="export-input" placeholder="Debut">
-                        <input type="date" name="fin" th:value="${today}" class="export-input" placeholder="Fin">
-                        <button type="submit" class="btn export-btn export-btn-excel">
-                            <i class="fas fa-download"></i>
-                            <span>XLSX</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <div class="export-section">
-                <div class="export-section-title">Mouvement de Stock</div>
-                <form th:action="@{/admin/finance/export/excel/mouvement-stock}" method="get" target="_blank" class="export-form">
-                    <div class="export-form-row export-form-row-wide">
-                        <input type="date" name="debut" th:value="${todayMinus30}" class="export-input" placeholder="Debut">
-                        <input type="date" name="fin" th:value="${today}" class="export-input" placeholder="Fin">
-                        <button type="submit" class="btn export-btn export-btn-excel">
-                            <i class="fas fa-download"></i>
-                            <span>XLSX</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <div class="export-section">
-                <div class="export-section-title">Paiements Salaires</div>
-                <form th:action="@{/admin/finance/export/excel/paiements-salaires}" method="get" target="_blank" class="export-form">
-                    <div class="export-form-row">
-                        <input type="month" name="mois" th:value="${currentMonth}" class="export-input">
-                        <button type="submit" class="btn export-btn export-btn-excel">
-                            <i class="fas fa-download"></i>
-                            <span>XLSX</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </section>
-
-        <section class="export-card">
-            <div class="export-card-header">
-                <span class="export-icon export-icon-import"><i class="fas fa-upload"></i></span>
-                <h3>Import Excel</h3>
-            </div>
-
-            <div class="export-section">
-                <div class="export-section-title">Liste des Ventes</div>
-                <form th:action="@{/admin/finance/import/liste-ventes}" method="post" enctype="multipart/form-data" class="export-form">
-                    <div class="export-form-row">
-                        <input type="file" name="file" accept=".xlsx,.xls" class="export-input export-file" required>
-                        <button type="submit" class="btn btn-primary export-btn">
-                            <i class="fas fa-upload"></i>
-                            <span>Importer</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <div th:if="${importErrors != null and not importErrors.isEmpty()}" class="export-alert export-alert-danger">
-                <h4>Erreurs (<span th:text="${importErrorCount}">0</span>)</h4>
-                <ul>
-                    <li th:each="err : ${importErrors}" th:text="${err}"></li>
-                </ul>
-            </div>
-
-            <div th:if="${importSuccesses != null and not importSuccesses.isEmpty()}" class="export-alert export-alert-success">
-                <h4>Importes (<span th:text="${importSuccessCount}">0</span>)</h4>
-                <ul>
-                    <li th:each="s : ${importSuccesses}" th:text="${s}"></li>
-                </ul>
-            </div>
-        </section>
-    </div>
-</div>
 </body>
+
 </html>

@@ -11,110 +11,116 @@
 
 <body>
     <div layout:fragment="content" class="stats-page history-page">
-                <div class="page-header">
-                    <div>
-                        <h2>Historique des Œufs</h2>
-                        <p>Consultez les collectes enregistrées par lot, date et statut.</p>
-                    </div>
-                    <div class="page-actions">
-                        <form th:action="@{/finance/export/excel/production-oeufs}" method="get" target="_blank" style="margin:0; display:flex; gap:6px; align-items:center;">
-                            <input type="date" name="debut" th:value="${todayMinus30}" class="form-control form-control-sm" style="width:130px;" placeholder="Début">
-                            <input type="date" name="fin" th:value="${today}" class="form-control form-control-sm" style="width:130px;" placeholder="Fin">
-                            <button type="submit" class="btn btn-success" style="padding:6px 12px; font-size:13px;"><i class="fa-solid fa-file-excel"></i> XLSX</button>
-                        </form>
-                        <a th:href="@{/admin/oeufs}" class="btn btn-secondary">
-                            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-                            Statistiques
-                        </a>
-                        <a th:href="@{/admin/oeufs/saisie}" class="btn btn-primary">
-                            <i class="fa-solid fa-plus" aria-hidden="true"></i>
-                            Nouvelle Collecte
-                        </a>
-                    </div>
+        <div class="page-header">
+            <div>
+                <h2>Historique des Œufs</h2>
+                <p>Consultez les collectes enregistrées par lot, date et statut.</p>
+            </div>
+            <div class="page-actions">
+                <form th:action="@{/finance/export/excel/production-oeufs}" method="get" target="_blank"
+                    style="margin:0; display:flex; gap:6px; align-items:center;">
+                    <input type="date" name="debut" th:value="${todayMinus30}" class="form-control form-control-sm"
+                        style="width:130px;" placeholder="Début">
+                    <input type="date" name="fin" th:value="${today}" class="form-control form-control-sm"
+                        style="width:130px;" placeholder="Fin">
+                    <button type="submit" class="btn btn-success" style="padding:6px 12px; font-size:13px;"><i
+                            class="fa-solid fa-file-excel"></i> XLSX</button>
+                </form>
+                <a th:href="@{/admin/oeufs}" class="btn btn-secondary">
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                    Statistiques
+                </a>
+                <a th:href="@{/admin/oeufs/saisie}" class="btn btn-primary">
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                    Nouvelle Collecte
+                </a>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(historiqueProduction)}" class="stats-empty">
+            <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+            <p>Aucun historique enregistré.</p>
+        </div>
+
+        <div th:if="${error}" class="history-alert">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span th:text="${error}">Erreur</span>
+        </div>
+
+        <div th:if="${!#lists.isEmpty(historiqueProduction)}"
+            class="table-responsive stats-table-card history-table-card">
+            <div class="table-heading">
+                <h3>Collectes enregistrées</h3>
+                <span
+                    th:text="|Page ${currentPage + 1}/${totalPages} - ${#lists.size(historiqueProduction)} ligne(s) affichée(s)|">0
+                    ligne</span>
+            </div>
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>Lot</th>
+                        <th>Date</th>
+                        <th>Quantité</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item : ${historiqueProduction}" th:with="productionId=${item['production_id']}">
+                        <td th:text="${item['lot_id']}">1</td>
+                        <td th:text="${item['date']}">2026-01-01</td>
+                        <td>
+                            <span class="quantity-pill" th:text="${item['quantite']}">0</span>
+                        </td>
+                        <td>
+                            <span
+                                th:classappend="${'valide'.equalsIgnoreCase(item['statut'])} ? 'status-pill' : 'status-anomaly'"
+                                th:text="${item['statut']}">
+                            </span>
+                        </td>
+                        <td>
+                            <div class="history-actions" th:if="${productionId != null}">
+                                <a th:href="@{/admin/oeufs/edit/{id}(id=${productionId})}"
+                                    class="btn-action btn-modifier">
+                                    <i class="fa-solid fa-pen"></i>
+                                    Modifier
+                                </a>
+                                <form th:action="@{/admin/oeufs/delete}" method="post" class="history-delete-form"
+                                    onsubmit="return confirm('Supprimer cette collecte ?')">
+                                    <input type="hidden" name="id" th:value="${productionId}">
+                                    <button type="submit" class="btn-action btn-supprimer">
+                                        <i class="fa-solid fa-trash"></i>
+                                        Supprimer
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div th:if="${totalPages > 1}" class="history-pagination">
+                <a class="pagination-link" th:classappend="${currentPage == 0} ? ' disabled'"
+                    th:href="${currentPage == 0} ? '#' : @{/admin/oeufs/historique(page=${currentPage - 1}, size=${pageSize})}">
+                    Précédent
+                </a>
+
+                <div class="pagination-pages">
+                    <a th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}"
+                        class="pagination-link pagination-number"
+                        th:classappend="${pageNumber == currentPage} ? ' active'"
+                        th:href="@{/admin/oeufs/historique(page=${pageNumber}, size=${pageSize})}"
+                        th:text="${pageNumber + 1}">
+                        1
+                    </a>
                 </div>
 
-                <div th:if="${#lists.isEmpty(historiqueProduction)}" class="stats-empty">
-                    <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
-                    <p>Aucun historique enregistré.</p>
-                </div>
-
-                <div th:if="${error}" class="history-alert">
-                    <i class="fa-solid fa-circle-exclamation"></i>
-                    <span th:text="${error}">Erreur</span>
-                </div>
-
-                <div th:if="${!#lists.isEmpty(historiqueProduction)}" class="table-responsive stats-table-card history-table-card">
-                    <div class="table-heading">
-                        <h3>Collectes enregistrées</h3>
-                        <span th:text="|Page ${currentPage + 1}/${totalPages} - ${#lists.size(historiqueProduction)} ligne(s) affichée(s)|">0 ligne</span>
-                    </div>
-                    <table class="stats-table">
-                        <thead>
-                            <tr>
-                                <th>Lot</th>
-                                <th>Date</th>
-                                <th>Quantité</th>
-                                <th>Statut</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="item : ${historiqueProduction}" th:with="productionId=${item['production_id']}">
-                                <td th:text="${item['lot_id']}">1</td>
-                                <td th:text="${item['date']}">2026-01-01</td>
-                                <td>
-                                    <span class="quantity-pill" th:text="${item['quantite']}">0</span>
-                                </td>
-                                <td>
-                                    <span th:classappend="${'valide'.equalsIgnoreCase(item['statut'])} ? 'status-pill' : 'status-anomaly'"
-                                        th:text="${item['statut']}">
-                                    </span>                                
-                                </td>
-                                <td>
-                                    <div class="history-actions" th:if="${productionId != null}">
-                                        <a th:href="@{/admin/oeufs/edit/{id}(id=${productionId})}"
-                                           class="btn-action btn-modifier">
-                                            <i class="fa-solid fa-pen"></i>
-                                            Modifier
-                                        </a>
-                                        <form th:action="@{/admin/oeufs/delete}" method="post" class="history-delete-form"
-                                            onsubmit="return confirm('Supprimer cette collecte ?')">
-                                            <input type="hidden" name="id" th:value="${productionId}">
-                                            <button type="submit" class="btn-action btn-supprimer">
-                                                <i class="fa-solid fa-trash"></i>
-                                                Supprimer
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div th:if="${totalPages > 1}" class="history-pagination">
-                        <a class="pagination-link"
-                            th:classappend="${currentPage == 0} ? ' disabled'"
-                            th:href="${currentPage == 0} ? '#' : @{/admin/oeufs/historique(page=${currentPage - 1}, size=${pageSize})}">
-                            Précédent
-                        </a>
-
-                        <div class="pagination-pages">
-                            <a th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}"
-                                class="pagination-link pagination-number"
-                                th:classappend="${pageNumber == currentPage} ? ' active'"
-                                th:href="@{/admin/oeufs/historique(page=${pageNumber}, size=${pageSize})}"
-                                th:text="${pageNumber + 1}">
-                                1
-                            </a>
-                        </div>
-
-                        <a class="pagination-link"
-                            th:classappend="${currentPage + 1 >= totalPages} ? ' disabled'"
-                            th:href="${currentPage + 1 >= totalPages} ? '#' : @{/admin/oeufs/historique(page=${currentPage + 1}, size=${pageSize})}">
-                            Suivant
-                        </a>
-                    </div>
-                </div>
+                <a class="pagination-link" th:classappend="${currentPage + 1 >= totalPages} ? ' disabled'"
+                    th:href="${currentPage + 1 >= totalPages} ? '#' : @{/admin/oeufs/historique(page=${currentPage + 1}, size=${pageSize})}">
+                    Suivant
+                </a>
+            </div>
+        </div>
 
     </div>
 </body>
