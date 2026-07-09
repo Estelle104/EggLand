@@ -13,6 +13,11 @@ INSERT INTO lot (age_semaine, date_arrivee, nombre_initial, batiment_id, race_id
 (24, '2026-05-01', 90, 1, 1, 1),
 (24, '2026-06-01', 100, 2, 1, 1);
 
+INSERT INTO lot_races (nombre, lot_id, race_id) VALUES
+(50, 1, 1),
+(40, 1, 2),
+(50, 2, 1),
+(50, 2, 2);
 -- 4. oeufproduction (dépend de lot)
 INSERT INTO oeufproduction (date, quantite, lot_id) VALUES
 ('2026-05-31', 240, 1),
