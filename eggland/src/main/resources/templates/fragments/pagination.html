@@ -1,3 +1,4 @@
+<link rel="stylesheet" th:href="@{/css/client.css}">
 <div th:fragment="pager(currentPage, totalPages, size, url, filters)">
     <div style="display: flex; align-items: center; gap: 20px; justify-content: center; margin-top: 20px;">
 
@@ -25,10 +26,10 @@
             <button type="submit" style="display: none;"></button>
         </form>-->
         <form th:action="@{${url}}" method="get">
-            <input type="hidden" th:each="entry : ${filters}" th:name="${entry.key}" th:value="${entry.value}" />
+            <input type="hidden"   th:each="entry : ${filters}" th:name="${entry.key}" th:value="${entry.value}" />
 
             <label>Lignes :</label>
-            <input type="number" min="1" name="size" th:value="${size}" onchange="this.form.submit()">
+            <input type="number" min="1" name="size" class="form-control form-control-sm" th:value="${size}" onchange="this.form.submit()">
         </form>
 
         <nav style="display: flex; gap: 10px;">
@@ -47,7 +48,7 @@
                Suivant »
             </a>-->
             <a th:if="${currentPage < totalPages - 1}" th:href="@{${url}(page=${currentPage + 1}, size=${size})}"
-                style="padding: 8px 12px; background: #eee; border-radius: 5px; text-decoration: none; color: black; font-weight: 500;">
+                style="padding: 8px 12px; background: --deep-brown; border-radius: 5px; text-decoration: none; color: --cream; font-weight: 500;">
                 Suivant »
             </a>
         </nav>

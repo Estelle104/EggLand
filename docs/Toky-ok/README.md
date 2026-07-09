@@ -29,3 +29,9 @@
 - ``Controller`` : appelle les services pour les inscriptions et la connexion et a une exception près : les controlles de la ligne minimale a affiché
 - ``Repository`` : access à la base de donnés
 - ``Service`` : service métier controlle les traitements des donnés 
+
+
+survie dans le cas où la database ne fonctionne pas sur locale alors voici la commande pour fabriquer un radeau de secours
+```bash
+docker run --name eggland-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=eggland_db -p 5433:5432 -d postgres
+```
