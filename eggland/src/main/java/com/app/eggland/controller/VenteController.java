@@ -100,6 +100,7 @@ public class VenteController {
     public String creationVente(Model model) {
         model.addAttribute("produits", venteService.listeProduitVente());
         model.addAttribute("vente", new Vente());
+        model.addAttribute("clients", clientService.listeClient());
         model.addAttribute("lots", lotService.getAllLots());
         model.addAttribute("hideSearch", true);
         return "vente/formulairecreation";
@@ -108,16 +109,22 @@ public class VenteController {
     @PostMapping("/creation")
     public String creerVente(HttpServletRequest request, RedirectAttributes ra) {
         try {
-            String clientNom = request.getParameter("clientNom");
-            if (clientNom == null || clientNom.isBlank()) {
-                ra.addFlashAttribute("error", "Veuillez saisir le nom du client.");
+            int clientId = request.getParameter("clientId") != null && !request.getParameter("clientId").isBlank()
+                    ? Integer.parseInt(request.getParameter("clientId")) : -1;
+            if (clientId == -1) {
+                ra.addFlashAttribute("error", "Veuillez sélectionner un client.");
                 return "redirect:/admin/ventes/creation";
             }
-            Client client = clientService.trouverParNomOuCreer(clientNom);
+            Client client = clientService.trouverClientParId(clientId);
             if (client == null) {
                 ra.addFlashAttribute("error", "Client introuvable.");
                 return "redirect:/admin/ventes/creation";
             }
+            // Client client = clientService.trouverParNomOuCreer(clientNom);
+            // if (client == null) {
+            //     ra.addFlashAttribute("error", "Client introuvable.");
+            //     return "redirect:/admin/ventes/creation";
+            // }
 
             String[] produitIdsStr = request.getParameterValues("produitId");
             String[] quantitesStr = request.getParameterValues("quantite");

@@ -25,11 +25,17 @@
             <div class="card-form">
                 <form th:action="@{/admin/ventes/creation}" method="post">
 
-                    <div class="form-group">
-                        <label>Client</label>
-                        <input type="text" name="clientNom" placeholder="Saisir le nom du client" required />
-                    </div>
-
+                <div class="form-group">
+                    <label>Client</label>
+                    <select name="clientId" required>
+                        <option value="">Sélectionner un client</option>
+                        <th:block th:each="client : ${clients}">
+                            <option th:value="${client.id}" th:text="${client.nom}"
+                                th:selected="${vente.client != null and vente.client.id == client.id}">
+                            </option>
+                        </th:block>
+                    </select>
+                </div>
                     <div class="lignes-header">
                         <h3>Lignes de vente</h3>
                         <button type="button" class="btn-ajouter-ligne" id="btn-ajouter-ligne">
