@@ -96,7 +96,7 @@
                                     <div class="cell-avatar">
                                         <span class="avatar"
                                             th:text="${#strings.substring(r.employe.prenom,0,1)} + ${#strings.substring(r.employe.nom,0,1)}">JD</span>
-                                        <span th:text="${r.employe.prenom} + ' ' + ${r.employe.nom}">Jean Dupont</span>
+                                        <span th:text="${r.employe.nom} + ' ' + ${r.employe.prenom}">Jean Dupont</span>
                                     </div>
                                 </td>
                                 <td
