@@ -28,4 +28,8 @@
 - **séparation de service , repository , controller**
 - ``Controller`` : appelle les services pour les inscriptions et la connexion et a une exception près : les controlles de la ligne minimale a affiché
 - ``Repository`` : access à la base de donnés
+<<<<<<< Updated upstream
 - ``Service`` : service métier controlle les traitements des donnés 
+=======
+- ``Service`` : service métier controlle les traitements des donnés 
+>>>>>>> Stashed changes
