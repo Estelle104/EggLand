@@ -16,7 +16,7 @@
 | V9 | Filtrage historique/récap | Changer le filtre "Mois" ou "Statut" recharge la page avec uniquement les lignes correspondantes (vérifiable en changeant le filtre et en comptant les lignes affichées). |
 | V10 | Détail des versements dans l'historique | Pour un employé/mois donné, l'historique affiche bien **chaque** ligne de `versementsalaire` liée à ce `paiementsalaire` (et pas seulement le total). |
 
----
+--- 
 
 ## 2. Règles de gestion
 

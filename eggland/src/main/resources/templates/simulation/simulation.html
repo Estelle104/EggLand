@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{fragments/layout}">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
 
 <head>
     <meta charset="UTF-8">
@@ -36,7 +34,9 @@
 
             <div th:if="${resultat != null}" class="simulation-result">
                 <h3>Résultat de la simulation :</h3>
-                <p th:text="'Chiffre d affaires : ' + ${#numbers.formatDecimal(resultat, 0, 'COMMA', 2, 'POINT')} + ' Ar'"></p>
+                <p
+                    th:text="'Chiffre d affaires : ' + ${#numbers.formatDecimal(resultat, 0, 'COMMA', 2, 'POINT')} + ' Ar'">
+                </p>
             </div>
         </div>
 
@@ -53,9 +53,8 @@
                     <select id="lotId" name="lotId" required>
                         <option value="">Sélectionner un lot</option>
                         <option th:if="${#lists.isEmpty(lots)}" value="" disabled>Aucun lot actif disponible</option>
-                        <option th:each="lot : ${lots}"
-                                th:value="${lot.id}"
-                                th:text="${lot.race.nom} + ' - ' + ${lot.nombreInitial} + ' poules'">
+                        <option th:each="lot : ${lots}" th:value="${lot.id}"
+                            th:text="${lot.race.nom} + ' - ' + ${lot.nombreInitial} + ' poules'">
                         </option>
                     </select>
                 </div>
@@ -69,9 +68,8 @@
                     <label for="raceId">Race concernée :</label>
                     <select id="raceId" name="raceId" required>
                         <option value="">Sélectionner une race</option>
-                        <option th:each="race : ${races}"
-                                th:value="${race.id}"
-                                th:text="${race.nom} + ' - Rendement: ' + ${race.rendementMoyenMois} + ' oeufs/mois'">
+                        <option th:each="race : ${races}" th:value="${race.id}"
+                            th:text="${race.nom} + ' - Rendement: ' + ${race.rendementMoyenMois} + ' oeufs/mois'">
                         </option>
                     </select>
                 </div>
@@ -94,7 +92,8 @@
                 <div style="border: 1px solid #ddd; padding: 15px; border-radius: 5px; margin-top: 10px;">
                     <p>
                         <strong>Chiffre d'affaires après mortalité :</strong>
-                        <span th:text="${#numbers.formatDecimal(resultatMortalite.chiffreAffaire, 0, 'COMMA', 2, 'POINT')} + ' Ar'"></span>
+                        <span
+                            th:text="${#numbers.formatDecimal(resultatMortalite.chiffreAffaire, 0, 'COMMA', 2, 'POINT')} + ' Ar'"></span>
                     </p>
                     <p>
                         <strong>Nombre d'oeufs estimés après mortalité :</strong>
@@ -108,9 +107,8 @@
                         <strong>Race concernée :</strong>
                         <span th:text="${resultatMortalite.nomRace}"></span>
                     </p>
-                    <p th:if="${resultatMortalite.message != null}"
-                       style="color: orange; font-style: italic;"
-                       th:text="${resultatMortalite.message}">
+                    <p th:if="${resultatMortalite.message != null}" style="color: orange; font-style: italic;"
+                        th:text="${resultatMortalite.message}">
                     </p>
                 </div>
             </div>

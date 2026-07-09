@@ -73,7 +73,7 @@
             <div class="col-12">
                 <div class="card h-100 border-0">
                     <div class="card-header bg-white border-0 pb-0">
-                        <h5 class="mb-0">Production d'œufs — 14 derniers jours</h5>
+                        <h5 class="mb-0">Production d'œufs <span th:text="'(' + ${dateDebutSelectionnee} + ' - ' + ${dateFinSelectionnee} + ')'"></span></h5>
                     </div>
                     <div class="card-body">
                         <div class="chart-container">
@@ -89,7 +89,7 @@
                     <h5 class="mb-0"><i class="fa-solid fa-skull me-2"></i>Mortalité</h5>
             </div>
             <div class="card-body">
-                <form class="row g-3 align-items-end mb-4" th:action="@{/admin/dashboard}" method="get">
+                <form class="row g-3 align-items-end mb-4" id="filterForm">
                     <div class="col-md-3">
                         <label class="form-label small text-muted">Lot</label>
                         <select name="lotId" class="form-select form-select-sm">
@@ -106,7 +106,7 @@
                         <input type="date" name="dateFin" class="form-control form-control-sm" th:value="${dateFinSelectionnee}">
                     </div>
                     <div class="col-md-3">
-                        <button type="submit" class="btn btn-dark btn-sm w-100">Appliquer</button>
+                        <button type="button" id="btnAppliquer" class="btn btn-dark btn-sm w-100">Appliquer</button>
                     </div>
                 </form>
 
@@ -141,80 +141,122 @@
     </div>
 
     <script th:inline="javascript">
-        const labels = /*[[${production14Jours.labels}]]*/ [];
-        const quantites = /*[[${production14Jours.quantites}]]*/ [];
+        var chartProduction, chartMortalite;
 
-        const ctx = document.getElementById('chartProduction').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Œufs produits',
-                    data: quantites,
-                    borderColor: '#DAAB3A',
-                    backgroundColor: 'rgba(218, 171, 58, 0.15)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.3,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#DAAB3A'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: ctx => ctx.parsed.y + ' œufs'
+        function initCharts() {
+            const labels = /*[[${production14Jours.labels}]]*/ [];
+            const quantites = /*[[${production14Jours.quantites}]]*/ [];
+
+            const ctx = document.getElementById('chartProduction').getContext('2d');
+            chartProduction = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Œufs produits',
+                        data: quantites,
+                        borderColor: '#DAAB3A',
+                        backgroundColor: 'rgba(218, 171, 58, 0.15)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#DAAB3A'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) { return context.parsed.y + ' œufs'; }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { callback: function(value) { return Number.isInteger(value) ? value : ''; } }
                         }
                     }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { callback: value => Number.isInteger(value) ? value : '' }
-                    }
                 }
-            }
-        });
+            });
 
-        const totalMorts = /*[[${totalMorts}]]*/ 0;
-        const totalVivants = /*[[${totalVivants}]]*/ 0;
+            var totalMorts = /*[[${totalMorts}]]*/ 0;
+            var totalVivants = /*[[${totalVivants}]]*/ 0;
 
-        const ctx2 = document.getElementById('chartMortalite').getContext('2d');
-        new Chart(ctx2, {
-            type: 'pie',
-            data: {
-                labels: ['Morts', 'Vivants'],
-                datasets: [{
-                    data: [totalMorts, totalVivants],
-                    backgroundColor: ['#dc3545', '#28a745'],
-                    borderWidth: 2,
-                    borderColor: '#ffffff'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { font: { size: 13 }, padding: 16 }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: ctx => {
-                                const total = totalMorts + totalVivants;
-                                const pct = total > 0 ? ((ctx.parsed / total) * 100).toFixed(1) : 0;
-                                return ctx.label + ': ' + ctx.parsed + ' (' + pct + '%)';
+            var ctx2 = document.getElementById('chartMortalite').getContext('2d');
+            chartMortalite = new Chart(ctx2, {
+                type: 'pie',
+                data: {
+                    labels: ['Morts', 'Vivants'],
+                    datasets: [{
+                        data: [totalMorts, totalVivants],
+                        backgroundColor: ['#dc3545', '#28a745'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 13 }, padding: 16 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    var total = chartMortalite.data.datasets[0].data[0] + chartMortalite.data.datasets[0].data[1];
+                                    var pct = total > 0 ? ((context.parsed / total) * 100).toFixed(1) : 0;
+                                    return context.label + ': ' + context.parsed + ' (' + pct + '%)';
+                                }
                             }
                         }
                     }
                 }
-            }
+            });
+        }
+
+        function appliquerFiltre() {
+            var lotId = document.querySelector('select[name="lotId"]').value;
+            var dateDebut = document.querySelector('input[name="dateDebut"]').value;
+            var dateFin = document.querySelector('input[name="dateFin"]').value;
+
+            var params = new URLSearchParams();
+            if (lotId) params.append('lotId', lotId);
+            if (dateDebut) params.append('dateDebut', dateDebut);
+            if (dateFin) params.append('dateFin', dateFin);
+
+            fetch('/admin/dashboard/filter?' + params.toString())
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    document.querySelector('#chartMortalite').closest('.card-body')
+                        .querySelector('.text-danger.fw-bold').textContent = data.totalMorts.toLocaleString('fr-FR');
+                    document.querySelector('#chartMortalite').closest('.card-body')
+                        .querySelector('.text-success.fw-bold').textContent = data.totalVivants.toLocaleString('fr-FR');
+                    var totalInitialEl = document.querySelector('#chartMortalite').closest('.card-body')
+                        .querySelectorAll('.fw-bold')[2];
+                    if (totalInitialEl) totalInitialEl.textContent = data.totalInitial.toLocaleString('fr-FR');
+
+                    chartMortalite.data.datasets[0].data = [data.totalMorts, data.totalVivants];
+                    chartMortalite.update();
+
+                    chartProduction.data.labels = data.production.labels;
+                    chartProduction.data.datasets[0].data = data.production.quantites;
+                    chartProduction.update();
+
+                    var titreSpan = document.querySelector('.card-header h5 span');
+                    if (titreSpan) titreSpan.textContent = '(' + data.dateDebut + ' - ' + data.dateFin + ')';
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            document.getElementById('btnAppliquer').addEventListener('click', appliquerFiltre);
         });
     </script>
 </div>

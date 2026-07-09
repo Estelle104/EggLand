@@ -68,14 +68,17 @@ public class VenteController {
                 ? venteService.filtrerVentes(clientId, statutId, dateDebut, dateFin)
                 : venteService.listeVente();
         Page<Vente> ventesPage =PaginationUtils.paginerListe(ventes, page, size);
-        Map<String, String> filtres = Map.of();
+        Map<String, String> filtres = new java.util.HashMap<>();
         if (clientId != null) filtres.put("clientId", clientId.toString());
         if (statutId != null) filtres.put("statutId", statutId.toString());
         if (dateDebut != null) filtres.put("dateDebut", dateDebut.toString());
         if (dateFin != null) filtres.put("dateFin", dateFin.toString());
-        
 
-        String baseUrl = "/admin/ventes/listevente?";
+        StringBuilder baseUrlBuilder = new StringBuilder("/admin/ventes/listevente?");
+        for (Map.Entry<String, String> entry : filtres.entrySet()) {
+            baseUrlBuilder.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+        }
+        String baseUrl = baseUrlBuilder.toString();
         model.addAttribute("clients", clientService.listeClient());
         model.addAttribute("statuts", venteService.listeStatutVente());
         model.addAttribute("clientIdSelectionne", clientId);
@@ -120,6 +123,7 @@ public class VenteController {
             String[] quantitesStr = request.getParameterValues("quantite");
             String[] prixStr = request.getParameterValues("prixUnitaire");
             String[] lotIdsStr = request.getParameterValues("lotId");
+            String[] raceIdsStr = request.getParameterValues("raceId");
 
             if (produitIdsStr == null || produitIdsStr.length == 0) {
                 ra.addFlashAttribute("error", "Ajoutez au moins une ligne de vente.");
@@ -130,6 +134,7 @@ public class VenteController {
             List<BigDecimal> quantites = new ArrayList<>();
             List<BigDecimal> prix = new ArrayList<>();
             List<Integer> lotIds = new ArrayList<>();
+            List<Integer> raceIds = new ArrayList<>();
 
             for (int i = 0; i < produitIdsStr.length; i++) {
                 if (produitIdsStr[i] == null || produitIdsStr[i].isBlank()) continue;
@@ -148,6 +153,13 @@ public class VenteController {
                     lotId = Integer.parseInt(lotIdsStr[i]);
                 }
                 lotIds.add(lotId);
+
+                Integer raceId = null;
+                if (raceIdsStr != null && i < raceIdsStr.length
+                        && raceIdsStr[i] != null && !raceIdsStr[i].isBlank()) {
+                    raceId = Integer.parseInt(raceIdsStr[i]);
+                }
+                raceIds.add(raceId);
             }
 
             if (produitIds.isEmpty()) {
@@ -155,7 +167,7 @@ public class VenteController {
                 return "redirect:/admin/ventes/creation";
             }
 
-            venteService.enregistrerVente(client.getId(), produitIds, lotIds, quantites, prix, client);
+            venteService.enregistrerVente(client.getId(), produitIds, lotIds, raceIds, quantites, prix, client);
             ra.addFlashAttribute("success", "Vente créée avec succès.");
 
         } catch (RuntimeException e) {
@@ -231,6 +243,7 @@ public class VenteController {
             String[] quantitesStr = request.getParameterValues("quantite");
             String[] prixStr = request.getParameterValues("prixUnitaire");
             String[] lotIdsStr = request.getParameterValues("lotId");
+            String[] raceIdsStr = request.getParameterValues("raceId");
 
             if (produitIdsStr == null || produitIdsStr.length == 0) {
                 ra.addFlashAttribute("error", "La vente doit contenir au moins une ligne.");
@@ -241,6 +254,7 @@ public class VenteController {
             List<BigDecimal> quantites = new ArrayList<>();
             List<BigDecimal> prix = new ArrayList<>();
             List<Integer> lotIds = new ArrayList<>();
+            List<Integer> raceIds = new ArrayList<>();
 
             for (int i = 0; i < produitIdsStr.length; i++) {
                 if (produitIdsStr[i] == null || produitIdsStr[i].isBlank()) continue;
@@ -259,6 +273,13 @@ public class VenteController {
                     lotId = Integer.parseInt(lotIdsStr[i]);
                 }
                 lotIds.add(lotId);
+
+                Integer raceId = null;
+                if (raceIdsStr != null && i < raceIdsStr.length
+                        && raceIdsStr[i] != null && !raceIdsStr[i].isBlank()) {
+                    raceId = Integer.parseInt(raceIdsStr[i]);
+                }
+                raceIds.add(raceId);
             }
 
             if (produitIds.isEmpty()) {
@@ -266,7 +287,7 @@ public class VenteController {
                 return "redirect:/admin/ventes/listevente";
             }
 
-            venteService.enregistrerModificationVente(venteId, produitIds, lotIds, quantites, prix, client);
+            venteService.enregistrerModificationVente(venteId, produitIds, lotIds, raceIds, quantites, prix, client);
             ra.addFlashAttribute("success", "Vente modifiée avec succès !");
 
         } catch (Exception e) {
@@ -276,4 +297,5 @@ public class VenteController {
 
         return "redirect:/admin/ventes/listevente";
     }
+
 }

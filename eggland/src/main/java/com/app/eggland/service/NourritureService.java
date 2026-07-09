@@ -18,6 +18,11 @@ public class NourritureService {
         return nourritureRepository.findAll();
     }
 
+    //recherche par libelle de nourriture(par keyword)
+    public List<Nourriture> findByLibelleContaining(String keyword) {
+        return nourritureRepository.findByLibelleContainingIgnoreCase(keyword);
+    }
+
     public Optional<Nourriture> findById(Integer id) {
         return nourritureRepository.findById(id);
     }

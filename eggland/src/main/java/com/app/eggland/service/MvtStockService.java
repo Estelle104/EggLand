@@ -1,6 +1,7 @@
 package com.app.eggland.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -94,5 +95,14 @@ public class MvtStockService {
         BigDecimal e = entrees != null ? entrees : BigDecimal.ZERO;
         BigDecimal s = sorties != null ? sorties : BigDecimal.ZERO;
         return e.subtract(s);
+    }
+
+    //calculer le stock d'une nourriture à une date spécifique
+    public BigDecimal calculerStockALaDate(Integer nourritureId, LocalDate date) {
+    BigDecimal entrees = mvtStockRepository.sumQuantiteByNourritureAndTypeBeforeDate(nourritureId, getTypeEntree(), date);
+    BigDecimal sorties = mvtStockRepository.sumQuantiteByNourritureAndTypeBeforeDate(nourritureId, getTypeSortie(), date);
+    BigDecimal e = entrees != null ? entrees : BigDecimal.ZERO;
+    BigDecimal s = sorties != null ? sorties : BigDecimal.ZERO;
+    return e.subtract(s);
     }
 }

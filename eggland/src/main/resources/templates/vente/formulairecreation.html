@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org" 
-layout:decorate="~{fragments/layout}">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,11 +12,12 @@ layout:decorate="~{fragments/layout}">
     <link rel="stylesheet" th:href="@{/css/vente.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
+
 <body>
 
-<div layout:fragment="content">
+    <div layout:fragment="content">
         <div class="content">
-            
+
             <div th:if="${error}" class="alert alert-danger">
                 <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${error}"></span>
             </div>
@@ -35,12 +36,13 @@ layout:decorate="~{fragments/layout}">
                             <i class="fa-solid fa-plus"></i> Ajouter une ligne
                         </button>
                     </div>
-                    
+
                     <table id="lignes-table">
                         <thead>
                             <tr>
                                 <th>Produit</th>
                                 <th>Lot</th>
+                                <th>Race</th>
                                 <th>Quantité</th>
                                 <th>Prix unitaire</th>
                                 <th></th>
@@ -49,14 +51,17 @@ layout:decorate="~{fragments/layout}">
                         <tbody id="lignes-tbody"></tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="2" style="border-bottom:none;"></td>
-                                <td style="text-align:right;font-weight:700;padding:18px 12px;font-size:15px;color:var(--text);">Total :</td>
-                                <td style="font-weight:700;padding:18px 12px;font-size:15px;color:var(--primary);" id="total-vente">0.00 Ar</td>
+                                <td colspan="3" style="border-bottom:none;"></td>
+                                <td
+                                    style="text-align:right;font-weight:700;padding:18px 12px;font-size:15px;color:var(--text);">
+                                    Total :</td>
+                                <td style="font-weight:700;padding:18px 12px;font-size:15px;color:var(--primary);"
+                                    id="total-vente">0.00 Ar</td>
                                 <td style="border-bottom:none;"></td>
                             </tr>
                         </tfoot>
                     </table>
-                    
+
                     <div class="form-actions">
                         <a th:href="@{/admin/ventes/listevente}" class="btn-annuler">
                             <i class="fa-solid fa-xmark"></i> Annuler
@@ -68,14 +73,15 @@ layout:decorate="~{fragments/layout}">
 
                 </form>
             </div>
-            
+
         </div>
 
-    <script th:inline="javascript">
-        var produitsData = /*[[${produits}]]*/ [];
-        var lotsData     = /*[[${lots}]]*/ [];
-    </script>
-    <script th:src="@{/js/vente.js}"></script>
-</div>
+        <script th:inline="javascript">
+            var produitsData = /*[[${produits}]]*/[];
+            var lotsData = /*[[${lots}]]*/[];
+        </script>
+        <script th:src="@{/js/vente.js}"></script>
+    </div>
 </body>
+
 </html>

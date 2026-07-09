@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" 
-      xmlns:th="http://www.thymeleaf.org" 
-      layout:decorate="~{fragments/layout}">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
 
 <head>
     <meta charset="UTF-8">
@@ -13,13 +11,28 @@
 <body>
     <div layout:fragment="content">
 
-                <div class="page-header">
-                    <h2 th:text="${pageTitle}">Liste des nourritures</h2>
-                    <a th:href="@{/admin/nourritures/nouveau}" class="btn-ajouter"><i class="fa-solid fa-plus"></i> Nouvelle nourriture</a>
-                </div>
+        <div class="page-header">
+            <h2 th:text="${pageTitle}">Liste des nourritures</h2>
+            <a th:href="@{/admin/nourritures/nouveau}" class="btn-ajouter"><i class="fa-solid fa-plus"></i> Nouvelle
+                nourriture</a>
+        </div>
+
+        <div th:if="${error}"
+            style="background:#f8d7da; color:#721c24; padding:12px 16px; border-radius:10px; margin-bottom:16px; font-size:14px;">
+            <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${error}"></span>
+        </div>
 
                 <div th:if="${error}" style="background:#f8d7da; color:#721c24; padding:12px 16px; border-radius:10px; margin-bottom:16px; font-size:14px;">
                     <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${error}"></span>
+                </div>
+
+                <div style="margin-bottom:16px;">
+                    <form th:action="@{/admin/nourritures}" method="get" style="display:flex; gap:8px; align-items:center;">
+                        <input type="text" name="keyword" th:value="${keyword}" placeholder="Rechercher de nourriture..." style="width:250px; padding:8px 12px; border:1px solid var(--border); border-radius:8px; font-size:14px;">
+                        <button type="submit" style="padding:8px 16px; background:var(--primary); color:#fff; border:none; border-radius:8px; cursor:pointer;">
+                            <i class="fa-solid fa-search"></i> Rechercher
+                        </button>
+                    </form>
                 </div>
 
                 <div class="card">
@@ -50,6 +63,7 @@
                     <div th:if="${#lists.isEmpty(nourritures)}" class="vide-message">Aucune nourriture enregistrée.</div>
                 </div>
 
-            </div>
+    </div>
 </body>
+
 </html>
