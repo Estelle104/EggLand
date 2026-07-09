@@ -23,5 +23,4 @@ INSERT INTO useradmin(actif,email,mot_de_passe,nom,role) VALUES
 (true,'gest@gmail.com','gestion123','ricardo',2);
 
 INSERT INTO Client (nom, prenom, tel, email, adresse, date_inscription, id_statut) VALUES
-('Rakoto', 'Jean', '0341234567', 'jean.rakoto@gmail.com',
- 'Lot II M 15 Antananarivo', '2026-01-10', 1);
+('Rakoto', 'Jean', '0341234567', 'jean.rakoto@gmail.com', 'Lot II M 15 Antananarivo', '2026-01-10', 1);
