@@ -29,10 +29,6 @@
                             <button type="submit" class="btn btn-outline" style="padding:6px 10px; font-size:12px;"><i
                                     class="fa-solid fa-file-excel"></i> XLSX</button>
                         </form>
-
-                        <a th:href="@{/admin/employes/historique}" class="btn btn-outline">
-                            <i class="fa-solid fa-clock-rotate-left"></i> Historique
-                        </a>
                     </div>
                 </div>
 
@@ -100,7 +96,7 @@
                                     <div class="cell-avatar">
                                         <span class="avatar"
                                             th:text="${#strings.substring(r.employe.prenom,0,1)} + ${#strings.substring(r.employe.nom,0,1)}">JD</span>
-                                        <span th:text="${r.employe.prenom} + ' ' + ${r.employe.nom}">Jean Dupont</span>
+                                        <span th:text="${r.employe.nom} + ' ' + ${r.employe.prenom}">Jean Dupont</span>
                                     </div>
                                 </td>
                                 <td

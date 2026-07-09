@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -180,8 +182,7 @@ public class EmployeController {
                 : LocalDate.now().withDayOfMonth(1);
 
         List<PaiementSalaireService.RecapLigne> recap = paiementSalaireService.recapMois(moisDate);
-        
-        
+
         if ("paye".equals(statut)) {
             recap = recap.stream().filter(PaiementSalaireService.RecapLigne::paye).toList();
         } else if ("attente".equals(statut)) {
@@ -192,10 +193,14 @@ public class EmployeController {
             recap = recap.stream().filter(r -> r.employe().getId().equals(employeId)).toList();
         }
 
-        long nbPayes = recap.stream().filter(PaiementSalaireService.RecapLigne::paye).count();
-        long nbEnAttente = recap.size() - nbPayes; 
+        List<PaiementSalaireService.RecapLigne> recapsC = new ArrayList<>(recap);
 
-        Page<PaiementSalaireService.RecapLigne> recapPage = PaginationUtils.paginerListe(recap, page, size);
+        recapsC.sort(Comparator.comparing(r -> r.employe().getNom() + " " + r.employe().getPrenom()));
+
+        long nbPayes = recapsC.stream().filter(PaiementSalaireService.RecapLigne::paye).count();
+        long nbEnAttente = recapsC.size() - nbPayes; 
+
+        Page<PaiementSalaireService.RecapLigne> recapPage = PaginationUtils.paginerListe(recapsC, page, size);
 
         StringBuilder url = new StringBuilder("/admin/employes/recap?");
         if(mois !=null && !mois.isBlank()) url.append("mois=").append(mois).append("&");
