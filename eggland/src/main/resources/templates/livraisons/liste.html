@@ -1,127 +1,128 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Livraisons - Eggland</title>
-    <link rel="stylesheet" th:href="@{/css/variables.css}">
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
-    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/components.css}">
     <link rel="stylesheet" th:href="@{/css/listeLivraison.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-   
+
 </head>
+
 <body>
-    <div class="app">
-        <div th:replace="fragments/sidebar :: sidebar"></div>
-        <div class="main">
-            <div th:replace="fragments/header :: header"></div>
-            <div class="content">
+    <div layout:fragment="content">
 
-                <div th:if="${#strings.isEmpty(param.success)}" th:remove="tag">
-                    <div th:if="${#strings.isEmpty(param.error)}" th:remove="tag">
-                        <!-- Alerts flash via RedirectAttributes -->
-                    </div>
+        <div th:if="${#strings.isEmpty(param.success)}" th:remove="tag">
+            <div th:if="${#strings.isEmpty(param.error)}" th:remove="tag">
+                <!-- Alerts flash via RedirectAttributes -->
+            </div>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success">
+            <i class="fa-solid fa-check-circle"></i>
+            <span th:text="${success}"></span>
+        </div>
+        <div th:if="${error}" class="alert alert-danger">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span th:text="${error}"></span>
+        </div>
+
+
+        <div class="page-header">
+            <h2 th:text="${pageTitle}">Livraisons</h2>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <form th:action="@{/admin/finance/export/pdf/bon-livraison}" method="get" target="_blank"
+                    style="margin:0; display:flex; gap:6px; align-items:center;">
+                    <input type="date" name="date" th:value="${today}" class="form-control form-control-sm"
+                        style="width:150px;">
+                    <button type="submit" class="btn-primary" style="padding:8px 14px; font-size:13px; margin:0;"><i
+                            class="fa-solid fa-file-pdf"></i> PDF</button>
+                </form>
+                <a class="btn-primary" th:href="@{/admin/livraisons/creation}" style="margin:0;">
+                    <i class="fa-solid fa-truck-fast"></i> Nouvelle livraison
+                </a>
+            </div>
+        </div>
+
+        <!-- Filtre par date et client -->
+        <div class="filtre-card">
+            <form class="filtre-form" th:action="@{/admin/livraisons}" method="get">
+                <div class="filtre-group">
+                    <label><i class="fa-solid fa-user"></i> Nom du client</label>
+                    <input type="text" name="nomClient" th:value="${nomClientSelectionne}"
+                        placeholder="Rechercher par nom du client" autocomplete="off" />
                 </div>
-
-                <div th:if="${success}" class="alert alert-success">
-                    <i class="fa-solid fa-check-circle"></i>
-                    <span th:text="${success}"></span>
+                <div class="filtre-group">
+                    <label><i class="fa-solid fa-calendar-day"></i> Date début</label>
+                    <input type="date" name="dateDebut" th:value="${dateDebutSelectionnee}" />
                 </div>
-                <div th:if="${error}" class="alert alert-danger">
-                    <i class="fa-solid fa-circle-exclamation"></i>
-                    <span th:text="${error}"></span>
+                <div class="filtre-group">
+                    <label><i class="fa-solid fa-calendar-day"></i> Date fin</label>
+                    <input type="date" name="dateFin" th:value="${dateFinSelectionnee}" />
                 </div>
-
-
-                <div class="page-header">
-                    <h2 th:text="${pageTitle}">Livraisons</h2>
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        <form th:action="@{/admin/finance/export/pdf/bon-livraison}" method="get" target="_blank" style="margin:0; display:flex; gap:6px; align-items:center;">
-                            <input type="date" name="date" th:value="${today}" class="form-control form-control-sm" style="width:150px;">
-                            <button type="submit" class="btn-primary" style="padding:8px 14px; font-size:13px; margin:0;"><i class="fa-solid fa-file-pdf"></i> PDF</button>
-                        </form>
-                        <a class="btn-primary" th:href="@{/admin/livraisons/creation}" style="margin:0;">
-                            <i class="fa-solid fa-truck-fast"></i> Nouvelle livraison
-                        </a>
-                    </div>
+                <div class="filtre-actions">
+                    <button type="submit" class="btn-filtrer">
+                        <i class="fa-solid fa-filter"></i> Filtrer
+                    </button>
+                    <a th:href="@{/admin/livraisons}" class="btn-reset">
+                        <i class="fa-solid fa-undo"></i> Réinitialiser
+                    </a>
                 </div>
+            </form>
+        </div>
 
-                <!-- Filtre par date et client -->
-                <div class="filtre-card">
-                    <form class="filtre-form" th:action="@{/admin/livraisons}" method="get">
-                        <div class="filtre-group">
-                            <label><i class="fa-solid fa-user"></i> Nom du client</label>
-                            <input type="text" name="nomClient" th:value="${nomClientSelectionne}" placeholder="Rechercher par nom du client" autocomplete="off" />
-                        </div>
-                        <div class="filtre-group">
-                            <label><i class="fa-solid fa-calendar-day"></i> Date début</label>
-                            <input type="date" name="dateDebut" th:value="${dateDebutSelectionnee}" />
-                        </div>
-                        <div class="filtre-group">
-                            <label><i class="fa-solid fa-calendar-day"></i> Date fin</label>
-                            <input type="date" name="dateFin" th:value="${dateFinSelectionnee}" />
-                        </div>
-                        <div class="filtre-actions">
-                            <button type="submit" class="btn-filtrer">
-                                <i class="fa-solid fa-filter"></i> Filtrer
-                            </button>
-                            <a th:href="@{/admin/livraisons}" class="btn-reset">
-                                <i class="fa-solid fa-undo"></i> Réinitialiser
-                            </a>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="card">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Client</th>
-                                <th>Vente</th>
-                                <th>Adresse</th>
-                                <th>Date</th>
-                                <th>Frais</th>
-                                <th>Statut</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="livraison : ${livraisons}">
-                                <td th:text="${livraison.id}"></td>
-                                <td th:text="${livraison.client.nom}"></td>
-                                <td th:text="${livraison.vente.id}"></td>
-                                <td th:text="${livraison.adresseLivraison}"></td>
-                                <td th:text="${#temporals.format(livraison.dateLivraison, 'dd/MM/yyyy')}"></td>
-                                <td th:text="${#numbers.formatDecimal(livraison.fraisLivraison, 0, 'WHITESPACE', 2, 'COMMA')} + ' Ar'"></td>
-                                <td>
-                                    <span class="badge" th:classappend="${'badge-' + livraison.statut.code}" th:text="${livraison.statut.code}"></span>
-                                </td>
-                                <td>
-                                    <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-                                        <form th:action="@{/admin/livraisons/supprimer}" method="post" style="margin:0;" onsubmit="return confirm('Supprimer cette livraison ? Cette action est irréversible.')">
-                                            <input type="hidden" name="id" th:value="${livraison.id}" />
-                                            <button type="submit" class="btn-supp-liv" title="Supprimer">
-                                                <i class="fa-solid fa-trash-can"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${baseUrl})}"></div>
-                    <div th:if="${#lists.isEmpty(livraisons)}" class="vide-message">
-                        <i class="fa-solid fa-truck"></i>
-                        Aucune livraison enregistrée.
-                    </div>
-                </div>
-
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Client</th>
+                        <th>Vente</th>
+                        <th>Adresse</th>
+                        <th>Date</th>
+                        <th>Frais</th>
+                        <th>Statut</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="livraison : ${livraisons}">
+                        <td th:text="${livraison.id}"></td>
+                        <td th:text="${livraison.client.nom}"></td>
+                        <td th:text="${livraison.vente.id}"></td>
+                        <td th:text="${livraison.adresseLivraison}"></td>
+                        <td th:text="${#temporals.format(livraison.dateLivraison, 'dd/MM/yyyy')}"></td>
+                        <td
+                            th:text="${#numbers.formatDecimal(livraison.fraisLivraison, 0, 'WHITESPACE', 2, 'COMMA')} + ' Ar'">
+                        </td>
+                        <td>
+                            <span class="badge" th:classappend="${'badge-' + livraison.statut.code}"
+                                th:text="${livraison.statut.code}"></span>
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+                                <form th:action="@{/admin/livraisons/supprimer}" method="post" style="margin:0;"
+                                    onsubmit="return confirm('Supprimer cette livraison ? Cette action est irréversible.')">
+                                    <input type="hidden" name="id" th:value="${livraison.id}" />
+                                    <button type="submit" class="btn-supp-liv" title="Supprimer">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div
+                th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${baseUrl}, filters=${filtres})}">
+            </div>
+            <div th:if="${#lists.isEmpty(livraisons)}" class="vide-message">
+                <i class="fa-solid fa-truck"></i>
+                Aucune livraison enregistrée.
             </div>
         </div>
     </div>
 </body>
+
 </html>

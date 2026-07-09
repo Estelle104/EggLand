@@ -65,7 +65,7 @@ public class SimulationController {
         return "simulation/simulation";
     }
 
-    @PostMapping("/simulation/mortalite")
+    @PostMapping("/mortalite")
     public String runSimulationMortalite(Model model,
                                         @RequestParam("lotId") Integer lotId,
                                         @RequestParam("raceId") Integer raceId,

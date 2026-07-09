@@ -5,6 +5,8 @@ import com.app.eggland.model.PaiementSalaire;
 import com.app.eggland.model.VersementSalaire;
 import com.app.eggland.repository.PaiementSalaireRepository;
 import com.app.eggland.repository.VersementSalaireRepository;
+import com.app.eggland.service.PaiementSalaireService.RecapLigne;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -90,7 +92,9 @@ public class PaiementSalaireService {
      */
     public List<RecapLigne> recapMois(LocalDate mois) {
         LocalDate premierJourMois = mois.withDayOfMonth(1);
-        List<Employe> employes = employeService.listerTous();
+        LocalDate dernierJourMois = YearMonth.from(mois).atEndOfMonth();
+
+        List<Employe> employes = employeService.listerTous().stream().filter(e -> !e.getDateEmbauche().isAfter(dernierJourMois)).toList();
 
         return employes.stream().map(employe -> {
             PaiementSalaire paiement = paiementSalaireRepository

@@ -1,47 +1,48 @@
 <!DOCTYPE html>
-<html lang="fr" 
-      xmlns:th="http://www.thymeleaf.org" 
-      layout:decorate="~{fragments/layout}">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${nourriture.id == null} ? 'Nouvelle nourriture' : 'Modifier la nourriture'">Nourriture - Eggland</title>
+    <title th:text="${nourriture.id == null} ? 'Nouvelle nourriture' : 'Modifier la nourriture'">Nourriture - Eggland
+    </title>
     <link rel="stylesheet" th:href="@{/css/nourritures.css}">
 </head>
 
 <body>
     <div layout:fragment="content">
 
-                <div class="page-header">
-                    <h2 th:text="${nourriture.id == null} ? 'Nouvelle nourriture' : 'Modifier la nourriture'"></h2>
+        <div class="page-header">
+            <h2 th:text="${nourriture.id == null} ? 'Nouvelle nourriture' : 'Modifier la nourriture'"></h2>
+        </div>
+
+        <div class="card-form">
+            <form th:action="@{/admin/nourritures/save}" th:object="${nourriture}" method="post">
+
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="form-group">
+                    <label for="libelle">Libellé</label>
+                    <input type="text" id="libelle" th:field="*{libelle}" placeholder="Ex: Maïs" required />
+                </div>
+                <div class="form-group">
+                    <label for="prixUnitaire">Prix unitaire (Ar)</label>
+                    <input type="number" id="prixUnitaire" th:field="*{prixUnitaire}" step="0.01" placeholder="Ex: 2000"
+                        required />
+                </div>
+                <div class="form-group">
+                    <label for="seuilAlerte">Seuil d'alerte</label>
+                    <input type="number" id="seuilAlerte" th:field="*{seuilAlerte}" placeholder="Ex: 50" />
                 </div>
 
-                <div class="card-form">
-                    <form th:action="@{/admin/nourritures/save}" th:object="${nourriture}" method="post">
-
-                        <input type="hidden" th:field="*{id}" />
-
-                        <div class="form-group">
-                            <label for="libelle">Libellé</label>
-                            <input type="text" id="libelle" th:field="*{libelle}" placeholder="Ex: Maïs" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="prixUnitaire">Prix unitaire (Ar)</label>
-                            <input type="number" id="prixUnitaire" th:field="*{prixUnitaire}" step="0.01" placeholder="Ex: 2000" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="seuilAlerte">Seuil d'alerte</label>
-                            <input type="number" id="seuilAlerte" th:field="*{seuilAlerte}" placeholder="Ex: 50" />
-                        </div>
-
-                        <div class="form-actions">
-                            <button type="submit" class="btn-enregistrer"><i class="fa-solid fa-save"></i> Enregistrer</button>
-                            <a th:href="@{/admin/nourritures}" class="btn-annuler"><i class="fa-solid fa-xmark"></i> Annuler</a>
-                        </div>
-                    </form>
+                <div class="form-actions">
+                    <button type="submit" class="btn-enregistrer"><i class="fa-solid fa-save"></i> Enregistrer</button>
+                    <a th:href="@{/admin/nourritures}" class="btn-annuler"><i class="fa-solid fa-xmark"></i> Annuler</a>
                 </div>
+            </form>
+        </div>
 
-            </div>
+    </div>
 </body>
+
 </html>

@@ -1,133 +1,115 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="'Statistiques des Œufs - Eggland'">Statistiques - Eggland</title>
-
-    <link rel="stylesheet" th:href="@{/css/variables.css}">
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
-    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/oeufs.css}">
     <link rel="stylesheet" th:href="@{/css/oeufs-stats.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/simulation.css}">
 </head>
 
 <body>
-    <div class="app">
+    <div layout:fragment="content" class="stats-page">
 
-        <div th:replace="fragments/sidebar :: sidebar"></div>
+        <div class="page-header">
+            <div>
+                <h2>Statistiques des Œufs</h2>
+                <p>Suivez le stock disponible et le rendement quotidien de chaque lot.</p>
+            </div>
+            <div class="page-actions">
+                <a th:href="@{/admin/simulation}" class="btn btn-simulation-ca">
+                    <i class="fa-solid fa-chart-line me-1"></i> Simuler
+                </a>
+                <a th:href="@{/admin/oeufs/saisie}" class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i> Nouvelle Collecte
+                </a>
+            </div>
+        </div>
 
-        <div class="main">
+        <div class="stats-container">
+            <div class="stats-icon" aria-hidden="true">
+                <i class="fa-solid fa-egg"></i>
+            </div>
+            <div class="stock-summary">
+                <span class="stats-label">Stock disponible</span>
+                <h3><span th:text="${stock}">0</span> <small>œufs</small></h3>
+                <a th:href="@{/admin/oeufs/historique}" class="history-link">
+                    <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+                    Voir historique
+                </a>
+            </div>
+        </div>
 
-            <div th:replace="fragments/header :: header"></div>
-
-            <div class="content stats-page">
-
-                <div class="page-header">
-                    <div>
-                        <h2>Statistiques des Œufs</h2>
-                        <p>Suivez le stock disponible et le rendement quotidien de chaque lot.</p>
-                    </div>
-                    <a th:href="@{/admin/simulation}" class="btn btn-primary">
-                        <i class="fa-solid fa-plus"></i>Simuler
-                    </a>
-                    <a th:href="@{/admin/oeufs/saisie}" class="btn btn-primary">
-                        <i class="fa-solid fa-plus"></i> Nouvelle Collecte
-                    </a>
+        <section class="chart-card" aria-labelledby="production-chart-title">
+            <div class="chart-heading">
+                <div>
+                    <h3 id="production-chart-title">Production des 14 derniers jours</h3>
+                    <p>Quantité totale d'œufs collectée chaque jour</p>
                 </div>
+                <i class="fa-solid fa-chart-column" aria-hidden="true"></i>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="productionChart" role="img"
+                    aria-label="Histogramme des productions d'œufs des 14 derniers jours">
+                </canvas>
+            </div>
+        </section>
 
-                <div class="stats-container">
-                    <div class="stats-icon" aria-hidden="true">
-                        <i class="fa-solid fa-egg"></i>
-                    </div>
-                    <div class="stock-summary">
-                        <span class="stats-label">Stock disponible</span>
-                        <h3><span th:text="${stock}">0</span> <small>œufs</small></h3>
-                        <a th:href="@{/admin/oeufs/historique}" class="history-link">
-                            <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
-                            Voir historique
-                        </a>
-                    </div>
-                </div>
+        <div th:if="${#lists.isEmpty(tauxParLot)}" class="stats-empty">
+            <i class="fa-solid fa-chart-column" aria-hidden="true"></i>
+            <p>Aucune production enregistrée pour le calcul de taux de ponte.</p>
+        </div>
 
-                <section class="chart-card" aria-labelledby="production-chart-title">
-                    <div class="chart-heading">
-                        <div>
-                            <h3 id="production-chart-title">Production des 14 derniers jours</h3>
-                            <p>Quantité totale d'œufs collectée chaque jour</p>
-                        </div>
-                        <i class="fa-solid fa-chart-column" aria-hidden="true"></i>
-                    </div>
-                    <div class="chart-wrapper">
-                        <canvas id="productionChart"
-                            role="img"
-                            aria-label="Histogramme des productions d'œufs des 14 derniers jours">
-                        </canvas>
-                    </div>
-                </section>
-
-                <div th:if="${#lists.isEmpty(tauxParLot)}" class="stats-empty">
-                    <i class="fa-solid fa-chart-column" aria-hidden="true"></i>
-                    <p>Aucune production enregistrée pour le calcul de taux de ponte.</p>
-                </div>
-
-                <div th:if="${!#lists.isEmpty(tauxParLot)}" class="table-responsive stats-table-card">
-                    <div class="table-heading">
-                        <h3>Taux de ponte par lot</h3>
-                        <span th:text="|${#lists.size(tauxParLot)} relevé(s)|">0 relevé</span>
-                    </div>
-                    <table class="stats-table">
-                        <thead>
-                            <tr>
-                                <th>Lot</th>
-                                <th>Race</th>
-                                <th>Date</th>
-                                <th>Quantité valide</th>
-                                <th>Attendu</th>
-                                <th>Taux (%)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="item : ${tauxParLot}">
-                                <td th:text="${item.lotNumero}">1</td>
-                                <td>
-                                    <span th:each="lotRace : ${item.races}"
-                                        th:text="${lotRace.race.nom} + ' '">
-                                    </span>
-                                </td>
-                                <td th:text="${item.date}">2026-01-01</td>
-                                <td th:text="${item.quantiteValide}">0</td>
-                                <td th:text="${#numbers.formatDecimal(item.attendu, 1, 0)}">0</td>
-                                <td>
-                                    <span class="taux-badge"
-                                        th:text="${#numbers.formatDecimal(item.taux, 1, 1)} + '%'"
-                                        th:classappend="${item.taux >= 90} ? ' text-success' :
+        <div th:if="${!#lists.isEmpty(tauxParLot)}" class="table-responsive stats-table-card">
+            <div class="table-heading">
+                <h3>Taux de ponte par lot</h3>
+                <span th:text="|${#lists.size(tauxParLot)} relevé(s)|">0 relevé</span>
+            </div>
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>Lot</th>
+                        <th>Race</th>
+                        <th>Date</th>
+                        <th>Quantité valide</th>
+                        <th>Attendu</th>
+                        <th>Taux (%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item : ${tauxParLot}">
+                        <td th:text="${item.lotNumero}">1</td>
+                        <td>
+                            <span th:each="lotRace : ${item.races}" th:text="${lotRace.race.nom} + ' '">
+                            </span>
+                        </td>
+                        <td th:text="${item.date}">2026-01-01</td>
+                        <td th:text="${item.quantiteValide}">0</td>
+                        <td th:text="${#numbers.formatDecimal(item.attendu, 1, 'COMMA', 2, 'POINT')}">0</td>
+                        <td>
+                            <span class="taux-badge"
+                                th:text="${#numbers.formatDecimal(item.taux, 1, 'COMMA', 2, 'POINT')} + '%'"
+                                th:classappend="${item.taux >= 90} ? ' text-success' :
                                                         (${item.taux >= 70} ? ' text-warning' : ' text-danger')">
                                     </span>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${baseUrl})}"></div>
+                    <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${baseUrl}, filters=${filtres})}"></div>
                 </div>
-            </div>
 
-        </div>
-
+        <script th:inline="javascript">
+            window.productionChartData = {
+                labels: /*[[${production14Jours.labels}]]*/[],
+                quantites: /*[[${production14Jours.quantites}]]*/[]
+            };
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
+        <script th:src="@{/js/chart.js}"></script>
     </div>
-
-    <script th:inline="javascript">
-        window.productionChartData = {
-            labels: /*[[${production14Jours.labels}]]*/ [],
-            quantites: /*[[${production14Jours.quantites}]]*/ []
-        };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
-    <script th:src="@{/js/chart.js}"></script>
-    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 
 </body>
 

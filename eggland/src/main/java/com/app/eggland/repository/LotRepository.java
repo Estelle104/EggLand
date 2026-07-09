@@ -45,7 +45,7 @@ public interface LotRepository extends JpaRepository<Lot, Integer>{
     /**
      * Récupère les lots actifs avec leur race
      */
-    @Query("SELECT DISTINCT l FROM Lot l JOIN FETCH l.race WHERE l.statut.code = 'ACTIF'")
+    @Query("SELECT DISTINCT l FROM Lot l JOIN FETCH l.race WHERE LOWER(l.statut.code) = 'actif' ORDER BY l.id ASC")
     List<Lot> findActiveLotsWithRace();
     
     /**
@@ -57,6 +57,6 @@ public interface LotRepository extends JpaRepository<Lot, Integer>{
     /**
      * Récupère les lots actifs
      */
-    @Query("SELECT l FROM Lot l WHERE l.statut.code = 'ACTIF'")
+    @Query("SELECT l FROM Lot l WHERE LOWER(l.statut.code) = 'actif' ORDER BY l.id ASC")
     List<Lot> findActiveLots();
 }

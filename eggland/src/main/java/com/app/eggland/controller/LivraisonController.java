@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
-
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -77,7 +77,16 @@ public class LivraisonController {
         if (urlFinale.endsWith("&") || urlFinale.endsWith("?")) {
             urlFinale = urlFinale.substring(0, urlFinale.length() - 1);
         }
-        
+        Map<String, String> filtres = new java.util.HashMap<>();
+        if(nomClient != null && !nomClient.isBlank()) {
+            filtres.put("nomClient", nomClient);
+        }
+        if(dateDebutStr != null && !dateDebutStr.isBlank()) {
+            filtres.put("dateDebut", dateDebutStr);
+        }
+        if(dateFinStr != null && !dateFinStr.isBlank()) {
+            filtres.put("dateFin", dateFinStr);
+        }
 
         LocalDate today = LocalDate.now();
         model.addAttribute("livraisons", livraisonsPage.getContent());
@@ -85,7 +94,8 @@ public class LivraisonController {
         model.addAttribute("totalPages", livraisonsPage.getTotalPages());
         model.addAttribute("size", size);
         model.addAttribute("baseUrl", urlFinale);
-
+        model.addAttribute("filtres", filtres);
+        
         model.addAttribute("dateDebutSelectionnee", dateDebutStr);
         model.addAttribute("dateFinSelectionnee", dateFinStr);
         model.addAttribute("nomClientSelectionne", nomClient);

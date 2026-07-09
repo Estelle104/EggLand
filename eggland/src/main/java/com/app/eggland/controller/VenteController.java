@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -67,6 +68,17 @@ public class VenteController {
                 ? venteService.filtrerVentes(clientId, statutId, dateDebut, dateFin)
                 : venteService.listeVente();
         Page<Vente> ventesPage =PaginationUtils.paginerListe(ventes, page, size);
+        Map<String, String> filtres = new java.util.HashMap<>();
+        if (clientId != null) filtres.put("clientId", clientId.toString());
+        if (statutId != null) filtres.put("statutId", statutId.toString());
+        if (dateDebut != null) filtres.put("dateDebut", dateDebut.toString());
+        if (dateFin != null) filtres.put("dateFin", dateFin.toString());
+
+        StringBuilder baseUrlBuilder = new StringBuilder("/admin/ventes/listevente?");
+        for (Map.Entry<String, String> entry : filtres.entrySet()) {
+            baseUrlBuilder.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+        }
+        String baseUrl = baseUrlBuilder.toString();
         model.addAttribute("clients", clientService.listeClient());
         model.addAttribute("statuts", venteService.listeStatutVente());
         model.addAttribute("clientIdSelectionne", clientId);
@@ -79,7 +91,8 @@ public class VenteController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", ventesPage.getTotalPages());
         model.addAttribute("size", size);
-        model.addAttribute("baseUrl", "/admin/ventes/listevente");
+        model.addAttribute("baseUrl", baseUrl);
+        model.addAttribute("filtres", filtres);
         return "vente/listeVente";
     }
 
@@ -266,4 +279,5 @@ public class VenteController {
 
         return "redirect:/admin/ventes/listevente";
     }
+
 }

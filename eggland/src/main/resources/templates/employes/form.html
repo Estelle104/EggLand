@@ -1,23 +1,16 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nouvel employé - Eggland</title>
-    <link rel="stylesheet" th:href="@{/css/variables.css}">
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
-    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/components.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
 <body>
-    <div class="app">
-        <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div layout:fragment="content">
         <div class="main">
-            <div th:replace="fragments/header :: header"></div>
             <div class="content">
 
                 <div class="page-header">
@@ -32,8 +25,9 @@
                 </div>
 
                 <div class="card card-form">
-                    <form th:action="${employe.id != null} ? @{/admin/employes/{id}/modifier(id=${employe.id})} : @{/admin/employes/nouveau}"
-                          th:object="${employe}" method="post">
+                    <form
+                        th:action="${employe.id != null} ? @{/admin/employes/{id}/modifier(id=${employe.id})} : @{/admin/employes/nouveau}"
+                        th:object="${employe}" method="post">
 
                         <div class="form-group">
                             <label>Nom</label>
@@ -49,7 +43,8 @@
                         </div>
                         <div class="form-group">
                             <label>Salaire mensuel (Ar)</label>
-                            <input type="number" step="0.01" min="0" th:field="*{salaire}" placeholder="850000" required>
+                            <input type="number" step="0.01" min="0" th:field="*{salaire}" placeholder="850000"
+                                required>
                         </div>
                         <div class="form-group">
                             <label>Date d'embauche</label>
@@ -64,10 +59,7 @@
                         </div>
                     </form>
                 </div>
-
             </div>
-        </div>
-    </div>
 </body>
 
 </html>

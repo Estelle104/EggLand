@@ -46,7 +46,8 @@ public class MvtStockController {
             stocks.put(n.getId(), mvtStockService.calculerStockActuel(n.getId()));
         }
         Page<Nourriture> nourrituresPage = PaginationUtils.paginerListe(nourritures, page, size);
-
+        String baseUrl = "/admin/stock";
+        Map<String, String> filtres = new HashMap<>();
         LocalDate today = LocalDate.now();
         model.addAttribute("stocks", stocks);
         model.addAttribute("pageTitle", "Stock des nourritures");
@@ -57,6 +58,8 @@ public class MvtStockController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", nourrituresPage.getTotalPages());
         model.addAttribute("size", size);
+        model.addAttribute("filtres", filtres);
+        model.addAttribute("baseUrl", baseUrl);
         return "stock/liste";
     }
 
@@ -76,11 +79,11 @@ public class MvtStockController {
     public String entreeSubmit(@RequestParam Integer nourriture,
             @RequestParam BigDecimal quantite, @RequestParam LocalDate date) {
         if (date.isAfter(LocalDate.now()))
-            throw new StockException("La date ne peut pas être dans le futur", "/stock/entree");
+            throw new StockException("La date ne peut pas être dans le futur", "/admin/stock/entree");
         if (quantite.compareTo(BigDecimal.ZERO) <= 0)
-            throw new StockException("La quantité doit être supérieure à 0", "/stock/entree");
+            throw new StockException("La quantité doit être supérieure à 0", "/admin/stock/entree");
         Nourriture n = nourritureService.findById(nourriture)
-                .orElseThrow(() -> new StockException("Nourriture non trouvée", "/stock/entree"));
+                .orElseThrow(() -> new StockException("Nourriture non trouvée", "/admin/stock/entree"));
         MvtStock mvtStock = MvtStock.builder()
                 .nourriture(n)
                 .type(mvtStockService.getTypeEntree())
@@ -110,14 +113,14 @@ public class MvtStockController {
     public String sortieSubmit(@RequestParam Integer nourriture,
             @RequestParam BigDecimal quantite, @RequestParam LocalDate date) {
         if (date.isAfter(LocalDate.now()))
-            throw new StockException("La date ne peut pas être dans le futur", "/stock/sortie");
+            throw new StockException("La date ne peut pas être dans le futur", "/admin/stock/sortie");
         if (quantite.compareTo(BigDecimal.ZERO) <= 0)
-            throw new StockException("La quantité doit être supérieure à 0", "/stock/sortie");
+            throw new StockException("La quantité doit être supérieure à 0", "/admin/stock/sortie");
         Nourriture n = nourritureService.findById(nourriture)
-                .orElseThrow(() -> new StockException("Nourriture non trouvée", "/stock/sortie"));
+                .orElseThrow(() -> new StockException("Nourriture non trouvée", "/admin/stock/sortie"));
         BigDecimal stockActuel = mvtStockService.calculerStockActuel(nourriture);
         if (quantite.compareTo(stockActuel) > 0)
-            throw new StockException("Stock insuffisant. Stock actuel : " + stockActuel + " kg", "/stock/sortie");
+            throw new StockException("Stock insuffisant. Stock actuel : " + stockActuel + " kg", "/admin/stock/sortie");
         MvtStock mvtStock = MvtStock.builder()
                 .nourriture(n)
                 .type(mvtStockService.getTypeSortie())
@@ -149,7 +152,7 @@ public class MvtStockController {
 
         if (typeCode != null && !typeCode.isEmpty()) {
             mouvements = mouvements.stream()
-                    .filter(m -> m.getType().getCode().equals(typeCode))
+                    .filter(m -> m.getType().getCode().equalsIgnoreCase(typeCode))
                     .toList();
         }
         if (dateDebut != null) {
@@ -173,16 +176,22 @@ public class MvtStockController {
         if (baseUrl.endsWith("&") || baseUrl.endsWith("?")) {
             baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
         }
+        Map<String, String> filtres = new HashMap<>();
+        if (nourritureId != null) filtres.put("nourritureId", nourritureId.toString());
+        if (typeCode != null && !typeCode.isEmpty()) filtres.put("typeCode", typeCode);
+        if (dateDebut != null) filtres.put("dateDebut", dateDebut.toString());
+        if (dateFin != null) filtres.put("dateFin", dateFin.toString());
         
 
         model.addAttribute("nourritures", nourritureService.findAll());
         model.addAttribute("pageTitle", "Historique des mouvements");
-        
+
         model.addAttribute("mouvements", mouvementsPage.getContent());
         model.addAttribute("currentPage", mouvementsPage.getNumber());
         model.addAttribute("totalPages", mouvementsPage.getTotalPages());
         model.addAttribute("size", size);
         model.addAttribute("baseUrl", baseUrl);
+        model.addAttribute("filtres", filtres);
         return "stock/historique";
     }
 

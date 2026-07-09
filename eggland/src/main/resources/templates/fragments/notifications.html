@@ -1,7 +1,9 @@
 <div class="notification-dropdown" th:fragment="notificationDropdown">
-    <button class="notification-btn position-relative" type="button" id="notif-toggle" aria-expanded="false" aria-haspopup="true">
+    <button class="notification-btn position-relative" type="button" id="notif-toggle" aria-expanded="false"
+        aria-haspopup="true">
         <i class="fa-solid fa-bell"></i>
-        <span class="notification-badge" th:if="${@notificationService.compterNonLues() > 0}" th:text="${@notificationService.compterNonLues()}"></span>
+        <span class="notification-badge" th:if="${@notificationService.compterNonLues() > 0}"
+            th:text="${@notificationService.compterNonLues()}"></span>
     </button>
     <div class="notification-panel" id="notif-panel" role="menu">
         <div class="notification-header">
@@ -9,7 +11,8 @@
         </div>
         <div class="notification-list">
             <div th:each="notif : ${@notificationService.listerNonLues()}" class="notification-item" role="menuitem">
-                <span class="notification-time" th:text="${#temporals.format(notif.dateCreation, 'dd/MM/yyyy HH:mm')}"></span>
+                <span class="notification-time"
+                    th:text="${#temporals.format(notif.dateCreation, 'dd/MM/yyyy HH:mm')}"></span>
                 <span class="notification-message" th:text="${notif.message}"></span>
             </div>
             <div th:if="${@notificationService.compterNonLues() == 0}" class="notification-empty">

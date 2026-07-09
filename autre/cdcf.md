@@ -21,3 +21,16 @@
 - Idealy
     - voir recap : agrandir
     - ajouter un champ pour choisir quel mois payer
+
+
+- TOavina
+    - Uniformisation des spacing
+    
+- Ricardo
+    - dropdown lot = dropdown race
+    - Apres choix de lot, il doit y avoir les champs por les races appartenant a ce lot et des champs d'effectif a remplir
+    - Livraison  : filtre de texte a uniformiser avec les styles de la date
+    
+        
+- Simulation, mise en page a amelirer, surtout l
+affichage de resultat

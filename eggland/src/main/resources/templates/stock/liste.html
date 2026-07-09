@@ -9,59 +9,80 @@
 </head>
 
 <body>
-        <div layout:fragment="content">
+    <div layout:fragment="content">
 
-                <div class="page-header">
-                    <h2 th:text="${pageTitle}">Stock des nourritures</h2>
-                    <div style="display:flex; gap:8px; align-items:center;">
-                        <form th:action="@{/finance/export/excel/mouvement-stock}" method="get" target="_blank" style="margin:0; display:flex; gap:6px; align-items:center;">
-                            <input type="date" name="debut" th:value="${todayMinus30}" class="form-control form-control-sm" style="width:140px;" placeholder="Début">
-                            <input type="date" name="fin" th:value="${today}" class="form-control form-control-sm" style="width:140px;" placeholder="Fin">
-                            <button type="submit" class="btn-action-header" style="background:#28a745; padding:8px 14px; font-size:13px; margin:0;"><i class="fa-solid fa-file-excel"></i> XLSX</button>
-                        </form>
-                        <a th:href="@{/admin/stock/entree}" class="btn-action-header"><i class="fa-solid fa-plus"></i> Entrée</a>
-                        <a th:href="@{/admin/stock/sortie}" class="btn-action-header" style="background:#e47373;"><i class="fa-solid fa-minus"></i> Sortie</a>
-                        <a th:href="@{/admin/stock/historique}" class="btn-action-header" style="background:var(--text-light);"><i class="fa-solid fa-clock-rotate-left"></i> Historique</a>
+        <div class="page-header">
+            <h2 th:text="${pageTitle}">Stock des nourritures</h2>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <form th:action="@{/finance/export/excel/mouvement-stock}" method="get" target="_blank"
+                    style="margin:0; display:flex; gap:6px; align-items:center;">
+                    <input type="date" name="debut" th:value="${todayMinus30}" class="form-control form-control-sm"
+                        style="width:140px;" placeholder="Début">
+                    <input type="date" name="fin" th:value="${today}" class="form-control form-control-sm"
+                        style="width:140px;" placeholder="Fin">
+                    <button type="submit" class="btn-action-header"
+                        style="background:#28a745; padding:8px 14px; font-size:13px; margin:0;"><i
+                            class="fa-solid fa-file-excel"></i> XLSX</button>
+                </form>
+                <a th:href="@{/admin/stock/entree}" class="btn-action-header"><i class="fa-solid fa-plus"></i>
+                    Entrée</a>
+                <a th:href="@{/admin/stock/sortie}" class="btn-action-header" style="background:#e47373;"><i
+                        class="fa-solid fa-minus"></i> Sortie</a>
+                <a th:href="@{/admin/stock/historique}" class="btn-action-header"
+                    style="background:var(--text-light);"><i class="fa-solid fa-clock-rotate-left"></i> Historique</a>
+            </div>
+            <div
+                th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${baseUrl}, filters=${filtres})}">
+            </div>
+        </div>
+
+        <div class="card-stock">
+            <div class="stock-grid">
+                <div class="stock-item" th:each="n : ${nourritures}">
+                    <h3 th:text="${n.libelle}">Maïs</h3>
+                    <div class="libelle">Prix unitaire: <span
+                            th:text="${#numbers.formatDecimal(n.prixUnitaire, 0, 'WHITESPACE', 2, 'COMMA')} + ' Ar'"></span>
                     </div>
-                </div>
 
-                <div class="card-stock">
-                    <div class="stock-grid">
-                        <div class="stock-item" th:each="n : ${nourritures}">
-                            <h3 th:text="${n.libelle}">Maïs</h3>
-                            <div class="libelle">Prix unitaire: <span th:text="${#numbers.formatDecimal(n.prixUnitaire, 0, 'WHITESPACE', 2, 'COMMA')} + ' Ar'"></span></div>
+                    <div th:with="stock=${stocks[n.id]}, seuil=${n.seuilAlerte}">
+                        <div th:if="${seuil != null}">
+                            <div class="stock-valeurs">
+                                <span class="stock"
+                                    th:text="${#numbers.formatDecimal(stock, 1, 'WHITESPACE', 2, 'COMMA')} + ' kg'">0
+                                    kg</span>
+                                <span class="seuil" th:text="'Seuil: ' + ${seuil}">Seuil: 50</span>
+                            </div>
 
-                            <div th:with="stock=${stocks[n.id]}, seuil=${n.seuilAlerte}">
-                                <div th:if="${seuil != null}">
-                                    <div class="stock-valeurs">
-                                        <span class="stock" th:text="${#numbers.formatDecimal(stock, 1, 'WHITESPACE', 2, 'COMMA')} + ' kg'">0 kg</span>
-                                        <span class="seuil" th:text="'Seuil: ' + ${seuil}">Seuil: 50</span>
-                                    </div>
-
-                                    <div th:with="pct=${stock.doubleValue() >= seuil} ? 100 : (${stock.doubleValue() < 0} ? 0 : ${stock.doubleValue() / seuil * 100})">
-                                        <div class="barre-container">
-                                            <div class="barre-remplie"
-                                                 th:class="${pct >= 100} ? 'barre-remplie barre-vert' : (${pct >= 50} ? 'barre-remplie barre-orange' : 'barre-remplie barre-rouge')"
-                                                 th:style="'width:' + ${pct} + '%'">
-                                            </div>
-                                        </div>
-                                        <span class="badge-statut" th:class="${pct >= 100} ? 'badge-statut badge-ok' : 'badge-statut badge-alerte'"
-                                              th:text="${pct >= 100} ? 'STOCK OK' : 'STOCK FAIBLE'"></span>
+                            <div
+                                th:with="pct=${stock.doubleValue() >= seuil} ? 100 : (${stock.doubleValue() < 0} ? 0 : ${stock.doubleValue() / seuil * 100})">
+                                <div class="barre-container">
+                                    <div class="barre-remplie"
+                                        th:class="${pct >= 100} ? 'barre-remplie barre-vert' : (${pct >= 50} ? 'barre-remplie barre-orange' : 'barre-remplie barre-rouge')"
+                                        th:style="'width:' + ${pct} + '%'">
                                     </div>
                                 </div>
-                                <div th:if="${seuil == null}" class="stock-valeurs">
-                                    <span class="stock" th:text="${#numbers.formatDecimal(stock, 1, 'WHITESPACE', 2, 'COMMA')} + ' kg'">0 kg</span>
-                                    <span class="seuil">Pas de seuil</span>
-                                </div>
+                                <span class="badge-statut"
+                                    th:class="${pct >= 100} ? 'badge-statut badge-ok' : 'badge-statut badge-alerte'"
+                                    th:text="${pct >= 100} ? 'STOCK OK' : 'STOCK FAIBLE'"></span>
                             </div>
                         </div>
-                    </div>
-
-                    <div th:if="${#lists.isEmpty(nourritures)}" style="text-align:center; padding:40px; color:var(--text-light);">
-                        Aucune nourriture enregistrée.
+                        <div th:if="${seuil == null}" class="stock-valeurs">
+                            <span class="stock"
+                                th:text="${#numbers.formatDecimal(stock, 1, 'WHITESPACE', 2, 'COMMA')} + ' kg'">0
+                                kg</span>
+                            <span class="seuil">Pas de seuil</span>
+                        </div>
                     </div>
                 </div>
-
             </div>
+
+            <div th:if="${#lists.isEmpty(nourritures)}"
+                style="text-align:center; padding:40px; color:var(--text-light);">
+                Aucune nourriture enregistrée.
+            </div>
+        </div>
+
+    </div>
 </body>
+
 </html>
