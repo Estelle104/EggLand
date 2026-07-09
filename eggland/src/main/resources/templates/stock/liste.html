@@ -53,18 +53,16 @@
                                 <span class="seuil" th:text="'Seuil: ' + ${seuil}">Seuil: 50</span>
                             </div>
 
-                            <div
-                                th:with="pct=${stock.doubleValue() >= seuil} ? 100 : (${stock.doubleValue() < 0} ? 0 : ${stock.doubleValue() / seuil * 100})">
-                                <div class="barre-container">
-                                    <div class="barre-remplie"
-                                        th:class="${pct >= 100} ? 'barre-remplie barre-vert' : (${pct >= 50} ? 'barre-remplie barre-orange' : 'barre-remplie barre-rouge')"
-                                        th:style="'width:' + ${pct} + '%'">
-                                    </div>
-                                </div>
-                                <span class="badge-statut"
-                                    th:class="${pct >= 100} ? 'badge-statut badge-ok' : 'badge-statut badge-alerte'"
-                                    th:text="${pct >= 100} ? 'STOCK OK' : 'STOCK FAIBLE'"></span>
-                            </div>
+                    <div th:with="pct=${stock.doubleValue() >= seuil} ? 100 : (${stock.doubleValue() < 0} ? 0 : ${stock.doubleValue() / seuil * 100})">
+                    <div class="barre-container">
+                        <div class="barre-remplie"
+                            th:class="${stock.doubleValue() > seuil} ? 'barre-remplie barre-vert' : 'barre-remplie barre-rouge'"
+                            th:style="'width:' + ${pct} + '%'">
+                        </div>
+                    </div>
+                    <span class="badge-statut" th:class="${stock.doubleValue() > seuil} ? 'badge-statut badge-ok' : 'badge-statut badge-alerte'"
+                        th:text="${stock.doubleValue() > seuil} ? 'STOCK OK' : 'STOCK FAIBLE'"></span>
+                    </div>
                         </div>
                         <div th:if="${seuil == null}" class="stock-valeurs">
                             <span class="stock"
