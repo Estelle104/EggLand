@@ -27,10 +27,11 @@ public interface LivraisonRepository extends JpaRepository<Livraison, Integer>{
     long countByStatutCode(@Param("code") String code);
 
     List<Livraison> findByClientIdOrderByDateLivraisonDesc(Integer clientId);
-    List<Livraison> findByClientEmailAndStatutCode(String email,String code);
+    List<Livraison> findByClientEmailAndStatutCode(String email, String code);
 
-    // Recherche uniquement sur le nom du client, pas sur ses coordonnées ou autres champs.
     @Query("SELECT l FROM Livraison l WHERE LOWER(l.client.nom) LIKE LOWER(CONCAT('%', :nomClient, '%')) ORDER BY l.dateLivraison DESC")
     List<Livraison> findByClientNomContainingIgnoreCase(@Param("nomClient") String nomClient);
 
+    
+    boolean existsByVenteId(Integer venteId);
 }
