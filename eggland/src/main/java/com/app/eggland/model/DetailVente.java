@@ -34,4 +34,13 @@ public class DetailVente {
 
     @Column(name = "prix_unitaire", nullable = false, precision = 10, scale = 2)
     private BigDecimal prixUnitaire;
+
+    // Renseignés uniquement lorsque le produit vendu est "poule"
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lot_id")
+    private Lot lot;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "race_id")
+    private Race race;
 }
