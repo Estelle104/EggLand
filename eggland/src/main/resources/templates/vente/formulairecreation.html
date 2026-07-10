@@ -36,6 +36,10 @@
                         </th:block>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label>Date de vente</label>
+                    <input type="date" name="date" th:value="${vente.date}" required>
+                </div>
                     <div class="lignes-header">
                         <h3>Lignes de vente</h3>
                         <button type="button" class="btn-ajouter-ligne" id="btn-ajouter-ligne">

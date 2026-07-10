@@ -38,6 +38,7 @@ public class VenteService {
 
     public void saveVente(Vente vente) { venteRepository.save(vente); }
 
+    public List<StatutVente> satutVenteRepository() { return statutVenteRepository.findAll(); }
     public List<Vente> listeVente() { return venteRepository.findAll(); }
 
     public List<StatutVente> listeStatutVente() { return statutVenteRepository.findAll(); }
@@ -103,10 +104,6 @@ public class VenteService {
         return produit != null && CODE_PRODUIT_POULE.equalsIgnoreCase(produit.getCode());
     }
 
-    /**
-     * Vérifie le stock disponible et diminue lot_races.nombre pour le
-     * couple (lot, race) concerné. Ne modifie JAMAIS le statut du lot.
-     */
     private void decrementerNombrePoule(Integer lotId, Integer raceId, BigDecimal quantite) {
         if (lotId == null || raceId == null) {
             throw new RuntimeException("Le lot et la race sont obligatoires pour une vente de poule.");
@@ -148,6 +145,7 @@ public class VenteService {
                                   List<Integer> raceIds,
                                   List<BigDecimal> quantites,
                                   List<BigDecimal> prixUnitaires,
+                                  LocalDate dateVente,
                                   Client client) {
 
         BigDecimal total = BigDecimal.ZERO;
@@ -177,11 +175,11 @@ public class VenteService {
             }
         }
 
-        StatutVente statut = statutVenteRepository.findByCode("paye")
-            .orElseThrow(() -> new RuntimeException("Statut 'paye' introuvable en base"));
+        StatutVente statut = statutVenteRepository.findByCode("en_attente")
+            .orElseThrow(() -> new RuntimeException("Statut 'en_attente' introuvable en base"));
 
         Vente vente = Vente.builder()
-            .client(client).date(LocalDate.now()).total(total).statut(statut).build();
+            .client(client).date(dateVente).datePaiement(dateVente).total(total).statut(statut).build();
         venteRepository.save(vente);
 
         for (int i = 0; i < produitIds.size(); i++) {
@@ -200,8 +198,6 @@ public class VenteService {
             }
 
             detailVenteRepository.save(builder.build());
-            // NOTE : on ne réforme plus le lot ici (le statut du lot reste inchangé).
-            // Seul lot_races.nombre est diminué, via decrementerNombrePoule ci-dessus.
         }
 
         mvtArgentService.creerEntree(total, LocalDate.now(), "vente");
@@ -214,12 +210,17 @@ public class VenteService {
                                               List<Integer> raceIds,
                                               List<BigDecimal> quantites,
                                               List<BigDecimal> prixUnitaires,
+                                              String statut,
+                                              LocalDate dateVente,
                                               Client client) {
 
         Vente vente = venteRepository.findById(venteId)
             .orElseThrow(() -> new RuntimeException("Vente introuvable"));
-
-        List<DetailVente> anciensDetails = detailVenteRepository.findByVenteId(venteId);
+        
+        vente.setStatut(statutVenteRepository.findByCode(statut)
+            .orElseThrow(() -> new RuntimeException("Statut introuvable")));
+        vente.setDatePaiement(dateVente);
+            List<DetailVente> anciensDetails = detailVenteRepository.findByVenteId(venteId);
 
         int ancienneQteOeuf = 0;
         for (DetailVente d : anciensDetails) {
