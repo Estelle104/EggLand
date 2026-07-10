@@ -69,6 +69,10 @@
         }
         .filters { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 24px; margin-bottom: 24px; display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; }
         .filter-group { flex: 1; min-width: 200px; }
+        .pagination-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; }
+        .pagination-summary { font-size: 14px; color: var(--text); }
+        .pagination-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+        .pagination-actions select { padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); }
         .filter-group label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 600; color: var(--text); }
         .filter-group select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--bg); outline: none; }
         .btn-filtrer { background: var(--primary); color: white; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-size: 14px; font-weight: 600; transition: 0.2s; }
@@ -97,7 +101,7 @@
         <div th:replace="fragments/header :: header"></div>
         <div class="content">
             <div class="page-header">
-                <h2>Historique Mortalité (30 derniers jours)</h2>
+                <h2>Historique Mortalité</h2>
                 <div style="display:flex; gap:10px; flex-wrap:wrap;">
                     <a th:href="@{/morts/liste}" class="btn-ajouter" style="background:#8d6e63;">
                         <i class="fa-solid fa-list"></i>
@@ -118,26 +122,36 @@
                         <option th:each="lot : ${lots}" th:value="${lot.id}" th:text="'Lot #' + ${lot.id}"></option>
                     </select>
                 </div>
+                <div class="filter-group">
+                    <label>Filtrer par mois</label>
+                    <select id="monthFilter">
+                        <option value="">Tous les mois</option>
+                        <option th:each="month : ${monthOptions}" th:value="${month}" th:text="${month}"></option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Trier par date</label>
+                    <select id="sortOrder">
+                        <option value="asc">Ascendant</option>
+                        <option value="desc">Descendant</option>
+                    </select>
+                </div>
                 <button class="btn-filtrer" onclick="applyFilters()"><i class="fas fa-filter"></i> Filtrer</button>
             </div>
 
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-label">Morts totales (30j)</div>
-                    <div class="stat-value" th:text="${#aggregates.sum(morts.![nombre]) != null ? #aggregates.sum(morts.![nombre]) : 0}">0</div>
+                    <div class="stat-label">Morts totales</div>
+                    <div class="stat-value" id="totalMortsValue" th:text="${#aggregates.sum(morts.![nombre]) != null ? #aggregates.sum(morts.![nombre]) : 0}">0</div>
                 </div>
-                <!--<div class="stat-card">
-                    <div class="stat-label">Taux moyen</div>
-                    <div class="stat-value">0%</div>
-                </div>-->
                 <div class="stat-card">
                     <div class="stat-label">Morts/jour moyen</div>
-                    <div class="stat-value" th:text="${morts != null and !#lists.isEmpty(morts) ? #numbers.formatDecimal(#aggregates.sum(morts.![nombre]) / 30.0, 1, 2) : '0'}">0</div>
+                    <div class="stat-value" id="avgMortsValue" th:text="${averageMortsPerDay != null ? #numbers.formatDecimal(averageMortsPerDay, 1, 2) : '0'}">0</div>
                 </div>
             </div>
 
             <div class="chart-container">
-                <h3>Courbe de mortalité (30 jours)</h3>
+                <h3>Courbe de mortalité</h3>
                 <canvas id="mortalityChart"></canvas>
             </div>
 
@@ -154,7 +168,7 @@
                     </thead>
                     <tbody id="mortsTableBody">
                         <tr th:each="mort : ${morts}"
-                            th:attr="data-lot-id=${mort.lot != null ? mort.lot.id : ''}, data-date=${#temporals.format(mort.date, 'dd/MM/yyyy')}, data-nombre=${mort.nombre != null ? mort.nombre : 0}">
+                            th:attr="data-lot-id=${mort.lot != null ? mort.lot.id : ''}, data-date=${#temporals.format(mort.date, 'dd/MM/yyyy')}, data-date-iso=${mort.date}, data-month=${mort.date != null ? #temporals.format(mort.date, 'yyyy-MM') : ''}, data-nombre=${mort.nombre != null ? mort.nombre : 0}">
                             <td th:text="${#temporals.format(mort.date, 'dd/MM/yyyy')}"></td>
                             <td th:text="${mort.lot != null ? 'Lot #' + mort.lot.id : '-'}"></td>
                             <td th:text="${mort.nombre}"></td>
@@ -172,7 +186,22 @@
                         </tr>
                     </tbody>
                 </table>
-                <div id="emptyFilteredState" class="empty-state" style="display:none;">Aucune donnée disponible pour ce lot.</div>
+                <div class="pagination-controls">
+                    <div class="pagination-summary">Page <span id="currentPage">1</span> / <span id="totalPages">1</span></div>
+                    <div class="pagination-actions">
+                        <button type="button" id="prevPage" class="btn-filtrer" onclick="changePage(-1)">Précédent</button>
+                        <button type="button" id="nextPage" class="btn-filtrer" onclick="changePage(1)">Suivant</button>
+                        <label style="margin-left:12px; display:inline-flex; align-items:center; gap:8px;">
+                            Par page
+                            <select id="rowsPerPage" onchange="changeRowsPerPage()">
+                                <option value="5">5</option>
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+                <div id="emptyFilteredState" class="empty-state" style="display:none;">Aucune donnée disponible pour ce filtre.</div>
                 <div class="empty-state" th:if="${morts == null or #lists.isEmpty(morts)}">Aucune donnée disponible</div>
             </div>
         </div>
@@ -184,39 +213,109 @@
     const chartLabels = /*[[${chartLabels}]]*/ [];
     const chartData = /*[[${chartData}]]*/ [];
     let mortalityChart;
+    let filteredRows = [];
+    let currentPage = 1;
+    let rowsPerPage = 10;
 
-    function applyFilters() {
-        const selectedLot = document.getElementById('lotFilter').value;
-        const rows = document.querySelectorAll('#mortsTableBody tr');
+    function updateChart(rows) {
         const groupedData = new Map();
-        let visibleRows = 0;
-
         rows.forEach(row => {
-            const rowLot = row.getAttribute('data-lot-id') || '';
-            const shouldShow = !selectedLot || rowLot === selectedLot;
-            row.style.display = shouldShow ? '' : 'none';
-            if (!shouldShow) return;
-
-            visibleRows++;
             const label = row.getAttribute('data-date') || '';
             const value = Number(row.getAttribute('data-nombre') || 0);
-            if (label) {
-                groupedData.set(label, (groupedData.get(label) || 0) + value);
-            }
+            if (!label) return;
+            groupedData.set(label, (groupedData.get(label) || 0) + value);
         });
-
-        const emptyFilteredState = document.getElementById('emptyFilteredState');
-        if (emptyFilteredState) {
-            emptyFilteredState.style.display = visibleRows === 0 ? 'block' : 'none';
-        }
-
+        const labels = Array.from(groupedData.keys());
+        const values = Array.from(groupedData.values());
         if (mortalityChart) {
-            const labels = Array.from(groupedData.keys());
-            const values = Array.from(groupedData.values());
             mortalityChart.data.labels = labels;
             mortalityChart.data.datasets[0].data = values;
             mortalityChart.update();
         }
+    }
+
+    function sortRows(rows, sortOrder) {
+        return rows.sort((a, b) => {
+            const aDate = a.getAttribute('data-date-iso') || '';
+            const bDate = b.getAttribute('data-date-iso') || '';
+            if (aDate === bDate) return 0;
+            if (!aDate) return 1;
+            if (!bDate) return -1;
+            return sortOrder === 'desc' ? bDate.localeCompare(aDate) : aDate.localeCompare(bDate);
+        });
+    }
+
+    function updateStats(rows) {
+        const total = rows.reduce((sum, row) => sum + Number(row.getAttribute('data-nombre') || 0), 0);
+        const distinctDates = new Set(rows.map(row => row.getAttribute('data-date'))).size;
+        const average = distinctDates > 0 ? total / distinctDates : 0;
+        const totalValue = document.getElementById('totalMortsValue');
+        const avgValue = document.getElementById('avgMortsValue');
+        if (totalValue) totalValue.textContent = total;
+        if (avgValue) avgValue.textContent = average.toFixed(2);
+    }
+
+    function renderPage() {
+        const totalPages = Math.max(1, Math.ceil(filteredRows.length / rowsPerPage));
+        currentPage = Math.min(Math.max(1, currentPage), totalPages);
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        const endIndex = startIndex + rowsPerPage;
+
+        const tbody = document.getElementById('mortsTableBody');
+        const allRows = Array.from(document.querySelectorAll('#mortsTableBody tr'));
+        allRows.forEach(row => {
+            row.style.display = 'none';
+        });
+
+        const rowsToShow = filteredRows.slice(startIndex, endIndex);
+        rowsToShow.forEach(row => {
+            tbody.appendChild(row);
+            row.style.display = '';
+        });
+
+        document.getElementById('currentPage').textContent = currentPage;
+        document.getElementById('totalPages').textContent = totalPages;
+        document.getElementById('prevPage').disabled = currentPage <= 1;
+        document.getElementById('nextPage').disabled = currentPage >= totalPages;
+    }
+
+    function applyFilters() {
+        const selectedLot = document.getElementById('lotFilter').value;
+        const selectedMonth = document.getElementById('monthFilter').value;
+        const sortOrder = document.getElementById('sortOrder').value;
+        const rows = Array.from(document.querySelectorAll('#mortsTableBody tr'));
+
+        filteredRows = rows.filter(row => {
+            const rowLot = row.getAttribute('data-lot-id') || '';
+            const rowMonth = row.getAttribute('data-month') || '';
+            const lotMatch = !selectedLot || rowLot === selectedLot;
+            const monthMatch = !selectedMonth || rowMonth === selectedMonth;
+            return lotMatch && monthMatch;
+        });
+
+        filteredRows = sortRows(filteredRows, sortOrder);
+
+        updateChart(filteredRows);
+        updateStats(filteredRows);
+
+        const emptyFilteredState = document.getElementById('emptyFilteredState');
+        if (emptyFilteredState) {
+            emptyFilteredState.style.display = filteredRows.length === 0 ? 'block' : 'none';
+        }
+
+        currentPage = 1;
+        renderPage();
+    }
+
+    function changePage(delta) {
+        currentPage += delta;
+        renderPage();
+    }
+
+    function changeRowsPerPage() {
+        rowsPerPage = Number(document.getElementById('rowsPerPage').value) || 10;
+        currentPage = 1;
+        renderPage();
     }
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -243,6 +342,8 @@
         });
 
         document.getElementById('lotFilter').addEventListener('change', applyFilters);
+        document.getElementById('monthFilter').addEventListener('change', applyFilters);
+        document.getElementById('sortOrder').addEventListener('change', applyFilters);
         applyFilters();
     });
 </script>

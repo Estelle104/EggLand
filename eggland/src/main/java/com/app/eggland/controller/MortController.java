@@ -16,11 +16,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/morts")
@@ -76,19 +80,24 @@ public class MortController {
     @GetMapping("/historique")
     public String historique(Model model) {
         List<Mort> morts = mortService.findAll();
+        morts.sort(Comparator.comparing(Mort::getDate, Comparator.nullsLast(Comparator.naturalOrder())));
 
-        //somme des morts, alternatif boucle for(Mort m:morts) totalMorts += m.getNombre();
         int totalMorts = morts.stream()
                 .mapToInt(m -> m.getNombre() == null ? 0 : m.getNombre())
                 .sum();
 
-        //Meme que pour la liste
+        int distinctDays = (int) morts.stream()
+                .map(Mort::getDate)
+                .filter(Objects::nonNull)
+                .distinct()
+                .count();
+        double averageMortsPerDay = distinctDays > 0 ? totalMorts / (double) distinctDays : 0;
+
         Map<Integer, Integer> currentCounts = new HashMap<>();
         for (Mort mort : morts) {
             currentCounts.put(mort.getId(), mortService.getNombreActuel(mort.getLot()));
         }
 
-        //mdel pour l'affichage des morts + jour dans l'historique
         Map<String, Integer> mortalityByDay = new LinkedHashMap<>();
         for (Mort mort : morts) {
             String label = mort.getDate() != null ? mort.getDate().toString() : "";
@@ -98,11 +107,22 @@ public class MortController {
             mortalityByDay.merge(label, mort.getNombre() == null ? 0 : mort.getNombre(), Integer::sum);
         }
 
+        DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
+        List<String> monthOptions = morts.stream()
+                .map(Mort::getDate)
+                .filter(Objects::nonNull)
+                .map(date -> date.format(monthFormatter))
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+
         model.addAttribute("morts", morts);
         model.addAttribute("currentCounts", currentCounts);
         model.addAttribute("lots", mortService.findAllLotTemporary());
         model.addAttribute("pageTitle", "Historique des mortalités");
         model.addAttribute("totalMorts", totalMorts);
+        model.addAttribute("averageMortsPerDay", averageMortsPerDay);
+        model.addAttribute("monthOptions", monthOptions);
         model.addAttribute("chartLabels", new ArrayList<>(mortalityByDay.keySet()));
         model.addAttribute("chartData", new ArrayList<>(mortalityByDay.values()));
 
