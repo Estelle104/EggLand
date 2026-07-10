@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.app.eggland.model.Client;
 import com.app.eggland.model.Vente;
+import com.app.eggland.repository.StatutVenteRepository;
 import com.app.eggland.service.ClientService;
 import com.app.eggland.service.DetailVenteService;
 import com.app.eggland.service.LotService;
@@ -120,6 +121,8 @@ public class VenteController {
                 ra.addFlashAttribute("error", "Client introuvable.");
                 return "redirect:/admin/ventes/creation";
             }
+            LocalDate dateVente = request.getParameter("date") != null && !request.getParameter("date").isBlank()
+                    ? LocalDate.parse(request.getParameter("date")) : LocalDate.now();
             // Client client = clientService.trouverParNomOuCreer(clientNom);
             // if (client == null) {
             //     ra.addFlashAttribute("error", "Client introuvable.");
@@ -174,7 +177,7 @@ public class VenteController {
                 return "redirect:/admin/ventes/creation";
             }
 
-            venteService.enregistrerVente(client.getId(), produitIds, lotIds, raceIds, quantites, prix, client);
+            venteService.enregistrerVente(client.getId(), produitIds, lotIds, raceIds, quantites, prix,dateVente, client);
             ra.addFlashAttribute("success", "Vente créée avec succès.");
 
         } catch (RuntimeException e) {
@@ -207,6 +210,7 @@ public class VenteController {
         model.addAttribute("details", venteService.listeDetailVente(id));
         model.addAttribute("clients", clientService.listeClient());
         model.addAttribute("produits", venteService.listeProduitVente());
+        model.addAttribute("statuts", venteService.listeStatutVente());
         model.addAttribute("lots", lotService.getAllLots());
         return "vente/formulaireModification";
     }
@@ -233,9 +237,13 @@ public class VenteController {
                 ra.addFlashAttribute("error", "Identifiant de vente manquant.");
                 return "redirect:/admin/ventes/listevente";
             }
+            String statut = request.getParameter("statut");
             int venteId = Integer.parseInt(venteIdStr);
 
-            String clientIdStr = request.getParameter("clientId");
+            LocalDate dateVente = request.getParameter("date") != null && !request.getParameter("date").isBlank()
+                    ? LocalDate.parse(request.getParameter("date")) : LocalDate.now();
+           
+                    String clientIdStr = request.getParameter("clientId");
             if (clientIdStr == null || clientIdStr.isBlank()) {
                 ra.addFlashAttribute("error", "Veuillez sélectionner un client.");
                 return "redirect:/admin/ventes/listevente";
@@ -294,7 +302,7 @@ public class VenteController {
                 return "redirect:/admin/ventes/listevente";
             }
 
-            venteService.enregistrerModificationVente(venteId, produitIds, lotIds, raceIds, quantites, prix, client);
+            venteService.enregistrerModificationVente(venteId, produitIds, lotIds, raceIds, quantites, prix,statut, dateVente, client);
             ra.addFlashAttribute("success", "Vente modifiée avec succès !");
 
         } catch (Exception e) {

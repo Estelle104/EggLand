@@ -39,6 +39,21 @@
                         </th:block>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label>Date de vente</label>
+                    <input type="date" name="date" th:value="${vente.date}" required>
+                </div>
+                <div class="form-group">
+                    <label>Statut</label>
+                    <select name="statut" required>
+                        <option value="">Sélectionner un statut</option>
+                        <th:block th:each="statut : ${statuts}">
+                            <option th:value="${statut.code}" th:text="${statut.code}"
+                                th:selected="${vente.statut != null and vente.statut.code == statut.code}">
+                            </option>
+                        </th:block>
+                    </select>
+                </div>
 
                 <div class="lignes-header">
                     <h3>Lignes de vente</h3>

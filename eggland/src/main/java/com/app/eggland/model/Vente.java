@@ -6,6 +6,8 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import org.springframework.cglib.core.Local;
+
 import com.app.eggland.model.StatutVente;
 
 @Entity
@@ -32,4 +34,6 @@ public class Vente {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_statut", nullable = false)
     private StatutVente statut;
+
+    private LocalDate datePaiement;
 }
