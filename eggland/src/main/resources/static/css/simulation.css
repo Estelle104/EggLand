@@ -192,3 +192,286 @@
 .result-card.depense .value { color: var(--danger); }
 .result-card.benefice { border-color: var(--success); }
 .result-card.benefice .value { color: var(--success); }
+
+/* =============================================
+   STYLES POUR LA SIMULATION DE MORTALITÉ
+   ============================================= */
+
+/* Conteneur des checkboxes de races */
+.race-checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 10px 0;
+    padding: 10px;
+    background: var(--bg);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+.race-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+}
+
+.race-checkbox-item:hover {
+    border-color: var(--primary);
+    background: #fcf8f0;
+}
+
+/* Checkboxes personnalisées */
+.race-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--primary);
+    margin: 0;
+}
+
+.race-checkbox + label {
+    cursor: pointer;
+    user-select: none;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin: 0;
+}
+
+.race-checkbox:checked + label {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.race-checkbox:checked ~ .race-checkbox-item {
+    border-color: var(--primary);
+    background: #fcf8f0;
+}
+
+/* Message d'aide */
+.help-text {
+    display: block;
+    color: var(--text-light);
+    font-size: 12px;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+/* Groupes de champs de nombre de morts par race */
+.morts-race-group {
+    margin-top: 12px;
+    padding: 12px 15px;
+    background: #fcf8f0;
+    border-left: 3px solid var(--primary);
+    border-radius: 6px;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.morts-race-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+.morts-race-group input[type="number"] {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s;
+    background: white;
+}
+
+.morts-race-group input[type="number"]:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(184, 122, 42, 0.15);
+    outline: none;
+}
+
+.morts-race-group input[type="number"]::-webkit-inner-spin-button {
+    opacity: 1;
+    height: 30px;
+}
+
+/* Résultats de la mortalité */
+.resultat-mortalite {
+    border: 1px solid var(--border);
+    padding: 18px;
+    border-radius: 8px;
+    margin-top: 10px;
+    background: white;
+}
+
+.resultat-mortalite p {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    margin: 10px 0;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.resultat-mortalite p:last-child {
+    border-bottom: none;
+}
+
+.valeur-importante {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 16px;
+}
+
+/* Détail des morts par race */
+.morts-detail-list {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 12px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.morts-detail-list li {
+    background: #fcf8f0;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    border: 1px solid #e8dcc8;
+}
+
+.morts-detail-list li::before {
+    content: "🐔 ";
+    font-size: 14px;
+}
+
+/* Message d'avertissement */
+.message-avertissement {
+    color: #d97706 !important;
+    font-style: italic !important;
+    font-weight: 500 !important;
+    background: #fffbeb;
+    padding: 10px 15px !important;
+    border-radius: 6px;
+    border-left: 3px solid #d97706;
+    margin-top: 10px !important;
+}
+
+/* Alertes */
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.alert-danger p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .simulation-card {
+        padding: 16px;
+        max-width: 100%;
+    }
+    
+    .race-checkbox-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .race-checkbox-item {
+        padding: 8px 12px;
+    }
+    
+    .morts-detail-list {
+        flex-direction: column;
+    }
+    
+    .resultat-mortalite p {
+        font-size: 14px;
+    }
+}
+
+.race-item {
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.race-item:hover {
+    background: #f9f5f0;
+}
+
+.race-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.race-checkbox-item:hover {
+    border-color: #ddd;
+    background: #fcf8f0;
+}
+
+.morts-input-container {
+    margin-top: 5px;
+    margin-left: 25px;
+    animation: slideDown 0.3s ease-out;
+}
+
+.morts-input-container input {
+    width: 100%;
+    max-width: 300px;
+    padding: 8px 12px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s;
+    background: white;
+}
+
+.morts-input-container input:focus {
+    border-color: #8a4a1d;
+    box-shadow: 0 0 0 3px rgba(138, 74, 29, 0.15);
+    outline: none;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
