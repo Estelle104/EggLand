@@ -84,7 +84,7 @@
                     <tr th:each="livraison : ${livraisons}">
                         <td th:text="${livraison.id}"></td>
                         <td th:text="${livraison.client.nom}"></td>
-                        <td th:text="${livraison.vente.id}"></td>
+                        <td th:text="${'Vente #' + livraison.vente.id}"></td>
                         <td th:text="${livraison.adresseLivraison}"></td>
                         <td th:text="${#temporals.format(livraison.dateLivraison, 'dd/MM/yyyy')}"></td>
                         <td th:text="${#numbers.formatDecimal(livraison.fraisLivraison, 0, 'WHITESPACE', 2, 'COMMA')} + ' Ar'">
