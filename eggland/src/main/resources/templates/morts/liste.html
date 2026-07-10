@@ -159,22 +159,20 @@
                     <thead>
                     <tr>
                         <th>Lot</th>
-                        <th>Date</th>
                         <th>Nombre de morts</th>
                         <th>Nombre actuel</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="mort : ${morts}">
-                        <td th:text="'Lot #' + ${mort.lot.id}"></td>
-                        <td th:text="${mort.date}"></td>
-                        <td th:text="${mort.nombre}"></td>
-                        <td th:text="${currentCounts[mort.id] != null ? currentCounts[mort.id] : 0}"></td>
+                    <tr th:each="lot : ${lots}">
+                        <td th:text="'Lot #' + ${lot.id}"></td>
+                        <td th:text="${currentCounts[lot.id] != null ? currentCounts[lot.id] : 0}"></td>
+                        <td th:text="${currentCounts[lot.id] != null ? lot.nombreInitial - currentCounts[lot.id] : 0}"></td>
                     </tr>
                     </tbody>
                 </table>
 
-                <div th:if="${#lists.isEmpty(morts)}" class="vide-message">
+                <div th:if="${currentCounts.isEmpty()}" class="vide-message">
                     Aucune mortalité enregistrée.
                 </div>
             </div>

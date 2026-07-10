@@ -50,6 +50,23 @@
             background: var(--hover);
             transform: translateY(-1px);
         }
+        .btn-supprimer {
+            background: #d32f2f;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 10px;
+        }
+        .btn-supprimer:hover {
+            background: #b71c1c;
+            color: white;
+        }
         .filters { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 24px; margin-bottom: 24px; display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; }
         .filter-group { flex: 1; min-width: 200px; }
         .filter-group label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 600; color: var(--text); }
@@ -132,6 +149,7 @@
                             <th>Lot</th>
                             <th>Nombre de morts</th>
                             <th>Taux (%)</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="mortsTableBody">
@@ -141,6 +159,16 @@
                             <td th:text="${mort.lot != null ? 'Lot #' + mort.lot.id : '-'}"></td>
                             <td th:text="${mort.nombre}"></td>
                             <td th:text="${mort.lot != null and mort.lot.nombreInitial != null and mort.lot.nombreInitial > 0 ? #numbers.formatDecimal(mort.nombre * 100.0 / mort.lot.nombreInitial, 1, 2) + '%' : '0%'}"></td>
+                            <td>
+                                <a th:href="@{/morts/edit/{id}(id=${mort.id})}" class="btn-ajouter">
+                                    <i class="fa-solid fa-pen"></i>
+                                    editer
+                                </a>
+                                <a th:href="@{/morts/delete/{id}(id=${mort.id},redirect='historique')}" class="btn-supprimer" onclick="return confirm('Confirmer la suppression de cette mort ?');">
+                                    <i class="fa-solid fa-trash"></i>
+                                    supprimer
+                                </a>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

@@ -48,10 +48,25 @@ public class MortService {
         return mortRepository.findByLot(lot);
     }
 
-    // nombre de poule vivant
+    // nombre de poule vivant dans un lot
     public Integer getNombreActuel(Lot lot) {
         Integer totalMorts = mortRepository.sumMortalityByLot(lot);
         return lot.getNombreInitial() - totalMorts;
+    }
+
+    // nombre total mort
+    public Integer getTotalMort() {
+        List<Lot> lots = lotRepository.findAll();
+        Integer total = 0;
+        for(Lot lot : lots)
+            total += mortRepository.sumMortalityByLot(lot);
+
+        return total;
+    }
+
+    //mort par lot
+    public Integer getNombreMort(Lot lot) {
+        return mortRepository.sumMortalityByLot(lot);
     }
 }
 
