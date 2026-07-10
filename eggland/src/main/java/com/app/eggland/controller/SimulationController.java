@@ -51,7 +51,7 @@ public class SimulationController {
         return "simulation/simulation";
     }
 
-    @GetMapping("/simulation/chiffre-affaire")
+    @GetMapping("admin/simulation/chiffre-affaire")
     public String chiffreAffaireForm(Model model) {
         model.addAttribute("dateDebut", LocalDate.now());
         return "simulation/chiffre-affaire";
@@ -118,7 +118,7 @@ public class SimulationController {
         return "simulation/simulation";
     }
 
-    @PostMapping("/simulation/chiffre-affaire")
+    @PostMapping("admin/simulation/chiffre-affaire")
     public String runSimulationChiffreAffaire(Model model,
                                              @RequestParam("dateDebut") LocalDate dateDebut,
                                              @RequestParam("dateFin") LocalDate dateFin) {
