@@ -50,16 +50,19 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new PasswordEncoder() {
-            @Override
-            public String encode(CharSequence rawpassword){
-                return rawpassword.toString(); // retourne le mot de passe sans hashage
-            }
-            @Override
-            public boolean matches(CharSequence rawPassword, String encodedPassword){
-                return rawPassword.toString().equals(encodedPassword); // Comparaison simple
-            }
-        };
+    public PasswordEncoder passwordEncoder() {
+        return new PlainPasswordEncoder();
+    }
+
+    private static class PlainPasswordEncoder implements PasswordEncoder {
+        @Override
+        public String encode(CharSequence rawPassword) {
+            return rawPassword == null ? "" : rawPassword.toString();
+        }
+
+        @Override
+        public boolean matches(CharSequence rawPassword, String encodedPassword) {
+            return rawPassword != null && rawPassword.toString().equals(encodedPassword);
+        }
     }
 }

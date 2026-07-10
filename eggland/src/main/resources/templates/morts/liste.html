@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des mortalités - Eggland</title>
+
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .page-header h2 {
+            color: var(--text);
+            font-size: 22px;
+        }
+        .btn-ajouter {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-ajouter:hover {
+            background: var(--hover);
+            color: white;
+        }
+
+        .card-race {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+        }
+
+        .table-race {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-race th {
+            text-align: left;
+            padding: 14px 12px;
+            color: var(--text-light);
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border);
+        }
+        .table-race td {
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+            font-size: 14px;
+        }
+        .table-race tr:hover td {
+            background: rgba(184, 122, 42, 0.04);
+        }
+
+        .btn-action {
+            padding: 6px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-modifier {
+            background: #D8B77C;
+            color: #33241A;
+            margin-right: 6px;
+        }
+        .btn-modifier:hover {
+            background: #c4a566;
+            color: #33241A;
+        }
+        .btn-supprimer {
+            background: #e47373;
+            color: white;
+        }
+        .btn-supprimer:hover {
+            background: #cc5a5a;
+            color: white;
+        }
+
+        .vide-message {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+
+<body>
+<div class="app">
+
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+
+    <div class="main">
+
+        <div th:replace="fragments/header :: header"></div>
+
+        <div class="content">
+
+            <div class="page-header">
+                <h2 th:text="${pageTitle ?: 'Liste des mortalités'}">
+                    Liste des mortalités
+                </h2>
+
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <a th:href="@{/morts/historique}" class="btn-ajouter" style="background:#8d6e63;">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        Historique
+                    </a>
+                    <a th:href="@{/morts/insertion}" class="btn-ajouter">
+                        <i class="fa-solid fa-plus"></i>
+                        Nouvelle mortalité
+                    </a>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin-bottom:20px;">
+                <div style="background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px;">
+                    <div style="color:#999; font-size:12px; text-transform:uppercase; letter-spacing:0.5px;">Total décès</div>
+                    <div style="font-size:24px; font-weight:700; color:var(--text);" th:text="${totalMorts != null ? totalMorts : 0}"></div>
+                </div>
+                <div style="background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px;">
+                    <div style="color:#999; font-size:12px; text-transform:uppercase; letter-spacing:0.5px;">Entrées enregistrées</div>
+                    <div style="font-size:24px; font-weight:700; color:var(--text);" th:text="${#lists.size(morts)}"></div>
+                </div>
+            </div>
+
+            <div th:if="${error}" style="background:#f8d7da; color:#721c24; padding:12px 16px; border-radius:10px; margin-bottom:16px; font-size:14px;">
+                <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${error}"></span>
+            </div>
+
+            <div class="card-race">
+                <table class="table-race">
+                    <thead>
+                    <tr>
+                        <th>Lot</th>
+                        <th>Nombre de morts</th>
+                        <th>Nombre actuel</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="lot : ${lots}">
+                        <td th:text="'Lot #' + ${lot.id}"></td>
+                        <td th:text="${currentCounts[lot.id] != null ? currentCounts[lot.id] : 0}"></td>
+                        <td th:text="${currentCounts[lot.id] != null ? lot.nombreInitial - currentCounts[lot.id] : 0}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div th:if="${currentCounts.isEmpty()}" class="vide-message">
+                    Aucune mortalité enregistrée.
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+</body>
+
+</html>

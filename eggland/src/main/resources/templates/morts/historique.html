@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historique Mortalité - EggLand</title>
+
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+        .page-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+        .page-header h2 { color: var(--text); font-size: 22px; margin: 0; }
+        .btn-ajouter {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-ajouter:hover {
+            background: var(--hover);
+            color: white;
+        }
+
+        .btn-link {
+            background: linear-gradient(135deg, var(--primary), #a86a22);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(184, 122, 42, 0.2);
+        }
+        .btn-link:hover {
+            background: var(--hover);
+            transform: translateY(-1px);
+        }
+        .btn-supprimer {
+            background: #d32f2f;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 10px;
+        }
+        .btn-supprimer:hover {
+            background: #b71c1c;
+            color: white;
+        }
+        .filters { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 24px; margin-bottom: 24px; display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; }
+        .filter-group { flex: 1; min-width: 200px; }
+        .pagination-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; }
+        .pagination-summary { font-size: 14px; color: var(--text); }
+        .pagination-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+        .pagination-actions select { padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); }
+        .filter-group label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 600; color: var(--text); }
+        .filter-group select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--bg); outline: none; }
+        .btn-filtrer { background: var(--primary); color: white; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-size: 14px; font-weight: 600; transition: 0.2s; }
+        .btn-filtrer:hover { background: var(--hover); }
+        .chart-container { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; margin-bottom: 24px; }
+        .chart-container h3 { color: var(--text); margin-bottom: 20px; font-size: 16px; }
+        #mortalityChart { max-height: 400px; }
+        .table-container { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        thead { background: var(--bg); }
+        th { padding: 12px 16px; text-align: left; font-size: 14px; font-weight: 600; color: var(--text); border-bottom: 1px solid var(--border); }
+        td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--text); }
+        tbody tr:hover { background: rgba(184, 122, 42, 0.05); }
+        .empty-state { text-align: center; padding: 48px 24px; color: #999; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 24px; }
+        .stat-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; text-align: center; }
+        .stat-label { color: #999; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+        .stat-value { color: var(--primary); font-size: 28px; font-weight: 700; }
+    </style>
+</head>
+
+<body>
+<div class="app">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div class="main">
+        <div th:replace="fragments/header :: header"></div>
+        <div class="content">
+            <div class="page-header">
+                <h2>Historique Mortalité</h2>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <a th:href="@{/morts/liste}" class="btn-ajouter" style="background:#8d6e63;">
+                        <i class="fa-solid fa-list"></i>
+                        Liste
+                    </a>
+                    <a th:href="@{/morts/insertion}" class="btn-ajouter">
+                        <i class="fa-solid fa-plus"></i>
+                        Nouvelle mortalité
+                    </a>
+                </div>
+            </div>
+
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Filtrer par lot</label>
+                    <select id="lotFilter">
+                        <option value="">Tous les lots</option>
+                        <option th:each="lot : ${lots}" th:value="${lot.id}" th:text="'Lot #' + ${lot.id}"></option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Filtrer par mois</label>
+                    <select id="monthFilter">
+                        <option value="">Tous les mois</option>
+                        <option th:each="month : ${monthOptions}" th:value="${month}" th:text="${month}"></option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Trier par date</label>
+                    <select id="sortOrder">
+                        <option value="asc">Ascendant</option>
+                        <option value="desc">Descendant</option>
+                    </select>
+                </div>
+                <button class="btn-filtrer" onclick="applyFilters()"><i class="fas fa-filter"></i> Filtrer</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Morts totales</div>
+                    <div class="stat-value" id="totalMortsValue" th:text="${#aggregates.sum(morts.![nombre]) != null ? #aggregates.sum(morts.![nombre]) : 0}">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Morts/jour moyen</div>
+                    <div class="stat-value" id="avgMortsValue" th:text="${averageMortsPerDay != null ? #numbers.formatDecimal(averageMortsPerDay, 1, 2) : '0'}">0</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3>Courbe de mortalité</h3>
+                <canvas id="mortalityChart"></canvas>
+            </div>
+
+            <div class="table-container">
+                <table th:if="${morts != null and !#lists.isEmpty(morts)}">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Lot</th>
+                            <th>Nombre de morts</th>
+                            <th>Taux (%)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mortsTableBody">
+                        <tr th:each="mort : ${morts}"
+                            th:attr="data-lot-id=${mort.lot != null ? mort.lot.id : ''}, data-date=${#temporals.format(mort.date, 'dd/MM/yyyy')}, data-date-iso=${mort.date}, data-month=${mort.date != null ? #temporals.format(mort.date, 'yyyy-MM') : ''}, data-nombre=${mort.nombre != null ? mort.nombre : 0}">
+                            <td th:text="${#temporals.format(mort.date, 'dd/MM/yyyy')}"></td>
+                            <td th:text="${mort.lot != null ? 'Lot #' + mort.lot.id : '-'}"></td>
+                            <td th:text="${mort.nombre}"></td>
+                            <td th:text="${mort.lot != null and mort.lot.nombreInitial != null and mort.lot.nombreInitial > 0 ? #numbers.formatDecimal(mort.nombre * 100.0 / mort.lot.nombreInitial, 1, 2) + '%' : '0%'}"></td>
+                            <td>
+                                <a th:href="@{/morts/edit/{id}(id=${mort.id})}" class="btn-ajouter">
+                                    <i class="fa-solid fa-pen"></i>
+                                    editer
+                                </a>
+                                <a th:href="@{/morts/delete/{id}(id=${mort.id},redirect='historique')}" class="btn-supprimer" onclick="return confirm('Confirmer la suppression de cette mort ?');">
+                                    <i class="fa-solid fa-trash"></i>
+                                    supprimer
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="pagination-controls">
+                    <div class="pagination-summary">Page <span id="currentPage">1</span> / <span id="totalPages">1</span></div>
+                    <div class="pagination-actions">
+                        <button type="button" id="prevPage" class="btn-filtrer" onclick="changePage(-1)">Précédent</button>
+                        <button type="button" id="nextPage" class="btn-filtrer" onclick="changePage(1)">Suivant</button>
+                        <label style="margin-left:12px; display:inline-flex; align-items:center; gap:8px;">
+                            Par page
+                            <select id="rowsPerPage" onchange="changeRowsPerPage()">
+                                <option value="5">5</option>
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+                <div id="emptyFilteredState" class="empty-state" style="display:none;">Aucune donnée disponible pour ce filtre.</div>
+                <div class="empty-state" th:if="${morts == null or #lists.isEmpty(morts)}">Aucune donnée disponible</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script th:inline="javascript">
+    const chartLabels = /*[[${chartLabels}]]*/ [];
+    const chartData = /*[[${chartData}]]*/ [];
+    let mortalityChart;
+    let filteredRows = [];
+    let currentPage = 1;
+    let rowsPerPage = 10;
+
+    function updateChart(rows) {
+        const groupedData = new Map();
+        rows.forEach(row => {
+            const label = row.getAttribute('data-date') || '';
+            const value = Number(row.getAttribute('data-nombre') || 0);
+            if (!label) return;
+            groupedData.set(label, (groupedData.get(label) || 0) + value);
+        });
+        const labels = Array.from(groupedData.keys());
+        const values = Array.from(groupedData.values());
+        if (mortalityChart) {
+            mortalityChart.data.labels = labels;
+            mortalityChart.data.datasets[0].data = values;
+            mortalityChart.update();
+        }
+    }
+
+    function sortRows(rows, sortOrder) {
+        return rows.sort((a, b) => {
+            const aDate = a.getAttribute('data-date-iso') || '';
+            const bDate = b.getAttribute('data-date-iso') || '';
+            if (aDate === bDate) return 0;
+            if (!aDate) return 1;
+            if (!bDate) return -1;
+            return sortOrder === 'desc' ? bDate.localeCompare(aDate) : aDate.localeCompare(bDate);
+        });
+    }
+
+    function updateStats(rows) {
+        const total = rows.reduce((sum, row) => sum + Number(row.getAttribute('data-nombre') || 0), 0);
+        const distinctDates = new Set(rows.map(row => row.getAttribute('data-date'))).size;
+        const average = distinctDates > 0 ? total / distinctDates : 0;
+        const totalValue = document.getElementById('totalMortsValue');
+        const avgValue = document.getElementById('avgMortsValue');
+        if (totalValue) totalValue.textContent = total;
+        if (avgValue) avgValue.textContent = average.toFixed(2);
+    }
+
+    function renderPage() {
+        const totalPages = Math.max(1, Math.ceil(filteredRows.length / rowsPerPage));
+        currentPage = Math.min(Math.max(1, currentPage), totalPages);
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        const endIndex = startIndex + rowsPerPage;
+
+        const tbody = document.getElementById('mortsTableBody');
+        const allRows = Array.from(document.querySelectorAll('#mortsTableBody tr'));
+        allRows.forEach(row => {
+            row.style.display = 'none';
+        });
+
+        const rowsToShow = filteredRows.slice(startIndex, endIndex);
+        rowsToShow.forEach(row => {
+            tbody.appendChild(row);
+            row.style.display = '';
+        });
+
+        document.getElementById('currentPage').textContent = currentPage;
+        document.getElementById('totalPages').textContent = totalPages;
+        document.getElementById('prevPage').disabled = currentPage <= 1;
+        document.getElementById('nextPage').disabled = currentPage >= totalPages;
+    }
+
+    function applyFilters() {
+        const selectedLot = document.getElementById('lotFilter').value;
+        const selectedMonth = document.getElementById('monthFilter').value;
+        const sortOrder = document.getElementById('sortOrder').value;
+        const rows = Array.from(document.querySelectorAll('#mortsTableBody tr'));
+
+        filteredRows = rows.filter(row => {
+            const rowLot = row.getAttribute('data-lot-id') || '';
+            const rowMonth = row.getAttribute('data-month') || '';
+            const lotMatch = !selectedLot || rowLot === selectedLot;
+            const monthMatch = !selectedMonth || rowMonth === selectedMonth;
+            return lotMatch && monthMatch;
+        });
+
+        filteredRows = sortRows(filteredRows, sortOrder);
+
+        updateChart(filteredRows);
+        updateStats(filteredRows);
+
+        const emptyFilteredState = document.getElementById('emptyFilteredState');
+        if (emptyFilteredState) {
+            emptyFilteredState.style.display = filteredRows.length === 0 ? 'block' : 'none';
+        }
+
+        currentPage = 1;
+        renderPage();
+    }
+
+    function changePage(delta) {
+        currentPage += delta;
+        renderPage();
+    }
+
+    function changeRowsPerPage() {
+        rowsPerPage = Number(document.getElementById('rowsPerPage').value) || 10;
+        currentPage = 1;
+        renderPage();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const ctx = document.getElementById('mortalityChart').getContext('2d');
+        mortalityChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Morts par jour',
+                    data: chartData,
+                    borderColor: 'rgb(198, 40, 40)',
+                    backgroundColor: 'rgba(198, 40, 40, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: { legend: { display: true, position: 'top' } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        document.getElementById('lotFilter').addEventListener('change', applyFilters);
+        document.getElementById('monthFilter').addEventListener('change', applyFilters);
+        document.getElementById('sortOrder').addEventListener('change', applyFilters);
+        applyFilters();
+    });
+</script>
+</body>
+</html>

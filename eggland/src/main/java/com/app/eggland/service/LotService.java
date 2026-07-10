@@ -1,11 +1,10 @@
-
 package com.app.eggland.service;
-
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +23,7 @@ import com.app.eggland.repository.StatutLotRepository;
 import com.app.eggland.repository.TraitementRepository;
 
 import jakarta.transaction.Transactional;
+
 @Service
 public class LotService {
     @Autowired
@@ -33,7 +33,6 @@ public class LotService {
 
     @Autowired
     StatutLotRepository statutLotRepository;
-
 
     @Autowired
     ReformeRepository reformeRepository;
@@ -50,35 +49,34 @@ public class LotService {
     @Autowired
     LotRaceRepository lotRaceRepository;
 
-   @Transactional
-    public void createLot(Lot lot){
-         Batiment batiment = batimentRepository.findById(lot.getBatiment().getId())
-            .orElseThrow(() -> new IllegalArgumentException("Bâtiment non trouvé"));
-        verifierCapacite(lot,batiment);
-            lot.setAgeSemaine(24);
+    @Transactional
+    public void createLot(Lot lot) {
+        Batiment batiment = batimentRepository.findById(lot.getBatiment().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Bâtiment non trouvé"));
+        verifierCapacite(lot, batiment);
+        lot.setAgeSemaine(24);
 
-            StatutLot actif = statutLotRepository.findById(1)
+        StatutLot actif = statutLotRepository.findById(1)
                 .orElseThrow(() -> new IllegalArgumentException("Statut ACTIF introuvable"));
 
-            lot.setStatut(actif);
+        lot.setStatut(actif);
 
         lot.setBatiment(batiment);
-
 
         lotRepository.save(lot);
         lotRaceRepository.saveAll(lot.getLotRaces());
     }
 
+    public boolean existedLot(Batiment batiment) {
 
-    public  boolean existedLot(Batiment batiment){
-
-        if(!lotRepository.existsByBatimentId(batiment.getId())){
+        if (!lotRepository.existsByBatimentId(batiment.getId())) {
             return false;
         }
 
         return true;
 
     }
+
     public void verifierCapacite(Lot lot, Batiment batiment) {
         int capacite = batiment.getCapacite();
         int nbrInitiale = lot.getNombreInitial();
@@ -95,14 +93,13 @@ public class LotService {
         if (nbrInitiale > placeRestante) {
             throw new IllegalArgumentException(
                     "Place insuffisante ! Capacité: " + capacite +
-                    " | Utilisée: " + placeUtilisee +
-                    " | Restante: " + placeRestante +
-                    " | Demandé: " + nbrInitiale
-            );
+                            " | Utilisée: " + placeUtilisee +
+                            " | Restante: " + placeRestante +
+                            " | Demandé: " + nbrInitiale);
         }
     }
 
-    //rehefa mapiditra lot vaovao
+    // rehefa mapiditra lot vaovao
     public int calculerPlaceUtilisee(Batiment batiment) {
         Long total = lotRepository.calculerPlaceUtiliseePourBatiment(batiment);
         return total != null ? total.intValue() : 0;
@@ -116,49 +113,49 @@ public class LotService {
         return total != null ? total.intValue() : 0;
     }
 
-    public int getPlaceRestante(Integer idBatiment){
+    public int getPlaceRestante(Integer idBatiment) {
         int placeRestante;
-            Batiment batiment = batimentRepository.findById(idBatiment)
-            .orElseThrow(() -> new IllegalArgumentException("Bâtiment non trouvé"));
-           
-            int capacite = batiment.getCapacite();
-            Long placeUtilise = lotRepository.calculerPlaceUtiliseePourBatiment(batiment);
-            int place = placeUtilise != null ? placeUtilise.intValue() : 0;
+        Batiment batiment = batimentRepository.findById(idBatiment)
+                .orElseThrow(() -> new IllegalArgumentException("Bâtiment non trouvé"));
 
-            placeRestante = capacite - place;
+        int capacite = batiment.getCapacite();
+        Long placeUtilise = lotRepository.calculerPlaceUtiliseePourBatiment(batiment);
+        int place = placeUtilise != null ? placeUtilise.intValue() : 0;
+
+        placeRestante = capacite - place;
         return placeRestante;
     }
 
     public int calculerAgeActuel(Lot lot, LocalDate actuel) {
         LocalDate dateEntree = lot.getDateArrivee();
-        if(dateEntree == null){
-            throw new IllegalArgumentException("Date inexistant"+dateEntree);
+        if (dateEntree == null) {
+            throw new IllegalArgumentException("Date inexistant" + dateEntree);
         }
-        int semainesEcoulees =
-                (int) ChronoUnit.WEEKS.between(dateEntree, actuel);
-                int ageDepart = lot.getAgeSemaine();
+        int semainesEcoulees = (int) ChronoUnit.WEEKS.between(dateEntree, actuel);
+        int ageDepart = lot.getAgeSemaine();
 
         if (ageDepart == 0) {
             throw new IllegalArgumentException("Âge de départ inexistant");
         }
-        
 
         int ageActuel = ageDepart + semainesEcoulees;
-        System.out.println("Age de depart : "+ageDepart + "+ semaines ecoule :"+semainesEcoulees+"=ageActuel"+ageActuel);
+        System.out.println(
+                "Age de depart : " + ageDepart + "+ semaines ecoule :" + semainesEcoulees + "=ageActuel" + ageActuel);
         return ageActuel;
     }
 
-    public int getAgeActuel(Lot lot,LocalDate actuel){
-        return calculerAgeActuel(lot,actuel);
+    public int getAgeActuel(Lot lot, LocalDate actuel) {
+        return calculerAgeActuel(lot, actuel);
     }
-    public  List<Lot> getAllLots(){
+
+    public List<Lot> getAllLots() {
         return lotRepository.findAll();
     }
 
-    public void updateLot(Lot lot) {    
+    public void updateLot(Lot lot) {
         Batiment batiment = batimentRepository.findById(lot.getBatiment().getId())
-            .orElseThrow(() -> new IllegalArgumentException("Bâtiment non trouvé"));
-        verifierCapacite(lot,batiment);
+                .orElseThrow(() -> new IllegalArgumentException("Bâtiment non trouvé"));
+        verifierCapacite(lot, batiment);
         lotRepository.save(lot);
     }
 
@@ -172,71 +169,65 @@ public class LotService {
 
         lotRepository.deleteById(id);
     }
-    public  Lot findById(Integer idLot){
+
+    public Lot findById(Integer idLot) {
         return lotRepository.findById(idLot).orElse(null);
     }
 
-    public List<Lot> findByBatimentOrStatut(Batiment batiment,StatutLot statutLot){
+    public List<Lot> findByBatimentOrStatut(Batiment batiment, StatutLot statutLot) {
         return lotRepository.findByBatimentOrStatut(batiment, statutLot);
     }
 
-    public List<Lot> findByBatimentAndStatut(Batiment batiment,StatutLot statutLot){
+    public List<Lot> findByBatimentAndStatut(Batiment batiment, StatutLot statutLot) {
         return lotRepository.findByBatimentAndStatut(batiment, statutLot);
     }
 
-
-
     @Transactional
     public void reformerUnLot(Integer idLot, LocalDate dateReforme) {
-        
-    
-        
-    
+
         if (idLot == null) {
             throw new IllegalArgumentException("Id lot introuvable");
         }
-        
 
         Lot lot = findById(idLot);
         System.out.println("Lot trouvé: " + (lot != null ? lot.getId() : "NULL"));
-        
+
         if (lot == null || lot.getId() == null) {
             throw new IllegalArgumentException("Lot invalide avec l'ID: " + idLot);
         }
-    
+
         StatutLot statut = statutLotRepository.findById(2)
-            .orElseThrow(() -> new IllegalArgumentException("Statut REFORME introuvable"));
+                .orElseThrow(() -> new IllegalArgumentException("Statut REFORME introuvable"));
         System.out.println("Statut REFORME trouvé: " + statut.getCode());
 
         if (dateReforme == null || dateReforme.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("Date de réforme invalide: " + dateReforme);
         }
-    
+
         lot.setStatut(statut);
         System.out.println("Statut lot changé à: " + lot.getStatut().getCode());
-        
-    if(dateReforme.isBefore(lot.getDateArrivee())){
-        throw new IllegalArgumentException("La date:"+dateReforme+"ne peut pas être avant la date d'arrivé"+lot.getDateArrivee());
-    }
-        updateLot(lot); 
+
+        if (dateReforme.isBefore(lot.getDateArrivee())) {
+            throw new IllegalArgumentException(
+                    "La date:" + dateReforme + "ne peut pas être avant la date d'arrivé" + lot.getDateArrivee());
+        }
+        updateLot(lot);
         System.out.println("Lot sauvegardé dans la base");
-        
-            Long totalMorts = mortRepository.sumByLotId(idLot);
-            int totalMortsDejaEnregistrees = totalMorts != null ? totalMorts.intValue() : 0; 
+
+        Long totalMorts = mortRepository.sumByLotId(idLot);
+        int totalMortsDejaEnregistrees = totalMorts != null ? totalMorts.intValue() : 0;
         int nbrPoule = Math.max(lot.getNombreInitial() - totalMortsDejaEnregistrees, 0);
         System.out.println("Nombre de poules à réformer: " + nbrPoule);
-        
-
 
         Reforme reforme = new Reforme();
         reforme.setLot(lot);
         reforme.setNombre(nbrPoule);
         reforme.setDate(dateReforme);
-        
+
         System.out.println("Réforme créée - avant save");
-        
+
         reformeRepository.save(reforme);
-        
+
         System.out.println("Réforme sauvegardée avec l'ID: " + reforme.getId());
         System.out.println("Lot " + lot.getId() + " réformé avec " + nbrPoule + " poules");
 
@@ -249,4 +240,17 @@ public class LotService {
     public List<Lot> getAllLotsActifs() {
         return lotRepository.findAllByStatutCodeIgnoreCaseOrderByIdAsc("actif");
     }
+
+    public List<Lot> findAll() {
+        return lotRepository.findAll();
+    }
+
+    public Lot save(Lot lot) {
+        return lotRepository.save(lot);
+    }
+
+    public void deleteById(Integer id) {
+        lotRepository.deleteById(id);
+    }
+
 }
