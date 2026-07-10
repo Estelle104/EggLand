@@ -152,6 +152,27 @@ tr:hover td {
     background: #1a252f;
 }
 
+.btn-detail-liv {
+    background: var(--primary);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+}
+
+.btn-detail-liv:hover {
+    background: var(--hover);
+    color: #fff;
+    text-decoration: none;
+}
+
 
 .btn-supp-liv {
     background: #e47373;

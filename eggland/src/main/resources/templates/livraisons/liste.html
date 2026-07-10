@@ -113,6 +113,10 @@
                         </td>
                         <td>
                             <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+                                <a th:href="@{/admin/livraisons/detail/{id}(id=${livraison.id})}"
+                                   class="btn-detail-liv" title="Voir détail">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
                                
                                 <form th:action="@{/admin/livraisons/supprimer}" method="post" style="margin:0;"
                                       th:if="${livraison.statut.code != 'livre'}"

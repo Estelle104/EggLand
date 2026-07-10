@@ -11,12 +11,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.app.eggland.model.Client;
+import com.app.eggland.model.DetailVente;
 import com.app.eggland.model.Livraison;
 import com.app.eggland.model.Vente;
 import com.app.eggland.repository.DetailVenteRepository;
@@ -50,12 +52,12 @@ public class LivraisonController {
             @RequestParam(value = "dateDebut", required = false) String dateDebutStr,
             @RequestParam(value = "dateFin", required = false) String dateFinStr,
             @RequestParam(value = "nomClient", required = false) String nomClient,
-            @RequestParam(defaultValue = "0") int page, 
-            @RequestParam(defaultValue = "10") int size, 
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
             Model model) {
 
         LocalDate dateDebut = (dateDebutStr != null && !dateDebutStr.isBlank()) ? LocalDate.parse(dateDebutStr) : null;
-        LocalDate dateFin   = (dateFinStr   != null && !dateFinStr.isBlank()) ? LocalDate.parse(dateFinStr)   : null;
+        LocalDate dateFin = (dateFinStr != null && !dateFinStr.isBlank()) ? LocalDate.parse(dateFinStr) : null;
         boolean filtreActif = dateDebut != null || dateFin != null || (nomClient != null && !nomClient.isBlank());
         List<Livraison> livraisons;
         if (nomClient != null && !nomClient.isBlank()) {
@@ -68,23 +70,26 @@ public class LivraisonController {
 
         Page<Livraison> livraisonsPage = PaginationUtils.paginerListe(livraisons, page, size);
         StringBuilder url = new StringBuilder("/admin/livraisons?");
-        if (nomClient != null && !nomClient.isBlank()) url.append("nomClient=").append(nomClient).append("&");
-        if (dateDebutStr != null && !dateDebutStr.isBlank()) url.append("dateDebut=").append(dateDebutStr).append("&");
-        if (dateFinStr != null && !dateFinStr.isBlank()) url.append("dateFin=").append(dateFinStr).append("&");
+        if (nomClient != null && !nomClient.isBlank())
+            url.append("nomClient=").append(nomClient).append("&");
+        if (dateDebutStr != null && !dateDebutStr.isBlank())
+            url.append("dateDebut=").append(dateDebutStr).append("&");
+        if (dateFinStr != null && !dateFinStr.isBlank())
+            url.append("dateFin=").append(dateFinStr).append("&");
         url.append("size=").append(size).append("&");
-        
+
         String urlFinale = url.toString();
         if (urlFinale.endsWith("&") || urlFinale.endsWith("?")) {
             urlFinale = urlFinale.substring(0, urlFinale.length() - 1);
         }
         Map<String, String> filtres = new java.util.HashMap<>();
-        if(nomClient != null && !nomClient.isBlank()) {
+        if (nomClient != null && !nomClient.isBlank()) {
             filtres.put("nomClient", nomClient);
         }
-        if(dateDebutStr != null && !dateDebutStr.isBlank()) {
+        if (dateDebutStr != null && !dateDebutStr.isBlank()) {
             filtres.put("dateDebut", dateDebutStr);
         }
-        if(dateFinStr != null && !dateFinStr.isBlank()) {
+        if (dateFinStr != null && !dateFinStr.isBlank()) {
             filtres.put("dateFin", dateFinStr);
         }
 
@@ -95,7 +100,7 @@ public class LivraisonController {
         model.addAttribute("size", size);
         model.addAttribute("baseUrl", urlFinale);
         model.addAttribute("filtres", filtres);
-        
+
         model.addAttribute("dateDebutSelectionnee", dateDebutStr);
         model.addAttribute("dateFinSelectionnee", dateFinStr);
         model.addAttribute("nomClientSelectionne", nomClient);
@@ -105,8 +110,28 @@ public class LivraisonController {
         return "livraisons/liste";
     }
 
+    @GetMapping("/detail/{id}")
+    public String detail(@PathVariable("id") int id, Model model, RedirectAttributes ra) {
+        Livraison livraison = livraisonService.trouverLivraisonParId(id);
+        if (livraison == null) {
+            ra.addFlashAttribute("error", "Livraison introuvable.");
+            return "redirect:/admin/livraisons";
+        }
+
+        List<DetailVente> details = detailVenteRepository.findByVenteId(livraison.getVente().getId());
+        BigDecimal totalProduits = details.stream()
+                .map(detail -> detail.getQuantite().multiply(detail.getPrixUnitaire()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        model.addAttribute("livraison", livraison);
+        model.addAttribute("details", details);
+        model.addAttribute("totalProduits", totalProduits);
+        model.addAttribute("pageTitle", "Détail de la livraison");
+        return "livraisons/detail";
+    }
+
     @GetMapping("/creation")
-    public String creation(Model model) { 
+    public String creation(Model model) {
         model.addAttribute("livraison", new Livraison());
         model.addAttribute("ventesNonLivrees", livraisonService.obtenirVentesNonLivrees());
         model.addAttribute("statutsLivraison", statutLivraisonRepository.findAll());
@@ -115,28 +140,23 @@ public class LivraisonController {
     }
 
     @PostMapping("/save")
-    public String save(@RequestParam(value = "clientNom", required = false) String clientNom,
-                       @RequestParam(value = "venteId", required = false) String venteIdStr,
+    public String save(@RequestParam(value = "venteId", required = false) String venteIdStr,
                        @RequestParam(value = "dateLivraison", required = false) String dateLivraisonStr,
                        @RequestParam("adresseLivraison") String adresseLivraison,
                        @RequestParam(value = "fraisLivraison", required = false) String fraisLivraisonStr,
                        @RequestParam(value = "statutCode", required = false) String statutCode,
                        RedirectAttributes ra) {
         try {
+           
             LocalDate dateLivraison = LocalDate.now();
             if (dateLivraisonStr != null && !dateLivraisonStr.isBlank()) {
                 dateLivraison = LocalDate.parse(dateLivraisonStr);
             }
-
             BigDecimal fraisLivraison = BigDecimal.ZERO;
             if (fraisLivraisonStr != null && !fraisLivraisonStr.isBlank()) {
                 fraisLivraison = new BigDecimal(fraisLivraisonStr);
             }
 
-            if (clientNom == null || clientNom.isBlank()) {
-                throw new RuntimeException("Veuillez saisir le nom du client.");
-            }
-            
             if (venteIdStr == null || venteIdStr.isBlank()) {
                 throw new RuntimeException("Veuillez sélectionner une vente.");
             }
@@ -148,8 +168,11 @@ public class LivraisonController {
             if (vente == null) {
                 throw new RuntimeException("Vente introuvable avec l'ID : " + venteId);
             }
+            String clientNom = clientService.trouverClientParId(vente.getClient().getId()).getNom();
+           if (clientNom == null || clientNom.isBlank()) {
+                throw new RuntimeException("Veuillez saisir le nom du client.");
+            }
 
-          
             if (livraisonService.existeDejaPourVente(venteId)) {
                 throw new RuntimeException("Une livraison existe déjà pour cette vente");
             }
@@ -174,20 +197,19 @@ public class LivraisonController {
 
     @PostMapping("/changerStatut")
     public String changerStatut(@RequestParam("id") int id,
-                                @RequestParam("statutCode") String statutCode,
-                                RedirectAttributes ra) {
+            @RequestParam("statutCode") String statutCode,
+            RedirectAttributes ra) {
         try {
-            
+
             Livraison livraison = livraisonService.trouverLivraisonParId(id);
             if (livraison == null) {
                 throw new RuntimeException("Livraison introuvable");
             }
-            
-           
+
             if ("livre".equalsIgnoreCase(livraison.getStatut().getCode())) {
                 throw new RuntimeException("Impossible de modifier une livraison déjà livrée");
             }
-            
+
             livraisonService.changerStatutLivraison(id, statutCode);
             ra.addFlashAttribute("success", "Statut de livraison mis à jour.");
         } catch (RuntimeException e) {

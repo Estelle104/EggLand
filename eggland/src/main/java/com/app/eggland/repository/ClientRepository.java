@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import com.app.eggland.model.Client;
 
+import jakarta.persistence.criteria.CriteriaBuilder.In;
+
 
 
 @Repository
@@ -15,4 +17,5 @@ public interface ClientRepository extends JpaRepository<Client, Integer>{
     boolean existsByEmail(String email);
     Optional<Client> findByNom(String nom);
     Optional<Client> findByNomContainingIgnoreCase(String nom);
+    Optional<Client> findById(Integer id);
 }
