@@ -28,6 +28,7 @@ public class MortService {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
     private LotRepository lotRepository;
 
     public Integer getTotalMortsParLot(Integer lotId) {
