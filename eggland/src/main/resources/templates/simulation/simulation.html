@@ -14,9 +14,10 @@
             <h2>Simulation</h2>
         </div>
 
+        <!-- SIMULATION DE PRODUCTION -->
         <div class="simulation-card">
             <h3>Simulation de production</h3>
-            <form th:action="@{/admin/simulation}" method="post" class="simulation-form">
+            <form th:action="@{/simulation}" method="post" class="simulation-form">
                 <div class="form-group">
                     <label for="date">Date :</label>
                     <input type="date" id="date" name="date" required>
@@ -34,12 +35,12 @@
 
             <div th:if="${resultat != null}" class="simulation-result">
                 <h3>Résultat de la simulation :</h3>
-                <p
-                    th:text="'Chiffre d affaires : ' + ${#numbers.formatDecimal(resultat, 0, 'COMMA', 2, 'POINT')} + ' Ar'">
+                <p th:text="'Chiffre d affaires : ' + ${#numbers.formatDecimal(resultat, 0, 'COMMA', 2, 'POINT')} + ' Ar'">
                 </p>
             </div>
         </div>
 
+        <!-- SIMULATION DE MORTALITÉ -->
         <div class="simulation-card" style="margin-top: 30px;">
             <h3>Simulation de mortalité</h3>
 
@@ -47,73 +48,141 @@
                 <p th:text="${erreur}"></p>
             </div>
 
-            <form th:action="@{/admin/simulation/mortalite}" method="post" class="simulation-form">
+            <form th:action="@{/simulation/mortalite}" method="post" class="simulation-form" id="mortaliteForm">
+                <!-- Sélection du lot -->
                 <div class="form-group">
                     <label for="lotId">Lot :</label>
                     <select id="lotId" name="lotId" required>
                         <option value="">Sélectionner un lot</option>
-                        <option th:if="${#lists.isEmpty(lots)}" value="" disabled>Aucun lot actif disponible</option>
                         <option th:each="lot : ${lots}" th:value="${lot.id}"
                             th:text="${lot.race.nom} + ' - ' + ${lot.nombreInitial} + ' poules'">
                         </option>
                     </select>
                 </div>
 
+                <!-- Races avec cases à cocher et champs de nombre -->
                 <div class="form-group">
-                    <label for="mortsParJour">Nombre de morts par jour :</label>
-                    <input type="number" id="mortsParJour" name="mortsParJour" min="0" step="1" required>
+                    <label>Nombre de morts par jour par race :</label>
+                    
+                    <div th:each="race : ${races}" style="margin: 10px 0; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; background: #f9f9f9;">
+                        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                            <!-- Case à cocher -->
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" 
+                                       th:id="'race_' + ${race.id}" 
+                                       th:value="${race.id}"
+                                       name="raceIds"
+                                       style="width: 18px; height: 18px; cursor: pointer;"/>
+                                <label th:for="'race_' + ${race.id}" 
+                                       th:text="${race.nom}" 
+                                       style="font-weight: 500; cursor: pointer;">
+                                </label>
+                                <span style="color: #888; font-size: 12px;">
+                                    (Rendement: <span th:text="${race.rendementMoyenMois}"></span>/mois)
+                                </span>
+                            </div>
+                            
+                            <!-- Champ nombre de morts -->
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <label th:for="'morts_' + ${race.id}" style="font-size: 13px; color: #555;">
+                                    Morts/jour :
+                                </label>
+                                <input type="number" 
+                                       th:id="'morts_' + ${race.id}"
+                                       th:name="'mortsParRace_' + ${race.id}"
+                                       min="0" 
+                                       step="1"
+                                       placeholder="0"
+                                       style="width: 80px; padding: 6px 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px;"/>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <small style="display: block; color: #666; margin-top: 5px; font-style: italic;">
+                        (Cochez une race et entrez le nombre de morts par jour pour cette race)
+                    </small>
                 </div>
 
-                <div class="form-group">
-                    <label for="raceId">Race concernée :</label>
-                    <select id="raceId" name="raceId" required>
-                        <option value="">Sélectionner une race</option>
-                        <option th:each="race : ${races}" th:value="${race.id}"
-                            th:text="${race.nom} + ' - Rendement: ' + ${race.rendementMoyenMois} + ' oeufs/mois'">
-                        </option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="mortsParRace">Nombre de morts pour cette race :</label>
-                    <input type="number" id="mortsParRace" name="mortsParRace" min="0" step="1" required>
-                </div>
-
+                <!-- Date de simulation -->
                 <div class="form-group">
                     <label for="dateSimulation">Date de simulation :</label>
-                    <input type="date" id="dateSimulation" name="dateSimulation" th:value="${dateDebut}" required>
+                    <input type="date" id="dateSimulation" name="dateSimulation" 
+                           th:value="${dateDebut}" required>
                 </div>
 
                 <button type="submit" class="btn-simuler">Simuler</button>
             </form>
 
-            <div th:if="${resultatMortalite != null}" class="simulation-result">
+            <!-- Résultats -->
+            <div th:if="${resultatMortalite != null}" class="simulation-result" style="margin-top: 20px;">
                 <h3>Résultats de la simulation de mortalité</h3>
-                <div style="border: 1px solid #ddd; padding: 15px; border-radius: 5px; margin-top: 10px;">
-                    <p>
-                        <strong>Chiffre d'affaires après mortalité :</strong>
-                        <span
-                            th:text="${#numbers.formatDecimal(resultatMortalite.chiffreAffaire, 0, 'COMMA', 2, 'POINT')} + ' Ar'"></span>
+                <div style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
+                    <p><strong>Chiffre d'affaires après mortalité :</strong> 
+                       <span style="color: #8a4a1d; font-weight: 700;" 
+                             th:text="${#numbers.formatDecimal(resultatMortalite.chiffreAffaire, 0, 'COMMA', 2, 'POINT')} + ' Ar'">
+                       </span>
                     </p>
-                    <p>
-                        <strong>Nombre d'oeufs estimés après mortalité :</strong>
-                        <span th:text="${resultatMortalite.nbOeufsRestants}"></span>
+                    <p><strong>Nombre d'oeufs estimés après mortalité :</strong> 
+                       <span style="color: #8a4a1d; font-weight: 700;" th:text="${resultatMortalite.nbOeufsRestants}">
+                       </span>
                     </p>
-                    <p>
-                        <strong>Nombre de morts total :</strong>
-                        <span th:text="${resultatMortalite.totalMorts}"></span>
+                    <p><strong>Nombre de morts total :</strong> 
+                       <span style="color: #8a4a1d; font-weight: 700;" th:text="${resultatMortalite.totalMorts}">
+                       </span>
                     </p>
-                    <p>
-                        <strong>Race concernée :</strong>
-                        <span th:text="${resultatMortalite.nomRace}"></span>
-                    </p>
-                    <p th:if="${resultatMortalite.message != null}" style="color: orange; font-style: italic;"
-                        th:text="${resultatMortalite.message}">
+                    
+                    <!-- Détail des morts par race -->
+                    <div th:if="${resultatMortalite.mortsParRace != null and !resultatMortalite.mortsParRace.isEmpty()}">
+                        <p><strong>Détail des morts par race :</strong></p>
+                        <ul style="list-style: none; padding: 0;">
+                            <li th:each="entry : ${resultatMortalite.mortsParRace}" 
+                                style="padding: 5px 10px; background: #f5f0eb; margin: 5px 0; border-radius: 4px;">
+                                <span th:text="${entry.key} + ' : ' + ${entry.value} + ' morts'"></span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <p th:if="${resultatMortalite.message != null}" 
+                       style="color: orange; font-style: italic;" 
+                       th:text="${resultatMortalite.message}">
                     </p>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- JavaScript simple pour la validation -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('mortaliteForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    const checkboxes = document.querySelectorAll('input[name="raceIds"]:checked');
+                    
+                    if (checkboxes.length === 0) {
+                        e.preventDefault();
+                        alert('Veuillez cocher au moins une race.');
+                        return false;
+                    }
+                    
+                    let hasMorts = false;
+                    checkboxes.forEach(function(checkbox) {
+                        const raceId = checkbox.value;
+                        const input = document.getElementById('morts_' + raceId);
+                        if (input && parseInt(input.value) > 0) {
+                            hasMorts = true;
+                        }
+                    });
+                    
+                    if (!hasMorts) {
+                        e.preventDefault();
+                        alert('Veuillez entrer un nombre de morts par jour supérieur à 0 pour au moins une race cochée.');
+                        return false;
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

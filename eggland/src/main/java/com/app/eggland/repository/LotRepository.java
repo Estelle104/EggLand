@@ -16,11 +16,11 @@ import com.app.eggland.model.StatutLot;
 @Repository
 public interface LotRepository extends JpaRepository<Lot, Integer>{
        
-   @Query("""
-    SELECT SUM(l.nombreInitial)
-    FROM Lot l
-    WHERE l.batiment = :batiment
-""")
+    @Query("""
+        SELECT SUM(l.nombreInitial)
+        FROM Lot l
+        WHERE l.batiment = :batiment
+    """)
     Long calculerPlaceUtiliseePourBatiment(@Param("batiment") Batiment batiment);
     
     @Query("SELECT SUM(l.nombreInitial) FROM Lot l WHERE l.batiment = :batiment AND l.id != :lotId")
@@ -39,13 +39,11 @@ public interface LotRepository extends JpaRepository<Lot, Integer>{
     List<Lot> findAllByStatutCodeIgnoreCaseOrderByIdAsc(String code);
     
     boolean existsByBatimentId(Integer batimentId);
-    
-    // NOUVELLES MÉTHODES POUR LA SIMULATION DE MORTALITÉ
-    
+
     /**
      * Récupère les lots actifs avec leur race
      */
-    @Query("SELECT DISTINCT l FROM Lot l JOIN FETCH l.race WHERE LOWER(l.statut.code) = 'actif' ORDER BY l.id ASC")
+    @Query("SELECT DISTINCT l FROM Lot l JOIN FETCH l.race WHERE l.statut.code = 'ACTIF'")
     List<Lot> findActiveLotsWithRace();
     
     /**
@@ -57,6 +55,6 @@ public interface LotRepository extends JpaRepository<Lot, Integer>{
     /**
      * Récupère les lots actifs
      */
-    @Query("SELECT l FROM Lot l WHERE LOWER(l.statut.code) = 'actif' ORDER BY l.id ASC")
+    @Query("SELECT l FROM Lot l WHERE l.statut.code = 'ACTIF'")
     List<Lot> findActiveLots();
 }
