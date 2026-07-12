@@ -77,7 +77,7 @@ public class LivraisonService {
         Livraison saved = livraisonRepository.save(livraison);
 
         if (fraisLivraison.compareTo(BigDecimal.ZERO) > 0) {
-            mvtArgentService.creerSortieAvecReference(
+            mvtArgentService.creerEntreeAvecReference(
                     fraisLivraison, saved.getDateLivraison(), "livraison", "livraison-" + saved.getId());
         }
 
@@ -166,7 +166,8 @@ public class LivraisonService {
         Livraison saved = livraisonRepository.save(livraison);
 
         if (fraisLivraison.compareTo(BigDecimal.ZERO) > 0) {
-            mvtArgentService.creerSortie(fraisLivraison, saved.getDateLivraison(), "livraison");
+            mvtArgentService.creerEntreeAvecReference(
+                    fraisLivraison, saved.getDateLivraison(), "livraison", "livraison-" + saved.getId());
         }
 
         return saved;
