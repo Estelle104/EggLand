@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.app.eggland.dto.SimulationMortaliteResult;
 import com.app.eggland.model.Lot;
+import com.app.eggland.model.LotRace;
 import com.app.eggland.model.Race;
 import com.app.eggland.repository.LotRepository;
 import com.app.eggland.repository.MvtArgentRepository;
@@ -28,6 +29,8 @@ public class SimulationService {
     private LotRepository lotRepository;
     @Autowired
     private RaceRepository raceRepository;
+    @Autowired
+    private MortService mortService;
 
     // Méthode existante
     public int runSimulation(Date dateFin, int nombreOeufs, int prixUnitaire) {
@@ -48,90 +51,87 @@ public class SimulationService {
     }
 
     // Méthode pour la simulation de mortalité
-    public SimulationMortaliteResult simulateMortalite(Integer lotId, Map<Integer, Integer> mortsParRace,
-            Date dateSimulation) {
-        // Récupérer le lot
+    public SimulationMortaliteResult simulateMortalite(Integer lotId,
+                                                        Map<Integer, Integer> mortsParRace,Date dateSimulation) {
+
         Lot lot = lotRepository.findByIdWithRace(lotId)
                 .orElseThrow(() -> new RuntimeException("Lot non trouvé"));
 
-        // Récupérer la race du lot
-        Race raceLot = lot.getRace();
-        if (raceLot == null) {
-            throw new RuntimeException("Race non trouvée pour ce lot");
-        }
-
-        // Calculer le nombre de jours
         int nombreDeJours = calculDate(dateSimulation);
-        if (nombreDeJours <= 0) {
-            nombreDeJours = 1;
-        }
 
-        // Récupérer le rendement
-        Integer rendementMoyenMois = raceLot.getRendementMoyenMois();
-        if (rendementMoyenMois == null || rendementMoyenMois <= 0) {
-            throw new RuntimeException("Rendement moyen non défini pour cette race");
-        }
-
-        // Calculer la production de base
-        double oeufsParJourParPoule = rendementMoyenMois / 30.0;
-        int populationInitiale = lot.getNombreInitial();
-
-        // Calculer le total des morts
-        int totalMorts = 0;
         Map<String, Integer> mortsDetails = new HashMap<>();
 
-        for (Map.Entry<Integer, Integer> entry : mortsParRace.entrySet()) {
-            Integer raceId = entry.getKey();
-            Integer mortsParJour = entry.getValue();
+        int totalMorts = 0;
+        int totalOeufs = 0;
 
-            // Calculer le nombre total de morts pour cette race sur la période
-            int totalMortsRace = mortsParJour * nombreDeJours;
+        BigDecimal chiffreAffaire = BigDecimal.ZERO;
 
-            // Récupérer le nom de la race
-            Race race = raceRepository.findById(raceId)
-                    .orElseThrow(() -> new RuntimeException("Race non trouvée: " + raceId));
+        for (LotRace lotRace : lot.getLotRaces()) {
 
-            totalMorts += totalMortsRace;
-            mortsDetails.put(race.getNom(), totalMortsRace);
+            Race race = lotRace.getRace();
+
+            if (race == null) {
+                continue;
+            }
+
+            int populationInitiale = mortService.getNombreActuel(lot, race);
+
+            int mortsParJour = mortsParRace.getOrDefault(race.getId(), 0);
+
+            int mortsSimulation = mortsParJour * nombreDeJours;
+
+            if (mortsSimulation > populationInitiale) {
+                mortsSimulation = populationInitiale;
+            }
+
+            mortsDetails.put(race.getNom(), mortsSimulation);
+
+            totalMorts += mortsSimulation;
+
+            int populationRestante = populationInitiale - mortsSimulation;
+
+            double populationMoyenne = (populationInitiale + populationRestante) / 2.0;
+
+            if (race.getRendementMoyenMois() == null)
+                continue;
+
+            double oeufsParJour = race.getRendementMoyenMois() / 30.0;
+
+            int productionRace = (int) Math.round(
+                    oeufsParJour *
+                            populationMoyenne *
+                            nombreDeJours);
+
+            totalOeufs += productionRace;
+
+            if (race.getPrixUnitaire() == null)
+                continue;
+
+            BigDecimal caRace = BigDecimal.valueOf(productionRace)
+                    .multiply(race.getPrixUnitaire());
+
+            chiffreAffaire = chiffreAffaire.add(caRace);
         }
 
-        // Limiter les morts à la population
-        if (totalMorts > populationInitiale) {
-            totalMorts = populationInitiale;
-        }
-
-        // Population restante
-        int populationRestante = populationInitiale - totalMorts;
-        if (populationRestante < 0) {
-            populationRestante = 0;
-        }
-
-        // Calcul des œufs produits
-        double populationMoyenne = (populationInitiale + populationRestante) / 2.0;
-        int oeufsProduits = (int) (oeufsParJourParPoule * populationMoyenne * nombreDeJours);
-        int nbOeufsRestants = Math.max(oeufsProduits, 0);
-
-        // Calcul du chiffre d'affaires
-        int prixUnitaire = raceLot.getPrixUnitaire().intValue();
-        if (prixUnitaire <= 0) {
-            prixUnitaire = 100;
-        }
-        BigDecimal chiffreAffaire = BigDecimal.valueOf(nbOeufsRestants * prixUnitaire);
-
-        // Création du résultat
         SimulationMortaliteResult result = new SimulationMortaliteResult(
-                chiffreAffaire, nbOeufsRestants, totalMorts, mortsDetails);
+                chiffreAffaire,
+                totalOeufs,
+                totalMorts,
+                mortsDetails);
 
         if (totalMorts == 0) {
             result.setMessage("Aucune mort simulée");
-        } else if (totalMorts >= populationInitiale) {
-            result.setMessage("Attention : Toutes les poules sont mortes !");
+        } else {
+
+            int populationTotale = mortService.getNombreActuel(lot);
+
+            if (totalMorts >= populationTotale) {
+                result.setMessage("Attention : toutes les poules sont mortes !");
+            }
         }
 
         return result;
     }
-
-    // ===== MÉTHODES MANQUANTES À AJOUTER =====
 
     /**
      * Récupère le chiffre d'affaires entre deux dates

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.app.eggland.model.Lot;
+import com.app.eggland.model.LotRace;
 import com.app.eggland.model.Mort;
 import com.app.eggland.model.Race;
 import com.app.eggland.model.Reforme;
@@ -146,9 +147,13 @@ public class MortService {
     }
 
     // nombre de poule vivant dans un lot
+    // somme des nombres actuels de toutes les races du lot
     public Integer getNombreActuel(Lot lot) {
-        Integer totalMorts = mortRepository.sumMortalityByLot(lot);
-        return lot.getNombreInitial() - totalMorts;
+
+        return lot.getLotRaces()
+                .stream()
+                .mapToInt(lr -> getNombreActuel(lot, lr.getRace()))
+                .sum();
     }
 
     // nombre total mort
@@ -163,7 +168,10 @@ public class MortService {
 
     // mort par lot
     public Integer getNombreMort(Lot lot) {
-        return mortRepository.sumMortalityByLot(lot);
+
+        Integer total = mortRepository.sumMortalityByLot(lot);
+
+        return total == null ? 0 : total;
     }
 
     public Integer getTotalMortsParRace(Lot lot, Race race) {
@@ -173,15 +181,18 @@ public class MortService {
 
     public Integer getNombreActuel(Lot lot, Race race) {
 
-        Integer populationInitiale = lot.getLotRaces()
+        LotRace lotRace = lot.getLotRaces()
                 .stream()
                 .filter(lr -> lr.getRace().getId().equals(race.getId()))
                 .findFirst()
-                .orElseThrow()
-                .getNombre();
+                .orElseThrow(() -> new RuntimeException(
+                        "La race " + race.getNom() + " n'appartient pas au lot."));
 
-        Integer morts = getTotalMortsParRace(lot, race);
+        int populationInitiale = lotRace.getNombre() != null ? lotRace.getNombre() : 0;
+
+        int morts = getTotalMortsParRace(lot, race);
 
         return Math.max(populationInitiale - morts, 0);
     }
+
 }
