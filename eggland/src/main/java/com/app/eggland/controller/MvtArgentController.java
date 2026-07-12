@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,7 +43,12 @@ public class MvtArgentController {
         typeCode = normalize(typeCode);
         categorie = normalize(categorie);
 
-        List<MvtArgent> mouvements = mvtArgentRepository.findByFiltres(typeCode, categorie, dateDebut, dateFin);
+        List<MvtArgent> mouvements = filtrerMouvements(
+                mvtArgentRepository.findAllByOrderByDateDesc(),
+                typeCode,
+                categorie,
+                dateDebut,
+                dateFin);
         Page<MvtArgent> mouvementsPage = PaginationUtils.paginerListe(mouvements, page, size);
         String baseUrl = "/admin/mvtargent";
         model.addAttribute("pageTitle", "Mouvements d'argent");
@@ -75,5 +81,16 @@ public class MvtArgentController {
         if (value != null && !value.toString().isBlank()) {
             filtres.put(key, value.toString());
         }
+    }
+
+    private List<MvtArgent> filtrerMouvements(List<MvtArgent> mouvements, String typeCode, String categorie,
+            LocalDate dateDebut, LocalDate dateFin) {
+        return mouvements.stream()
+                .filter(m -> typeCode == null || (m.getType() != null && m.getType().getCode() != null
+                        && m.getType().getCode().equalsIgnoreCase(typeCode)))
+                .filter(m -> categorie == null || categorie.equals(m.getCategorie()))
+                .filter(m -> dateDebut == null || !m.getDate().isBefore(dateDebut))
+                .filter(m -> dateFin == null || !m.getDate().isAfter(dateFin))
+                .collect(Collectors.toList());
     }
 }
