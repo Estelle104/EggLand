@@ -2,6 +2,7 @@ package com.app.eggland.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,14 @@ public class MvtArgentService {
         return creerSortieAvecReference(montant, date, categorie, null);
     }
 
+    public Optional<MvtArgent> trouverParReference(String reference) {
+        return mvtArgentRepository.findByReference(reference);
+    }
+
+    public void supprimerParReference(String reference) {
+        mvtArgentRepository.deleteByReference(reference);
+    }
+
     public MvtArgent creerSortieAvecReference(BigDecimal montant, LocalDate date, String categorie, String reference) {
         if (date == null) {
             date = LocalDate.now();
@@ -33,7 +42,8 @@ public class MvtArgentService {
         }
 
         TypeMvt sortie = typeMvtRepository.findByCodeIgnoreCase("sortie")
-                .orElseThrow(() -> new RuntimeException("Type 'sortie' introuvable en base de données. Vérifiez la table typemvt."));
+                .orElseThrow(() -> new RuntimeException(
+                        "Type 'sortie' introuvable en base de données. Vérifiez la table typemvt."));
 
         MvtArgent mvt = MvtArgent.builder()
                 .type(sortie)
@@ -58,7 +68,8 @@ public class MvtArgentService {
         }
 
         TypeMvt entree = typeMvtRepository.findByCodeIgnoreCase("entree")
-                .orElseThrow(() -> new RuntimeException("Type 'entree' introuvable en base de données. Vérifiez la table typemvt."));
+                .orElseThrow(() -> new RuntimeException(
+                        "Type 'entree' introuvable en base de données. Vérifiez la table typemvt."));
 
         MvtArgent mvt = MvtArgent.builder()
                 .type(entree)
@@ -67,6 +78,10 @@ public class MvtArgentService {
                 .categorie(categorie)
                 .reference(reference)
                 .build();
+        return mvtArgentRepository.save(mvt);
+    }
+
+    public MvtArgent saveMvt(MvtArgent mvt) {
         return mvtArgentRepository.save(mvt);
     }
 }
