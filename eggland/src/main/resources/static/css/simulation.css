@@ -23,7 +23,8 @@
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     padding: 28px;
-    max-width: 480px;
+    max-width: 680px;
+    width: 100%;
 }
 
 .simulation-form .form-group {

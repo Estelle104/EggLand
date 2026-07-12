@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.app.eggland.model.Lot;
 import com.app.eggland.model.Mort;
+import com.app.eggland.model.Race;
 import com.app.eggland.model.Reforme;
 import com.app.eggland.repository.LotRepository;
 import com.app.eggland.repository.MortRepository;
@@ -163,5 +164,24 @@ public class MortService {
     // mort par lot
     public Integer getNombreMort(Lot lot) {
         return mortRepository.sumMortalityByLot(lot);
+    }
+
+    public Integer getTotalMortsParRace(Lot lot, Race race) {
+        Long total = mortRepository.sumByLotAndRace(lot.getId(), race.getId());
+        return total == null ? 0 : total.intValue();
+    }
+
+    public Integer getNombreActuel(Lot lot, Race race) {
+
+        Integer populationInitiale = lot.getLotRaces()
+                .stream()
+                .filter(lr -> lr.getRace().getId().equals(race.getId()))
+                .findFirst()
+                .orElseThrow()
+                .getNombre();
+
+        Integer morts = getTotalMortsParRace(lot, race);
+
+        return Math.max(populationInitiale - morts, 0);
     }
 }

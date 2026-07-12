@@ -41,13 +41,15 @@ public class SimulationService {
     public int calculDate(Date dateFin) {
         Date aujourdHui = new Date(System.currentTimeMillis());
         long diffMs = dateFin.getTime() - aujourdHui.getTime();
-        long joursCalendaires = (diffMs / 86400000L) + 1;
-        int joursTravail = (int) ((joursCalendaires * 22) / 30);
-        return joursTravail + 1;
+
+        int jours = (int) (diffMs / 86400000L) + 1;
+
+        return Math.max(jours, 1);
     }
 
     // Méthode pour la simulation de mortalité
-    public SimulationMortaliteResult simulateMortalite(Integer lotId, Map<Integer, Integer> mortsParRace, Date dateSimulation) {
+    public SimulationMortaliteResult simulateMortalite(Integer lotId, Map<Integer, Integer> mortsParRace,
+            Date dateSimulation) {
         // Récupérer le lot
         Lot lot = lotRepository.findByIdWithRace(lotId)
                 .orElseThrow(() -> new RuntimeException("Lot non trouvé"));
@@ -63,7 +65,7 @@ public class SimulationService {
         if (nombreDeJours <= 0) {
             nombreDeJours = 1;
         }
-        
+
         // Récupérer le rendement
         Integer rendementMoyenMois = raceLot.getRendementMoyenMois();
         if (rendementMoyenMois == null || rendementMoyenMois <= 0) {
@@ -73,65 +75,64 @@ public class SimulationService {
         // Calculer la production de base
         double oeufsParJourParPoule = rendementMoyenMois / 30.0;
         int populationInitiale = lot.getNombreInitial();
-        
+
         // Calculer le total des morts
         int totalMorts = 0;
         Map<String, Integer> mortsDetails = new HashMap<>();
-        
+
         for (Map.Entry<Integer, Integer> entry : mortsParRace.entrySet()) {
             Integer raceId = entry.getKey();
             Integer mortsParJour = entry.getValue();
-            
+
             // Calculer le nombre total de morts pour cette race sur la période
             int totalMortsRace = mortsParJour * nombreDeJours;
-            
+
             // Récupérer le nom de la race
             Race race = raceRepository.findById(raceId)
                     .orElseThrow(() -> new RuntimeException("Race non trouvée: " + raceId));
-            
+
             totalMorts += totalMortsRace;
             mortsDetails.put(race.getNom(), totalMortsRace);
         }
-        
+
         // Limiter les morts à la population
         if (totalMorts > populationInitiale) {
             totalMorts = populationInitiale;
         }
-        
+
         // Population restante
         int populationRestante = populationInitiale - totalMorts;
         if (populationRestante < 0) {
             populationRestante = 0;
         }
-        
+
         // Calcul des œufs produits
         double populationMoyenne = (populationInitiale + populationRestante) / 2.0;
         int oeufsProduits = (int) (oeufsParJourParPoule * populationMoyenne * nombreDeJours);
         int nbOeufsRestants = Math.max(oeufsProduits, 0);
-        
+
         // Calcul du chiffre d'affaires
         int prixUnitaire = raceLot.getPrixUnitaire().intValue();
         if (prixUnitaire <= 0) {
             prixUnitaire = 100;
         }
         BigDecimal chiffreAffaire = BigDecimal.valueOf(nbOeufsRestants * prixUnitaire);
-        
+
         // Création du résultat
         SimulationMortaliteResult result = new SimulationMortaliteResult(
-                chiffreAffaire, nbOeufsRestants, totalMorts, mortsDetails
-        );
-        
+                chiffreAffaire, nbOeufsRestants, totalMorts, mortsDetails);
+
         if (totalMorts == 0) {
             result.setMessage("Aucune mort simulée");
         } else if (totalMorts >= populationInitiale) {
             result.setMessage("Attention : Toutes les poules sont mortes !");
         }
-        
+
         return result;
     }
 
     // ===== MÉTHODES MANQUANTES À AJOUTER =====
-    
+
     /**
      * Récupère le chiffre d'affaires entre deux dates
      */
