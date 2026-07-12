@@ -13,6 +13,19 @@
     <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 
 </head>
+<style>
+    .product-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        border-radius: 50%;
+        background: var(--cream, #f5efe6);
+        color: var(--card-brown);
+    }
+</style>
 
 <body>
 
@@ -111,25 +124,65 @@
             <div class="row g-4">
                 <div class="col-lg-4 col-md-6">
                     <div class="product-card text-center">
-                        <div class="product-icon">🥚</div>
+                        <div class="product-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="#000" stroke="none">
+                                <path
+                                    d="M12 3C8.5 3 5.5 9.5 5.5 14C5.5 18.5 8.4 21 12 21C15.6 21 18.5 18.5 18.5 14C18.5 9.5 15.5 3 12 3Z" />
+                            </svg>
+                        </div>
                         <h4 class="fw-bold mb-3">Œufs Frais</h4>
                         <p>Récoltés chaque matin depuis notre grande ferme moderne. Frais, sains et de calibre constant,
                             livrés directement chez vous avec les frais de livraison inclus.</p>
                         <div class="product-badge mt-4">PRODUIT PHARE</div>
                     </div>
                 </div>
+
                 <div class="col-lg-4 col-md-6">
                     <div class="product-card text-center">
-                        <div class="product-icon">🍗</div>
+                        <div class="product-icon">
+                            <!-- POULE -->
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="#000" stroke="none">
+                                <!-- corps -->
+                                <ellipse cx="11" cy="14.5" rx="6.5" ry="5.5" />
+                                <!-- tête -->
+                                <circle cx="17.5" cy="8.5" r="3" />
+                                <!-- bec -->
+                                <path d="M20.3 8.2 L23 9.2 L20.3 10.2 Z" />
+                                <!-- crête -->
+                                <path d="M15.5 5.5 C16 4 16.8 4 17 5.2 C17.3 4 18.1 4 18.3 5.3 C18.6 4.2 19.4 4.3 19.3 5.6 
+                             C18.8 6.3 16.3 6.3 15.5 5.5 Z" />
+                                <!-- queue -->
+                                <path
+                                    d="M5 12 C2 10.5 1 12.5 3 14 C1.5 14.5 1.5 16.5 3.5 16.3 C2.8 18 4.5 19 5.8 17.3 Z" />
+                                <!-- pattes -->
+                                <path d="M9 20 L9 23 M13 20 L13 23" stroke="#000" stroke-width="1.6" fill="none" />
+                                <path d="M7.5 23 L10.5 23 M11.5 23 L14.5 23" stroke="#000" stroke-width="1.6"
+                                    fill="none" />
+                            </svg>
+                        </div>
                         <h4 class="fw-bold mb-3">Poulet de Chair</h4>
                         <p>Nos poules pondeuses en fin de cycle sont valorisées en poulets de chair de qualité. Une
                             diversification qui garantit zéro gaspillage et plus de valeur pour nos partenaires.</p>
                         <div class="product-badge mt-4">DISPONIBLE</div>
                     </div>
                 </div>
+
                 <div class="col-lg-4 col-md-6">
                     <div class="product-card text-center">
-                        <div class="product-icon">🌿</div>
+                        <div class="product-icon">
+                            <!-- FUMIER (tas + pousse) -->
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#000"
+                                stroke-width="1.5">
+                                <!-- tas -->
+                                <path d="M3 19c1.5-3.5 4-4.5 9-4.5s7.5 1 9 4.5" stroke-linecap="round" />
+                                <path d="M2.5 19h19" stroke-linecap="round" />
+                                <!-- tige -->
+                                <path d="M12 14.5V7" stroke-linecap="round" />
+                                <!-- feuilles -->
+                                <path d="M12 11c0-2.3 1.8-3.7 4-3.7-.4 2.3-1.7 3.7-4 3.7Z" fill="#000" stroke="none" />
+                                <path d="M12 9c0-2.3-1.8-3.7-4-3.7.4 2.3 1.7 3.7 4 3.7Z" fill="#000" stroke="none" />
+                            </svg>
+                        </div>
                         <h4 class="fw-bold mb-3">Fumier Naturel</h4>
                         <p>Sous-produit de notre élevage, notre fumier est un excellent fertilisant naturel pour les
                             cultures. Un choix durable pour les agriculteurs et maraîchers.</p>
@@ -203,16 +256,16 @@
 
             <div class="row g-4 text-center">
                 <div class="col-md-6 col-lg-3">
-                    <div class="contact-box">📍<br><strong>Adresse</strong><br>Antananarivo, Madagascar</div>
+                    <div class="contact-box"><br><strong>Adresse</strong><br>Antananarivo, Madagascar</div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="contact-box">📞<br><strong>Téléphone</strong><br>+261 XX XX XXX XX</div>
+                    <div class="contact-box"><br><strong>Téléphone</strong><br>+261 38 11 127 47</div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="contact-box">✉️<br><strong>Email</strong><br>contact@eggland.mg</div>
+                    <div class="contact-box"><br><strong>Email</strong><br>contact@eggland.mg</div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="contact-box">🕒<br><strong>Horaires</strong><br>Lun - Sam : 07h00 - 18h00</div>
+                    <div class="contact-box"><br><strong>Horaires</strong><br>Lun - Sam : 07h00 - 18h00</div>
                 </div>
             </div>
         </div>
