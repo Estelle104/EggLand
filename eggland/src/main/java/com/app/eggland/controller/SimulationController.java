@@ -1,5 +1,6 @@
 package com.app.eggland.controller;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -54,7 +55,7 @@ public class SimulationController {
     @GetMapping("admin/simulation/chiffre-affaire")
     public String chiffreAffaireForm(Model model) {
         model.addAttribute("dateDebut", LocalDate.now());
-        return "simulation/chiffre-affaire";
+        return "redirect:/simulation";
     }
 
     @PostMapping("/simulation")
@@ -123,9 +124,12 @@ public class SimulationController {
                                              @RequestParam("dateDebut") LocalDate dateDebut,
                                              @RequestParam("dateFin") LocalDate dateFin) {
         LocalDate debut = dateDebut != null ? dateDebut : LocalDate.now();
-        model.addAttribute("chiffreAffaires", simulationService.getChiffreAffaires(debut, dateFin));
-        model.addAttribute("depenseNourriture", simulationService.getDepenseNourriture(debut, dateFin));
-        model.addAttribute("beneficeNet", simulationService.getBeneficeNet(debut, dateFin));
+        BigDecimal ca = simulationService.getChiffreAffaires(debut, dateFin);
+        BigDecimal depenseNourriture = simulationService.getDepenseNourriture(debut, dateFin);
+        BigDecimal beneficeNet = ca.subtract(depenseNourriture);
+        model.addAttribute("chiffreAffaires", ca);
+        model.addAttribute("depenseNourriture", depenseNourriture);
+        model.addAttribute("beneficeNet", beneficeNet);
         model.addAttribute("dateDebut", debut);
         model.addAttribute("dateFin", dateFin);
         
