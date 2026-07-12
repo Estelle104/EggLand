@@ -95,6 +95,73 @@
             color: #999;
             font-size: 15px;
         }
+        .filtre-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 18px;
+            margin-bottom: 18px;
+        }
+        .filtre-form {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(140px, 1fr));
+            gap: 12px;
+            align-items: end;
+        }
+        .filtre-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .filtre-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+        }
+        .filtre-group input,
+        .filtre-group select {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 9px 10px;
+            font-size: 13px;
+            background: #fff;
+            color: var(--text);
+        }
+        .filtre-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .btn-filtrer,
+        .btn-reset {
+            border: 0;
+            border-radius: 6px;
+            padding: 9px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-filtrer {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-reset {
+            background: #f2f2f2;
+            color: var(--text);
+        }
+        @media (max-width: 1100px) {
+            .filtre-form {
+                grid-template-columns: repeat(2, minmax(160px, 1fr));
+            }
+        }
+        @media (max-width: 640px) {
+            .filtre-form {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 
@@ -106,6 +173,45 @@
                 <i class="fas fa-money-bill-wave" style="color: var(--primary); margin-right: 8px;"></i>
                 <span th:text="${pageTitle}">Mouvements d'argent</span>
             </h2>
+        </div>
+
+        <div class="filtre-card">
+            <form class="filtre-form" th:action="@{/admin/mvtargent}" method="get">
+                <div class="filtre-group">
+                    <label for="typeCode"><i class="fas fa-exchange-alt"></i> Type</label>
+                    <select id="typeCode" name="typeCode">
+                        <option value="">Tous les types</option>
+                        <option th:each="type : ${typesMvt}" th:value="${type.code}"
+                            th:selected="${type.code == typeCodeSelectionne}"
+                            th:text="${#strings.replace(type.code, '_', ' ')}">entree</option>
+                    </select>
+                </div>
+                <div class="filtre-group">
+                    <label for="categorie"><i class="fas fa-tags"></i> Catégorie</label>
+                    <select id="categorie" name="categorie">
+                        <option value="">Toutes les catégories</option>
+                        <option th:each="cat : ${categories}" th:value="${cat}"
+                            th:selected="${cat == categorieSelectionnee}"
+                            th:text="${#strings.replace(cat, '_', ' ')}">categorie</option>
+                    </select>
+                </div>
+                <div class="filtre-group">
+                    <label for="dateDebut"><i class="fas fa-calendar-day"></i> Date début</label>
+                    <input id="dateDebut" type="date" name="dateDebut" th:value="${dateDebutSelectionnee}">
+                </div>
+                <div class="filtre-group">
+                    <label for="dateFin"><i class="fas fa-calendar-day"></i> Date fin</label>
+                    <input id="dateFin" type="date" name="dateFin" th:value="${dateFinSelectionnee}">
+                </div>
+                <div class="filtre-actions">
+                    <button type="submit" class="btn-filtrer">
+                        <i class="fas fa-filter"></i> Filtrer
+                    </button>
+                    <a th:href="@{/admin/mvtargent}" class="btn-reset">
+                        <i class="fas fa-undo"></i> Réinitialiser
+                    </a>
+                </div>
+            </form>
         </div>
 
         <div class="card">

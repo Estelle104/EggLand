@@ -20,6 +20,23 @@ public interface MvtArgentRepository extends JpaRepository<MvtArgent, Integer> {
 
     void deleteByReference(String reference);
 
+    @Query("""
+            SELECT m
+            FROM MvtArgent m
+            WHERE (:typeCode IS NULL OR LOWER(m.type.code) = LOWER(:typeCode))
+              AND (:categorie IS NULL OR m.categorie = :categorie)
+              AND (:dateDebut IS NULL OR m.date >= :dateDebut)
+              AND (:dateFin IS NULL OR m.date <= :dateFin)
+            ORDER BY m.date DESC, m.id DESC
+            """)
+    List<MvtArgent> findByFiltres(@Param("typeCode") String typeCode,
+            @Param("categorie") String categorie,
+            @Param("dateDebut") LocalDate dateDebut,
+            @Param("dateFin") LocalDate dateFin);
+
+    @Query("SELECT DISTINCT m.categorie FROM MvtArgent m WHERE m.categorie IS NOT NULL ORDER BY m.categorie")
+    List<String> findDistinctCategories();
+
     @Query("SELECT SUM(m.montant) FROM MvtArgent m WHERE LOWER(m.type.code) = LOWER(:typeCode)")
     BigDecimal sumMontantByTypeCode(@Param("typeCode") String typeCode);
 
