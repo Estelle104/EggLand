@@ -25,6 +25,11 @@
             font-size: 22px;
         }
 
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
         .btn-nouveau {
             background: var(--primary);
             color: white;
@@ -41,6 +46,47 @@
 
         .btn-nouveau:hover {
             background: var(--hover);
+        }
+
+        .btn-historique {
+            background: var(--card);
+            color: var(--text);
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--border);
+            transition: 0.2s;
+        }
+
+        .btn-historique:hover {
+            background: var(--bg);
+        }
+
+        .alert {
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+        }
+
+        .alert-error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #c62828;
         }
 
         .table-container {
@@ -124,9 +170,26 @@
             color: #999;
         }
 
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            display: block;
+            color: var(--border);
+        }
+
         .empty-state p {
             font-size: 16px;
             margin-bottom: 16px;
+        }
+
+        .badge-mvt {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            background: #fff3e0;
+            color: #e65100;
         }
     </style>
 </head>
@@ -142,11 +205,28 @@
 
         <div class="content">
 
+            <!-- Messages flash -->
+            <div class="alert alert-success" th:if="${success}">
+                <i class="fas fa-check-circle"></i>
+                <span th:text="${success}"></span>
+            </div>
+            <div class="alert alert-error" th:if="${error}">
+                <i class="fas fa-exclamation-circle"></i>
+                <span th:text="${error}"></span>
+            </div>
+
             <div class="page-header">
-                <h2 th:text="${pageTitle}">Traitements</h2>
-                <a href="/traitements/nouveau" class="btn-nouveau">
-                    <i class="fas fa-plus"></i> Nouveau traitement
-                </a>
+                <h2><i class="fa-solid fa-syringe" style="color: var(--primary); margin-right: 8px;"></i>
+                    <span th:text="${pageTitle}">Traitements</span>
+                </h2>
+                <div class="header-actions">
+                    <a th:href="@{/traitements/historique}" class="btn-historique">
+                        <i class="fas fa-history"></i> Historique
+                    </a>
+                    <a th:href="@{/traitements/nouveau}" class="btn-nouveau">
+                        <i class="fas fa-plus"></i> Nouveau traitement
+                    </a>
+                </div>
             </div>
 
             <div class="table-container" th:if="${!traitements.isEmpty()}">
@@ -158,6 +238,8 @@
                             <th>Type</th>
                             <th>Date</th>
                             <th>Coût (Ar)</th>
+                            <th>Description</th>
+                            <th>Mvt Argent</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -166,15 +248,23 @@
                             <td th:text="${traitement.id}"></td>
                             <td th:text="'Lot #' + ${traitement.lot.id}"></td>
                             <td th:text="${traitement.type.code}"></td>
-                            <td th:text="${#dates.format(traitement.date, 'dd/MM/yyyy')}"></td>
-                            <td th:text="${#numbers.formatDecimal(traitement.cout, 1, 2)}"></td>
+                            <td th:text="${#temporals.format(traitement.date, 'dd/MM/yyyy')}"></td>
+                            <td th:text="${#numbers.formatDecimal(traitement.cout, 1, 'WHITESPACE', 2, 'COMMA')} + ' Ar'"></td>
+                            <td th:text="${traitement.description != null ? traitement.description : '-'}"></td>
+                            <td>
+                                <span class="badge-mvt"
+                                      th:if="${traitement.cout != null and traitement.cout.compareTo(T(java.math.BigDecimal).ZERO) > 0}">
+                                    <i class="fas fa-arrow-down"></i> Sortie créée
+                                </span>
+                                <span th:if="${traitement.cout == null or traitement.cout.compareTo(T(java.math.BigDecimal).ZERO) == 0}" style="color:#999; font-size:12px;">—</span>
+                            </td>
                             <td class="actions">
                                 <a th:href="@{/traitements/edit/{id}(id=${traitement.id})}" class="btn-edit">
                                     <i class="fas fa-edit"></i> Modifier
                                 </a>
                                 <a th:href="@{/traitements/delete/{id}(id=${traitement.id})}"
                                    class="btn-delete"
-                                   onclick="return confirm('Êtes-vous sûr ?');">
+                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce traitement ?');">
                                     <i class="fas fa-trash"></i> Supprimer
                                 </a>
                             </td>
@@ -184,9 +274,10 @@
             </div>
 
             <div class="empty-state" th:if="${traitements.isEmpty()}">
+                <i class="fa-solid fa-syringe"></i>
                 <p>Aucun traitement enregistré</p>
-                <a href="/traitements/nouveau" class="btn-nouveau">
-                    <i class="fas fa-plus"></i> Ajouter le premier
+                <a th:href="@{/traitements/nouveau}" class="btn-nouveau">
+                    <i class="fas fa-plus"></i> Ajouter le premier traitement
                 </a>
             </div>
 

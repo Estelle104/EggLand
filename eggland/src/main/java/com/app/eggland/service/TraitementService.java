@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.app.eggland.model.Lot;
 import com.app.eggland.model.Traitement;
@@ -14,12 +15,14 @@ import com.app.eggland.repository.TraitementRepository;
 
 @Service
 public class TraitementService {
+
     @Autowired
     private TraitementRepository traitementRepository;
 
     @Autowired
     private MvtArgentService mvtArgentService;
 
+    @Transactional
     public Traitement save(Traitement traitement) {
         if (traitement.getDate() == null) {
             traitement.setDate(LocalDate.now());
@@ -30,11 +33,15 @@ public class TraitementService {
 
         Traitement savedTraitement = traitementRepository.save(traitement);
 
+        // Créer un mouvement de sortie d'argent si le coût est positif
         if (traitement.getCout().compareTo(BigDecimal.ZERO) > 0) {
-            mvtArgentService.creerSortie(
+            // Référence unique basée sur l'ID du traitement pour éviter les doublons
+            String reference = "TRAITEMENT-" + savedTraitement.getId() + "-" + System.currentTimeMillis();
+            mvtArgentService.creerSortieAvecReference(
                 traitement.getCout(),
                 traitement.getDate(),
-                "traitement_veterinaire"
+                "traitement_veterinaire",
+                reference
             );
         }
 

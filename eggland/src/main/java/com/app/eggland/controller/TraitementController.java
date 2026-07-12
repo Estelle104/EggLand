@@ -21,6 +21,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/traitements")
 public class TraitementController {
+
     @Autowired
     private TraitementService traitementService;
 
@@ -47,8 +48,13 @@ public class TraitementController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute Traitement traitement) {
-        traitementService.save(traitement);
+    public String save(@ModelAttribute Traitement traitement, RedirectAttributes ra) {
+        try {
+            traitementService.save(traitement);
+            ra.addFlashAttribute("success", "Traitement enregistré avec succès. Le mouvement d'argent a été créé automatiquement.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Erreur lors de l'enregistrement : " + e.getMessage());
+        }
         return "redirect:/traitements";
     }
 
@@ -59,7 +65,9 @@ public class TraitementController {
                 .map(Traitement::getCout)
                 .filter(c -> c != null)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        BigDecimal avgCost = traitements.isEmpty() ? BigDecimal.ZERO : totalCost.divide(BigDecimal.valueOf(traitements.size()), 2, java.math.RoundingMode.HALF_UP);
+        BigDecimal avgCost = traitements.isEmpty()
+                ? BigDecimal.ZERO
+                : totalCost.divide(BigDecimal.valueOf(traitements.size()), 2, java.math.RoundingMode.HALF_UP);
 
         model.addAttribute("traitements", traitements);
         model.addAttribute("lots", lotService.findAll());
@@ -85,6 +93,7 @@ public class TraitementController {
     public String delete(@PathVariable Integer id, RedirectAttributes ra) {
         try {
             traitementService.deleteById(id);
+            ra.addFlashAttribute("success", "Traitement supprimé.");
         } catch (DataIntegrityViolationException e) {
             ra.addFlashAttribute("error", "Impossible de supprimer : ce traitement est lié à d'autres données.");
         }
