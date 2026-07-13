@@ -3,6 +3,7 @@ package com.app.eggland.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,7 @@ import com.app.eggland.service.OeufStatutService;
 import com.app.eggland.service.PaginationUtils;
 
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -110,30 +112,54 @@ public class OeufController {
     }
 
     @GetMapping("/historique")
-    public String historique(@RequestParam(defaultValue = "0") int page,
-                            @RequestParam(defaultValue = "10") int size, 
-                            Model model) {
+    public String historique(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Integer lotId,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate dateDebut,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate dateFin,
+            Model model) {
+
         page = Math.max(page, 0);
         size = Math.max(size, 1);
+
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Map<String, Object>> historique = oeufProductionService.getHistoriqueProduction(pageable);
-        if (historique.getTotalPages() > 0 && page >= historique.getTotalPages()) {
-            page = historique.getTotalPages() - 1;
-            pageable = PageRequest.of(page, size);
-            historique = oeufProductionService.getHistoriqueProduction(pageable);
+        Page<Map<String, Object>> historique;
+        try {
+            historique = oeufProductionService.getHistoriqueProduction(
+                    lotId, dateDebut, dateFin, pageable);
+
+            if (historique.getTotalPages() > 0 && page >= historique.getTotalPages()) {
+                page = historique.getTotalPages() - 1;
+                pageable = PageRequest.of(page, size);
+                historique = oeufProductionService.getHistoriqueProduction(
+                        lotId, dateDebut, dateFin, pageable);
+            }
+        } catch (IllegalArgumentException exception) {
+            model.addAttribute("error", exception.getMessage());
+            historique = Page.empty(pageable);
         }
-        Map<String, String> filtres = Map.of(); // Aucun filtre pour l'instant
-        
-        LocalDate today = LocalDate.now();
-        model.addAttribute("historique", historique);
+
+        Map<String, String> filtres = new LinkedHashMap<>();
+        if (lotId != null) filtres.put("lotId", lotId.toString());
+        if (dateDebut != null) filtres.put("dateDebut", dateDebut.toString());
+        if (dateFin != null) filtres.put("dateFin", dateFin.toString());
+
         model.addAttribute("historiqueProduction", historique.getContent());
-        model.addAttribute("today", today.toString());
-        model.addAttribute("todayMinus30", today.minusDays(30).toString());
+        model.addAttribute("listeLots", lotService.getAllLots());
+        model.addAttribute("lotSelectionne", lotId);
+        model.addAttribute("dateDebutSelectionnee", dateDebut);
+        model.addAttribute("dateFinSelectionnee", dateFin);
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", size);
-        model.addAttribute("filtres", filtres);
         model.addAttribute("totalPages", historique.getTotalPages());
+        model.addAttribute("filtres", filtres);
+
         return "oeufs/historique";
     }
     

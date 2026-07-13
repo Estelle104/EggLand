@@ -312,6 +312,65 @@
     transform: translateY(-1px);
 }
 
+.history-filters {
+    margin-bottom: 20px;
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--card);
+}
+
+.history-filters .filter-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.history-filters .filter-group {
+    flex: 1 1 180px;
+}
+
+.history-filters .filter-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.history-filters .filter-group select,
+.history-filters .filter-group input {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    outline: none;
+    background: #fff;
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.history-filters .filter-group select:focus,
+.history-filters .filter-group input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(184, 122, 42, 0.12);
+}
+
+.history-filters .btn {
+    min-height: 44px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+.history-filters button.btn-primary {
+    border: 0;
+    cursor: pointer;
+}
+
 .history-table-card .stats-table td {
     vertical-align: middle;
 }
@@ -484,6 +543,10 @@
     .stats-page .btn-simulation-ca,
     .stats-page .btn-secondary {
         width: 100%;
+    }
+
+    .history-filters .filter-group {
+        flex-basis: 100%;
     }
 
     .stats-container {
