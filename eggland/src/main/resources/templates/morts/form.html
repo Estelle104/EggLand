@@ -146,54 +146,117 @@
 
             <div class="page-header">
                 <h2 th:text="${mort.id == null} ? 'Insertion de mort' : 'Modification de mort'"></h2>
+
                 <a href="/morts/liste" class="btn-link">
                     <i class="fas fa-list"></i> Liste
                 </a>
             </div>
 
+
             <div class="card-form">
+
                 <form th:action="@{/morts/save}"
                       th:object="${mort}"
                       method="post">
 
                     <input type="hidden" th:field="*{id}"/>
 
+
+                    <!-- LOT -->
                     <div class="form-group">
+
                         <label>Lot</label>
-                        <select th:field="*{lot}" required>
-                            <option value="">-- Choisir un lot --</option>
+
+                        <select id="lotSelect"
+                                th:field="*{lot}"
+                                required
+                                onchange="chargerRaces()">
+
+                            <option value="">
+                                -- Choisir un lot --
+                            </option>
+
                             <option th:each="lot : ${lots}"
                                     th:value="${lot.id}"
                                     th:text="'Lot #' + ${lot.id}">
                             </option>
+
                         </select>
+
                     </div>
 
+
+                    <!-- RACE -->
                     <div class="form-group">
+
+                        <label>Race</label>
+
+                        <select id="raceSelect"
+                                th:field="*{race}"
+                                required>
+
+                            <option value="">
+                                -- Choisir une race --
+                            </option>
+
+                            <option th:each="race : ${races}"
+                                    th:value="${race.id}"
+                                    th:text="${race.nom}">
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- DATE -->
+                    <div class="form-group">
+
                         <label>Date</label>
+
                         <input type="date"
                                th:field="*{date}"
                                required>
+
                     </div>
 
+
+                    <!-- NOMBRE -->
                     <div class="form-group">
+
                         <label>Nombre de morts</label>
+
                         <input type="number"
                                min="1"
                                th:field="*{nombre}"
                                required>
+
                     </div>
 
+
                     <div class="form-actions">
-                        <button type="submit" class="btn-enregistrer">
-                            <i class="fas fa-save"></i> Enregistrer
+
+                        <button type="submit"
+                                class="btn-enregistrer">
+
+                            <i class="fas fa-save"></i>
+                            Enregistrer
+
                         </button>
-                        <a href="/morts/historique" class="btn-annuler">
-                            <i class="fas fa-times"></i> Annuler
+
+
+                        <a href="/morts/historique"
+                           class="btn-annuler">
+
+                            <i class="fas fa-times"></i>
+                            Annuler
+
                         </a>
+
                     </div>
 
                 </form>
+
             </div>
 
         </div>

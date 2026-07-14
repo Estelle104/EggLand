@@ -60,4 +60,27 @@ public interface OeufProductionRepository extends JpaRepository<OeufProduction, 
         Page<Map<String, Object>> findHistoriqueProduction(Pageable pageable);
 
     List<OeufProduction> findByDateBetweenOrderByDateDesc(LocalDate debut, LocalDate fin);
+
+    @Query(
+        value = """
+                SELECT * FROM v_historique_production
+                WHERE lot_id = COALESCE(CAST(:lotId AS INTEGER), lot_id)
+                AND date >= COALESCE(CAST(:dateDebut AS DATE), date)
+                AND date <= COALESCE(CAST(:dateFin AS DATE), date)
+                ORDER BY date DESC, lot_id DESC
+                """,
+        countQuery = """
+                SELECT COUNT(*) FROM v_historique_production
+                WHERE lot_id = COALESCE(CAST(:lotId AS INTEGER), lot_id)
+                AND date >= COALESCE(CAST(:dateDebut AS DATE), date)
+                AND date <= COALESCE(CAST(:dateFin AS DATE), date)
+                """,
+        nativeQuery = true
+        )
+        Page<Map<String, Object>> findHistoriqueProduction(
+        @Param("lotId") Integer lotId,
+        @Param("dateDebut") LocalDate dateDebut,
+        @Param("dateFin") LocalDate dateFin,
+        Pageable pageable
+        );
 }

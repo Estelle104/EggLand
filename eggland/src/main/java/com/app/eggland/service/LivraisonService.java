@@ -45,10 +45,10 @@ public class LivraisonService {
 
     @Transactional
     public Livraison creerLivraisonDepuisVente(int venteId,
-                                               LocalDate dateLivraison,
-                                               String adresseLivraison,
-                                               BigDecimal fraisLivraison,
-                                               String statutCode) {
+            LocalDate dateLivraison,
+            String adresseLivraison,
+            BigDecimal fraisLivraison,
+            String statutCode) {
 
         Vente vente = venteRepository.findById(venteId)
                 .orElseThrow(() -> new RuntimeException("Vente introuvable"));
@@ -77,7 +77,8 @@ public class LivraisonService {
         Livraison saved = livraisonRepository.save(livraison);
 
         if (fraisLivraison.compareTo(BigDecimal.ZERO) > 0) {
-            mvtArgentService.creerSortie(fraisLivraison, saved.getDateLivraison(), "livraison");
+            mvtArgentService.creerEntreeAvecReference(
+                    fraisLivraison, saved.getDateLivraison(), "livraison", "livraison-" + saved.getId());
         }
 
         return saved;
@@ -88,7 +89,6 @@ public class LivraisonService {
         Livraison livraison = livraisonRepository.findById(livraisonId)
                 .orElseThrow(() -> new RuntimeException("Livraison introuvable"));
 
-        
         if ("livre".equalsIgnoreCase(livraison.getStatut().getCode())) {
             throw new RuntimeException("Impossible de modifier une livraison déjà livrée");
         }
@@ -102,7 +102,7 @@ public class LivraisonService {
 
     public List<Livraison> filtrerLivraisons(LocalDate dateDebut, LocalDate dateFin) {
         boolean hasDebut = dateDebut != null;
-        boolean hasFin   = dateFin   != null;
+        boolean hasFin = dateFin != null;
 
         if (hasDebut && hasFin) {
             return livraisonRepository.findByDateLivraisonBetweenOrderByDateLivraisonDesc(dateDebut, dateFin);
@@ -121,6 +121,8 @@ public class LivraisonService {
         Livraison livraison = livraisonRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Livraison introuvable avec l'ID : " + id));
 
+        mvtArgentService.supprimerParReference("livraison-" + id);
+
         livraisonRepository.delete(livraison);
     }
 
@@ -137,9 +139,9 @@ public class LivraisonService {
     }
 
     @Transactional
-    public Livraison creerLivraison(Vente vente, Client client, LocalDate dateLivraison, 
-                                     String adresseLivraison, BigDecimal fraisLivraison, 
-                                     String statutCode) {
+    public Livraison creerLivraison(Vente vente, Client client, LocalDate dateLivraison,
+            String adresseLivraison, BigDecimal fraisLivraison,
+            String statutCode) {
         if (dateLivraison == null) {
             dateLivraison = LocalDate.now();
         }
@@ -164,7 +166,8 @@ public class LivraisonService {
         Livraison saved = livraisonRepository.save(livraison);
 
         if (fraisLivraison.compareTo(BigDecimal.ZERO) > 0) {
-            mvtArgentService.creerSortie(fraisLivraison, saved.getDateLivraison(), "livraison");
+            mvtArgentService.creerEntreeAvecReference(
+                    fraisLivraison, saved.getDateLivraison(), "livraison", "livraison-" + saved.getId());
         }
 
         return saved;
@@ -172,16 +175,16 @@ public class LivraisonService {
 
     public List<Livraison> filtrerLivraisonsParClient(String nomClient, LocalDate dateDebut, LocalDate dateFin) {
         List<Livraison> livraisons = livraisonRepository.findByClientNomContainingIgnoreCase(nomClient);
-        
+
         if (dateDebut != null || dateFin != null) {
             LocalDate debut = dateDebut != null ? dateDebut : LocalDate.of(2000, 1, 1);
             LocalDate fin = dateFin != null ? dateFin : LocalDate.of(2100, 12, 31);
-            
+
             livraisons = livraisons.stream()
-                .filter(l -> !l.getDateLivraison().isBefore(debut) && !l.getDateLivraison().isAfter(fin))
-                .toList();
+                    .filter(l -> !l.getDateLivraison().isBefore(debut) && !l.getDateLivraison().isAfter(fin))
+                    .toList();
         }
-        
+
         return livraisons;
     }
 

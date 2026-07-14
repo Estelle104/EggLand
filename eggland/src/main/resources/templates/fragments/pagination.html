@@ -14,20 +14,30 @@
                    style="width: 60px; display: inline;" th:value="${size}" onchange="this.form.submit()">
         </form>
 
-        <nav style="display: flex; gap: 10px;">
-            <a th:if="${currentPage > 0}" th:href="@{${url}(page=${currentPage - 1}, size=${size})}"
-                style="padding: 8px 12px; background: #eee; border-radius: 5px; text-decoration: none; color: black; font-weight: 500;">
-                « Précédent
-            </a>
+        <nav style="display: flex; gap: 10px; align-items: center;">
+            <form th:if="${currentPage > 0}" th:action="@{${url}}" method="get" style="margin:0;">
+                <input type="hidden" th:each="entry : ${filters}" th:name="${entry.key}" th:value="${entry.value}" />
+                <input type="hidden" name="page" th:value="${currentPage - 1}" />
+                <input type="hidden" name="size" th:value="${size}" />
+                <button type="submit"
+                    style="padding: 8px 12px; background: #eee; border: 0; border-radius: 5px; text-decoration: none; color: black; font-weight: 500; cursor: pointer;">
+                    « Précédent
+                </button>
+            </form>
 
             <span style="align-self: center; font-weight: 500;">
                 Page <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
             </span>
 
-            <a th:if="${currentPage < totalPages - 1}" th:href="@{${url}(page=${currentPage + 1}, size=${size})}"
-                style="padding: 8px 12px; background: #eee; border-radius: 5px; text-decoration: none; color: black; font-weight: 500;">
-                Suivant »
-            </a>
+            <form th:if="${currentPage < totalPages - 1}" th:action="@{${url}}" method="get" style="margin:0;">
+                <input type="hidden" th:each="entry : ${filters}" th:name="${entry.key}" th:value="${entry.value}" />
+                <input type="hidden" name="page" th:value="${currentPage + 1}" />
+                <input type="hidden" name="size" th:value="${size}" />
+                <button type="submit"
+                    style="padding: 8px 12px; background: #eee; border: 0; border-radius: 5px; text-decoration: none; color: black; font-weight: 500; cursor: pointer;">
+                    Suivant »
+                </button>
+            </form>
         </nav>
     </div>
 </div>

@@ -303,7 +303,20 @@ public class OeufProductionService {
     //     return oeufProductionRepository.findHistoriqueProduction();
     // }
 
-    public Page<Map<String, Object>> getHistoriqueProduction(Pageable pageable) {
-        return oeufProductionRepository.findHistoriqueProduction(pageable); 
+    public Page<Map<String, Object>> getHistoriqueProduction(
+        Integer lotId,
+        LocalDate dateDebut,
+        LocalDate dateFin,
+        Pageable pageable) {
+
+        if (dateDebut != null && dateFin != null && dateDebut.isAfter(dateFin)) {
+            throw new IllegalArgumentException(
+                "La date de début doit précéder la date de fin"
+            );
+        }
+
+        return oeufProductionRepository.findHistoriqueProduction(
+            lotId, dateDebut, dateFin, pageable
+        );
     }
 }

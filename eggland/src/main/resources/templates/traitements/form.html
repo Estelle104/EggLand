@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${traitement.id == null} ? 'Nouveau traitement' : 'Modifier le traitement'">
+    <title th:text="${traitement.id == null} ? 'Nouveau traitement - EggLand' : 'Modifier le traitement - EggLand'">
         Traitement - EggLand
     </title>
 
@@ -17,6 +17,9 @@
     <style>
         .page-header {
             margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
         .page-header h2 {
             color: var(--text);
@@ -29,6 +32,24 @@
             box-shadow: var(--shadow);
             padding: 32px;
             max-width: 700px;
+        }
+
+        .info-mvt {
+            background: #fff3e0;
+            border: 1px solid #ffcc80;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            color: #e65100;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .info-mvt i {
+            margin-top: 2px;
+            flex-shrink: 0;
         }
 
         .form-group {
@@ -119,13 +140,28 @@
         <div class="content">
 
             <div class="page-header">
-                <h2 th:text="${traitement.id == null} ? 'Nouveau traitement' : 'Modifier le traitement'"></h2>
+                <i class="fa-solid fa-syringe" style="color: var(--primary); font-size: 20px;"></i>
+                <h2 th:text="${traitement.id == null} ? 'Nouveau traitement' : 'Modifier le traitement #' + ${traitement.id}"></h2>
             </div>
 
             <div class="card-form">
+
+                <!-- Info sur le mouvement d'argent automatique -->
+                <div class="info-mvt" th:if="${traitement.id == null}">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>Mouvement d'argent automatique :</strong><br>
+                        Un mouvement de <strong>sortie</strong> sera automatiquement créé dans la trésorerie
+                        avec le coût saisi, catégorie <em>traitement_veterinaire</em>.
+                    </div>
+                </div>
+
                 <form th:action="@{/traitements/save}"
                       th:object="${traitement}"
                       method="post">
+
+                    <!-- Champ caché pour l'ID lors de la modification -->
+                    <input type="hidden" th:field="*{id}">
 
                     <div class="form-group">
                         <label>Lot *</label>
@@ -162,6 +198,7 @@
                                min="0"
                                step="0.01"
                                th:field="*{cout}"
+                               placeholder="0.00"
                                required>
                     </div>
 
@@ -169,14 +206,14 @@
                         <label>Description</label>
                         <textarea th:field="*{description}"
                                   rows="4"
-                                  placeholder="Notes optionnelles..."></textarea>
+                                  placeholder="Notes optionnelles sur le traitement..."></textarea>
                     </div>
 
                     <div class="form-actions">
                         <button type="submit" class="btn-enregistrer">
                             <i class="fas fa-save"></i> Enregistrer
                         </button>
-                        <a href="/traitements" class="btn-annuler">
+                        <a th:href="@{/traitements}" class="btn-annuler">
                             <i class="fas fa-times"></i> Annuler
                         </a>
                     </div>

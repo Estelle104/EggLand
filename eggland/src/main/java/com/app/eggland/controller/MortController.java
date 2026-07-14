@@ -2,6 +2,8 @@ package com.app.eggland.controller;
 
 import com.app.eggland.model.Lot;
 import com.app.eggland.model.Mort;
+import com.app.eggland.model.Race;
+import com.app.eggland.repository.RaceRepository;
 import com.app.eggland.service.LotService;
 import com.app.eggland.service.MortService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,25 +37,29 @@ public class MortController {
     @Autowired
     private LotService lotService;
 
+    @Autowired
+    private RaceRepository raceRepository;
+
     @GetMapping("/liste")
     public String liste(Model model) {
         List<Mort> morts = mortService.findAll();
 
         List<Lot> lots = lotService.findAll();
 
-        //Model pour l'affichage de nombre de poules  mort par lot, clee = Lot Id, values nombres de vivant Lot
+        // Model pour l'affichage de nombre de poules mort par lot, clee = Lot Id,
+        // values nombres de vivant Lot
         Map<Integer, Integer> currentCounts = new HashMap<>();
 
-        //total des morts
+        // total des morts
         int totalMorts = mortService.getTotalMort();
 
         for (Lot lot : lots) {
-            //complete la map
+            // complete la map
             currentCounts.put(lot.getId(), mortService.getNombreMort(lot));
         }
 
-        model.addAttribute("morts",morts);
-        model.addAttribute("lots",lots);
+        model.addAttribute("morts", morts);
+        model.addAttribute("lots", lots);
         model.addAttribute("currentCounts", currentCounts);
         model.addAttribute("totalMorts", totalMorts);
         model.addAttribute("pageTitle", "Nombre de morts par lot");
@@ -63,8 +69,17 @@ public class MortController {
 
     @GetMapping("/insertion")
     public String insertion(Model model) {
+
         model.addAttribute("mort", new Mort());
-        model.addAttribute("lots", mortService.findAllLotTemporary());
+
+        List<Lot> lots = mortService.findAllLotTemporary();
+
+        model.addAttribute("lots", lots);
+
+        List<Race> races = raceRepository.findAll();
+
+        model.addAttribute("races", races);
+
         model.addAttribute("pageTitle", "Insertion de mort par lot");
 
         return "morts/form";
@@ -72,6 +87,11 @@ public class MortController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute Mort mort) {
+
+        if (mort.getRace() == null) {
+            throw new RuntimeException("La race est obligatoire");
+        }
+
         mortService.save(mort);
 
         return "redirect:/morts/liste";
@@ -131,18 +151,28 @@ public class MortController {
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
+
         Mort mort = mortService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Mort non trouvée"));
+
         model.addAttribute("mort", mort);
-        model.addAttribute("lots", mortService.findAllLotTemporary());
-        model.addAttribute("pageTitle", "Modifier la mort");
+
+        model.addAttribute("lots",
+                mortService.findAllLotTemporary());
+
+        model.addAttribute("races",
+                raceRepository.findAll());
+
+        model.addAttribute("pageTitle",
+                "Modifier la mort");
+
         return "morts/form";
     }
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Integer id,
-                         @RequestParam(required = false) String redirect,
-                         RedirectAttributes ra) {
+            @RequestParam(required = false) String redirect,
+            RedirectAttributes ra) {
         try {
             mortService.deleteById(id);
         } catch (DataIntegrityViolationException e) {
@@ -154,4 +184,3 @@ public class MortController {
         return "redirect:/morts/liste";
     }
 }
-

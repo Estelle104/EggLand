@@ -141,13 +141,13 @@ public class LivraisonController {
 
     @PostMapping("/save")
     public String save(@RequestParam(value = "venteId", required = false) String venteIdStr,
-                       @RequestParam(value = "dateLivraison", required = false) String dateLivraisonStr,
-                       @RequestParam("adresseLivraison") String adresseLivraison,
-                       @RequestParam(value = "fraisLivraison", required = false) String fraisLivraisonStr,
-                       @RequestParam(value = "statutCode", required = false) String statutCode,
-                       RedirectAttributes ra) {
+            @RequestParam(value = "dateLivraison", required = false) String dateLivraisonStr,
+            @RequestParam("adresseLivraison") String adresseLivraison,
+            @RequestParam(value = "fraisLivraison", required = false) String fraisLivraisonStr,
+            @RequestParam(value = "statutCode", required = false) String statutCode,
+            RedirectAttributes ra) {
         try {
-           
+
             LocalDate dateLivraison = LocalDate.now();
             if (dateLivraisonStr != null && !dateLivraisonStr.isBlank()) {
                 dateLivraison = LocalDate.parse(dateLivraisonStr);
@@ -163,13 +163,19 @@ public class LivraisonController {
 
             Integer venteId = Integer.parseInt(venteIdStr);
 
-            
             Vente vente = venteService.trouverVenteParId(venteId);
             if (vente == null) {
                 throw new RuntimeException("Vente introuvable avec l'ID : " + venteId);
             }
+
+            if (dateLivraison.isBefore(vente.getDate())) {
+                throw new RuntimeException(
+                        "La date de livraison (" + dateLivraison
+                                + ") ne peut pas être antérieure à la date de la vente (" + vente.getDate() + ").");
+            }
+
             String clientNom = clientService.trouverClientParId(vente.getClient().getId()).getNom();
-           if (clientNom == null || clientNom.isBlank()) {
+            if (clientNom == null || clientNom.isBlank()) {
                 throw new RuntimeException("Veuillez saisir le nom du client.");
             }
 

@@ -16,15 +16,6 @@
                 <h2>Historique des Œufs</h2>
             </div>
             <div class="page-actions">
-                <form th:action="@{/finance/export/excel/production-oeufs}" method="get" target="_blank"
-                    style="margin:0; display:flex; gap:6px; align-items:center;">
-                    <input type="date" name="debut" th:value="${todayMinus30}" class="form-control form-control-sm"
-                        style="width:130px;" placeholder="Début">
-                    <input type="date" name="fin" th:value="${today}" class="form-control form-control-sm"
-                        style="width:130px;" placeholder="Fin">
-                    <button type="submit" class="btn btn-success" style="padding:6px 12px; font-size:13px;"><i
-                            class="fa-solid fa-file-excel"></i> XLSX</button>
-                </form>
                 <a th:href="@{/admin/oeufs}" class="btn btn-secondary">
                     <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
                     Statistiques
@@ -36,14 +27,61 @@
             </div>
         </div>
 
-        <div th:if="${#lists.isEmpty(historiqueProduction)}" class="stats-empty">
-            <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
-            <p>Aucun historique enregistré.</p>
+        <div class="history-filters">
+            <form th:action="@{/admin/oeufs/historique}"
+                method="get"
+                class="filter-form">
+
+                <div class="filter-group">
+                    <label for="lotId">Lot</label>
+                    <select id="lotId" name="lotId">
+                        <option value="">Tous les lots</option>
+                        <option th:each="lot : ${listeLots}"
+                                th:value="${lot.id}"
+                                th:text="|Lot ${lot.id}|"
+                                th:selected="${lot.id == lotSelectionne}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="dateDebut">Du</label>
+                    <input id="dateDebut"
+                        type="date"
+                        name="dateDebut"
+                        th:value="${dateDebutSelectionnee}">
+                </div>
+
+                <div class="filter-group">
+                    <label for="dateFin">Au</label>
+                    <input id="dateFin"
+                        type="date"
+                        name="dateFin"
+                        th:value="${dateFinSelectionnee}">
+                </div>
+
+                <input type="hidden" name="size" th:value="${pageSize}">
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-filter"></i>
+                    Filtrer
+                </button>
+
+                <a th:href="@{/admin/oeufs/historique}"
+                    class="btn btn-secondary">
+                    Réinitialiser
+                </a>
+            </form>
         </div>
 
         <div th:if="${error}" class="history-alert">
             <i class="fa-solid fa-circle-exclamation"></i>
             <span th:text="${error}">Erreur</span>
+        </div>
+
+        <div th:if="${error == null and #lists.isEmpty(historiqueProduction)}" class="stats-empty">
+            <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+            <p>Aucun historique ne correspond aux filtres sélectionnés.</p>
         </div>
 
         <div th:if="${!#lists.isEmpty(historiqueProduction)}"
@@ -100,7 +138,7 @@
 
             <div th:if="${totalPages > 1}" class="history-pagination">
                 <a class="pagination-link" th:classappend="${currentPage == 0} ? ' disabled'"
-                    th:href="${currentPage == 0} ? '#' : @{/admin/oeufs/historique(page=${currentPage - 1}, size=${pageSize})}">
+                    th:href="${currentPage == 0} ? '#' : @{/admin/oeufs/historique(page=${currentPage - 1}, size=${pageSize}, lotId=${lotSelectionne}, dateDebut=${dateDebutSelectionnee}, dateFin=${dateFinSelectionnee})}">
                     Précédent
                 </a>
 
@@ -108,14 +146,14 @@
                     <a th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}"
                         class="pagination-link pagination-number"
                         th:classappend="${pageNumber == currentPage} ? ' active'"
-                        th:href="@{/admin/oeufs/historique(page=${pageNumber}, size=${pageSize})}"
+                        th:href="@{/admin/oeufs/historique(page=${pageNumber}, size=${pageSize}, lotId=${lotSelectionne}, dateDebut=${dateDebutSelectionnee}, dateFin=${dateFinSelectionnee})}"
                         th:text="${pageNumber + 1}">
                         1
                     </a>
                 </div>
 
                 <a class="pagination-link" th:classappend="${currentPage + 1 >= totalPages} ? ' disabled'"
-                    th:href="${currentPage + 1 >= totalPages} ? '#' : @{/admin/oeufs/historique(page=${currentPage + 1}, size=${pageSize})}">
+                    th:href="${currentPage + 1 >= totalPages} ? '#' : @{/admin/oeufs/historique(page=${currentPage + 1}, size=${pageSize}, lotId=${lotSelectionne}, dateDebut=${dateDebutSelectionnee}, dateFin=${dateFinSelectionnee})}">
                     Suivant
                 </a>
             </div>

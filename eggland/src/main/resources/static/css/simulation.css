@@ -23,7 +23,8 @@
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     padding: 28px;
-    max-width: 480px;
+    max-width: 680px;
+    width: 100%;
 }
 
 .simulation-form .form-group {
@@ -359,10 +360,6 @@
     border: 1px solid #e8dcc8;
 }
 
-.morts-detail-list li::before {
-    content: "🐔 ";
-    font-size: 14px;
-}
 
 /* Message d'avertissement */
 .message-avertissement {

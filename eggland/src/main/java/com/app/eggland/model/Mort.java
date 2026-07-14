@@ -19,6 +19,10 @@ public class Mort {
     @JoinColumn(name = "lot_id", nullable = false)
     private Lot lot;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "race_id", nullable = false)
+    private Race race;
+
     @Column(nullable = false)
     private LocalDate date;
 

@@ -12,6 +12,7 @@ import com.app.eggland.model.Client;
 import com.app.eggland.model.DetailVente;
 import com.app.eggland.model.Lot;
 import com.app.eggland.model.LotRace;
+import com.app.eggland.model.MvtArgent;
 import com.app.eggland.model.ProduitVente;
 import com.app.eggland.model.Race;
 import com.app.eggland.model.StatutVente;
@@ -26,33 +27,52 @@ import com.app.eggland.repository.VenteRepository;
 public class VenteService {
 
     public static final String CODE_PRODUIT_POULE = "poule";
+    private static final String CODE_STATUT_PAYE = "paye";
 
-    @Autowired private VenteRepository        venteRepository;
-    @Autowired private DetailVenteRepository  detailVenteRepository;
-    @Autowired private ProduitVenteRepository produitVenteRepository;
-    @Autowired private StatutVenteRepository  statutVenteRepository;
-    @Autowired private LotRaceRepository      lotRaceRepository;
-    @Autowired private MvtArgentService       mvtArgentService;
-    @Autowired private OeufService            oeufService;
-    @Autowired private LotService             lotService;
+    @Autowired
+    private VenteRepository venteRepository;
+    @Autowired
+    private DetailVenteRepository detailVenteRepository;
+    @Autowired
+    private ProduitVenteRepository produitVenteRepository;
+    @Autowired
+    private StatutVenteRepository statutVenteRepository;
+    @Autowired
+    private LotRaceRepository lotRaceRepository;
+    @Autowired
+    private MvtArgentService mvtArgentService;
+    @Autowired
+    private OeufService oeufService;
+    @Autowired
+    private LotService lotService;
 
-    public void saveVente(Vente vente) { venteRepository.save(vente); }
+    public void saveVente(Vente vente) {
+        venteRepository.save(vente);
+    }
 
-    public List<StatutVente> satutVenteRepository() { return statutVenteRepository.findAll(); }
-    public List<Vente> listeVente() { return venteRepository.findAll(); }
+    public List<StatutVente> satutVenteRepository() {
+        return statutVenteRepository.findAll();
+    }
 
-    public List<StatutVente> listeStatutVente() { return statutVenteRepository.findAll(); }
+    public List<Vente> listeVente() {
+        return venteRepository.findAll();
+    }
+
+    public List<StatutVente> listeStatutVente() {
+        return statutVenteRepository.findAll();
+    }
 
     public List<Vente> filtrerVentes(Integer clientId, Integer statutId,
-                                      LocalDate dateDebut, LocalDate dateFin) {
+            LocalDate dateDebut, LocalDate dateFin) {
         boolean hasClient = clientId != null;
         boolean hasStatut = statutId != null;
-        boolean hasDates  = dateDebut != null || dateFin != null;
+        boolean hasDates = dateDebut != null || dateFin != null;
         LocalDate debut = dateDebut != null ? dateDebut : LocalDate.of(2000, 1, 1);
-        LocalDate fin   = dateFin   != null ? dateFin   : LocalDate.of(2100, 12, 31);
+        LocalDate fin = dateFin != null ? dateFin : LocalDate.of(2100, 12, 31);
 
         if (hasClient && hasStatut && hasDates)
-            return venteRepository.findByClientIdAndStatutIdAndDateBetweenOrderByDateDesc(clientId, statutId, debut, fin);
+            return venteRepository.findByClientIdAndStatutIdAndDateBetweenOrderByDateDesc(clientId, statutId, debut,
+                    fin);
         if (hasClient && hasStatut)
             return venteRepository.findByClientIdAndStatutIdOrderByDateDesc(clientId, statutId);
         if (hasClient && hasDates)
@@ -68,21 +88,13 @@ public class VenteService {
         return venteRepository.findAllByOrderByDateDesc();
     }
 
-    public void supprimerVente(int id) {
-        List<DetailVente> details = detailVenteRepository.findByVenteId(id);
-        // On restitue les poules au(x) lot(s) concernés avant de supprimer la vente
-        for (DetailVente d : details) {
-            restituerPouleSiApplicable(d);
-        }
-        detailVenteRepository.deleteAll(details);
-        venteRepository.deleteById(id);
-    }
-
     public Vente trouverVenteParId(int id) {
         return venteRepository.findById(id).orElse(null);
     }
 
-    public List<ProduitVente> listeProduitVente() { return produitVenteRepository.findAll(); }
+    public List<ProduitVente> listeProduitVente() {
+        return produitVenteRepository.findAll();
+    }
 
     public ProduitVente trouverProduitVenteParId(int id) {
         return produitVenteRepository.findById(id).orElse(null);
@@ -111,49 +123,124 @@ public class VenteService {
         LotRace lotRace = lotRaceRepository.findByLotIdAndRaceId(lotId, raceId);
         if (lotRace == null) {
             throw new RuntimeException(
-                "Aucune race id=" + raceId + " trouvée pour le lot id=" + lotId);
+                    "Aucune race id=" + raceId + " trouvée pour le lot id=" + lotId);
         }
         int nombreActuel = lotRace.getNombre() != null ? lotRace.getNombre() : 0;
         int demande = quantite.intValue();
         if (demande > nombreActuel) {
             throw new RuntimeException(
-                "Stock de poules insuffisant pour le lot " + lotId
-                + " / race " + raceId + ". Disponible : " + nombreActuel
-                + " | Demandé : " + demande);
+                    "Stock de poules insuffisant pour le lot " + lotId
+                            + " / race " + raceId + ". Disponible : " + nombreActuel
+                            + " | Demandé : " + demande);
         }
         lotRace.setNombre(nombreActuel - demande);
         lotRaceRepository.save(lotRace);
     }
 
-    /** Remet dans lot_races.nombre la quantité d'une ligne de vente "poule" (ex: suppression/modification). */
+    /**
+     * Remet dans lot_races.nombre la quantité d'une ligne de vente "poule" (ex:
+     * suppression/modification).
+     */
     private void restituerPouleSiApplicable(DetailVente d) {
-        if (!estPoule(d.getProduit())) return;
-        if (d.getLot() == null || d.getRace() == null) return;
+        if (!estPoule(d.getProduit()))
+            return;
+        if (d.getLot() == null || d.getRace() == null)
+            return;
 
         LotRace lotRace = lotRaceRepository.findByLotIdAndRaceId(d.getLot().getId(), d.getRace().getId());
-        if (lotRace == null) return; // rien à restituer si la ligne n'a plus de correspondance
+        if (lotRace == null)
+            return; // rien à restituer si la ligne n'a plus de correspondance
 
         int nombreActuel = lotRace.getNombre() != null ? lotRace.getNombre() : 0;
         lotRace.setNombre(nombreActuel + d.getQuantite().intValue());
         lotRaceRepository.save(lotRace);
     }
 
+    // @Transactional
+    // public void enregistrerVente(int clientId,
+    // List<Integer> produitIds,
+    // List<Integer> lotIds,
+    // List<Integer> raceIds,
+    // List<BigDecimal> quantites,
+    // List<BigDecimal> prixUnitaires,
+    // LocalDate dateVente,
+    // Client client) {
+
+    // BigDecimal total = BigDecimal.ZERO;
+
+    // for (int i = 0; i < produitIds.size(); i++) {
+    // ProduitVente produit = trouverProduitVenteParId(produitIds.get(i));
+    // if (produit == null) continue;
+    // BigDecimal qte = quantites.get(i);
+    // BigDecimal prix = prixUnitaires.get(i);
+    // total = total.add(qte.multiply(prix));
+
+    // if ("oeuf".equalsIgnoreCase(produit.getCode())) {
+    // int stockDispo = oeufService.getStockDisponible();
+    // if (qte.intValue() > stockDispo) {
+    // throw new RuntimeException(
+    // "Stock d'œufs insuffisant. Disponible : " + stockDispo
+    // + " | Demandé : " + qte.intValue());
+    // }
+    // oeufService.retirerDuStock(qte.intValue());
+    // }
+
+    // if (estPoule(produit)) {
+    // Integer lotId = (lotIds != null && i < lotIds.size()) ? lotIds.get(i) : null;
+    // Integer raceId = (raceIds != null && i < raceIds.size()) ? raceIds.get(i) :
+    // null;
+    // // On vérifie le stock dès maintenant pour échouer tôt si besoin.
+    // decrementerNombrePoule(lotId, raceId, qte);
+    // }
+    // }
+
+    // StatutVente statut = statutVenteRepository.findByCode("en_attente")
+    // .orElseThrow(() -> new RuntimeException("Statut 'en_attente' introuvable en
+    // base"));
+
+    // Vente vente = Vente.builder()
+    // .client(client).date(dateVente).datePaiement(dateVente).total(total).statut(statut).build();
+    // venteRepository.save(vente);
+
+    // for (int i = 0; i < produitIds.size(); i++) {
+    // ProduitVente produit = trouverProduitVenteParId(produitIds.get(i));
+    // if (produit == null) continue;
+
+    // DetailVente.DetailVenteBuilder builder = DetailVente.builder()
+    // .vente(vente).client(client).produit(produit)
+    // .quantite(quantites.get(i)).prixUnitaire(prixUnitaires.get(i));
+
+    // if (estPoule(produit)) {
+    // Integer lotId = (lotIds != null && i < lotIds.size()) ? lotIds.get(i) : null;
+    // Integer raceId = (raceIds != null && i < raceIds.size()) ? raceIds.get(i) :
+    // null;
+    // if (lotId != null) builder.lot(Lot.builder().id(lotId).build());
+    // if (raceId != null) builder.race(Race.builder().id(raceId).build());
+    // }
+
+    // detailVenteRepository.save(builder.build());
+    // }
+
+    // mvtArgentService.creerEntree(total, LocalDate.now(), "vente");
+    // }
+
     @Transactional
     public void enregistrerVente(int clientId,
-                                  List<Integer> produitIds,
-                                  List<Integer> lotIds,
-                                  List<Integer> raceIds,
-                                  List<BigDecimal> quantites,
-                                  List<BigDecimal> prixUnitaires,
-                                  LocalDate dateVente,
-                                  Client client) {
+            List<Integer> produitIds,
+            List<Integer> lotIds,
+            List<Integer> raceIds,
+            List<BigDecimal> quantites,
+            List<BigDecimal> prixUnitaires,
+            LocalDate dateVente,
+            Client client) {
 
         BigDecimal total = BigDecimal.ZERO;
 
         for (int i = 0; i < produitIds.size(); i++) {
             ProduitVente produit = trouverProduitVenteParId(produitIds.get(i));
-            if (produit == null) continue;
-            BigDecimal qte  = quantites.get(i);
+            if (produit == null)
+                continue;
+            BigDecimal qte = quantites.get(i);
             BigDecimal prix = prixUnitaires.get(i);
             total = total.add(qte.multiply(prix));
 
@@ -161,66 +248,174 @@ public class VenteService {
                 int stockDispo = oeufService.getStockDisponible();
                 if (qte.intValue() > stockDispo) {
                     throw new RuntimeException(
-                        "Stock d'œufs insuffisant. Disponible : " + stockDispo
-                        + " | Demandé : " + qte.intValue());
+                            "Stock d'œufs insuffisant. Disponible : " + stockDispo
+                                    + " | Demandé : " + qte.intValue());
                 }
                 oeufService.retirerDuStock(qte.intValue());
             }
 
             if (estPoule(produit)) {
-                Integer lotId  = (lotIds  != null && i < lotIds.size())  ? lotIds.get(i)  : null;
+                Integer lotId = (lotIds != null && i < lotIds.size()) ? lotIds.get(i) : null;
                 Integer raceId = (raceIds != null && i < raceIds.size()) ? raceIds.get(i) : null;
-                // On vérifie le stock dès maintenant pour échouer tôt si besoin.
                 decrementerNombrePoule(lotId, raceId, qte);
             }
         }
 
         StatutVente statut = statutVenteRepository.findByCode("en_attente")
-            .orElseThrow(() -> new RuntimeException("Statut 'en_attente' introuvable en base"));
+                .orElseThrow(() -> new RuntimeException("Statut 'en_attente' introuvable en base"));
 
         Vente vente = Vente.builder()
-            .client(client).date(dateVente).datePaiement(dateVente).total(total).statut(statut).build();
+                .client(client).date(dateVente).datePaiement(dateVente).total(total).statut(statut).build();
         venteRepository.save(vente);
 
         for (int i = 0; i < produitIds.size(); i++) {
             ProduitVente produit = trouverProduitVenteParId(produitIds.get(i));
-            if (produit == null) continue;
+            if (produit == null)
+                continue;
 
             DetailVente.DetailVenteBuilder builder = DetailVente.builder()
-                .vente(vente).client(client).produit(produit)
-                .quantite(quantites.get(i)).prixUnitaire(prixUnitaires.get(i));
+                    .vente(vente).client(client).produit(produit)
+                    .quantite(quantites.get(i)).prixUnitaire(prixUnitaires.get(i));
 
             if (estPoule(produit)) {
-                Integer lotId  = (lotIds  != null && i < lotIds.size())  ? lotIds.get(i)  : null;
+                Integer lotId = (lotIds != null && i < lotIds.size()) ? lotIds.get(i) : null;
                 Integer raceId = (raceIds != null && i < raceIds.size()) ? raceIds.get(i) : null;
-                if (lotId != null) builder.lot(Lot.builder().id(lotId).build());
-                if (raceId != null) builder.race(Race.builder().id(raceId).build());
+                if (lotId != null)
+                    builder.lot(Lot.builder().id(lotId).build());
+                if (raceId != null)
+                    builder.race(Race.builder().id(raceId).build());
             }
 
             detailVenteRepository.save(builder.build());
         }
 
-        mvtArgentService.creerEntree(total, LocalDate.now(), "vente");
+        // Une vente est toujours créée "en_attente" : on ne crée le mouvement d'argent
+        // que si elle est déjà payée (ex: statut modifiable plus tard). Ici, rien à
+        // faire
+        // à la création tant que le statut initial reste "en_attente".
+        creerMvtArgentSiPaye(vente, statut.getCode(), null);
     }
+
+    // @Transactional
+    // public void enregistrerModificationVente(int venteId,
+    // List<Integer> produitIds,
+    // List<Integer> lotIds,
+    // List<Integer> raceIds,
+    // List<BigDecimal> quantites,
+    // List<BigDecimal> prixUnitaires,
+    // String statut,
+    // LocalDate dateVente,
+    // Client client) {
+
+    // Vente vente = venteRepository.findById(venteId)
+    // .orElseThrow(() -> new RuntimeException("Vente introuvable"));
+
+    // vente.setStatut(statutVenteRepository.findByCode(statut)
+    // .orElseThrow(() -> new RuntimeException("Statut introuvable")));
+    // vente.setDatePaiement(dateVente);
+    // List<DetailVente> anciensDetails =
+    // detailVenteRepository.findByVenteId(venteId);
+
+    // int ancienneQteOeuf = 0;
+    // for (DetailVente d : anciensDetails) {
+    // if ("oeuf".equalsIgnoreCase(d.getProduit().getCode()))
+    // ancienneQteOeuf += d.getQuantite().intValue();
+    // }
+
+    // int nouvelleQteOeuf = 0;
+    // BigDecimal total = BigDecimal.ZERO;
+    // for (int i = 0; i < produitIds.size(); i++) {
+    // ProduitVente p = trouverProduitVenteParId(produitIds.get(i));
+    // if (p == null)
+    // continue;
+    // BigDecimal qte = quantites.get(i);
+    // total = total.add(qte.multiply(prixUnitaires.get(i)));
+    // if ("oeuf".equalsIgnoreCase(p.getCode()))
+    // nouvelleQteOeuf += qte.intValue();
+    // }
+
+    // int diff = nouvelleQteOeuf - ancienneQteOeuf;
+    // if (diff > 0) {
+    // int stock = oeufService.getStockDisponible();
+    // if (diff > stock)
+    // throw new RuntimeException(
+    // "Stock insuffisant pour ajouter " + diff + " œufs. Disponible : " + stock);
+    // oeufService.retirerDuStock(diff);
+    // } else if (diff < 0) {
+    // oeufService.ajouterAuStock(Math.abs(diff));
+    // }
+
+    // // 1) On restitue les poules des anciennes lignes (remet le stock lot_races à
+    // // jour)
+    // for (DetailVente d : anciensDetails) {
+    // restituerPouleSiApplicable(d);
+    // }
+
+    // detailVenteRepository.deleteAll(anciensDetails);
+
+    // // 2) On vérifie et décrémente le stock pour les nouvelles lignes "poule"
+    // for (int i = 0; i < produitIds.size(); i++) {
+    // ProduitVente produit = trouverProduitVenteParId(produitIds.get(i));
+    // if (produit == null)
+    // continue;
+    // if (estPoule(produit)) {
+    // Integer lotId = (lotIds != null && i < lotIds.size()) ? lotIds.get(i) : null;
+    // Integer raceId = (raceIds != null && i < raceIds.size()) ? raceIds.get(i) :
+    // null;
+    // decrementerNombrePoule(lotId, raceId, quantites.get(i));
+    // }
+    // }
+
+    // // 3) On recrée les lignes de détail
+    // for (int i = 0; i < produitIds.size(); i++) {
+    // ProduitVente produit = trouverProduitVenteParId(produitIds.get(i));
+    // if (produit == null)
+    // continue;
+
+    // DetailVente.DetailVenteBuilder builder = DetailVente.builder()
+    // .vente(vente).client(client).produit(produit)
+    // .quantite(quantites.get(i)).prixUnitaire(prixUnitaires.get(i));
+
+    // if (estPoule(produit)) {
+    // Integer lotId = (lotIds != null && i < lotIds.size()) ? lotIds.get(i) : null;
+    // Integer raceId = (raceIds != null && i < raceIds.size()) ? raceIds.get(i) :
+    // null;
+    // if (lotId != null)
+    // builder.lot(Lot.builder().id(lotId).build());
+    // if (raceId != null)
+    // builder.race(Race.builder().id(raceId).build());
+    // }
+
+    // detailVenteRepository.save(builder.build());
+    // }
+
+    // vente.setClient(client);
+    // vente.setTotal(total);
+    // venteRepository.save(vente);
+    // mvtArgentService.creerEntree(total, LocalDate.now(), "Modification Vente #" +
+    // vente.getId());
+    // }
 
     @Transactional
     public void enregistrerModificationVente(int venteId,
-                                              List<Integer> produitIds,
-                                              List<Integer> lotIds,
-                                              List<Integer> raceIds,
-                                              List<BigDecimal> quantites,
-                                              List<BigDecimal> prixUnitaires,
-                                              String statut,
-                                              LocalDate dateVente,
-                                              Client client) {
+            List<Integer> produitIds,
+            List<Integer> lotIds,
+            List<Integer> raceIds,
+            List<BigDecimal> quantites,
+            List<BigDecimal> prixUnitaires,
+            String statut,
+            LocalDate dateVente,
+            Client client) {
 
         Vente vente = venteRepository.findById(venteId)
-            .orElseThrow(() -> new RuntimeException("Vente introuvable"));
-        
+                .orElseThrow(() -> new RuntimeException("Vente introuvable"));
+
+        String ancienStatutCode = vente.getStatut() != null ? vente.getStatut().getCode() : null;
+
         vente.setStatut(statutVenteRepository.findByCode(statut)
-            .orElseThrow(() -> new RuntimeException("Statut introuvable")));
+                .orElseThrow(() -> new RuntimeException("Statut introuvable")));
         vente.setDatePaiement(dateVente);
-            List<DetailVente> anciensDetails = detailVenteRepository.findByVenteId(venteId);
+        List<DetailVente> anciensDetails = detailVenteRepository.findByVenteId(venteId);
 
         int ancienneQteOeuf = 0;
         for (DetailVente d : anciensDetails) {
@@ -232,54 +427,58 @@ public class VenteService {
         BigDecimal total = BigDecimal.ZERO;
         for (int i = 0; i < produitIds.size(); i++) {
             ProduitVente p = trouverProduitVenteParId(produitIds.get(i));
-            if (p == null) continue;
+            if (p == null)
+                continue;
             BigDecimal qte = quantites.get(i);
             total = total.add(qte.multiply(prixUnitaires.get(i)));
-            if ("oeuf".equalsIgnoreCase(p.getCode())) nouvelleQteOeuf += qte.intValue();
+            if ("oeuf".equalsIgnoreCase(p.getCode()))
+                nouvelleQteOeuf += qte.intValue();
         }
 
         int diff = nouvelleQteOeuf - ancienneQteOeuf;
         if (diff > 0) {
             int stock = oeufService.getStockDisponible();
-            if (diff > stock) throw new RuntimeException(
-                "Stock insuffisant pour ajouter " + diff + " œufs. Disponible : " + stock);
+            if (diff > stock)
+                throw new RuntimeException(
+                        "Stock insuffisant pour ajouter " + diff + " œufs. Disponible : " + stock);
             oeufService.retirerDuStock(diff);
         } else if (diff < 0) {
             oeufService.ajouterAuStock(Math.abs(diff));
         }
 
-        // 1) On restitue les poules des anciennes lignes (remet le stock lot_races à jour)
         for (DetailVente d : anciensDetails) {
             restituerPouleSiApplicable(d);
         }
 
         detailVenteRepository.deleteAll(anciensDetails);
 
-        // 2) On vérifie et décrémente le stock pour les nouvelles lignes "poule"
         for (int i = 0; i < produitIds.size(); i++) {
             ProduitVente produit = trouverProduitVenteParId(produitIds.get(i));
-            if (produit == null) continue;
+            if (produit == null)
+                continue;
             if (estPoule(produit)) {
-                Integer lotId  = (lotIds  != null && i < lotIds.size())  ? lotIds.get(i)  : null;
+                Integer lotId = (lotIds != null && i < lotIds.size()) ? lotIds.get(i) : null;
                 Integer raceId = (raceIds != null && i < raceIds.size()) ? raceIds.get(i) : null;
                 decrementerNombrePoule(lotId, raceId, quantites.get(i));
             }
         }
 
-        // 3) On recrée les lignes de détail
         for (int i = 0; i < produitIds.size(); i++) {
             ProduitVente produit = trouverProduitVenteParId(produitIds.get(i));
-            if (produit == null) continue;
+            if (produit == null)
+                continue;
 
             DetailVente.DetailVenteBuilder builder = DetailVente.builder()
-                .vente(vente).client(client).produit(produit)
-                .quantite(quantites.get(i)).prixUnitaire(prixUnitaires.get(i));
+                    .vente(vente).client(client).produit(produit)
+                    .quantite(quantites.get(i)).prixUnitaire(prixUnitaires.get(i));
 
             if (estPoule(produit)) {
-                Integer lotId  = (lotIds  != null && i < lotIds.size())  ? lotIds.get(i)  : null;
+                Integer lotId = (lotIds != null && i < lotIds.size()) ? lotIds.get(i) : null;
                 Integer raceId = (raceIds != null && i < raceIds.size()) ? raceIds.get(i) : null;
-                if (lotId != null) builder.lot(Lot.builder().id(lotId).build());
-                if (raceId != null) builder.race(Race.builder().id(raceId).build());
+                if (lotId != null)
+                    builder.lot(Lot.builder().id(lotId).build());
+                if (raceId != null)
+                    builder.race(Race.builder().id(raceId).build());
             }
 
             detailVenteRepository.save(builder.build());
@@ -288,6 +487,70 @@ public class VenteService {
         vente.setClient(client);
         vente.setTotal(total);
         venteRepository.save(vente);
-        mvtArgentService.creerEntree(total, LocalDate.now(), "Modification Vente #" + vente.getId());
+
+        creerMvtArgentSiPaye(vente, statut, ancienStatutCode);
+    }
+
+    @Transactional
+    public void supprimerVente(int id) {
+        List<DetailVente> details = detailVenteRepository.findByVenteId(id);
+
+        for (DetailVente d : details) {
+            restituerPouleSiApplicable(d);
+            restituerOeufSiApplicable(d);
+        }
+
+        detailVenteRepository.deleteAll(details);
+
+        // Supprime le mouvement d'argent lié à cette vente, s'il existe
+        mvtArgentService.supprimerParReference("vente-" + id);
+
+        venteRepository.deleteById(id);
+    }
+
+    /**
+     * Remet dans le stock d'œufs la quantité d'une ligne de vente "oeuf" (ex:
+     * suppression).
+     */
+    private void restituerOeufSiApplicable(DetailVente d) {
+        if (d.getProduit() == null || !"oeuf".equalsIgnoreCase(d.getProduit().getCode()))
+            return;
+        if (d.getQuantite() == null)
+            return;
+
+        oeufService.ajouterAuStock(d.getQuantite().intValue());
+    }
+
+    /**
+     * Crée un mouvement d'argent "entrée" pour la vente si :
+     * - son nouveau statut est "paye"
+     * - et qu'elle n'était pas déjà "paye" avant (évite les doublons)
+     * Si un mouvement existe déjà pour cette vente et que le total a changé, on le
+     * met à jour.
+     */
+    private void creerMvtArgentSiPaye(Vente vente, String nouveauStatutCode, String ancienStatutCode) {
+        boolean estPaye = CODE_STATUT_PAYE.equalsIgnoreCase(nouveauStatutCode);
+        boolean etaitPaye = CODE_STATUT_PAYE.equalsIgnoreCase(ancienStatutCode);
+        String reference = "vente-" + vente.getId();
+
+        if (!estPaye)
+            return;
+
+        var existant = mvtArgentService.trouverParReference(reference);
+
+        if (existant.isPresent()) {
+            // Déjà un mouvement enregistré : on met à jour le montant si besoin
+            MvtArgent mvt = existant.get();
+            if (mvt.getMontant().compareTo(vente.getTotal()) != 0) {
+                mvt.setMontant(vente.getTotal());
+                mvtArgentService.saveMvt(mvt); // voir ajout ci-dessous
+            }
+            return;
+        }
+
+        if (!etaitPaye) {
+            mvtArgentService.creerEntreeAvecReference(
+                    vente.getTotal(), LocalDate.now(), "Vente #" + vente.getId(), reference);
+        }
     }
 }

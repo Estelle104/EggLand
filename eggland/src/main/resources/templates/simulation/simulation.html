@@ -33,10 +33,11 @@
                 <button type="submit" class="btn-simuler">Simuler</button>
             </form>
 
-            <div th:if="${resultat != null}" class="simulation-result">
-                <h3>Résultat de la simulation :</h3>
-                <p th:text="'Chiffre d affaires : ' + ${#numbers.formatDecimal(resultat, 0, 'COMMA', 2, 'POINT')} + ' Ar'">
-                </p>
+            <div th:if="${resultat != null}" class="resultats" style="grid-template-columns: 1fr; margin-top: 24px;">
+                <div class="result-card ca">
+                    <div class="label">Chiffre d'Affaires Estimé</div>
+                    <div class="value" th:text="${#numbers.formatDecimal(resultat, 0, 'COMMA', 2, 'POINT')} + ' Ar'"></div>
+                </div>
             </div>
         </div>
 
@@ -98,9 +99,9 @@
                         </div>
                     </div>
                     
-                    <small style="display: block; color: #666; margin-top: 5px; font-style: italic;">
+                    <!-- <small style="display: block; color: #666; margin-top: 5px; font-style: italic;">
                         (Cochez une race et entrez le nombre de morts par jour pour cette race)
-                    </small>
+                    </small> -->
                 </div>
 
                 <!-- Date de simulation -->
@@ -114,39 +115,35 @@
             </form>
 
             <!-- Résultats -->
-            <div th:if="${resultatMortalite != null}" class="simulation-result" style="margin-top: 20px;">
-                <h3>Résultats de la simulation de mortalité</h3>
-                <div style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
-                    <p><strong>Chiffre d'affaires après mortalité :</strong> 
-                       <span style="color: #8a4a1d; font-weight: 700;" 
-                             th:text="${#numbers.formatDecimal(resultatMortalite.chiffreAffaire, 0, 'COMMA', 2, 'POINT')} + ' Ar'">
-                       </span>
-                    </p>
-                    <p><strong>Nombre d'oeufs estimés après mortalité :</strong> 
-                       <span style="color: #8a4a1d; font-weight: 700;" th:text="${resultatMortalite.nbOeufsRestants}">
-                       </span>
-                    </p>
-                    <p><strong>Nombre de morts total :</strong> 
-                       <span style="color: #8a4a1d; font-weight: 700;" th:text="${resultatMortalite.totalMorts}">
-                       </span>
-                    </p>
-                    
-                    <!-- Détail des morts par race -->
-                    <div th:if="${resultatMortalite.mortsParRace != null and !resultatMortalite.mortsParRace.isEmpty()}">
-                        <p><strong>Détail des morts par race :</strong></p>
-                        <ul style="list-style: none; padding: 0;">
-                            <li th:each="entry : ${resultatMortalite.mortsParRace}" 
-                                style="padding: 5px 10px; background: #f5f0eb; margin: 5px 0; border-radius: 4px;">
-                                <span th:text="${entry.key} + ' : ' + ${entry.value} + ' morts'"></span>
-                            </li>
-                        </ul>
+            <div th:if="${resultatMortalite != null}" class="resultats-container" style="margin-top: 24px;">
+                <h3 style="font-size: 15px; color: var(--text); margin: 0 0 12px 0;">Résultats de la simulation de mortalité</h3>
+                
+                <div class="resultats" style="grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-top: 0;">
+                    <div class="result-card ca">
+                        <div class="label">CA après mortalité</div>
+                        <div class="value" th:text="${#numbers.formatDecimal(resultatMortalite.chiffreAffaire, 0, 'COMMA', 2, 'POINT')} + ' Ar'"></div>
                     </div>
-
-                    <p th:if="${resultatMortalite.message != null}" 
-                       style="color: orange; font-style: italic;" 
-                       th:text="${resultatMortalite.message}">
-                    </p>
+                    <div class="result-card benefice">
+                        <div class="label">Œufs restants</div>
+                        <div class="value" th:text="${resultatMortalite.nbOeufsRestants}"></div>
+                    </div>
+                    <div class="result-card depense">
+                        <div class="label">Morts total</div>
+                        <div class="value" th:text="${resultatMortalite.totalMorts}"></div>
+                    </div>
                 </div>
+                
+                <!-- Détail des morts par race -->
+                <div th:if="${resultatMortalite.mortsParRace != null and !resultatMortalite.mortsParRace.isEmpty()}" style="margin-top: 16px;">
+                    <h4 style="font-size: 12px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 8px 0;">Détail des morts par race :</h4>
+                    <ul class="morts-detail-list" style="margin: 0;">
+                        <li th:each="entry : ${resultatMortalite.mortsParRace}">
+                            <span th:text="${entry.key} + ' : ' + ${entry.value} + ' morts'"></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <p th:if="${resultatMortalite.message != null}" class="message-avertissement" th:text="${resultatMortalite.message}"></p>
             </div>
         </div>
     </div>

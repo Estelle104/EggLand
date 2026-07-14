@@ -1,27 +1,226 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{fragments/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mouvements d'argent - Eggland</title>
-    <link rel="stylesheet" th:href="@{/css/mvtargent.css}">
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .page-header h2 {
+            color: var(--text);
+            font-size: 22px;
+        }
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        thead { background: var(--bg); }
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+        }
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--text);
+        }
+        tbody tr:hover { background: rgba(184, 122, 42, 0.05); }
+
+        .badge-type {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-entree {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .badge-sortie {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .montant-positif {
+            color: #2e7d32;
+            font-weight: 600;
+        }
+        .montant-negatif {
+            color: #c62828;
+            font-weight: 600;
+        }
+        .categorie-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            background: #f3e5f5;
+            color: #6a1b9a;
+            font-weight: 600;
+        }
+        .categorie-badge.traitement {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        .categorie-badge.salaire {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+        .categorie-badge.nourriture {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .vide-message {
+            text-align: center;
+            padding: 48px 24px;
+            color: #999;
+            font-size: 15px;
+        }
+        .filtre-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 18px;
+            margin-bottom: 18px;
+        }
+        .filtre-form {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(140px, 1fr));
+            gap: 12px;
+            align-items: end;
+        }
+        .filtre-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .filtre-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+        }
+        .filtre-group input,
+        .filtre-group select {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 9px 10px;
+            font-size: 13px;
+            background: #fff;
+            color: var(--text);
+        }
+        .filtre-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .btn-filtrer,
+        .btn-reset {
+            border: 0;
+            border-radius: 6px;
+            padding: 9px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-filtrer {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-reset {
+            background: #f2f2f2;
+            color: var(--text);
+        }
+        @media (max-width: 1100px) {
+            .filtre-form {
+                grid-template-columns: repeat(2, minmax(160px, 1fr));
+            }
+        }
+        @media (max-width: 640px) {
+            .filtre-form {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
     <div layout:fragment="content">
 
         <div class="page-header">
-            <h2 th:text="${pageTitle}">Mouvements d'argent</h2>
+            <h2>
+                <i class="fas fa-money-bill-wave" style="color: var(--primary); margin-right: 8px;"></i>
+                <span th:text="${pageTitle}">Mouvements d'argent</span>
+            </h2>
+        </div>
+
+        <div class="filtre-card">
+            <form class="filtre-form" th:action="@{/admin/mvtargent}" method="get">
+                <div class="filtre-group">
+                    <label for="typeCode"><i class="fas fa-exchange-alt"></i> Type</label>
+                    <select id="typeCode" name="typeCode">
+                        <option value="">Tous les types</option>
+                        <option th:each="type : ${typesMvt}" th:value="${type.code}"
+                            th:selected="${type.code == typeCodeSelectionne}"
+                            th:text="${#strings.replace(type.code, '_', ' ')}">entree</option>
+                    </select>
+                </div>
+                <div class="filtre-group">
+                    <label for="categorie"><i class="fas fa-tags"></i> Catégorie</label>
+                    <select id="categorie" name="categorie">
+                        <option value="">Toutes les catégories</option>
+                        <option th:each="cat : ${categories}" th:value="${cat}"
+                            th:selected="${cat == categorieSelectionnee}"
+                            th:text="${#strings.replace(cat, '_', ' ')}">categorie</option>
+                    </select>
+                </div>
+                <div class="filtre-group">
+                    <label for="dateDebut"><i class="fas fa-calendar-day"></i> Date début</label>
+                    <input id="dateDebut" type="date" name="dateDebut" th:value="${dateDebutSelectionnee}">
+                </div>
+                <div class="filtre-group">
+                    <label for="dateFin"><i class="fas fa-calendar-day"></i> Date fin</label>
+                    <input id="dateFin" type="date" name="dateFin" th:value="${dateFinSelectionnee}">
+                </div>
+                <div class="filtre-actions">
+                    <button type="submit" class="btn-filtrer">
+                        <i class="fas fa-filter"></i> Filtrer
+                    </button>
+                    <a th:href="@{/admin/mvtargent}" class="btn-reset">
+                        <i class="fas fa-undo"></i> Réinitialiser
+                    </a>
+                </div>
+            </form>
         </div>
 
         <div class="card">
-            <table>
+            <table th:if="${!#lists.isEmpty(mouvements)}">
                 <thead>
                     <tr>
                         <th>Date</th>
                         <th>Type</th>
-                        <th>Montant</th>
+                        <th>Montant (Ar)</th>
                         <th>Catégorie</th>
                         <th>Référence</th>
                     </tr>
@@ -32,21 +231,28 @@
                         <td>
                             <span class="badge-type"
                                 th:class="${#strings.toLowerCase(m.type.code) == 'entree'} ? 'badge-type badge-entree' : 'badge-type badge-sortie'"
-                                th:text="${#strings.toLowerCase(m.type.code) == 'entree'} ? 'Entrée' : 'Sortie'"></span>
+                                th:text="${#strings.toLowerCase(m.type.code) == 'entree'} ? '⬆ Entrée' : '⬇ Sortie'"></span>
                         </td>
                         <td th:text="${#numbers.formatDecimal(m.montant, 0, 'WHITESPACE', 2, 'COMMA')} + ' Ar'"
                             th:class="${#strings.toLowerCase(m.type.code) == 'entree'} ? 'montant-positif' : 'montant-negatif'">
                         </td>
-                        <td th:text="${m.categorie}"></td>
-                        <td th:text="${m.reference}"></td>
+                        <td>
+                            <span th:if="${m.categorie != null}"
+                                  class="categorie-badge"
+                                  th:classappend="${#strings.contains(m.categorie, 'traitement')} ? ' traitement' : (${#strings.contains(m.categorie, 'salaire')} ? ' salaire' : (${#strings.contains(m.categorie, 'nourriture')} ? ' nourriture' : ''))"
+                                  th:text="${#strings.replace(m.categorie, '_', ' ')}">
+                            </span>
+                            <span th:if="${m.categorie == null}" style="color:#bbb;">—</span>
+                        </td>
+                        <td th:text="${m.reference != null ? m.reference : '—'}" style="font-size: 12px; color: #999;"></td>
                     </tr>
                 </tbody>
             </table>
-            <div
-                th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${baseUrl}, filters=${filtres})}">
+            <div th:replace="~{fragments/pagination :: pager(currentPage=${currentPage}, totalPages=${totalPages}, size=${size}, url=${baseUrl}, filters=${filtres})}">
             </div>
             <div th:if="${#lists.isEmpty(mouvements)}" class="vide-message">
-                Aucun mouvement d'argent.
+                <i class="fas fa-inbox" style="font-size: 36px; color: var(--border); display:block; margin-bottom: 12px;"></i>
+                Aucun mouvement d'argent enregistré.
             </div>
         </div>
 
