@@ -11,8 +11,8 @@ INSERT INTO race (nom, prix_unitaire, rendement_moyen_mois) VALUES
 
 -- -- 5. employe (pas de dépendance)
 INSERT INTO employe (date_embauche, nom, prenom, salaire, tel) VALUES
-('2026-04-24', 'Jean', 'Noah', 100000.00, '0326245985'),
-('2026-04-24', 'Badoda', 'Zax', 120000.00, '0324598215');
+('2026-04-24', 'Naivo', 'Noah', 100000.00, '0326245985'),
+('2026-04-24', 'Mino', 'Kanto', 120000.00, '0324598215');
 
 -- -- 6. nourriture (pas de dépendance)
 INSERT INTO nourriture (libelle, prix_unitaire, seuil_alerte) VALUES

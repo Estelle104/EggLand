@@ -19,8 +19,11 @@ INSERT INTO RoleUser (code) VALUES ('admin'), ('gestionnaire');
 INSERT INTO Configuration (seuil_mort, seuil_nourriture) VALUES (5, 50.0);
 
 INSERT INTO useradmin(actif,email,mot_de_passe,nom,role) VALUES 
-(true,'admin@gmail.com','admin123','moi',1),
-(true,'gest@gmail.com','gestion123','ricardo',2);
+(true,'admin@gmail.com','admin123','moi',1);
 
 INSERT INTO Client (nom, prenom, tel, email, adresse, date_inscription, id_statut) VALUES
 ('Rakoto', 'Jean', '0341234567', 'jean.rakoto@gmail.com', 'Lot II M 15 Antananarivo', '2026-01-10', 1);
+
+
+INSERT INTO Client (nom, prenom, tel, email, adresse, date_inscription, id_statut) VALUES
+('Andry', 'Kely', '0341234567', 'andry@gmail.com', 'Lot II B 15 Antananarivo', '2026-01-10', 1);
