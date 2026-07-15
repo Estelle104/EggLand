@@ -1,0 +1,62 @@
+=== lot ===
+race_id,date_arrivee,nombre_initial,age_semaine,statut,batiment_id
+1,08/06/2026,250,24,1,1
+2,15/06/2026,300,20,1,2
+
+=== oeufproduction ===
+lot_id,date,quantite,casse
+1,25/06/2026,85,2 
+1,26/06/2026,90,0
+1,27/06/2026,88,1
+1,28/06/2026,82,0
+1,29/06/2026,78,4
+1,30/06/2026,85,0
+2,01/07/2026,72,1
+2,03/07/2026,68,0
+2,05/07/2026,75,2
+2,07/07/2026,70,1
+2,09/07/2026,65,3
+2,10/07/2026,72,1
+2,12/07/2026,75,0
+
+
+=== traitement ===
+lot_id,id_type,description,date,cout
+1,1,Vaccin bronchite infectieuse,20/06/2026,15000.00
+2,1,Vaccin bronchite infectieuse,05/06/2026,12000.00
+1,3,Médicament antiparasitaire,10/06/2026,25000.00
+
+=== mort ===
+lot_id,date,nombre
+1,21/06/2026,3
+1,12/07/2026,2
+2,30/06/2026,2
+2,10/07/2026,4
+
+=== mvtstock ===
+nourriture_id,lot_id,id_type,quantite,date
+1,1,entree,200.000,07/06/2026
+2,2,entree,150.000,07/06/2026
+1,1,sortie,60.000,07/06/2026
+1,1,sortie,50.000,15/06/2026
+2,2,sortie,40.000,15/06/2026
+
+=== paiementsalaire ===
+employe_id,mois,montant,date_paiement
+1,01/06/2026,100000.00,30/06/2026
+2,01/06/2026,80000.00,28/06/2026
+
+=== vente ===
+client_id,date,oeuf,pu_oeuf,fumier,pu_fumier,poule,pu_poule,client
+1,10/07/2026,80,700,0,0,0,0,Rakoto
+1,11/07/2026,85,700,5,2000,0,0,Rakoto
+2,14/07/2026,100,650,6,2100,0,0,Andry
+2,05/07/2026,60,800,0,0,0,0,Andry
+
+
+=== livraison ===
+client,date,vente,frais,lieu
+Rakoto,11/07/2026,1,5000,Itaosy
+Andry,12/07/2026,3,8000,mahamasina
+Rakoto,15/07/2026,2,5000,Andoharanofotsy
+Andry,16/07/2026,4,8000,Analakely
