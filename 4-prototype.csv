@@ -1,7 +1,7 @@
 === lot ===
-race_id,date_arrivee,nombre_initial,age_semaine,statut,batiment_id
-1,08/06/2026,250,24,1,1
-2,15/06/2026,300,20,1,2
+race_id,date_arrivee,nombre_initial,statut,batiment_id
+1,08/06/2026,50,1,1
+2,15/06/2026,50,1,2
 
 === oeufproduction ===
 lot_id,date,quantite,casse
